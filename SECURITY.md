@@ -1,12 +1,36 @@
-# Security Policy
+# SECURITY POLICY • 19 JHR BN NCC SBU COMPANY PORTAL
 
-## Reporting Security Vulnerabilities
+---
 
-If you discover a potential security vulnerability within the 19 JHR BN NCC Portal, please do NOT create a public issue. Instead, report it directly to the system administrators or the Associate NCC Officer (ANO) at Sarala Birla University.
+## 1. Security Architecture & Principles
 
-### Security Principles Applied
+The **19 JHR BN NCC • Sarala Birla University Company Portal** follows security practices designed to protect cadet personnel data, Aadhaar identity information, bank DBT records, and AI infrastructure credentials.
 
-1. **Server-Side API Keys**: Third-party keys and AI credentials (including `GEMINI_API_KEY`) are kept exclusively on the server in `process.env`.
-2. **Input Sanitization**: All incoming payload parameters are validated and sanitized server-side.
-3. **No Key Exposure**: The client application does not embed or leak runtime environment credentials into Vite builds.
-4. **Data Isolation**: Personnel and cadet data endpoints require verified sessions.
+### Key Controls Implemented
+
+1. **Server-Side Secret Isolation**: AI service keys (`GEMINI_API_KEY`) reside exclusively in server process environment variables (`process.env`) and are never bundled into client JavaScript.
+2. **Token Bucket Rate Limiting**: In-memory IP rate-limiting middleware (`maxRequests = 120` per minute) shields endpoints against automated brute-force or Denial of Service (DoS) attempts.
+3. **Payload Sanitization & Limits**: Request body sizes are restricted to `10MB` via Express middleware to mitigate memory exhaustion payloads.
+4. **Correlation & Audit Tracing**: Every inbound request is assigned a unique `X-Request-ID` header (`req_${timestamp}_${rand}`) logged for auditability.
+5. **Clean Repository Policy**: Secrets, `.env` files, build output folders, and temporary logs are excluded from version control via `.gitignore`.
+
+---
+
+## 2. Reporting a Vulnerability
+
+If you discover a potential security vulnerability, please do **NOT** open a public GitHub issue.
+
+Please report security concerns directly to:
+- **Author & Repository Owner**: **Ravi Ranjan Singh**
+- **GitHub Repository**: [https://github.com/Hellthefox808/NCC-CRM-V1.0](https://github.com/Hellthefox808/NCC-CRM-V1.0)
+- **Institution**: Associate NCC Officer (ANO), Sarala Birla University, Ranchi.
+
+Reports will be acknowledged within 24 hours and addressed promptly.
+
+---
+
+## 3. License & Authorship
+
+- **Author**: **Ravi Ranjan Singh**
+- **Role**: Software Engineer • Software Architect • Full Stack Developer • AI SaaS Developer
+- **Repository Owner**: **Ravi Ranjan Singh**
