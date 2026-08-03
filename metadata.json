@@ -1,0 +1,6 @@
+{
+  "name": "NCC 19 Jharkhand Battalion - SBU Ranchi",
+  "description": "Official NCC Enrollment & Management Portal for 19 Jharkhand Battalion, Sarala Birla University, Ranchi (Bihar & Jharkhand Directorate). Features cadet enrollment forms, status tracking, activity overview, and officer dashboard with Excel export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
