@@ -269,6 +269,7 @@ The server serves static assets from `dist/` and runs the backend API on port `3
 - [`API_REFERENCE.md`](API_REFERENCE.md) — Detailed REST API specs and payloads.
 - [`DATA_FLOW.md`](DATA_FLOW.md) — Data flow and state lifecycle diagrams.
 - [`SECURITY.md`](SECURITY.md) — Security policy and vulnerability disclosure procedures.
+- [`STACK_MODERNIZATION_REPORT.md`](STACK_MODERNIZATION_REPORT.md) — Technology stack audit & rewrite decision report.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — Code contribution guidelines.
 - [`LICENSE`](LICENSE) — Open source software license terms.
 
