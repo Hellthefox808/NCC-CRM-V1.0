@@ -105,6 +105,19 @@ export const dataCache = new QueryCache();
 // Centralized Enterprise Data Platform API SDK
 export class EnterpriseDataPlatform {
   private static BASE_URL = "/api/v1";
+  private static authToken: string | null = typeof window !== "undefined" ? sessionStorage.getItem("ncc_auth_token") : null;
+
+  public static setAuthToken(token: string | null) {
+    this.authToken = token;
+    if (typeof window !== "undefined") {
+      if (token) sessionStorage.setItem("ncc_auth_token", token);
+      else sessionStorage.removeItem("ncc_auth_token");
+    }
+  }
+
+  public static getAuthToken(): string | null {
+    return this.authToken;
+  }
 
   /**
    * Helper request handler with validation, correlation ID, retries, and errors
@@ -120,6 +133,7 @@ export class EnterpriseDataPlatform {
       "Content-Type": "application/json",
       "X-Request-ID": requestId,
       "X-Client-Version": "v3000",
+      ...(this.authToken ? { "Authorization": `Bearer ${this.authToken}` } : {}),
       ...(options.headers as Record<string, string> || {})
     };
 
@@ -157,6 +171,45 @@ export class EnterpriseDataPlatform {
     }
 
     throw lastError || new DataPlatformError("Network request timeout", "NETWORK_ERROR", 504, requestId);
+  }
+
+  /**
+   * Secure User Authentication Login
+   */
+  static async login(payload: {
+    userType: "cadet" | "admin";
+    username?: string;
+    email?: string;
+    password?: string;
+  }): Promise<ApiResponse<{ token: string; userType: "cadet" | "admin"; user: any; expiresAt: string }>> {
+    const res = await this.request<{ token: string; userType: "cadet" | "admin"; user: any; expiresAt: string }>("/auth/login", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+
+    if (res.success && res.data?.token) {
+      this.setAuthToken(res.data.token);
+    }
+    return res;
+  }
+
+  /**
+   * Secure User Authentication Logout
+   */
+  static async logout(): Promise<ApiResponse<{ message: string }>> {
+    try {
+      const res = await this.request<{ message: string }>("/auth/logout", {
+        method: "POST",
+        body: JSON.stringify({ token: this.authToken })
+      });
+      this.setAuthToken(null);
+      dataCache.clear();
+      return res;
+    } catch {
+      this.setAuthToken(null);
+      dataCache.clear();
+      return { success: true, message: "Logged out locally." };
+    }
   }
 
   /**

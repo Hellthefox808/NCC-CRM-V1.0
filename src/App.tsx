@@ -18,6 +18,8 @@ import { Footer } from "./components/Footer";
 import { CadetRecord } from "./types";
 import { Bot, ShieldCheck, Sparkles, MessageSquare } from "lucide-react";
 
+import { EnterpriseDataPlatform } from "./services/dataPlatform";
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>("home");
   const [statusModalOpen, setStatusModalOpen] = useState<boolean>(false);
@@ -55,7 +57,8 @@ export default function App() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await EnterpriseDataPlatform.logout();
     setIsLoggedIn(false);
     setCurrentUserType(null);
     setActiveTab("home");

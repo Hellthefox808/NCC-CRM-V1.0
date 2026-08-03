@@ -18,6 +18,7 @@ import {
   BookOpen
 } from "lucide-react";
 import { BATTALION_DETAILS } from "../data/nccData";
+import { EnterpriseDataPlatform } from "../services/dataPlatform";
 
 interface SbuNccSignupPortalProps {
   onLoginSuccess: (userType: "cadet" | "admin", userData?: any) => void;
@@ -76,20 +77,33 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
   });
 
   // Handle Cadet Sign In
-  const handleCadetLogin = (e: React.FormEvent) => {
+  const handleCadetLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!cadetIdentifier) {
-      setNoticeMessage({ type: "error", text: "Please enter your SBU Roll No or Regimental Number." });
+    if (!cadetIdentifier || !cadetPassword) {
+      setNoticeMessage({ type: "error", text: "Please enter your SBU Roll No and Password." });
       return;
     }
-    setNoticeMessage({ type: "success", text: "Cadet authentication successful! Welcome to SBU NCC Portal." });
-    setTimeout(() => {
-      onLoginSuccess("cadet", {
-        fullName: cadetForm.fullName || "Aman Kumar Sharma",
-        sbuRollNo: cadetIdentifier,
-        gender: cadetForm.gender
+    try {
+      const res = await EnterpriseDataPlatform.login({
+        userType: "cadet",
+        username: cadetIdentifier,
+        password: cadetPassword
       });
-    }, 600);
+      if (res.success && res.data) {
+        setNoticeMessage({ type: "success", text: "Cadet authentication successful! Welcome to SBU NCC Portal." });
+        setTimeout(() => {
+          onLoginSuccess("cadet", {
+            fullName: res.data.user.name || cadetForm.fullName || "Aman Kumar Sharma",
+            sbuRollNo: cadetIdentifier,
+            gender: cadetForm.gender
+          });
+        }, 500);
+      } else {
+        setNoticeMessage({ type: "error", text: res.error || "Invalid email, username, or password." });
+      }
+    } catch (err: any) {
+      setNoticeMessage({ type: "error", text: err.message || "Authentication failed. Please check credentials." });
+    }
   };
 
   // Handle Cadet New Registration (Sign Up)
@@ -116,16 +130,29 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
   };
 
   // Handle Admin Sign In
-  const handleAdminLogin = (e: React.FormEvent) => {
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!adminUsername) {
-      setNoticeMessage({ type: "error", text: "Please enter your Official Officer Email or ID." });
+    if (!adminUsername || !adminPassword) {
+      setNoticeMessage({ type: "error", text: "Please enter your Official Officer Email and Password." });
       return;
     }
-    setNoticeMessage({ type: "success", text: "Officer Credentials Verified! Welcome Associate NCC Officer." });
-    setTimeout(() => {
-      onLoginSuccess("admin");
-    }, 600);
+    try {
+      const res = await EnterpriseDataPlatform.login({
+        userType: "admin",
+        username: adminUsername,
+        password: adminPassword
+      });
+      if (res.success && res.data) {
+        setNoticeMessage({ type: "success", text: "Officer Credentials Verified! Welcome Associate NCC Officer." });
+        setTimeout(() => {
+          onLoginSuccess("admin", res.data.user);
+        }, 500);
+      } else {
+        setNoticeMessage({ type: "error", text: res.error || "Invalid email, username, or password." });
+      }
+    } catch (err: any) {
+      setNoticeMessage({ type: "error", text: err.message || "Officer authentication failed." });
+    }
   };
 
   // Handle Admin Authorization Signup Request
