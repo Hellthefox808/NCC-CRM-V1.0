@@ -1,52 +1,82 @@
-# WebSocket Event Dictionary v3000
-
-## Event Index
-
-| Event Name | Channel | Sender | Description |
-|---|---|---|---|
-| `CONNECTED` | `system` | Server | Welcome message with connection ID & initial active client count |
-| `SUBSCRIBED` | `system` | Server | Confirmation of channel subscription |
-| `PRESENCE_UPDATE` | `cadre:presence` | Server | Broadcast containing active cadet & officer count |
-| `ENROLLMENT_SUBMITTED` | `cadre:enrollments` | Client/Server | Dispatched when a new enrollment is submitted |
-| `STATUS_UPDATED` | `cadre:enrollments` | Server | Dispatched when an officer updates a cadet's status or remarks |
-| `NOTIFICATION_BROADCAST` | `cadre:notifications` | Server | Dispatched when an official parade order or alert is posted |
-| `METRICS_TICK` | `cadre:metrics` | Server | Periodic system latency & memory observability broadcast |
-| `pong` | `system` | Server | Round-trip latency verification response |
+# WEBSOCKET EVENTS CATALOG • ENTERPRISE DATA PLATFORM v3000
 
 ---
 
-## Event Payload Schemas
+## 1. WebSocket Event Envelope
 
-### 1. `NOTIFICATION_BROADCAST`
-```json
-{
-  "event": "NOTIFICATION_BROADCAST",
-  "channel": "cadre:notifications",
-  "payload": {
-    "id": "N101",
-    "title": "URGENT: Annual Inspection Parade",
-    "category": "Parade Order",
-    "priority": "CRITICAL",
-    "date": "2026-08-05 06:00 AM",
-    "body": "All cadets report in Working Dress No. 2."
-  },
-  "timestamp": "2026-08-03T15:30:00.000Z",
-  "correlationId": "evt_91823"
+All messages broadcast by the server follow this JSON contract:
+
+```typescript
+export interface WebSocketEvent<T = any> {
+  event: string;
+  channel: string;
+  payload: T;
+  timestamp: string;
+  correlationId?: string;
 }
 ```
 
-### 2. `STATUS_UPDATED`
-```json
-{
-  "event": "STATUS_UPDATED",
-  "channel": "cadre:enrollments",
-  "payload": {
-    "id": "19JHR-SBU-2026-001",
-    "fullName": "Aman Kumar Sharma",
-    "status": "Enrolled",
-    "officerRemarks": "Medical fitness cleared."
-  },
-  "timestamp": "2026-08-03T15:30:05.000Z",
-  "correlationId": "evt_91824"
-}
-```
+---
+
+## 2. Event Catalog
+
+### 2.1. System & Presence Events
+
+#### `CONNECTED`
+- **Channel**: `system`
+- **Direction**: Server ➔ Client
+- **Description**: Fired upon connection establishment.
+- **Payload**:
+  ```json
+  {
+    "connectionId": "ws_1785829200_a1b2c",
+    "serverTime": "2026-08-04T04:27:00.000Z",
+    "message": "Connected to 19 JHR BN NCC Realtime Engine v3000",
+    "activeCadetsCount": 5
+  }
+  ```
+
+#### `PRESENCE_UPDATE`
+- **Channel**: `cadre:presence`
+- **Direction**: Server ➔ Client
+- **Description**: Broadcast when a user connects or disconnects.
+- **Payload**:
+  ```json
+  {
+    "activeCadetsCount": 5,
+    "serverUptimeSeconds": 1450
+  }
+  ```
+
+---
+
+### 2.2. Enrollment & Candidate Events
+
+#### `ENROLLMENT_SUBMITTED`
+- **Channel**: `cadre:enrollments`
+- **Direction**: Server ➔ All Subscribed Clients
+- **Trigger**: Fired when a cadet submits a new application (`POST /api/v1/enrollments`).
+- **Payload**: `CadetRecord` (Full candidate details object).
+
+#### `STATUS_UPDATED`
+- **Channel**: `cadre:enrollments`
+- **Direction**: Server ➔ All Subscribed Clients
+- **Trigger**: Fired when an ANO/Officer updates a candidate's status or remarks (`PATCH /api/v1/enrollments/status`).
+- **Payload**: `CadetRecord` (Updated candidate record).
+
+---
+
+### 2.3. Notification & Alert Events
+
+#### `NOTIFICATION_BROADCAST`
+- **Channel**: `cadre:notifications`
+- **Direction**: Server ➔ All Subscribed Clients
+- **Trigger**: Fired when an Officer broadcasts an urgent notice (`POST /api/v1/notifications`).
+- **Payload**: `OfficerNotification` (Notification item object).
+
+---
+
+## 3. Authorship
+
+- **Author & Architect**: **Ravi Ranjan Singh**
+- **Role**: Software Engineer • Software Architect • Full Stack Developer • AI SaaS Developer
