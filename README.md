@@ -266,9 +266,16 @@ The server serves static assets from `dist/` and runs the backend API on port `3
 ## 18. Additional Documentation Index
 
 - [`PROJECT_OVERVIEW.md`](PROJECT_OVERVIEW.md) — High-level business problem and solution overview.
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) — System architecture & subsystem specifications.
 - [`API_REFERENCE.md`](API_REFERENCE.md) — Detailed REST API specs and payloads.
 - [`DATA_FLOW.md`](DATA_FLOW.md) — Data flow and state lifecycle diagrams.
+- [`REALTIME_ARCHITECTURE.md`](REALTIME_ARCHITECTURE.md) — Real-time WebSocket gateway specs.
+- [`WEBSOCKET_EVENTS.md`](WEBSOCKET_EVENTS.md) — WebSocket event catalog & contracts.
+- [`INTEGRATION_GUIDE.md`](INTEGRATION_GUIDE.md) — Developer SDK & React hook usage guide.
 - [`SECURITY.md`](SECURITY.md) — Security policy and vulnerability disclosure procedures.
+- [`DEPLOYMENT.md`](DEPLOYMENT.md) — Production deployment, Docker & Cloud setup guide.
+- [`TESTING.md`](TESTING.md) — Quality assurance & testing specifications.
+- [`PER_FILE_DOCUMENTATION.md`](PER_FILE_DOCUMENTATION.md) — Per-file source module breakdown.
 - [`STACK_MODERNIZATION_REPORT.md`](STACK_MODERNIZATION_REPORT.md) — Technology stack audit & rewrite decision report.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — Code contribution guidelines.
 - [`LICENSE`](LICENSE) — Open source software license terms.
