@@ -55,6 +55,9 @@ The portal unifies cadet lifecycle management into a single web application:
 
 ## 5. Visual Interface Showcase & Image Briefing
 
+![19 JHR BN NCC Portal - Visual Interface Showcase](assets/ncc_portal_preview.jpg)
+*Figure 1: 19 Jharkhand Battalion NCC (Sarala Birla University) Enterprise Portal — High-performance dark military navy UI with real-time analytics, digital identity card engine, and 24/7 Subedar Major AI Assistant.*
+
 The platform implements a modern military design aesthetic featuring **Deep Military Navy (`#002147`)**, **Brass Gold accents (`#D4AF37`)**, **Cadet Emerald**, and high-contrast typography across all views. Below is a detailed walkthrough of the key user interfaces:
 
 ---
