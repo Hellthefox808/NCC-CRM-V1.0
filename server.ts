@@ -11,6 +11,18 @@ const PORT = 3000;
 
 app.use(express.json({ limit: "10mb" }));
 
+// Security Headers & Protection Middleware
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  if (process.env.NODE_ENV === "production") {
+    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  }
+  next();
+});
+
 // Enterprise Data Platform Types & Interfaces
 export interface CadetRecord {
   id: string;
@@ -67,179 +79,9 @@ export interface OfficerNotification {
   actionLabel?: string;
 }
 
-// Enterprise In-Memory Data Stores
-let enrollments: CadetRecord[] = [
-  {
-    id: "19JHR-SBU-2026-001",
-    enrollmentNo: "JHR/26/SD/19/204801",
-    applicationDate: "2026-07-15",
-    fullName: "Aman Kumar Sharma",
-    gender: "SD",
-    dob: "2005-04-12",
-    aadhaarNumber: "8472-1928-4012",
-    mobile: "9835123456",
-    email: "aman.sbu2025@gmail.com",
-    fatherName: "Rajesh Kumar Sharma",
-    motherName: "Sunita Sharma",
-    bloodGroup: "O+",
-    heightCm: 178,
-    weightKg: 68,
-    identificationMark: "Mole on right cheek",
-    sbuCourse: "B.Tech Computer Science",
-    sbuDepartment: "Faculty of Engineering & Tech",
-    sbuRollNo: "SBU25BTECH042",
-    sbuYear: "1st Year",
-    sbuSemester: "2nd Sem",
-    marksPercentage10th: 88.5,
-    marksPercentage12th: 86.0,
-    run1600mTime: "5 min 45 sec",
-    pushupsCount: 35,
-    hasJuniorCertificate: true,
-    juniorCertificateNo: "JHR/JD/22/1042",
-    sportsLevel: "District",
-    sportsDetails: "100m Athletics District Bronze medalist",
-    presentAddress: "Ranchi Campus Hostel, Namkum, Ranchi, Jharkhand",
-    permanentAddress: "H.No 45, Main Road, Hazaribagh, Jharkhand",
-    pinCode: "834010",
-    bankName: "State Bank of India",
-    accountNumber: "38920194821",
-    ifscCode: "SBIN0001234",
-    guardianName: "Rajesh Kumar Sharma",
-    guardianRelation: "Father",
-    guardianMobile: "9431188221",
-    status: "Enrolled",
-    officerRemarks: "Excellent physical fitness and previous JD experience. Appointed L/Cpl.",
-    selectionRank: 1
-  },
-  {
-    id: "19JHR-SBU-2026-002",
-    enrollmentNo: "JHR/26/SW/19/204802",
-    applicationDate: "2026-07-18",
-    fullName: "Priya Kumari Patel",
-    gender: "SW",
-    dob: "2006-01-20",
-    aadhaarNumber: "7321-9048-1122",
-    mobile: "9122334455",
-    email: "priya.patel@sbu.ac.in",
-    fatherName: "Suresh Patel",
-    motherName: "Anita Patel",
-    bloodGroup: "B+",
-    heightCm: 165,
-    weightKg: 54,
-    identificationMark: "Scar on left wrist",
-    sbuCourse: "BCA",
-    sbuDepartment: "Department of Computer Applications",
-    sbuRollNo: "SBU25BCA018",
-    sbuYear: "1st Year",
-    sbuSemester: "2nd Sem",
-    marksPercentage10th: 91.0,
-    marksPercentage12th: 89.2,
-    run1600mTime: "6 min 50 sec",
-    pushupsCount: 22,
-    hasJuniorCertificate: false,
-    sportsLevel: "State",
-    sportsDetails: "Badminton State Semi-Finalist",
-    presentAddress: "Kanke Road, Ranchi, Jharkhand",
-    permanentAddress: "Kanke Road, Ranchi, Jharkhand",
-    pinCode: "834008",
-    bankName: "Punjab National Bank",
-    accountNumber: "094810012001",
-    ifscCode: "PUNB0094800",
-    guardianName: "Suresh Patel",
-    guardianRelation: "Father",
-    guardianMobile: "9835012345",
-    status: "Selected",
-    officerRemarks: "High academic merit, clear medical test.",
-    selectionRank: 2
-  },
-  {
-    id: "19JHR-SBU-2026-003",
-    applicationDate: "2026-07-22",
-    fullName: "Rahul Singh Munda",
-    gender: "SD",
-    dob: "2005-09-15",
-    aadhaarNumber: "9102-3344-5566",
-    mobile: "7004123987",
-    email: "rahul.munda@gmail.com",
-    fatherName: "Birsa Munda",
-    motherName: "Parwati Devi",
-    bloodGroup: "A+",
-    heightCm: 175,
-    weightKg: 65,
-    identificationMark: "Mole on neck",
-    sbuCourse: "BBA",
-    sbuDepartment: "Faculty of Management",
-    sbuRollNo: "SBU25BBA102",
-    sbuYear: "1st Year",
-    sbuSemester: "1st Sem",
-    marksPercentage10th: 82.0,
-    marksPercentage12th: 84.0,
-    run1600mTime: "5 min 30 sec",
-    pushupsCount: 40,
-    hasJuniorCertificate: false,
-    sportsLevel: "National",
-    sportsDetails: "Cross Country Athletics National Cadet Level",
-    presentAddress: "Tatisilwai, Ranchi, Jharkhand",
-    permanentAddress: "Khunti, Jharkhand",
-    pinCode: "835103",
-    bankName: "Bank of India",
-    accountNumber: "4820101000214",
-    ifscCode: "BKID0004820",
-    guardianName: "Birsa Munda",
-    guardianRelation: "Father",
-    guardianMobile: "8210492810",
-    status: "Medical Cleared",
-    officerRemarks: "Top runner timing 5:30. Awaiting final enrolment list announcement.",
-    selectionRank: 3
-  }
-];
-
-let officerNotifications: OfficerNotification[] = [
-  {
-    id: "N1",
-    title: "MANDATORY PARADE: Annual Inspection & Drill Review",
-    category: "Parade Order",
-    priority: "CRITICAL",
-    date: "2026-08-05 06:00 AM",
-    body: "All enrolled SD/SW Cadets must report to SBU Ground in Full Ceremonial Khaki Uniform with polished boots & beret. Battalion Commanding Officer inspection.",
-    read: false,
-    actionType: "schedule",
-    actionLabel: "View Drill Schedule"
-  },
-  {
-    id: "N2",
-    title: "PREPARATION QUIZ: NCC 'B' & 'C' Mock Test Active",
-    category: "Exam Alert",
-    priority: "HIGH",
-    date: "2026-08-04 10:00 AM",
-    body: "Interactive Cadet Practice Quiz on Drill, Map Reading, Armament & Military History is live in Training Portal. Aim for Alpha grade in 'B'/'C' Cert exam.",
-    read: false,
-    actionType: "quiz",
-    actionLabel: "Start Practice Quiz"
-  },
-  {
-    id: "N3",
-    title: "CAMP SELECTION: Combined Annual Training Camp (CATC-IX)",
-    category: "Camp Broadcast",
-    priority: "HIGH",
-    date: "2026-08-02 02:00 PM",
-    body: "Selection for CATC-IX Camp at Namkum Military Station is open. Interested cadets submit Camp Fitness Consent Form to SBU NCC Company Office.",
-    read: true,
-    actionType: "upload",
-    actionLabel: "Submit Medical Form"
-  },
-  {
-    id: "N4",
-    title: "SYLLABUS UPDATE: Revised Handbooks & Weapon Manuals",
-    category: "Urgent Notice",
-    priority: "NORMAL",
-    date: "2026-08-01 11:30 AM",
-    body: "Updated PDF manuals for .22 Rifle Mark IV, LMG, Compass & Field Craft are uploaded in the Study Materials section for 2026-27 batch.",
-    read: true,
-    actionType: "syllabus",
-    actionLabel: "Download Manuals"
-  }
-];
+// Enterprise In-Memory Data Stores (Clean Production Initial State)
+let enrollments: CadetRecord[] = [];
+let officerNotifications: OfficerNotification[] = [];
 
 // Server Caching Store with TTL
 class ServerCache {
