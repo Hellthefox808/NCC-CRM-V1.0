@@ -53,14 +53,138 @@ The portal unifies cadet lifecycle management into a single web application:
 
 ---
 
-## 5. UI & Feature Screenshots
+## 5. Visual Interface Showcase & Image Briefing
 
-The application features a modern dark military navy UI (`#002147`), brass gold accents (`#D4AF37`), high-contrast typography, and responsive layouts:
-- **Hero & Public Portal**: Interactive banner, quick status tracker, and battalion overview.
-- **Enrollment Wizard**: Structured 4-step wizard with real-time field validation.
-- **Cadet Dashboard**: Attendance progress bars, leave manager, and printable ID card preview.
-- **Officer Dashboard**: Filterable candidate table, approval modal, and broadcast composer.
-- **Subedar Major AI Assistant**: Floating widget with active pulse glow and structured responses.
+The platform implements a modern military design aesthetic featuring **Deep Military Navy (`#002147`)**, **Brass Gold accents (`#D4AF37`)**, **Cadet Emerald**, and high-contrast typography across all views. Below is a detailed walkthrough of the key user interfaces:
+
+---
+
+### 🎨 5.1. Design Tokens & Color Palette
+
+```
+  Primary Dark Navy   │ #002147 │ Main Header, Cards, Modal Backgrounds
+  Ceremonial Brass    │ #D4AF37 │ Badges, Borders, Highlights, Active States
+  Cadet Emerald       │ #10B981 │ Success Statuses, Verified Badges, Real-time Pulse
+  Shield Crimson      │ #EF4444 │ Urgent Alerts, Critical Notices, Rejection Tags
+  Slate Background    │ #F8FAFC │ High-contrast Crisp Surface Container
+```
+
+---
+
+### 🛡️ 5.2. Public Portal & Hero Section (`HeroSection.tsx`)
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  🎖️ 19 JHR BN NCC • SARALA BIRLA UNIVERSITY COMPANY PORTAL            │
+│  "Unity and Discipline" — Official Senior Division (SD) & Wing (SW)    │
+│                                                                        │
+│  [ 🚀 Apply for Enrollment ]   [ 🔍 Track Status ]   [ 📜 Notices ]    │
+│                                                                        │
+│  ┌─────────────────────────┐ ┌────────────────────────┐ ┌────────────┐  │
+│  │ 150+ Enrolled Cadets    │ │ 98.4% Parade Accuracy  │ │ 100% DBT   │  │
+│  └─────────────────────────┘ └────────────────────────┘ └────────────┘  │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Briefing**: Displays the primary battalion banner, national motto ("Unity and Discipline"), real-time active cadet presence counter, quick navigation triggers, and statistical highlights.
+- **Interactive Elements**: Instant status tracking button opening the `StatusTrackerModal`, direct smooth-scroll anchor to the `EnrollmentForm`, and real-time announcement ticker.
+
+---
+
+### 📝 5.3. Cadet Enrollment Wizard (`EnrollmentForm.tsx`)
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  CADET ENROLLMENT REGISTRATION FORM (2026-27 Batch)                    │
+│                                                                        │
+│  Step 1: Personal Data  ──►  Step 2: Academic  ──►  Step 3: Physical   │
+│  (Name, Aadhaar, DOB)        (SBU Course, Roll)     (1.6KM Run, Pushups)│
+│                                                                        │
+│  Step 4: Bank DBT Passbook Details & Parent Consent                    │
+│  [ Bank Name ] [ Account Number ] [ IFSC Code ] [ Guardian Mobile ]    │
+│                                                                        │
+│  [ 🔒 Submit Official Application to 19 JHR BN ]                       │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Briefing**: A 4-stage wizard collecting candidate personal info, academic credentials, physical test scores (1600m run timings, pushup counts), and bank DBT details for camp allowances.
+- **Validation**: Client-side validation for Aadhaar formatting (`XXXX-XXXX-XXXX`), mobile numbers, IFSC codes, and SBU roll numbers before submission.
+
+---
+
+### 💳 5.4. Printable Cadet Digital Identity Card (`PrintableEnrollmentForm.tsx`)
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│ ┌────────────────────────────────────────────────────────────────────┐ │
+│ │ 🇮🇳 19 JHARKHAND BATTALION NCC • RANCHI                          │ │
+│ │ Sarala Birla University (SBU) Cadet Identity Card                  │ │
+│ │                                                                    │ │
+│ │ [ Cadet Photo ]   Name: Aman Kumar Sharma                          │ │
+│ │                   Regimental No: JHR/26/SD/19/204801              │ │
+│ │                   Rank: Lance Corporal (L/Cpl)                     │ │
+│ │                   Wing: Senior Division (SD)                       │ │
+│ │                   Blood Group: O+ | Course: B.Tech CSE             │ │
+│ │                   Emergency Contact: +91 9835123456                │ │
+│ │                                                                    │ │
+│ │                   [ QR Code Verification Token ]                   │ │
+│ └────────────────────────────────────────────────────────────────────┘ │
+│                                                                        │
+│ [ 🖨️ Print Identity Card ]              [ 📄 Save as PDF ]            │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Briefing**: Rendered dynamically using `html2canvas` and `jspdf`. Produces a high-resolution printable digital identity card complete with official unit crests, cadet barcode/QR validation, and battalion signature blocks.
+
+---
+
+### 👑 5.5. Officer Command & Admin Dashboard (`AdminDashboard.tsx`)
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  OFFICER COMMAND CENTER • 19 JHR BN NCC ADMINISTRATION                │
+│                                                                        │
+│  [ 📊 Overview ] [ 📋 Nominal Roll ] [ 📢 Broadcast ] [ 📊 Export ]    │
+│                                                                        │
+│  Search: [ Enter Name / Aadhaar / Roll No... ]   Filter: [ Selected ▼ ]│
+│                                                                        │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │ Reg ID        Cadet Name        Course      Status      Action   │  │
+│  ├──────────────────────────────────────────────────────────────────┤  │
+│  │ 19JHR-2026-01 Aman K. Sharma    B.Tech CSE  Enrolled    [ Edit ] │  │
+│  │ 19JHR-2026-02 Priya K. Patel    BCA         Selected    [ Edit ] │  │
+│  │ 19JHR-2026-03 Rahul S. Munda    BBA         Medical     [ Edit ] │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                                                                        │
+│  [ 📊 Download Full Nominal Roll Excel (.xlsx) ]                       │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Briefing**: Comprehensive management dashboard for Associate NCC Officers (ANOs) to review candidates, update statuses, assign regimental numbers, record parade attendance, and generate multi-sheet Excel files (`/api/v1/export-excel`).
+
+---
+
+### 🤖 5.6. Subedar Major AI Cadre Assistant (`AiCadreAssistant.tsx`)
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  🤖 SUBEDAR MAJOR AI ASSISTANT • 24/7 CADRE HELPDESK                  │
+│  19 Jharkhand Battalion NCC (Ranchi HQ)                                │
+│                                                                        │
+│  Cadet: "What are the rules for 'B' Certificate exam?"                 │
+│                                                                        │
+│  Subedar Major AI: "Jai Hind Cadet! To be eligible for 'B' Cert:       │
+│  1. Minimum 75% parade attendance in 1st & 2nd year.                   │
+│  2. Must have attended at least 1 Combined Annual Training Camp (CATC).│
+│  3. Written exam covers Drill, Weapon Training, Map Reading & FC/BC." │
+│                                                                        │
+│  Type your query...                           [ 📤 Send Message ]      │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Briefing**: Floating dialog powered by Google Gemini AI (`gemini-3.6-flash` / `gemini-3.1-flash-lite`) providing 24/7 guidance on military drill, .22 Rifle specifications, camp preparation, and certificate exam syllabus in English and Hindi.
+
+---
 
 ---
 
