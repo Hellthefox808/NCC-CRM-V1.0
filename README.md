@@ -277,6 +277,7 @@ The server serves static assets from `dist/` and runs the backend API on port `3
 - [`TESTING.md`](TESTING.md) — Quality assurance & testing specifications.
 - [`PER_FILE_DOCUMENTATION.md`](PER_FILE_DOCUMENTATION.md) — Per-file source module breakdown.
 - [`STACK_MODERNIZATION_REPORT.md`](STACK_MODERNIZATION_REPORT.md) — Technology stack audit & rewrite decision report.
+- [`GITHUB_SANITIZATION_REPORT.md`](GITHUB_SANITIZATION_REPORT.md) — Pre-push repository audit & secret scan report.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — Code contribution guidelines.
 - [`LICENSE`](LICENSE) — Open source software license terms.
 
