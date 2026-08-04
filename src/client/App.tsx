@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
-import { EnrollmentForm } from "./components/EnrollmentForm";
+import { EnrollmentForm } from "./pages/Enrollment";
 import { PrintableEnrollmentForm } from "./components/PrintableEnrollmentForm";
 import { StatusTrackerModal } from "./components/StatusTrackerModal";
 import { CadetDashboard } from "./components/CadetDashboard";
@@ -49,7 +49,7 @@ export default function App() {
               <Route path="/" element={<Home openStatusModal={() => setStatusModalOpen(true)} />} />
               <Route path="/enroll" element={
                 <EnrollmentForm 
-                  onSuccess={(record) => setPrintableRecord(record)} 
+                  onSuccess={(record: CadetRecord) => setPrintableRecord(record)} 
                   onCancel={() => window.history.back()} 
                 />
               } />

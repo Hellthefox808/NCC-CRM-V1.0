@@ -1,0 +1,20 @@
+{
+	"version": 1,
+	"cursors": {
+		"C:\\Users\\ravir\\AppData\\Roaming\\Code\\User\\workspaceStorage\\b7ba8f67409688ab0a35d127b9195c11\\chatSessions\\129c5260-8fc6-4d86-b2db-d678b08f3257.jsonl": {
+			"transcriptPath": "C:\\Users\\ravir\\AppData\\Roaming\\Code\\User\\workspaceStorage\\b7ba8f67409688ab0a35d127b9195c11\\chatSessions\\129c5260-8fc6-4d86-b2db-d678b08f3257.jsonl",
+			"lineNumber": 0,
+			"updatedAt": "2026-08-04T06:04:51.117Z"
+		},
+		"C:\\Users\\ravir\\.gemini\\antigravity\\brain\\03c7268c-e86b-44fc-806d-3fec7290ef9c\\.system_generated\\logs\\transcript_full.jsonl": {
+			"transcriptPath": "C:\\Users\\ravir\\.gemini\\antigravity\\brain\\03c7268c-e86b-44fc-806d-3fec7290ef9c\\.system_generated\\logs\\transcript_full.jsonl",
+			"lineNumber": 274,
+			"updatedAt": "2026-08-03T23:13:07Z"
+		},
+		"C:\\Users\\ravir\\.gemini\\antigravity\\brain\\bab71946-3fef-46fe-a722-cce67063ac5d\\.system_generated\\logs\\transcript_full.jsonl": {
+			"transcriptPath": "C:\\Users\\ravir\\.gemini\\antigravity\\brain\\bab71946-3fef-46fe-a722-cce67063ac5d\\.system_generated\\logs\\transcript_full.jsonl",
+			"lineNumber": 634,
+			"updatedAt": "2026-08-04T09:05:10Z"
+		}
+	}
+}
