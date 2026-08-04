@@ -78,3 +78,53 @@ export interface CampScheduleItem {
   vacancies: number;
   image?: string;
 }
+
+export interface AttendanceSummary {
+  paradesAttended: number;
+  totalParades: number;
+  attendancePercent: number;
+  campEligibilityStatus: string;
+}
+
+export interface CadetProfile {
+  fullName: string;
+  rank: string;
+  regNo: string;
+  sbuRollNo: string;
+  sbuCourse: string;
+  sbuYear: string;
+  gender: string;
+  unit: string;
+  coy: string;
+  groupHQ: string;
+  directorate: string;
+  joiningYear: string;
+  batch: string;
+  bloodGroup: string;
+  dob: string;
+  mobile: string;
+  email: string;
+  fatherName: string;
+  motherName: string;
+  parentMobile: string;
+  parentOccupation: string;
+  address: string;
+  emergencyContactName: string;
+  emergencyContactPhone: string;
+  heightCm: string;
+  weightKg: string;
+  bmi: string;
+  chestCm: string;
+  fitnessStatus: string;
+  medicalRemarks: string;
+  beretSize: string;
+  shirtSize: string;
+  trouserWaist: string;
+  bootSize: string;
+  hackleColor: string;
+  photoUrl?: string;
+  aadhaarStatus?: string;
+  bankPassbookStatus?: string;
+  medicalFitnessCertStatus?: string;
+  indemnityBondStatus?: string;
+}

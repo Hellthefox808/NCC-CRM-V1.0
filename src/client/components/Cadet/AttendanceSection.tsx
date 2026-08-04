@@ -1,7 +1,7 @@
 import React from "react";
 import confetti from "canvas-confetti";
 import { Download } from "lucide-react";
-import { AttendanceSummary } from "../../../types";
+import { AttendanceSummary } from "../../types";
 
 interface AttendanceLogItem {
   date: string;

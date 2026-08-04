@@ -3,7 +3,7 @@ import {
   FileText, QrCode, UserCheck, Award, ShieldCheck, CheckCircle2, 
   Calendar, MapPin, User, Shield, Info, FileCheck, Bell, BookOpen, Check
 } from "lucide-react";
-import { CadetRecord } from "../../../types";
+import { CadetRecord } from "../../types";
 
 interface CadetDashboardOverviewProps {
   cadetProfile: any;

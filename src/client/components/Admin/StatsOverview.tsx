@@ -8,7 +8,7 @@ import {
   UserPlus,
   ChevronRight
 } from "lucide-react";
-import { CadetRecord } from "../../../types";
+import { CadetRecord } from "../../types";
 
 interface StatsOverviewProps {
   enrollments: CadetRecord[];

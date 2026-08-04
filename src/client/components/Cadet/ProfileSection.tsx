@@ -1,6 +1,6 @@
 import React from "react";
 import { Edit3, QrCode, User, Shield, Lock, Building, Heart, ShieldCheck, FileCheck } from "lucide-react";
-import { CadetProfile } from "../../../types";
+import { CadetProfile } from "../../types";
 
 interface ProfileSectionProps {
   cadetProfile: CadetProfile;
