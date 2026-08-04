@@ -63,8 +63,73 @@ The **19 JHR BN NCC • Sarala Birla University Company Portal** is designed as 
 
 ---
 
-## 4. Authorship & Maintainer
+## 4. Full-Stack Enterprise Infrastructure Architecture
 
-- **Author**: **Ravi Ranjan Singh**
+```
+Internet
+    │
+HTTPS (TLS)
+    │
+Nginx / Traefik
+    │
+Load Balancer
+    │
+Docker Containers
+├── Frontend
+├── Backend API
+├── Worker
+├── Redis
+└── Database
+    │
+Monitoring
+├── Prometheus
+├── Grafana
+├── Sentry
+└── Loki
+    │
+Backups
+Cloud Storage
+```
+
+### Mermaid Infrastructure Flow Diagram
+
+```mermaid
+graph TD
+    A[Internet Client Request] --> B[HTTPS TLS Encryption]
+    B --> C[Nginx / Traefik Reverse Proxy]
+    C --> D[Load Balancer]
+    D --> E[Docker Containers Stack]
+    
+    subgraph E [Docker Containers Cluster]
+        E1[Frontend SPA Container]
+        E2[Backend Express API Container]
+        E3[Background Worker Container]
+        E4[Redis In-Memory Cache Container]
+        E5[PostgreSQL / Database Container]
+    end
+    
+    E --> F[Telemetry & Observability Stack]
+    
+    subgraph F [Monitoring & Logging Stack]
+        F1[Prometheus Metrics Exporter]
+        F2[Grafana Visualization Dashboard]
+        F3[Sentry Real-time Error Tracking]
+        F4[Loki Centralized Log Aggregator]
+    end
+    
+    E5 --> G[Automated Cloud Storage Backups]
+
+    style A fill:#002147,stroke:#fbbf24,stroke-width:2px,color:#fff
+    style C fill:#002147,stroke:#fbbf24,stroke-width:2px,color:#fff
+    style E fill:#001733,stroke:#fbbf24,stroke-width:2px,color:#fff
+    style F fill:#001733,stroke:#fbbf24,stroke-width:2px,color:#fff
+    style G fill:#10b981,stroke:#fbbf24,stroke-width:2px,color:#fff
+```
+
+---
+
+## 5. Authorship & Maintainer
+
+- **Author & Architect**: **Ravi Ranjan Singh**
 - **Role**: Software Engineer • Software Architect • Full Stack Developer • AI SaaS Developer
 - **Repository Owner**: **Ravi Ranjan Singh**
