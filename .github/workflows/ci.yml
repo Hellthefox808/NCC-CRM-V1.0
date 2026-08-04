@@ -40,22 +40,25 @@ jobs:
           npm audit --audit-level=high || true
           echo "Security scan completed with 0 critical vulnerabilities."
 
-      # 6. Production Build (Vite + esbuild)
+      # 6. Production Build (Frontend Vite + Backend esbuild)
       - name: 🏗️ Production Build Execution
-        run: npm run build
+        run: |
+          cd backend && npx prisma generate
+          cd ..
+          npm run build
 
       # 7. Docker Image Build & Validation
       - name: 🐳 Docker Image Build & Verification
         run: |
-          echo "Building Docker container image: ncc-sbu-portal:v3..."
-          docker build -t ncc-sbu-portal:v3 . || true
-          echo "Docker image built and verified."
+          echo "Building Docker container image: ncc-sbu-portal:v4..."
+          docker build -t ncc-sbu-portal:v4 .
+          echo "Docker image built and verified successfully."
 
       # 8. Container Registry & Artifact Inspection
       - name: 📦 Artifact Inspection & Registry Staging
         run: |
-          test -f dist/index.html
-          test -f dist/server.cjs
+          test -f frontend/dist/index.html
+          test -f backend/dist/server.cjs
           echo "Production build artifacts verified successfully."
 
       # 9. Deployment Verification
