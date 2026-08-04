@@ -23,7 +23,8 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onBack }) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await EnterpriseDataPlatform.login(email, password);
+      const userType = email.includes("admin") || email.includes("ano") ? "admin" : "cadet";
+      const res = await EnterpriseDataPlatform.login({ userType, email, password });
       toast.success("Login Successful");
       onLoginSuccess(res.data.userType, res.data.user);
       navigate(res.data.userType === "admin" ? "/admin" : "/cadet");

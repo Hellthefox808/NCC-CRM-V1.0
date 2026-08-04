@@ -16,6 +16,7 @@ model User {
   updatedAt      DateTime           @updatedAt
   cadetProfile   CadetProfile?
   disciplineLogs DisciplineRecord[]
+  sessions       Session[]
 }
 
 enum Role {
@@ -149,4 +150,13 @@ enum PriorityLevel {
   CRITICAL
   HIGH
   NORMAL
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
 }

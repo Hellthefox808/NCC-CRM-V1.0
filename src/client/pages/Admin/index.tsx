@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import * as XLSX from "xlsx";
-import { NotificationsFeed } from "./NotificationsFeed";
-import { EnterpriseDataPlatform } from "../services/dataPlatform";
-import { useRealtimeData } from "../hooks/useRealtimeData";
+import { NotificationsFeed } from "../../components/NotificationsFeed";
+import { StatsOverview } from "../../components/Admin/StatsOverview";
+import { RecentRegistrations } from "../../components/Admin/RecentRegistrations";
+import { NotificationBroadcaster } from "../../components/Admin/NotificationBroadcaster";
+import { EnterpriseDataPlatform } from "../../services/dataPlatform";
+import { useRealtimeData } from "../../hooks/useRealtimeData";
 import { 
   AlertCircle, 
   AlertTriangle,
@@ -50,7 +53,7 @@ import {
   X,
   Upload
 } from "lucide-react";
-import { CadetRecord } from "../types";
+import { CadetRecord } from "../../types";
 
 interface AdminDashboardProps {
   onOpenPrintableSlip: (record: CadetRecord) => void;
@@ -646,191 +649,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {/* TAB 1: OVERVIEW DASHBOARD */}
           {activeTab === "dashboard" && (
             <div className="space-y-6">
+              <StatsOverview enrollments={enrollments} setActiveTab={setActiveTab} />
               
-              {/* Top Banner */}
-              <div className="bg-gradient-to-r from-[#002147] via-[#001838] to-[#001026] text-white rounded-2xl p-6 border border-yellow-500/40 shadow-xl relative overflow-hidden">
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="space-y-1">
-                    <div className="inline-flex items-center space-x-2 bg-yellow-400/20 text-yellow-300 border border-yellow-400/40 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                      <ShieldCheck className="w-3.5 h-3.5 text-yellow-400" />
-                      <span>19 Jharkhand Battalion NCC • SBU Coy</span>
-                    </div>
-                    <h2 className="text-2xl sm:text-3xl font-black text-white">
-                      Officer Command & Cadre Overview
-                    </h2>
-                    <p className="text-xs sm:text-sm text-slate-300">
-                      Real-time Nominal Roll, Parade Attendance, DBT Allowances & Discipline Control.
-                    </p>
-                  </div>
-
-                  {/* Quick Action Grid */}
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      onClick={() => setActiveTab("broadcast")}
-                      className="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs flex items-center space-x-1.5 shadow-md cursor-pointer"
-                    >
-                      <Megaphone className="w-4 h-4 text-slate-950" />
-                      <span>New Broadcast</span>
-                    </button>
-                    <button
-                      onClick={() => setActiveTab("attendance")}
-                      className="bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2.5 rounded-xl text-xs border border-white/20 flex items-center space-x-1.5 cursor-pointer"
-                    >
-                      <UserCheck className="w-4 h-4 text-yellow-400" />
-                      <span>Take Attendance</span>
-                    </button>
-                    <button
-                      onClick={() => setActiveTab("cadets")}
-                      className="bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2.5 rounded-xl text-xs border border-white/20 flex items-center space-x-1.5 cursor-pointer"
-                    >
-                      <UserPlus className="w-4 h-4 text-yellow-400" />
-                      <span>View All Cadets</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* KPI Cards Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2 hover:border-yellow-400 transition-all">
-                  <div className="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider">
-                    <span>Total Applications</span>
-                    <Users className="w-5 h-5 text-[#002147]" />
-                  </div>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-3xl font-black text-slate-900">{totalApps}</span>
-                    <span className="text-xs text-emerald-600 font-extrabold">Live SBU Database</span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 font-medium">SD (Male): {sdCount} • SW (Female): {swCount}</p>
-                </div>
-
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2 hover:border-yellow-400 transition-all">
-                  <div className="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider">
-                    <span>Enrolled Cadets</span>
-                    <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                  </div>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-3xl font-black text-emerald-700">{enrolledCount}</span>
-                    <span className="text-xs text-slate-500 font-semibold">Active Ranks</span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 font-medium">Allocated Regimental Numbers</p>
-                </div>
-
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2 hover:border-yellow-400 transition-all">
-                  <div className="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider">
-                    <span>Present Today</span>
-                    <UserCheck className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-3xl font-black text-slate-900">92%</span>
-                    <span className="text-xs text-blue-600 font-extrabold">Parade Ground</span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 font-medium">46 Cadets Attended Morning Drill</p>
-                </div>
-
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2 hover:border-yellow-400 transition-all">
-                  <div className="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider">
-                    <span>Pending Processing</span>
-                    <AlertCircle className="w-5 h-5 text-amber-500" />
-                  </div>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-3xl font-black text-amber-600">{pendingCount}</span>
-                    <span className="text-xs text-amber-600 font-extrabold">Requires Review</span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 font-medium">Physical Test & Document Verification</p>
-                </div>
-
-              </div>
-
-              {/* Attendance & Recent Registrations Section */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                {/* Left 2 cols: Recent Registrations CRM Preview */}
-                <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-xs p-6 space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <div>
-                      <h3 className="font-black text-slate-900 text-lg">Recent Cadet Registrations</h3>
-                      <p className="text-xs text-slate-500">Applications submitted for 19 JHR BN NCC SBU Coy</p>
-                    </div>
-                    <button
-                      onClick={() => setActiveTab("cadets")}
-                      className="text-xs font-black text-[#002147] hover:text-blue-700 flex items-center space-x-1 cursor-pointer"
-                    >
-                      <span>View All</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                      <thead className="bg-slate-50 text-slate-700 font-extrabold uppercase border-b border-slate-200">
-                        <tr>
-                          <th className="py-3 px-3">App ID</th>
-                          <th className="py-3 px-3">Cadet Name</th>
-                          <th className="py-3 px-3">Wing</th>
-                          <th className="py-3 px-3">Course / Roll</th>
-                          <th className="py-3 px-3">Status</th>
-                          <th className="py-3 px-3 text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100">
-                        {enrollments.slice(0, 5).map((e) => (
-                          <tr key={e.id} className="hover:bg-slate-50/80 transition-colors">
-                            <td className="py-3 px-3 font-mono text-slate-600 font-bold">{e.id}</td>
-                            <td className="py-3 px-3">
-                              <p className="font-extrabold text-slate-900">{e.fullName}</p>
-                              <p className="text-[10px] text-slate-500">{e.mobile}</p>
-                            </td>
-                            <td className="py-3 px-3">
-                              <span className={`px-2 py-0.5 rounded text-[10px] font-black ${
-                                e.gender === "SD" ? "bg-blue-100 text-blue-900" : "bg-pink-100 text-pink-900"
-                              }`}>
-                                {e.gender}
-                              </span>
-                            </td>
-                            <td className="py-3 px-3">
-                              <p className="font-bold text-slate-800">{e.sbuCourse}</p>
-                              <p className="text-[10px] text-slate-500">{e.sbuRollNo}</p>
-                            </td>
-                            <td className="py-3 px-3">
-                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                                e.status === "Enrolled" || e.status === "Selected"
-                                  ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
-                                  : "bg-amber-100 text-amber-800 border border-amber-300"
-                              }`}>
-                                {e.status}
-                              </span>
-                            </td>
-                            <td className="py-3 px-3 text-right space-x-1">
-                              <button
-                                onClick={() => setViewingProfileModal(e)}
-                                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
-                                title="View Full Profile"
-                              >
-                                <Eye className="w-3.5 h-3.5" />
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setSelectedRecord(e);
-                                  setEditingStatus(e.status);
-                                  setEditingRemarks(e.officerRemarks || "");
-                                  setEditingRegNo(e.enrollmentNo || "");
-                                }}
-                                className="p-1.5 rounded-lg bg-[#002147] hover:bg-[#001838] text-yellow-400 cursor-pointer"
-                                title="Update Status"
-                              >
-                                <Edit3 className="w-3.5 h-3.5" />
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Right 1 col: Upcoming Classes & Broadcast Quick Widget */}
                 <div className="space-y-6">
                   
                   {/* Scheduled Classes */}

@@ -12,9 +12,34 @@ services:
       - NODE_ENV=production
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - APP_URL=https://ncc.sbu.ac.in
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/ncc_db?schema=public
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/v1/health"]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 10s
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    container_name: ncc-db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ncc_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ncc_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ncc_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  ncc_db_data:
