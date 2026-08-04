@@ -18,7 +18,29 @@ The **19 JHR BN NCC • Sarala Birla University Company Portal** follows securit
 
 ---
 
-## 2. Reporting a Vulnerability
+## 2. Enterprise Production Operations & Security Matrix
+
+| Feature | Purpose | Portal Implementation |
+| :--- | :--- | :--- |
+| **HTTPS + Auto Renewal** | Encrypts traffic and automatically renews TLS certificates | Nginx / Traefik Reverse Proxy + Let's Encrypt (Certbot ACME) |
+| **Automatic Restart Policies** | Restarts containers after crashes or server reboot | `restart: always` in `docker-compose.yml` & PM2 process manager |
+| **Rolling / Zero-Downtime Deployments** | Deploy new versions without interrupting active cadets/officers | Blue/Green & Docker Compose rolling container swaps |
+| **Database Migrations** | Keeps database schema synchronized across versions | Prisma Migrate (`prisma/schema.prisma` & `npx prisma migrate dev`) |
+| **Health & Readiness Endpoints** | Allows orchestrators and load balancers to verify system health | `GET /api/v1/health` & `/api/v1/ready` endpoints |
+| **Structured Logging** | Produces machine-readable logs for analysis and audit tracing | JSON structured logging with request correlation IDs (`X-Request-ID`) |
+| **Metrics Collection** | Measures CPU, memory, latency, and request counts | `GET /api/v1/metrics` Prometheus-compatible metric exporter |
+| **Error Tracking** | Captures exceptions, stack traces, and performance bottlenecks | Sentry / Express error handling middleware |
+| **Backup & Restore** | Enables disaster recovery after hardware or data failures | Automated snapshot backups to Cloud Storage with tested restore scripts |
+| **Rate Limiting** | Mitigates abuse, brute force, and DoS attempts | Express Rate Limit & Token Bucket IP rate limiter (120 req/min) |
+| **Firewall** | Restricts exposed ports and unauthorized network access | Cloud Security Groups & UFW restricting open ports to 80/443 |
+| **CORS Configuration** | Controls which origins may access backend API endpoints | Explicit allowlist (`APP_URL=https://ncc.sbu.ac.in`) |
+| **Security Headers** | Protects against browser-based attacks (XSS, Clickjacking) | Helmet middleware enforcing HSTS, CSP, X-Frame-Options DENY |
+| **Dependency Updates** | Keeps dependencies current with automated security patches | Dependabot & GitHub Advanced Security vulnerability alerts |
+| **Vulnerability Scanning** | Detects known vulnerabilities in code and containers | Trivy, Docker Scan, npm audit in CI/CD pipeline |
+
+---
+
+## 3. Reporting a Vulnerability
 
 If you discover a potential security vulnerability, please do **NOT** open a public GitHub issue.
 
@@ -31,8 +53,8 @@ Reports will be acknowledged within 24 hours and addressed promptly.
 
 ---
 
-## 3. License & Authorship
+## 4. License & Authorship
 
-- **Author**: **Ravi Ranjan Singh**
+- **Author & Architect**: **Ravi Ranjan Singh**
 - **Role**: Software Engineer • Software Architect • Full Stack Developer • AI SaaS Developer
 - **Repository Owner**: **Ravi Ranjan Singh**
