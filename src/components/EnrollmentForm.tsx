@@ -189,88 +189,92 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
   };
 
   return (
-    <section className="py-10 bg-white border-b border-slate-200" id="enrollment-section">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <section className="py-12 bg-gradient-to-b from-slate-950 via-[#001733] to-slate-950 min-h-screen relative overflow-hidden text-slate-900" id="enrollment-section">
+      {/* Ambient Glass Glow Blobs */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none z-0" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none z-0" />
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 relative z-10">
         
         {/* Title Header */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center space-x-2 bg-slate-100 border border-slate-200 rounded-full px-3 py-1 text-xs font-bold text-[#002147]">
-            <FileCheck2 className="w-3.5 h-3.5 text-[#002147]" />
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md border border-amber-400/50 rounded-full px-4 py-1.5 text-xs font-bold text-amber-300 shadow-md">
+            <FileCheck2 className="w-4 h-4 text-amber-400" />
             <span>Form 1 (Rules 7 & 11) • NCC Act 1948</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            Application Form for NCC Senior Division / Senior Wing Enrollment
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight drop-shadow-md">
+            Cadet Enrollment Application (2026-27 Session)
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600">
-            19 Jharkhand Battalion NCC, Ranchi • Sarala Birla University Company
+          <p className="text-xs sm:text-sm text-slate-300 font-semibold max-w-xl mx-auto">
+            19 Jharkhand Battalion NCC • Sarala Birla University Company, Ranchi • Bihar & Jharkhand Directorate
           </p>
         </div>
 
         {/* Successful Submission View */}
         {submittedRecord ? (
-          <div className="bg-emerald-50 border-2 border-emerald-500 rounded-xl p-6 sm:p-8 space-y-6 text-left shadow-md">
-            <div className="flex items-center space-x-3 border-b border-emerald-200 pb-4">
-              <div className="w-12 h-12 rounded-full bg-[#002147] text-yellow-400 flex items-center justify-center font-bold">
-                <CheckCircle2 className="w-7 h-7 text-yellow-400" />
+          <div className="bg-emerald-50 border-2 border-emerald-500 rounded-3xl p-6 sm:p-10 space-y-6 text-left shadow-2xl backdrop-blur-xl">
+            <div className="flex items-center space-x-4 border-b border-emerald-200 pb-5">
+              <div className="w-14 h-14 rounded-full bg-[#002147] text-amber-400 flex items-center justify-center font-bold shrink-0 shadow-md border-2 border-amber-400">
+                <CheckCircle2 className="w-8 h-8 text-amber-400" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-[#002147]">
+                <h3 className="text-xl sm:text-2xl font-black text-[#002147]">
                   Enrollment Application Submitted Successfully!
                 </h3>
-                <p className="text-xs text-emerald-800 font-medium mt-0.5">
+                <p className="text-xs text-emerald-800 font-bold mt-0.5">
                   Registered with 19 Jharkhand Battalion NCC, Ranchi
                 </p>
               </div>
             </div>
 
             {/* Application Registration Ticket */}
-            <div className="bg-white border border-emerald-300 rounded-xl p-5 space-y-4 shadow-2xs">
+            <div className="bg-white border border-emerald-300 rounded-2xl p-6 space-y-4 shadow-sm">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div>
-                  <p className="text-slate-500 font-semibold">Application Tracking ID:</p>
-                  <p className="text-lg font-black text-[#002147] tracking-wide font-mono mt-0.5">
+                  <p className="text-slate-500 font-bold uppercase tracking-wider">Application Tracking ID:</p>
+                  <p className="text-xl font-black text-[#002147] tracking-wide font-mono mt-1">
                     {submittedRecord.id}
                   </p>
                 </div>
                 <div>
-                  <p className="text-slate-500 font-semibold">Cadet Full Name:</p>
-                  <p className="text-base font-bold text-slate-900 mt-0.5">
+                  <p className="text-slate-500 font-bold uppercase tracking-wider">Cadet Full Name:</p>
+                  <p className="text-base font-black text-slate-900 mt-1">
                     {submittedRecord.fullName} ({submittedRecord.gender})
                   </p>
                 </div>
                 <div>
-                  <p className="text-slate-500 font-semibold">SBU Roll Number:</p>
-                  <p className="text-sm font-bold text-slate-800 mt-0.5">
+                  <p className="text-slate-500 font-bold uppercase tracking-wider">SBU Roll Number:</p>
+                  <p className="text-sm font-bold text-slate-800 mt-1">
                     {submittedRecord.sbuRollNo}
                   </p>
                 </div>
                 <div>
-                  <p className="text-slate-500 font-semibold">Status:</p>
-                  <span className="inline-block bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded text-xs mt-0.5 border border-amber-300">
+                  <p className="text-slate-500 font-bold uppercase tracking-wider">Application Status:</p>
+                  <span className="inline-block bg-amber-400 text-slate-950 font-black px-3 py-1 rounded-full text-xs mt-1 border border-amber-300 shadow-2xs">
                     {submittedRecord.status}
                   </span>
                 </div>
               </div>
 
-              <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 leading-relaxed">
-                <strong>Next Instructions:</strong> Please take a printout of Form 1 application slip. Bring original 10th/12th marksheets, Aadhaar card, SBU ID card, Bank passbook photocopy, and medical fitness certificate to SBU Sports Ground on parade day at 06:00 AM.
+              <div className="p-4 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-950 font-medium leading-relaxed">
+                <strong className="text-amber-900 font-black">Next Physical Verification Steps:</strong> Please take a printout of your Form 1 application slip below. Bring original 10th/12th marksheets, Aadhaar card, SBU Student ID card, Bank passbook photocopy, and medical fitness certificate to SBU Sports Ground on parade day at 06:00 AM.
               </div>
             </div>
 
             {/* Action Buttons for Printable Slip & Status */}
-            <div className="flex flex-wrap gap-3 pt-2">
+            <div className="flex flex-wrap gap-3.5 pt-2">
               <button
                 onClick={() => onOpenPrintableSlip(submittedRecord)}
-                className="bg-[#002147] hover:bg-[#001733] text-white font-bold px-5 py-2.5 rounded-lg text-xs flex items-center space-x-2 shadow-sm cursor-pointer border-l-4 border-l-yellow-500"
+                className="bg-[#002147] hover:bg-[#001733] text-white font-extrabold px-6 py-3 rounded-xl text-xs flex items-center space-x-2 shadow-md cursor-pointer border-l-4 border-l-amber-400 transition-all"
                 id="print-form-slip-btn"
               >
-                <Printer className="w-4 h-4 text-yellow-400" />
+                <Printer className="w-4 h-4 text-amber-400" />
                 <span>Print Official Form 1 Application Slip</span>
               </button>
 
               <button
                 onClick={() => openStatusModalWithQuery(submittedRecord.id)}
-                className="bg-yellow-500 hover:bg-yellow-600 text-slate-950 font-bold px-4 py-2.5 rounded-lg text-xs flex items-center space-x-2 cursor-pointer uppercase tracking-wider shadow-sm"
+                className="bg-amber-400 hover:bg-yellow-400 text-slate-950 font-black px-5 py-3 rounded-xl text-xs flex items-center space-x-2 cursor-pointer uppercase tracking-wider shadow-md transition-all"
                 id="track-new-application-btn"
               >
                 <CheckCircle2 className="w-4 h-4 text-slate-950" />
@@ -282,18 +286,18 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                   setSubmittedRecord(null);
                   setActiveStep(1);
                 }}
-                className="bg-white hover:bg-slate-100 text-slate-700 font-bold px-4 py-2.5 rounded-lg text-xs border border-slate-300 cursor-pointer"
+                className="bg-white hover:bg-slate-100 text-slate-700 font-bold px-5 py-3 rounded-xl text-xs border border-slate-300 cursor-pointer transition-all"
               >
                 Submit Another Application
               </button>
             </div>
           </div>
         ) : (
-          /* Multi-Step Form Layout */
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 sm:p-8 shadow-sm space-y-6 text-left">
+          /* Multi-Step Form Container */
+          <div className="bg-white/95 backdrop-blur-2xl border border-white/40 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8 text-left ring-1 ring-black/5">
             
             {/* Step Indicators Bar */}
-            <div className="grid grid-cols-5 gap-2 pb-4 border-b border-slate-200 text-center">
+            <div className="grid grid-cols-5 gap-2 pb-5 border-b border-slate-200 text-center">
               {[
                 { num: 1, label: "Personal" },
                 { num: 2, label: "Academic" },
@@ -307,12 +311,12 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                   onClick={() => {
                     if (s.num < activeStep) setActiveStep(s.num);
                   }}
-                  className={`py-2 px-1 rounded-lg text-xs font-bold transition-all ${
+                  className={`py-2.5 px-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
                     activeStep === s.num
-                      ? "bg-[#002147] text-yellow-400 shadow-sm border-b-2 border-yellow-500"
+                      ? "bg-[#002147] text-amber-400 shadow-md ring-2 ring-amber-400 border-b-2 border-amber-400"
                       : activeStep > s.num
                       ? "bg-emerald-100 text-emerald-900 border border-emerald-300"
-                      : "bg-white text-slate-400 border border-slate-200 opacity-70"
+                      : "bg-slate-100 text-slate-400 border border-slate-200 opacity-80 cursor-not-allowed"
                   }`}
                 >
                   <span>Step {s.num}: {s.label}</span>
@@ -322,8 +326,8 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
 
             {/* Error Notification Banner */}
             {errorMessage && (
-              <div className="p-3.5 bg-red-50 border border-red-300 text-red-900 rounded-xl text-xs font-semibold flex items-center space-x-2">
-                <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+              <div className="p-4 bg-red-50 border border-red-300 text-red-900 rounded-2xl text-xs font-bold flex items-center space-x-2.5 shadow-xs">
+                <AlertCircle className="w-4.5 h-4.5 shrink-0 text-red-600" />
                 <span>{errorMessage}</span>
               </div>
             )}

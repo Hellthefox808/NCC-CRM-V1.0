@@ -1244,41 +1244,126 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
                 <div className="space-y-3 pt-4 border-t border-slate-200">
                   <h3 className="font-black text-slate-900 text-base">NCC Cadre Event Photo Gallery</h3>
                   
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div className="space-y-1 text-center">
-                      <img
-                        src="https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=400&q=80"
-                        alt="Parade Ground Drill"
-                        className="w-full h-32 object-cover rounded-xl border border-slate-300 shadow-2xs hover:scale-105 transition-transform"
-                      />
-                      <p className="text-[11px] font-bold text-slate-800">Ceremonial Drill Practice</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                    <div className="space-y-1 text-center group">
+                      <div className="h-28 overflow-hidden rounded-xl border border-slate-300 shadow-2xs bg-slate-900">
+                        <img
+                          src="/images/activities/vip_guard_escort.jpg"
+                          alt="VIP Guard of Honor"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <p className="text-[11px] font-bold text-slate-800">VIP Guard Escort</p>
                     </div>
 
-                    <div className="space-y-1 text-center">
-                      <img
-                        src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=400&q=80"
-                        alt="Firing Range Training"
-                        className="w-full h-32 object-cover rounded-xl border border-slate-300 shadow-2xs hover:scale-105 transition-transform"
-                      />
+                    <div className="space-y-1 text-center group">
+                      <div className="h-28 overflow-hidden rounded-xl border border-slate-300 shadow-2xs bg-slate-900">
+                        <img
+                          src="/images/activities/national_youth_day_awards.jpg"
+                          alt="Youth Day Felicitation"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <p className="text-[11px] font-bold text-slate-800">Youth Day 2026 Awards</p>
+                    </div>
+
+                    <div className="space-y-1 text-center group">
+                      <div className="h-28 overflow-hidden rounded-xl border border-slate-300 shadow-2xs bg-slate-900">
+                        <img
+                          src="/images/activities/tiranga_yatra_rally.jpg"
+                          alt="Tiranga Yatra"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <p className="text-[11px] font-bold text-slate-800">Tiranga Yatra Rally</p>
+                    </div>
+
+                    <div className="space-y-1 text-center group">
+                      <div className="h-28 overflow-hidden rounded-xl border border-slate-300 shadow-2xs bg-slate-900">
+                        <img
+                          src="/images/activities/yoga_day_wellness.jpg"
+                          alt="Yoga Day Session"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <p className="text-[11px] font-bold text-slate-800">International Yoga Day</p>
+                    </div>
+
+                    <div className="space-y-1 text-center group">
+                      <div className="h-28 overflow-hidden rounded-xl border border-slate-300 shadow-2xs bg-slate-900">
+                        <img
+                          src="/images/activities/ncc_squad_formation.jpg"
+                          alt="Company Squad Formation"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <p className="text-[11px] font-bold text-slate-800">Squad Formation</p>
+                    </div>
+
+                    <div className="space-y-1 text-center group">
+                      <div className="h-28 overflow-hidden rounded-xl border border-slate-300 shadow-2xs bg-slate-900">
+                        <img
+                          src="/images/activities/cultural_dance_youth_day.jpg"
+                          alt="Classical Dance Event"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <p className="text-[11px] font-bold text-slate-800">Cultural Dance Event</p>
+                    </div>
+
+                    <div className="space-y-1 text-center group">
+                      <div className="h-28 overflow-hidden rounded-xl border border-slate-300 shadow-2xs bg-slate-900">
+                        <img
+                          src="/images/activities/swachh_bharat_posters.jpg"
+                          alt="Swachh Bharat Campaign"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <p className="text-[11px] font-bold text-slate-800">Swachh Bharat Posters</p>
+                    </div>
+
+                    <div className="space-y-1 text-center group">
+                      <div className="h-28 overflow-hidden rounded-xl border border-slate-300 shadow-2xs bg-slate-900">
+                        <img
+                          src="/images/activities/awareness_rally_march.jpg"
+                          alt="Awareness Rally"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <p className="text-[11px] font-bold text-slate-800">Community Rally March</p>
+                    </div>
+
+                    <div className="space-y-1 text-center group">
+                      <div className="h-28 overflow-hidden rounded-xl border border-slate-300 shadow-2xs bg-slate-900">
+                        <img
+                          src="/images/activities/rifle_shooting_range.jpg"
+                          alt="0.22 Rifle Firing Range"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
                       <p className="text-[11px] font-bold text-slate-800">0.22 Rifle Firing Range</p>
                     </div>
 
-                    <div className="space-y-1 text-center">
-                      <img
-                        src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=400&q=80"
-                        alt="Kargil Vijay Diwas"
-                        className="w-full h-32 object-cover rounded-xl border border-slate-300 shadow-2xs hover:scale-105 transition-transform"
-                      />
-                      <p className="text-[11px] font-bold text-slate-800">Kargil Vijay Diwas Guard</p>
+                    <div className="space-y-1 text-center group">
+                      <div className="h-28 overflow-hidden rounded-xl border border-slate-300 shadow-2xs bg-slate-900">
+                        <img
+                          src="/images/activities/swachh_bharat_cleaning.jpg"
+                          alt="Road Sanitation Drive"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <p className="text-[11px] font-bold text-slate-800">Road Sanitation Drive</p>
                     </div>
 
-                    <div className="space-y-1 text-center">
-                      <img
-                        src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=400&q=80"
-                        alt="Trekking Expedition"
-                        className="w-full h-32 object-cover rounded-xl border border-slate-300 shadow-2xs hover:scale-105 transition-transform"
-                      />
-                      <p className="text-[11px] font-bold text-slate-800">Netarhat Trekking Camp</p>
+                    <div className="space-y-1 text-center group">
+                      <div className="h-28 overflow-hidden rounded-xl border border-slate-300 shadow-2xs bg-slate-900">
+                        <img
+                          src="/images/activities/ncc_mountain_trekking.jpg"
+                          alt="Mountain Trekking Camp"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <p className="text-[11px] font-bold text-slate-800">Mountain Trekking Camp</p>
                     </div>
                   </div>
                 </div>

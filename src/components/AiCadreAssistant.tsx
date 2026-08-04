@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Bot, Send, User, X } from "lucide-react";
+import { Bot, Send, Sparkles, User, X } from "lucide-react";
 import { EnterpriseDataPlatform } from "../services/dataPlatform";
 
 interface AiCadreAssistantProps {
@@ -13,6 +13,26 @@ interface ChatMessage {
   text: string;
 }
 
+const NccLogoAvatar: React.FC<{ size?: string }> = ({ size = "w-8 h-8" }) => (
+  <div className={`relative ${size} rounded-full bg-white p-0.5 shadow-md flex items-center justify-center shrink-0 border border-amber-400 overflow-hidden ring-1 ring-amber-400/40`}>
+    <img 
+      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTZDvUjTIPyVWknpreMHXnyKTvz7-P_uljpSxjPHcXXw&s=10" 
+      alt="19 JHR BN NCC Crest" 
+      className="w-full h-full object-contain rounded-full"
+      referrerPolicy="no-referrer"
+      onError={(e) => {
+        e.currentTarget.style.display = 'none';
+        if (e.currentTarget.nextElementSibling) {
+          (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+        }
+      }}
+    />
+    <div className="hidden w-full h-full bg-[#002147] rounded-full flex items-center justify-center text-amber-400 font-bold text-[8px]">
+      NCC
+    </div>
+  </div>
+);
+
 export const AiCadreAssistant: React.FC<AiCadreAssistantProps> = ({
   isOpen,
   onClose
@@ -20,18 +40,17 @@ export const AiCadreAssistant: React.FC<AiCadreAssistantProps> = ({
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       sender: "ai",
-      text: "Jai Hind! I am Subedar Major AI Assistant for 19 Jharkhand Battalion NCC (SBU Ranchi). How can I assist you today regarding NCC Enrollment 2026-27, physical fitness standards, 'C' certificate benefits, or drill training?"
+      text: "Jai Hind! I am Subedar Major AI Assistant for 19 Jharkhand Battalion NCC (SBU Ranchi). Powered by Google Gemini AI, how can I assist you today regarding NCC Enrollment 2026-27, physical fitness benchmarks, 'C' certificate SSB entry, or squad drill training?"
     }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isLowLatencyMode, setIsLowLatencyMode] = useState(false);
 
   const quickPrompts = [
-    "What are the physical criteria for SD/SW cadet at SBU?",
+    "What are physical criteria for SD/SW cadets?",
     "How does 'C' certificate help in direct SSB interview?",
     "What documents are needed for physical verification?",
-    "Explain basic word of commands in squad drill"
+    "Explain basic words of command in squad drill"
   ];
 
   const handleSend = async (textToSend?: string) => {
@@ -44,7 +63,7 @@ export const AiCadreAssistant: React.FC<AiCadreAssistantProps> = ({
     setIsLoading(true);
 
     try {
-      const res = await EnterpriseDataPlatform.sendAiMessage(prompt, isLowLatencyMode);
+      const res = await EnterpriseDataPlatform.sendAiMessage(prompt, true);
       const aiReply = res.data?.reply || "Jai Hind! Please visit 19 JHR BN NCC office at Sarala Birla University for further assistance.";
       setMessages(prev => [...prev, { sender: "ai", text: aiReply }]);
     } catch (err) {
@@ -74,27 +93,14 @@ export const AiCadreAssistant: React.FC<AiCadreAssistantProps> = ({
             className="bg-white/95 backdrop-blur-2xl rounded-3xl max-w-lg w-full h-[85vh] max-h-[620px] flex flex-col shadow-2xl border border-white/40 overflow-hidden text-left relative ring-1 ring-black/10"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-[#002147] via-[#001838] to-[#000d20] backdrop-blur-md text-white p-4.5 flex justify-between items-center border-b border-yellow-500/40">
+            <div className="bg-gradient-to-r from-[#002147] via-[#001838] to-[#000d20] backdrop-blur-md text-white p-4 flex justify-between items-center border-b border-amber-500/40">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-yellow-400 text-slate-950 flex items-center justify-center font-bold shrink-0 shadow-md border border-yellow-300">
-                  <Bot className="w-5.5 h-5.5 text-slate-950" />
-                </div>
+                <NccLogoAvatar size="w-10 h-10" />
                 <div>
-                  <h3 className="text-sm sm:text-base font-black text-white flex items-center space-x-1.5">
-                    <span>Subedar Major AI Assistant</span>
-                    <button
-                      onClick={() => setIsLowLatencyMode(!isLowLatencyMode)}
-                      title={isLowLatencyMode ? "Switch to High Quality Mode (Gemini 3.6 Flash)" : "Switch to Low Latency Mode (3.1 Flash-Lite)"}
-                      className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider transition-all cursor-pointer shadow-2xs ${
-                        isLowLatencyMode
-                          ? "bg-emerald-400 text-slate-950 border border-emerald-300"
-                          : "bg-yellow-400 text-slate-950 border border-yellow-300"
-                      }`}
-                    >
-                      {isLowLatencyMode ? "FAST ⚡ FLASH-LITE" : "GEMINI ⚡ 3.6 FLASH"}
-                    </button>
+                  <h3 className="text-sm sm:text-base font-black text-white">
+                    Subedar Major AI Assistant
                   </h3>
-                  <p className="text-[11px] text-yellow-300/90 font-medium">19 Jharkhand Battalion NCC • SBU Ranchi</p>
+                  <p className="text-[11px] text-amber-300/90 font-medium">19 Jharkhand Battalion NCC • SBU Ranchi</p>
                 </div>
               </div>
               <motion.button
@@ -120,9 +126,7 @@ export const AiCadreAssistant: React.FC<AiCadreAssistantProps> = ({
                   }`}
                 >
                   {m.sender === "ai" && (
-                    <div className="w-7 h-7 rounded-full bg-[#002147] text-yellow-400 flex items-center justify-center shrink-0 mt-1 border border-yellow-500/40 shadow-2xs">
-                      <Bot className="w-4 h-4 text-yellow-400" />
-                    </div>
+                    <NccLogoAvatar size="w-7 h-7" />
                   )}
 
                   <div
@@ -144,12 +148,10 @@ export const AiCadreAssistant: React.FC<AiCadreAssistantProps> = ({
               ))}
 
               {isLoading && (
-                <div className="flex items-center space-x-2 text-slate-600 text-xs font-semibold italic bg-white/90 backdrop-blur-sm p-2.5 rounded-xl border border-slate-200/80 w-fit">
-                  <Bot className="w-4 h-4 text-yellow-600 animate-spin" />
+                <div className="flex items-center space-x-2 text-slate-700 text-xs font-semibold italic bg-white/95 backdrop-blur-sm p-2.5 rounded-xl border border-slate-200/80 w-fit shadow-2xs">
+                  <Sparkles className="w-4 h-4 text-amber-500 animate-spin" />
                   <span>
-                    {isLowLatencyMode 
-                      ? "Subedar Major AI replying instantly with Gemini 3.1 Flash-Lite..." 
-                      : "Subedar Major AI is analyzing with High Thinking Mode (Gemini 3.1 Pro)..."}
+                    Subedar Major AI is analyzing with Gemini AI Engine...
                   </span>
                 </div>
               )}

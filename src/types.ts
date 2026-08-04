@@ -76,4 +76,5 @@ export interface CampScheduleItem {
   eligibility: string;
   status: "Upcoming" | "Active" | "Completed";
   vacancies: number;
+  image?: string;
 }

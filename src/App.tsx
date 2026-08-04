@@ -41,20 +41,8 @@ export default function App() {
   };
 
   const handleStartEnrollment = () => {
-    const el = document.getElementById("enrollment-section");
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      setActiveTab("enroll");
-      setTimeout(() => {
-        const target = document.getElementById("enrollment-section");
-        if (target) {
-          target.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-      }, 50);
-    }
+    setActiveTab("enroll");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleLogout = async () => {
@@ -113,11 +101,6 @@ export default function App() {
                   setStatusModalOpen(true);
                 }}
                 openAiAssistant={() => setAiAssistantOpen(true)}
-              />
-              <EnrollmentForm
-                onSuccessSubmitted={handleCadetSuccessSubmitted}
-                onOpenPrintableSlip={(record) => setPrintableRecord(record)}
-                openStatusModalWithQuery={handleOpenStatusModalWithQuery}
               />
             </>
           )}
@@ -202,32 +185,42 @@ export default function App() {
         <span className="absolute -inset-2 rounded-full bg-yellow-400/25 animate-ping opacity-40 pointer-events-none" />
 
         <motion.button
-          whileHover={{ scale: 1.05, y: -3 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.04, y: -2 }}
+          whileTap={{ scale: 0.96 }}
           onClick={() => setAiAssistantOpen(true)}
-          className="relative bg-gradient-to-r from-[#002147] via-[#00193c] to-[#000d21] text-white pl-3.5 pr-5 py-2.5 rounded-full shadow-2xl backdrop-blur-md border-2 border-yellow-400 flex items-center space-x-3 transition-all cursor-pointer ring-3 ring-yellow-400/30 hover:ring-yellow-400/60 hover:border-yellow-300"
+          className="relative bg-[#00193c]/95 hover:bg-[#002147] text-white pl-2.5 pr-4 py-1.5 rounded-full shadow-xl backdrop-blur-md border border-amber-400/80 flex items-center space-x-2.5 transition-all cursor-pointer ring-2 ring-amber-400/20 hover:ring-amber-400/50 hover:border-amber-300"
           id="floating-ai-btn"
         >
-          {/* Badge Avatar Icon Container */}
-          <div className="relative w-10 h-10 rounded-full bg-gradient-to-b from-yellow-300 to-yellow-500 text-slate-950 flex items-center justify-center font-black shadow-lg border-2 border-white/80 shrink-0">
-            <Bot className="w-5.5 h-5.5 text-slate-950" />
-            <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#002147] shadow-2xs" />
-            <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 animate-ping opacity-75" />
+          {/* Official NCC Crest Avatar with Online Indicator */}
+          <div className="relative shrink-0">
+            <div className="w-8 h-8 rounded-full bg-white p-0.5 shadow-md flex items-center justify-center border border-amber-400 overflow-hidden ring-1 ring-amber-400/30">
+              <img 
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTZDvUjTIPyVWknpreMHXnyKTvz7-P_uljpSxjPHcXXw&s=10" 
+                alt="19 JHR BN NCC Crest" 
+                className="w-full h-full object-contain rounded-full"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  if (e.currentTarget.nextElementSibling) {
+                    (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+                  }
+                }}
+              />
+              <div className="hidden w-full h-full bg-[#002147] rounded-full flex items-center justify-center text-amber-400 font-bold text-[9px]">
+                NCC
+              </div>
+            </div>
+            <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-[#00193c]" />
+            <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping opacity-75" />
           </div>
 
-          {/* Button Text & Label */}
+          {/* Compact Label */}
           <div className="text-left flex flex-col justify-center">
-            <div className="flex items-center space-x-1.5">
-              <span className="text-xs font-black text-white tracking-wide drop-shadow-xs">
-                Subedar Major AI
-              </span>
-              <span className="bg-yellow-400 text-slate-950 text-[9px] font-black px-1.5 py-0.2 rounded-full uppercase tracking-wider shadow-xs flex items-center space-x-0.5 border border-yellow-200">
-                <Sparkles className="w-2.5 h-2.5 fill-slate-950" />
-                <span>24/7 CADRE</span>
-              </span>
-            </div>
-            <span className="text-[10px] text-yellow-300 font-extrabold tracking-tight flex items-center space-x-1">
-              <span>19 JHR BN NCC Helpdesk</span>
+            <span className="text-[11px] font-black text-white tracking-wide leading-tight">
+              Subedar Major AI
+            </span>
+            <span className="text-[9px] text-amber-300/90 font-bold tracking-tight leading-tight">
+              19 JHR BN NCC Helpdesk
             </span>
           </div>
         </motion.button>

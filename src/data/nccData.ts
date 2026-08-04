@@ -201,43 +201,91 @@ export const CERTIFICATE_BENEFITS = [
 export const ACTIVITIES_DATA: ActivityCard[] = [
   {
     id: "act-1",
-    title: "Parade & Military Drill Training",
+    title: "VIP Escort & Ceremonial Guard of Honor",
     category: "Institutional",
-    description: "Weekly parade sessions conducted on SBU Sports Ground focusing on foot drill, arms drill, ceremonial parade, and command delivery.",
-    image: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=800&q=80",
-    highlights: ["Foot Drill & Squad Movement", "Word of Command (Hukm)", "Ceremonial Guard of Honor", "Saluting & Bearing"]
+    description: "VIP Escort & Red Carpet Guard of Honor led by 19 JHR BN NCC cadets for University Leadership, Commanding Officer, & Dignitaries at SBU Ranchi.",
+    image: "/images/activities/vip_guard_escort.jpg",
+    highlights: ["Red Carpet VIP Escort", "Ceremonial Guard of Honor", "Commanding Officer & Dignitary Reception", "Precision Drill & Bearing"]
   },
   {
     id: "act-2",
-    title: "0.22 Rifle Marksmanship & Firing",
-    category: "Shooting",
-    description: "Hands-on weapon simulator and live range firing training using 0.22 Deluxe Rifle & 7.62mm SLR at Battalion Shooting Range, Namkum Ranchi.",
-    image: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?auto=format&fit=crop&w=800&q=80",
-    highlights: ["Grouping & Snap Shooting", "MPI (Mean Point of Impact) Calculation", "Range Safety Rules", "Inter-Unit Shooting Championship"]
+    title: "National Youth Day 2026 Felicitation & Camp",
+    category: "Camps",
+    description: "National Youth Day 2026 (राष्ट्रीय युवा दिवस) mega camp, red cross youth awareness, and certificate felicitation ceremony honoring top cadets.",
+    image: "/images/activities/national_youth_day_awards.jpg",
+    highlights: ["National Youth Day 2026", "Cadet Certificate & Medal Awards", "Red Cross & Youth Empowerment", "19th JH BN NCC Battalion Event"]
   },
   {
     id: "act-3",
-    title: "Republic Day Camp (RDC) & Thal Sainik Camp (TSC)",
-    category: "Camps",
-    description: "National premier camps held in Garrison Parade Ground New Delhi & Delhi Cantt. Cadets march at Rajpath (Kartavya Path) before the Hon'ble President of India.",
-    image: "https://images.unsplash.com/photo-1532375810709-75b1da00537c?auto=format&fit=crop&w=800&q=80",
-    highlights: ["Prime Minister's Rally", "Cultural Performance representing B&J Dte", "Obstacle Course & Map Reading", "Line Layout Inspection"]
+    title: "Tiranga Yatra & National Unity Rally",
+    category: "Social Service",
+    description: "Mass Patriotic Tiranga Yatra led by SBU Chancellor, Vice Chancellor, Faculty, and NCC Cadets marching across green campus avenues with Indian flags.",
+    image: "/images/activities/tiranga_yatra_rally.jpg",
+    highlights: ["Tiranga Yatra Flag Rally", "Patriotic Mass Marching", "University Leadership Participation", "National Integration Drive"]
   },
   {
     id: "act-4",
-    title: "Swachh Bharat & Social Service Drives",
-    category: "Social Service",
-    description: "Community outreach initiatives including mega blood donation camps, anti-drug awareness rallies, tree plantation, and cleanliness near Subarnarekha River.",
-    image: "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=80",
-    highlights: ["Mega Blood Donation Camp", "Cleanliness & Water Conservation", "Traffic Awareness Drive", "Rural Health Outreach"]
+    title: "International Yoga Day & Physical Wellness",
+    category: "Institutional",
+    description: "Special International Yoga Day & Mindful Fitness workshop conducted on SBU Auditorium stage with 19th JH BN NCC cadets on yoga mats.",
+    image: "/images/activities/yoga_day_wellness.jpg",
+    highlights: ["International Yoga Day Asanas", "Physical & Mental Fitness", "Auditorium Stage Session", "Cadet Wellness Practice"]
   },
   {
     id: "act-5",
-    title: "Parasailing & Mountaineering Expeditions",
+    title: "Company Parade & Squad Formation",
+    category: "Institutional",
+    description: "Parade drill, squad formation, and inspection sessions on SBU campus ground led by 19 Jharkhand Battalion NCC officers and cadet rank holders.",
+    image: "/images/activities/ncc_squad_formation.jpg",
+    highlights: ["Parade Drill & Squad Alignment", "Uniform & Epaulette Inspection", "Amphitheater Drill Formations", "Command & Military Bearing"]
+  },
+  {
+    id: "act-6",
+    title: "Classical Dance & Women Empowerment Event",
+    category: "Camps",
+    description: "Cultural presentation on Women Empowerment on World Youth Skills Day organized under 19th Jharkhand Battalion NCC at SBU Ranchi.",
+    image: "/images/activities/cultural_dance_youth_day.jpg",
+    highlights: ["Classical Dance Performance", "World Youth Skills Day Event", "Women Empowerment Theme", "19th JH BN NCC Stage Program"]
+  },
+  {
+    id: "act-7",
+    title: "Swachh Bharat Cleanliness Campaign",
+    category: "Social Service",
+    description: "Swachh Bharat Abhiyan drive organized by SBU Cadets featuring hand-made awareness posters, slogans, and hygiene exhibitions.",
+    image: "/images/activities/swachh_bharat_posters.jpg",
+    highlights: ["Poster & Slogan Competition", "Sarala Birla Public School Drive", "Hygiene & Environmental Awareness", "Cadet Volunteer Action"]
+  },
+  {
+    id: "act-8",
+    title: "Community Awareness Rally & March",
+    category: "Social Service",
+    description: "Public awareness march by 19 JHR BN cadets advocating social causes, environmental protection, and national unity through Namkum & SBU routes.",
+    image: "/images/activities/awareness_rally_march.jpg",
+    highlights: ["Awareness Rally March", "Placards & Slogan Displays", "Social Cause Outreach", "Mass Community Engagement"]
+  },
+  {
+    id: "act-9",
+    title: "Road Sanitation & Cleanliness Drive",
+    category: "Social Service",
+    description: "Active community cleanliness drive by NCC cadets cleaning public roads and university surroundings to support National Cleanliness Mission.",
+    image: "/images/activities/swachh_bharat_cleaning.jpg",
+    highlights: ["Shramdaan & Waste Segregation", "Roadside Cleanliness Campaign", "Swachhata Pakhwada Participation", "Public Health Initiative"]
+  },
+  {
+    id: "act-10",
+    title: "0.22 Rifle Marksmanship & Range Firing",
+    category: "Shooting",
+    description: "Hands-on marksmanship training, firing stance posture, and live shooting using 0.22 Deluxe Rifle  at Battalion Firing Range.",
+    image: "/images/activities/rifle_shooting_range.jpg",
+    highlights: ["0.22 Deluxe Rifle Marksmanship", "Kneeling & Lying Firing Postures", "Grouping & Snap Shooting", "Inter-Battalion Shooting Championship"]
+  },
+  {
+    id: "act-11",
+    title: "High Altitude Trekking & Parasailing Expeditions",
     category: "Adventure",
-    description: "High-intensity adventure training at Himalayan Mountaineering Institute (HMI Darjeeling) and parasailing over Ranchi airstrip.",
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
-    highlights: ["High Altitude Trekking", "Rock Climbing & Rappelling", "Parasailing & Obstacle Training", "Survival Skills in Wild"]
+    description: "High-intensity adventure training including Netarhat hill trekking expeditions, parasailing, and obstacle survival courses conducted under Bihar & Jharkhand Dte.",
+    image: "/images/activities/ncc_mountain_trekking.jpg",
+    highlights: ["Netarhat Hill Trekking", "Obstacle Course & Rappelling", "Parasailing Trials", "Outdoor Survival & Navigation"]
   }
 ];
 
@@ -336,7 +384,8 @@ export const CAMPS_DATA: CampScheduleItem[] = [
     dates: "20 Sep - 29 Sep 2026",
     eligibility: "1st & 2nd Year Enrolled Cadets",
     status: "Upcoming",
-    vacancies: 45
+    vacancies: 45,
+    image: "/images/activities/vip_guard_escort.jpg"
   },
   {
     id: "cmp-102",
@@ -345,7 +394,8 @@ export const CAMPS_DATA: CampScheduleItem[] = [
     dates: "05 Oct - 14 Oct 2026",
     eligibility: "Selected Cadets in Firing & Map Reading",
     status: "Upcoming",
-    vacancies: 15
+    vacancies: 15,
+    image: "/images/activities/ncc_squad_formation.jpg"
   },
   {
     id: "cmp-103",
@@ -354,7 +404,8 @@ export const CAMPS_DATA: CampScheduleItem[] = [
     dates: "12 Nov - 21 Nov 2026",
     eligibility: "Cultural & Rifle drill selected cadets",
     status: "Upcoming",
-    vacancies: 10
+    vacancies: 10,
+    image: "/images/activities/national_youth_day_awards.jpg"
   }
 ];
 

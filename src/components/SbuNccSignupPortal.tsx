@@ -44,8 +44,8 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
   const [noticeMessage, setNoticeMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Cadet Login State
-  const [cadetIdentifier, setCadetIdentifier] = useState("SBU25BTECH042");
-  const [cadetPassword, setCadetPassword] = useState("cadet123");
+  const [cadetIdentifier, setCadetIdentifier] = useState("");
+  const [cadetPassword, setCadetPassword] = useState("");
 
   // Cadet Signup State
   const [cadetForm, setCadetForm] = useState({
@@ -54,7 +54,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
     email: "",
     mobile: "",
     gender: "SD",
-    sbuCourse: "B.Tech Computer Science",
+    sbuCourse: "",
     sbuYear: "1st Year",
     password: "",
     confirmPassword: "",
@@ -62,14 +62,14 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
   });
 
   // Admin Login State
-  const [adminUsername, setAdminUsername] = useState("ano.sbu@ncc.in");
-  const [adminPassword, setAdminPassword] = useState("admin123");
+  const [adminUsername, setAdminUsername] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
 
   // Admin Signup State
   const [adminForm, setAdminForm] = useState({
     fullName: "",
     designation: "Associate NCC Officer (ANO)",
-    employeeId: "SBU-FAC-1904",
+    employeeId: "",
     email: "",
     mobile: "",
     accessKey: "",
@@ -93,7 +93,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
         setNoticeMessage({ type: "success", text: "Cadet authentication successful! Welcome to SBU NCC Portal." });
         setTimeout(() => {
           onLoginSuccess("cadet", {
-            fullName: res.data.user.name || cadetForm.fullName || "Aman Kumar Sharma",
+            fullName: res.data.user.name || cadetForm.fullName || cadetIdentifier,
             sbuRollNo: cadetIdentifier,
             gender: cadetForm.gender
           });
@@ -344,28 +344,6 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
                   >
                     <UserCheck className="w-4 h-4 text-yellow-400" />
                     <span>Sign In to Cadet Dashboard</span>
-                  </button>
-
-                  <div className="relative flex py-1 items-center">
-                    <div className="flex-grow border-t border-slate-200"></div>
-                    <span className="flex-shrink mx-3 text-[10px] text-slate-400 font-mono uppercase">Or Quick Test</span>
-                    <div className="flex-grow border-t border-slate-200"></div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCadetIdentifier("SBU25BTECH042");
-                      setCadetPassword("cadet123");
-                      onLoginSuccess("cadet", {
-                        fullName: "Aman Kumar Sharma",
-                        sbuRollNo: "SBU25BTECH042",
-                        gender: "SD"
-                      });
-                    }}
-                    className="w-full bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold py-2.5 rounded-xl text-xs transition-all cursor-pointer flex items-center justify-center space-x-2"
-                  >
-                    <span>⚡ One-Click Demo Cadet Sign In (Aman Kumar Sharma - L/Cpl)</span>
                   </button>
 
                   <div className="text-center pt-2">
@@ -626,24 +604,6 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
                   >
                     <Award className="w-4 h-4 text-slate-950" />
                     <span>Login to Officer Dashboard</span>
-                  </button>
-
-                  <div className="relative flex py-1 items-center">
-                    <div className="flex-grow border-t border-slate-200"></div>
-                    <span className="flex-shrink mx-3 text-[10px] text-slate-400 font-mono uppercase">Instant Demo</span>
-                    <div className="flex-grow border-t border-slate-200"></div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAdminUsername("ano.sbu@ncc.in");
-                      setAdminPassword("admin123");
-                      onLoginSuccess("admin");
-                    }}
-                    className="w-full bg-slate-900 hover:bg-slate-950 text-yellow-400 font-bold py-2.5 rounded-xl text-xs transition-all cursor-pointer flex items-center justify-center space-x-2"
-                  >
-                    <span>⚡ One-Click ANO Access (Lt. Dr. Rajeshwar M. - SBU Coy)</span>
                   </button>
                 </div>
               </form>
