@@ -1,6 +1,7 @@
 import express from "express";
 import http from "http";
 import path from "path";
+import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { securityHeadersMiddleware, rateLimitMiddleware } from "./middlewares/security";
 import { correlationMiddleware } from "./middlewares/correlation";
@@ -48,20 +49,35 @@ initWebSocketServer(server);
 
 // Start Server
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
+  const isProd = process.env.NODE_ENV === "production" || fs.existsSync(path.resolve(process.cwd(), "dist/index.html"));
+
+  if (isProd) {
+    console.log("[PROD] Serving static frontend files...");
+    const candidatePaths = [
+      path.resolve(process.cwd(), "dist"),
+      path.resolve(process.cwd(), "dist/client"),
+      path.resolve(__dirname, ".."),
+      path.resolve(__dirname, ".")
+    ];
+    const distPath = candidatePaths.find((p) => fs.existsSync(path.join(p, "index.html"))) || candidatePaths[0];
+
+    console.log(`[PROD] Static root resolved to: ${distPath}`);
+    app.use(express.static(distPath));
+    app.get("*", (req, res) => {
+      const indexPath = path.join(distPath, "index.html");
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.status(404).json({ error: "not_found", path: req.path });
+      }
+    });
+  } else {
     console.log("[DEV] Initializing Vite Middleware...");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa"
     });
     app.use(vite.middlewares);
-  } else {
-    console.log("[PROD] Serving static frontend files...");
-    const distPath = path.resolve(process.cwd(), "dist/client");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
-    });
   }
 
   server.listen(PORT, "0.0.0.0", () => {
