@@ -5,6 +5,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import * as XLSX from "xlsx";
+import { aiService } from "./services/ai.service";
 
 const app = express();
 const PORT = 3000;
@@ -739,68 +740,12 @@ app.post("/api/v1/notifications", (req, res) => {
 // 9. Gemini AI Assistance for NCC Cadre Guide
 app.post("/api/v1/ai-chat", async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, sessionId = "default-session" } = req.body;
     if (!message) {
       return res.status(400).json({ success: false, error: "Message prompt is required." });
     }
 
-    const ai = getGeminiClient();
-    if (!ai) {
-      return res.json({
-        success: true,
-        data: {
-          reply: `[19 Jharkhand Battalion AI Guide]: Thank you for asking. NCC enrollment at Sarala Birla University is open for regular SD (Male) and SW (Female) students. Required documents include 10th/12th marksheets, Aadhaar card, SBU ID card, Bank passbook, and medical fitness certificate. Contact Associate NCC Officer (ANO) or visit SBU Ground during morning parades (6:00 AM - 8:00 AM).`
-        }
-      });
-    }
-
-    const systemPrompt = `You are "Subedar Major AI Assistant" for the 19 Jharkhand Battalion NCC (19 JHR BN NCC), Ranchi, under Bihar and Jharkhand Directorate, serving the Sarala Birla University (SBU) Ranchi NCC Company.
-Your job is to assist prospective cadets, current enrolled cadets, and parents with accurate NCC information.
-Key facts:
-- Unit: 19 Jharkhand Battalion NCC, Ranchi
-- Directorate: Bihar and Jharkhand Directorate (Patna / Ranchi HQ)
-- Institution: Sarala Birla University (SBU), Mahilong, Purulia Road, Ranchi, Jharkhand
-- Company Officer: Associate NCC Officer (ANO) SBU Coy
-- Motto: "Unity and Discipline" (Ekta aur Anushasan)
-- Divisions: Senior Division (SD - Male) & Senior Wing (SW - Female)
-- Course Duration: 3 Years for B & C Certificates (2 Years for B, 3rd year for C Certificate)
-- Benefits: Direct SSB interview entries for defense (CDS / Agniveer / NCC Special Entry scheme without written exam for C Cert Alpha/Beta grade), bonus marks in State Police exams, Railway, Defense, IT jobs.
-- Physical Criteria: SD Height min ~170 cm, SW Height min ~152 cm. 1600m run, pushups, sit-ups, medical fitness.
-- Camps: Annual Training Camp (ATC), Combined Annual Training Camp (CATC), Republic Day Camp (RDC New Delhi), Thal Sainik Camp (TSC), Ek Bharat Shreshtha Bharat (EBSB), Army Attachment Camp (AAC), Trekking & Mountaineering.
-
-Provide respectful, motivating, patriotic, clear, and structured answers in English or Hindi (if requested or mixed Hinglish). Always uphold high military discipline and encouraging tone.`;
-
-    const isLowLatency = req.body.lowLatency || false;
-    const primaryModel = isLowLatency ? "gemini-3.1-flash-lite" : "gemini-3.6-flash";
-    const secondaryModel = isLowLatency ? "gemini-3.6-flash" : "gemini-3.1-flash-lite";
-
-    let reply = "";
-
-    try {
-      const response = await ai.models.generateContent({
-        model: primaryModel,
-        contents: [{ role: "user", parts: [{ text: `${systemPrompt}\n\nUser Question: ${message}` }] }]
-      });
-      reply = response.text || "";
-    } catch (primaryErr: any) {
-      try {
-        const fallbackResponse = await ai.models.generateContent({
-          model: secondaryModel,
-          contents: [{ role: "user", parts: [{ text: `${systemPrompt}\n\nUser Question: ${message}` }] }]
-        });
-        reply = fallbackResponse.text || "";
-      } catch (secondaryErr) {
-        const lowerMsg = message.toLowerCase();
-        if (lowerMsg.includes("document") || lowerMsg.includes("paper")) {
-          reply = "Jai Hind! Required Documents for 19 JHR BN NCC Enrollment at SBU:\n1. 10th & 12th original & self-attested marksheets\n2. Aadhaar Card copy\n3. SBU Student Identity Card / Fee Receipt\n4. Bank Passbook front page (for DBT camp allowance)\n5. Medical Fitness Certificate\n6. Parent / Guardian Consent Form";
-        } else if (lowerMsg.includes("physical") || lowerMsg.includes("run")) {
-          reply = "Jai Hind! Physical Standards for Senior Division (SD) & Senior Wing (SW):\n• SD (Male): Min Height ~170 cm, 1.6 KM Run under 6 mins 30 secs, 30 Push-ups & Sit-ups.\n• SW (Female): Min Height ~152 cm, 800m / 1.6 KM Run, flexibility & stamina tests.";
-        } else {
-          reply = `Jai Hind! Thank you for contacting 19 Jharkhand Battalion NCC (SBU Ranchi Coy).\n\nFor enrollment guidance, parade schedules (06:00 AM - 08:00 AM at SBU Ground), or 'B' & 'C' certificate details, please contact Associate NCC Officer (ANO) Dr. Animesh Roy at Sarala Birla University campus.`;
-        }
-      }
-    }
-
+    const reply = await aiService.handleChat(sessionId, message, req.body.lowLatency);
     return res.json({ success: true, data: { reply } });
   } catch (err: any) {
     return res.status(500).json({ success: false, error: "AI Assistant unavailable right now. Jai Hind!" });
