@@ -1,16 +1,18 @@
 # 19 JHR BN NCC • Sarala Birla University (SBU) Company Portal
 
-> **Enterprise Digital Management Platform for 19 Jharkhand Battalion NCC (Ranchi, Bihar & Jharkhand Directorate) at Sarala Birla University, Ranchi.**
+> **Enterprise Microservices & Data Platform for 19 Jharkhand Battalion NCC (Ranchi, Bihar & Jharkhand Directorate) at Sarala Birla University, Ranchi.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![React](https://img.shields.io/badge/React-18.0-blue.svg)](https://react.dev)
+[![React](https://img.shields.io/badge/React-19.0-blue.svg)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org)
-[![Vite](https://img.shields.io/badge/Vite-6.2-646CFF.svg)](https://vitejs.dev)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-38B2AC.svg)](https://tailwindcss.com)
+[![Vite](https://img.shields.io/badge/Vite-6.4-646CFF.svg)](https://vitejs.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC.svg)](https://tailwindcss.com)
 [![Express](https://img.shields.io/badge/Express-4.21-000000.svg)](https://expressjs.com)
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org)
+[![Prisma](https://img.shields.io/badge/Prisma-6.4-2D3748.svg)](https://www.prisma.io)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15.0-336791.svg)](https://www.postgresql.org)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED.svg)](https://www.docker.com)
 
-- **Version**: 3.0.0 (Enterprise Real-time Release)
+- **Version**: 4.0.0 (Decoupled Microservices Architecture)
 - **Project Status**: 🟢 Active • Production & Deployment Ready
 
 ---
@@ -18,51 +20,68 @@
 ## 1. Project Title & Tagline
 
 **19 JHR BN NCC • Sarala Birla University (SBU) Company Portal**  
-*Modernizing Battalion Operations, Cadet Enrollment, Drill Tracking, AI Cadre Guidance, and Official Administration for Sarala Birla University, Ranchi.*
+*Decoupled Microservices Architecture for Battalion Operations, Cadet Enrollment, Drill Tracking, Live WebSocket Pipelines, AI Cadre Guidance, and Official Administration.*
 
 ---
 
 ## 2. Executive Summary
 
-- **What problem does it solve?** Replaces paper-based application forms, manual ledger attendance logs, and fragmented communications with a centralized real-time digital workspace.
+- **What problem does it solve?** Replaces legacy paper-based application forms, manual ledger attendance logs, and fragmented communications with a centralized, real-time microservices data platform.
 - **Who is it for?** SBU students seeking NCC Senior Division (SD - Male) & Senior Wing (SW - Female) enrollment, enrolled cadets tracking attendance/leaves/certificates, and Associate NCC Officers (ANO) managing battalion records.
 - **Why does it exist?** To streamline battalion workflows, enforce DBT bank data accuracy for camp allowances, accelerate status verification, and provide cadets 24/7 access to drill handbooks and AI-assisted exam preparation.
-- **What makes it different?** Built-in real-time WebSocket broadcast engine (`/ws/v1`), server-side Gemini 3.6/3.1 AI Subedar Major Assistant, client-side dynamic PDF identity card generation, and one-click multi-sheet Excel nominal roll generation for Battalion HQ.
+- **What makes it different?** Complete separation into **frontend** and **backend** microservices, Prisma ORM + PostgreSQL persistence layer, real-time WebSocket broadcast engine (`/ws/v1`), server-side Gemini AI Subedar Major Assistant, client-side dynamic PDF identity card engine, and multi-sheet Excel nominal roll generation.
 
 ---
 
-## 3. Project Overview
+## 3. Project Architecture & Microservices
 
-The portal unifies cadet lifecycle management into a single web application:
-1. **Public Information & Enrollment Wizard**: Students complete a 4-stage registration form (Personal, Academic, Physical Fitness, Bank DBT details).
-2. **Application Status Verification**: Real-time lookup modal allowing instant status tracking via Application ID, Aadhaar Number, or SBU Roll Number.
-3. **Cadet Portal**: Enrolled cadets view drill attendance statistics, download printable Digital NCC ID Cards with QR verification, request leaves, and attempt mock quizzes for NCC 'B' & 'C' Certificate exams.
-4. **Officer Administration Dashboard**: Officers review enrollment requests, update status (Submitted, Physical Scheduled, Medical Cleared, Selected, Enrolled), publish official broadcast announcements, and export nominal rolls to Excel.
+The application is structured into decoupled, independent microservices communicating via **REST API Pipelines** and **Bi-Directional WebSocket Gateways**:
+
+```
+                                 ┌─────────────────────────────────┐
+                                 │    Browser / Mobile Clients     │
+                                 └────────────────┬────────────────┘
+                                                  │
+                                  HTTP REST / WS Pipeline (/api/v1)
+                                                  │
+                 ┌────────────────────────────────┴────────────────────────────────┐
+                 │                                                                 │
+                 ▼                                                                 ▼
+   ┌──────────────────────────┐                                      ┌──────────────────────────┐
+   │   Frontend Microservice  │                                      │   Backend Microservice   │
+   │   (React 19 + Vite 6)    │                                      │ (Express + Node 20 + WS) │
+   │   - Glassmorphism UI     │                                      │ - Rate Limiting & Auth   │
+   │   - Cadet/Admin Views    │                                      │ - WebSocket Broadcast    │
+   │   - PDF Identity Engine  │                                      │ - ServerCache (TTL Store)│
+   └──────────────────────────┘                                      └────────────┬─────────────┘
+                                                                                  │
+                                                                           Prisma ORM Client
+                                                                                  │
+                                                                                  ▼
+                                                                     ┌──────────────────────────┐
+                                                                     │   PostgreSQL 15 Database │
+                                                                     │   - Cadet Records        │
+                                                                     │   - Parade Attendance    │
+                                                                     │   - Leave Requests       │
+                                                                     └──────────────────────────┘
+```
 
 ---
 
 ## 4. Key Features
 
+- **Decoupled Microservices Architecture**: Standalone frontend React app (`frontend/`) and Express REST + WebSocket backend (`backend/`) orchestrated via Docker Compose.
+- **PostgreSQL Persistence Layer**: Relational data storage managed via **Prisma ORM** (`backend/prisma/schema.prisma`) for robust cadet, attendance, leave, and notice records.
 - **Cadet Enrollment Engine**: Automated validation for 1600m run timings, push-ups count, 10th/12th marks, sports achievement levels, and DBT bank account details.
 - **Printable Cadet Digital Identity Card**: Client-side dynamic rendering using `html2canvas` and `jspdf` featuring official unit crests and QR code validation.
-- **Subedar Major AI Assistant (24/7 Cadre Guide)**: Dual-model Gemini AI integration (`gemini-3.6-flash` & `gemini-3.1-flash-lite`) answering questions on drill commands, .22 Rifle Mark IV specs, map reading, camp eligibility, and SSB direct entry schemes.
-- **Officer Control Center**: Comprehensive administration suite for reviewing candidates, updating ranks/remarks, tracking drill attendance, and broadcasting urgent alerts.
-- **Real-Time WebSocket Engine**: Pub/Sub channels (`cadre:notifications`, `cadre:enrollments`, `cadre:presence`) delivering live updates across all connected browser sessions.
-- **Multi-Sheet Excel Exporter**: Built-in backend exporter (`/api/v1/export-excel`) generating formatted `.xlsx` files with separate tabs for Nominal Rolls and Bank DBT details.
-- **Security & Observability**: Express rate-limiting (120 req/min/IP), request correlation IDs (`X-Request-ID`), health status (`/api/v1/health`), and latency metrics (`/api/v1/metrics`).
+- **Subedar Major AI Assistant (24/7 Cadre Guide)**: Powered by Google Gemini AI (`gemini-2.5-flash` / `gemini-1.5-flash`) answering questions on drill commands, .22 Rifle Mark IV specs, map reading, camp eligibility, and SSB direct entry schemes.
+- **Officer Control Center**: Modular administration suite for reviewing candidates, updating ranks/remarks, tracking drill attendance, and broadcasting urgent alerts.
+- **Real-Time WebSocket Engine**: Pub/Sub channels (`cadre:notifications`, `cadre:enrollments`, `cadre:presence`) delivering live updates across all connected sessions.
+- **Multi-Sheet Excel Exporter**: Backend exporter (`/api/v1/export-excel`) generating formatted `.xlsx` files with separate tabs for Nominal Rolls and Bank DBT details.
 
 ---
 
-## 5. Visual Interface Showcase & Image Briefing
-
-![19 JHR BN NCC Portal - Visual Interface Showcase](assets/ncc_portal_preview.jpg)
-*Figure 1: 19 Jharkhand Battalion NCC (Sarala Birla University) Enterprise Portal — High-performance dark military navy UI with real-time analytics, digital identity card engine, and 24/7 Subedar Major AI Assistant.*
-
-The platform implements a modern military design aesthetic featuring **Deep Military Navy (`#002147`)**, **Brass Gold accents (`#D4AF37`)**, **Cadet Emerald**, and high-contrast typography across all views. Below is a detailed walkthrough of the key user interfaces:
-
----
-
-### 🎨 5.1. Design Tokens & Color Palette
+## 5. Visual Interface Showcase & Design System
 
 ```
   Primary Dark Navy   │ #002147 │ Main Header, Cards, Modal Backgrounds
@@ -74,360 +93,172 @@ The platform implements a modern military design aesthetic featuring **Deep Mili
 
 ---
 
-### 🛡️ 5.2. Public Portal & Hero Section (`HeroSection.tsx`)
+## 6. Project Directory Structure
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│  🎖️ 19 JHR BN NCC • SARALA BIRLA UNIVERSITY COMPANY PORTAL            │
-│  "Unity and Discipline" — Official Senior Division (SD) & Wing (SW)    │
-│                                                                        │
-│  [ 🚀 Apply for Enrollment ]   [ 🔍 Track Status ]   [ 📜 Notices ]    │
-│                                                                        │
-│  ┌─────────────────────────┐ ┌────────────────────────┐ ┌────────────┐  │
-│  │ 150+ Enrolled Cadets    │ │ 98.4% Parade Accuracy  │ │ 100% DBT   │  │
-│  └─────────────────────────┘ └────────────────────────┘ └────────────┘  │
-└────────────────────────────────────────────────────────────────────────┘
-```
-
-- **Briefing**: Displays the primary battalion banner, national motto ("Unity and Discipline"), real-time active cadet presence counter, quick navigation triggers, and statistical highlights.
-- **Interactive Elements**: Instant status tracking button opening the `StatusTrackerModal`, direct smooth-scroll anchor to the `EnrollmentForm`, and real-time announcement ticker.
-
----
-
-### 📝 5.3. Cadet Enrollment Wizard (`EnrollmentForm.tsx`)
-
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│  CADET ENROLLMENT REGISTRATION FORM (2026-27 Batch)                    │
-│                                                                        │
-│  Step 1: Personal Data  ──►  Step 2: Academic  ──►  Step 3: Physical   │
-│  (Name, Aadhaar, DOB)        (SBU Course, Roll)     (1.6KM Run, Pushups)│
-│                                                                        │
-│  Step 4: Bank DBT Passbook Details & Parent Consent                    │
-│  [ Bank Name ] [ Account Number ] [ IFSC Code ] [ Guardian Mobile ]    │
-│                                                                        │
-│  [ 🔒 Submit Official Application to 19 JHR BN ]                       │
-└────────────────────────────────────────────────────────────────────────┘
-```
-
-- **Briefing**: A 4-stage wizard collecting candidate personal info, academic credentials, physical test scores (1600m run timings, pushup counts), and bank DBT details for camp allowances.
-- **Validation**: Client-side validation for Aadhaar formatting (`XXXX-XXXX-XXXX`), mobile numbers, IFSC codes, and SBU roll numbers before submission.
-
----
-
-### 💳 5.4. Printable Cadet Digital Identity Card (`PrintableEnrollmentForm.tsx`)
-
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│ ┌────────────────────────────────────────────────────────────────────┐ │
-│ │ 🇮🇳 19 JHARKHAND BATTALION NCC • RANCHI                          │ │
-│ │ Sarala Birla University (SBU) Cadet Identity Card                  │ │
-│ │                                                                    │ │
-│ │ [ Cadet Photo ]   Name: Aman Kumar Sharma                          │ │
-│ │                   Regimental No: JHR/26/SD/19/204801              │ │
-│ │                   Rank: Lance Corporal (L/Cpl)                     │ │
-│ │                   Wing: Senior Division (SD)                       │ │
-│ │                   Blood Group: O+ | Course: B.Tech CSE             │ │
-│ │                   Emergency Contact: +91 9835123456                │ │
-│ │                                                                    │ │
-│ │                   [ QR Code Verification Token ]                   │ │
-│ └────────────────────────────────────────────────────────────────────┘ │
-│                                                                        │
-│ [ 🖨️ Print Identity Card ]              [ 📄 Save as PDF ]            │
-└────────────────────────────────────────────────────────────────────────┘
-```
-
-- **Briefing**: Rendered dynamically using `html2canvas` and `jspdf`. Produces a high-resolution printable digital identity card complete with official unit crests, cadet barcode/QR validation, and battalion signature blocks.
-
----
-
-### 👑 5.5. Officer Command & Admin Dashboard (`AdminDashboard.tsx`)
-
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│  OFFICER COMMAND CENTER • 19 JHR BN NCC ADMINISTRATION                │
-│                                                                        │
-│  [ 📊 Overview ] [ 📋 Nominal Roll ] [ 📢 Broadcast ] [ 📊 Export ]    │
-│                                                                        │
-│  Search: [ Enter Name / Aadhaar / Roll No... ]   Filter: [ Selected ▼ ]│
-│                                                                        │
-│  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │ Reg ID        Cadet Name        Course      Status      Action   │  │
-│  ├──────────────────────────────────────────────────────────────────┤  │
-│  │ 19JHR-2026-01 Aman K. Sharma    B.Tech CSE  Enrolled    [ Edit ] │  │
-│  │ 19JHR-2026-02 Priya K. Patel    BCA         Selected    [ Edit ] │  │
-│  │ 19JHR-2026-03 Rahul S. Munda    BBA         Medical     [ Edit ] │  │
-│  └──────────────────────────────────────────────────────────────────┘  │
-│                                                                        │
-│  [ 📊 Download Full Nominal Roll Excel (.xlsx) ]                       │
-└────────────────────────────────────────────────────────────────────────┘
-```
-
-- **Briefing**: Comprehensive management dashboard for Associate NCC Officers (ANOs) to review candidates, update statuses, assign regimental numbers, record parade attendance, and generate multi-sheet Excel files (`/api/v1/export-excel`).
-
----
-
-### 🤖 5.6. Subedar Major AI Cadre Assistant (`AiCadreAssistant.tsx`)
-
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│  🤖 SUBEDAR MAJOR AI ASSISTANT • 24/7 CADRE HELPDESK                  │
-│  19 Jharkhand Battalion NCC (Ranchi HQ)                                │
-│                                                                        │
-│  Cadet: "What are the rules for 'B' Certificate exam?"                 │
-│                                                                        │
-│  Subedar Major AI: "Jai Hind Cadet! To be eligible for 'B' Cert:       │
-│  1. Minimum 75% parade attendance in 1st & 2nd year.                   │
-│  2. Must have attended at least 1 Combined Annual Training Camp (CATC).│
-│  3. Written exam covers Drill, Weapon Training, Map Reading & FC/BC." │
-│                                                                        │
-│  Type your query...                           [ 📤 Send Message ]      │
-└────────────────────────────────────────────────────────────────────────┘
-```
-
-- **Briefing**: Floating dialog powered by Google Gemini AI (`gemini-3.6-flash` / `gemini-3.1-flash-lite`) providing 24/7 guidance on military drill, .22 Rifle specifications, camp preparation, and certificate exam syllabus in English and Hindi.
-
----
-
----
-
-## 6. Technology Stack
-
-- **Frontend**: React 18, TypeScript 5.8, Tailwind CSS v4, Motion (`motion/react`), Lucide Icons, html2canvas, jspdf, canvas-confetti.
-- **Backend**: Node.js / Bun, Express.js (v4), TypeScript (`tsx`), WebSockets (`ws`), SheetJS (`xlsx`).
-- **AI Integration**: `@google/genai` SDK targeting `gemini-3.6-flash` with fallback to `gemini-3.1-flash-lite`.
-- **Tooling & Build**: Vite 6, esbuild, TypeScript compiler (`tsc`).
-
----
-
-## 7. Architecture Overview
-
-```
-[ Browser / Mobile Client ]
-       │
-       ├─► HTTP REST API (/api/v1)
-       │     ├── Middleware: Rate Limiter (120 req/min), X-Request-ID Correlation
-       │     ├── Caching: ServerCache in-memory TTL store
-       │     ├── Routes: /health, /metrics, /enrollments, /notifications, /ai-chat, /export-excel
-       │     └── Exporters: SheetJS XLSX nominal roll generator
-       │
-       └─► WebSocket Engine (/ws/v1)
-             ├── Protocol: ws / wss
-             ├── Heartbeat: 15s ping-pong RTT latency tracking
-             └── Channels: cadre:notifications, cadre:enrollments, cadre:presence
+NCC-CRM-V1.0/
+├── frontend/                              # Standalone React 19 + Vite Microservice
+│   ├── src/
+│   │   ├── components/                    # Feature Components (Admin, Cadet, Hero, Navbar, etc.)
+│   │   ├── pages/                         # Top-Level Page Views (Home, Enrollment, Cadet, Admin, Login)
+│   │   ├── hooks/                         # Real-time WebSocket Custom Hooks (useRealtimeData.ts)
+│   │   ├── services/                      # Enterprise API SDK Client (dataPlatform.ts)
+│   │   └── types.ts                       # Frontend Data Models & Interfaces
+│   ├── components/                        # UI Design Primitives (shadcn/ui)
+│   ├── hooks/                             # Responsive UI Hooks (use-mobile.ts)
+│   ├── lib/                               # Styling Utilities (utils.ts)
+│   ├── public/                            # Static Web Assets & Media Images
+│   ├── index.html                         # SPA Root HTML Template
+│   ├── vite.config.ts                     # Vite Dev Server & Proxy Settings
+│   ├── tsconfig.json                      # Frontend TypeScript Config
+│   └── package.json                       # Frontend Package Manifest
+│
+├── backend/                               # Standalone Express + Prisma + WebSocket Microservice
+│   ├── src/
+│   │   ├── controllers/                   # Domain API Controllers (auth, enrollment, notification, system)
+│   │   ├── routes/                        # Versioned REST Routes (/api/v1/*)
+│   │   ├── repositories/                  # Prisma Client (db.ts) & ServerCache (cache.ts)
+│   │   ├── services/                      # WebSocket Engine & Telemetry Services
+│   │   ├── middlewares/                   # Security Headers, Rate Limiting & Tracing
+│   │   └── index.ts                       # Express & WebSocket HTTP Server Entry Point
+│   ├── prisma/
+│   │   └── schema.prisma                  # Relational PostgreSQL Schema
+│   ├── tsconfig.json                      # Backend TypeScript Config
+│   └── package.json                       # Backend Package Manifest
+│
+├── shared/
+│   └── types/
+│       └── index.ts                       # Shared DTO & Interface Declarations
+│
+├── documentation/                         # Architecture & API Specs
+├── docker-compose.yml                     # Multi-Container Deployment Orchestration
+├── .env.example                           # Complete Environment Variables Template
+├── package.json                           # Root Workspace Package Descriptor
+└── README.md                              # Main Project Overview & Guide
 ```
 
 ---
 
-## 8. Project Structure
+## 7. Technology Stack
 
-```
-NCC/
-├── .env.example              # Environment variables template
-├── .gitignore                # Production ignore configuration
-├── API_REFERENCE.md          # REST API & WebSocket documentation
-├── CHANGELOG.md              # Version history log
-├── CONTRIBUTING.md           # Guidelines for contributors
-├── DATA_FLOW.md              # System data flow specs
-├── LICENSE                   # MIT License
-├── PROJECT_OVERVIEW.md       # High-level business overview
-├── README.md                 # Primary project documentation
-├── SECURITY.md               # Security & vulnerability reporting
-├── server.ts                 # Backend Express & WebSocket server
-├── package.json              # Dependencies and scripts
-├── tsconfig.json             # TypeScript configuration
-├── vite.config.ts            # Vite bundler configuration
-└── src/                      # Frontend application source
-    ├── App.tsx               # Main application component
-    ├── main.tsx              # React entry point
-    ├── index.css             # Tailwind CSS & global styles
-    ├── types.ts              # Core TypeScript interfaces
-    ├── components/           # React UI components
-    │   ├── AboutNCC.tsx
-    │   ├── ActivitiesGallery.tsx
-    │   ├── AdminDashboard.tsx
-    │   ├── AiCadreAssistant.tsx
-    │   ├── CadetDashboard.tsx
-    │   ├── EnrollmentForm.tsx
-    │   ├── FaqSection.tsx
-    │   ├── Footer.tsx
-    │   ├── HeroSection.tsx
-    │   ├── Navbar.tsx
-    │   ├── NotificationsFeed.tsx
-    │   ├── PrintableEnrollmentForm.tsx
-    │   ├── RanksSyllabusSection.tsx
-    │   ├── SbuNccSignupPortal.tsx
-    │   └── StatusTrackerModal.tsx
-    ├── data/                 # Static data constants
-    │   └── nccData.ts
-    ├── hooks/                # Custom React hooks
-    │   └── useRealtimeData.ts
-    └── services/             # API client & caching SDK
-        └── dataPlatform.ts
-```
+- **Frontend**: React 19, TypeScript 5.8, Vite 6, Tailwind CSS v4, Motion (`motion/react`), Lucide Icons, html2canvas, jspdf, canvas-confetti.
+- **Backend**: Node.js v20, Express.js (v4), TypeScript (`tsx`), WebSockets (`ws`), SheetJS (`xlsx`), Prisma ORM.
+- **Database**: PostgreSQL 15 Alpine container.
+- **AI Integration**: `@google/genai` SDK targeting Google Gemini AI models.
+- **Containerization**: Docker, Docker Compose, Nginx Alpine (Frontend Reverse Proxy).
 
 ---
 
-## 9. Installation & Getting Started
+## 8. Installation & Quick Start
 
 ### Prerequisites
-- **Node.js**: v18.0.0 or higher (or **Bun** v1.0+)
+- **Node.js**: v20.0.0 or higher
 - **npm**: v9.0.0+
+- **Docker & Docker Compose**: (Required for database & containerized runtime)
 
-### Step-by-Step Setup
+### 🚀 Running with Docker Compose (Recommended)
 
 ```bash
 # 1. Clone the repository
 git clone https://github.com/Hellthefox808/NCC-CRM-V1.0.git
 cd NCC-CRM-V1.0
 
-# 2. Install dependencies
-npm install
-
-# 3. Setup environment variables
+# 2. Copy environment template
 cp .env.example .env
 
-# 4. Start local development server
-npm run dev
+# 3. Launch full microservices stack (Frontend, Backend, PostgreSQL)
+docker-compose up --build -d
+
+# 4. Access applications:
+# - Frontend SPA: http://localhost:5173 (or http://localhost:80 in Docker)
+# - Backend API:  http://localhost:3000/api/v1/health
 ```
 
-The application will be available at `http://localhost:3000`.
+### 💻 Local Workspace Development
+
+```bash
+# 1. Install dependencies for root workspace and sub-packages
+npm install
+
+# 2. Start PostgreSQL container
+docker-compose up -d db
+
+# 3. Push Prisma database schema
+npm --prefix backend run db:push
+
+# 4. Run concurrent development servers
+npm run dev
+
+# Or run individual microservices:
+npm run dev:frontend   # Starts Vite on port 5173
+npm run dev:backend    # Starts Express backend on port 3000
+```
 
 ---
 
-## 10. Configuration & Environment Variables
+## 9. Configuration & Environment Variables
 
 Create a `.env` file in the root directory:
 
 ```env
-# Server Port Configuration
+# Server Port & Mode
 PORT=3000
+NODE_ENV=production
 
-# Google Gemini AI API Key (Server-Side Only)
+# Relational Database Connection
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/ncc_db?schema=public"
+
+# Google Gemini AI Key
 GEMINI_API_KEY="your_gemini_api_key_here"
 
-# Application URL
+# Frontend Network Pipelines
+VITE_API_URL="http://localhost:3000/api/v1"
+VITE_WS_HOST="localhost:3000"
+
+# Host Application URL
 APP_URL="http://localhost:3000"
 ```
 
-> **Security Note**: `GEMINI_API_KEY` is loaded on the backend in `server.ts` and is **never** exposed to browser clients.
-
 ---
 
-## 11. Usage Guide
+## 10. API Reference Overview
 
-- **Public Users**: Visit home page, review enrollment criteria, click **"Apply for Enrollment"**, and fill out the multi-step form.
-- **Track Status**: Click **"Track Application"** in the navigation bar and enter your Application ID, Aadhaar, or SBU Roll Number.
-- **Cadets**: Log into the Cadet Portal to view parade attendance statistics, download your printable Digital ID Card, or practice mock quizzes.
-- **Officers**: Log into the Officer Command Portal to verify candidates, issue ranks/remarks, broadcast notices, and export Excel nominal rolls.
-
----
-
-## 12. API Overview
-
-### Primary Endpoints (`/api/v1`)
+### Primary API Endpoints (`/api/v1`)
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `GET` | `/api/v1/health` | System health check & memory statistics |
-| `GET` | `/api/v1/metrics` | System latency & cache hit ratio metrics |
-| `GET` | `/api/v1/enrollments` | List enrollments (supports filtering, sorting, pagination) |
-| `GET` | `/api/v1/enrollments/status/:query` | Track cadet application status |
+| `GET` | `/api/v1/health` | System health status & memory statistics |
+| `GET` | `/api/v1/metrics` | System request latency & cache hit ratio metrics |
+| `GET` | `/api/v1/enrollments` | List cadet applications (with filter, search, pagination) |
+| `GET` | `/api/v1/enrollments/status/:query` | Track cadet application status by ID, Aadhaar, or SBU Roll |
 | `POST` | `/api/v1/enrollments` | Submit new cadet enrollment application |
 | `PATCH` | `/api/v1/enrollments/status` | Update candidate status & officer remarks |
-| `GET` | `/api/v1/notifications` | Fetch active officer notice feed |
-| `POST` | `/api/v1/notifications` | Broadcast official notice to connected clients |
-| `POST` | `/api/v1/ai-chat` | Submit prompt to Subedar Major AI Assistant |
-| `GET` | `/api/v1/export-excel` | Download nominal roll Excel file (`.xlsx`) |
+| `GET` | `/api/v1/notifications` | Fetch active officer broadcast notices |
+| `POST` | `/api/v1/notifications` | Broadcast official notice to connected WS sessions |
+| `POST` | `/api/v1/ai-chat` | Submit question to Subedar Major AI Assistant |
+| `GET` | `/api/v1/export-excel` | Download multi-tab nominal roll Excel file (`.xlsx`) |
 
 ---
 
-## 13. Security Practices
-
-- **Token Bucket Rate Limiting**: Restricts requests to 120 per minute per IP address.
-- **Payload Constraints**: Limits incoming JSON request bodies to `10MB`.
-- **Request Tracing**: Injects unique `X-Request-ID` headers into every response.
-- **Secret Isolation**: Protects Gemini API keys on the server backend.
-
----
-
-## 14. Performance Strategy
-
-- **Server-side Caching**: In-memory `ServerCache` with TTL invalidates automatically on data mutation.
-- **Client Request Deduplication**: `dataCache.deduplicate()` merges concurrent duplicate API calls.
-- **Asset Optimization**: Vite bundles frontend assets with gzip compression.
-
----
-
-## 15. Accessibility & UX
-
-- High contrast text targeting WCAG AA compliance.
-- Keyboard accessible form fields and modal dialogs with focus trap management.
-- Motion preference support via Framer Motion settings.
-
----
-
-## 16. Testing & Quality Assurance
-
-- **Type Check**: Executed via `npm run lint` (`tsc --noEmit`).
-- **Production Build Sanity**: Validated via `npm run build`.
-
----
-
-## 17. Deployment & Production Setup
-
-To compile and run for production:
+## 11. Testing & Build Verification
 
 ```bash
-# 1. Build client assets and bundle Express server
-npm run build
+# Run type checking across both microservices
+npm run lint
 
-# 2. Start production server
-npm run start
+# Build production bundles (esbuild backend + vite frontend)
+npm run build
 ```
 
-The server serves static assets from `dist/` and runs the backend API on port `3000`.
-
 ---
 
-## 18. Additional Documentation Index
+## 12. Author & Maintainer Profile
 
-- [`PROJECT_OVERVIEW.md`](PROJECT_OVERVIEW.md) — High-level business problem and solution overview.
-- [`ARCHITECTURE.md`](ARCHITECTURE.md) — System architecture & subsystem specifications.
-- [`API_REFERENCE.md`](API_REFERENCE.md) — Detailed REST API specs and payloads.
-- [`DATA_FLOW.md`](DATA_FLOW.md) — Data flow and state lifecycle diagrams.
-- [`REALTIME_ARCHITECTURE.md`](REALTIME_ARCHITECTURE.md) — Real-time WebSocket gateway specs.
-- [`WEBSOCKET_EVENTS.md`](WEBSOCKET_EVENTS.md) — WebSocket event catalog & contracts.
-- [`INTEGRATION_GUIDE.md`](INTEGRATION_GUIDE.md) — Developer SDK & React hook usage guide.
-- [`SECURITY.md`](SECURITY.md) — Security policy and vulnerability disclosure procedures.
-- [`DEPLOYMENT.md`](DEPLOYMENT.md) — Production deployment, Docker & Cloud setup guide.
-- [`TESTING.md`](TESTING.md) — Quality assurance & testing specifications.
-- [`PER_FILE_DOCUMENTATION.md`](PER_FILE_DOCUMENTATION.md) — Per-file source module breakdown.
-- [`STACK_MODERNIZATION_REPORT.md`](STACK_MODERNIZATION_REPORT.md) — Technology stack audit & rewrite decision report.
-- [`GITHUB_SANITIZATION_REPORT.md`](GITHUB_SANITIZATION_REPORT.md) — Pre-push repository audit & secret scan report.
-- [`CONTRIBUTING.md`](CONTRIBUTING.md) — Code contribution guidelines.
-- [`LICENSE`](LICENSE) — Open source software license terms.
-
----
-
-## 19. Roadmap & Future Scope
-
-- [ ] PostgreSQL / Cloud SQL database integration for persistent multi-node deployments.
-- [ ] Redis pub/sub adapter for multi-instance WebSocket horizontal scaling.
-- [ ] Automated SMS/WhatsApp notifications for drill parade alerts.
-
----
-
-## 20. License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-## 21. Author & Maintainer Profile
-
-**Author & Principal Architect**: **Ravi Ranjan Singh**  
+**Principal Architect**: **Ravi Ranjan Singh**  
 - **Role**: Software Engineer • Software Architect • Full Stack Developer • AI SaaS Developer  
 - **Repository Maintainer**: **Ravi Ranjan Singh**  
 - **GitHub Profile**: [https://github.com/Hellthefox808](https://github.com/Hellthefox808)  
-- **Repository**: [https://github.com/Hellthefox808/NCC-CRM-V1.0](https://github.com/Hellthefox808/NCC-CRM-V1.0)
+- **Repository**: [https://github.com/Hellthefox808/NCC-CRM-V1.0](https://github.com/Hellthefox808/NCC-CRM-V1.0)  
+
+---
+*Official Portal for 19 Jharkhand Battalion NCC (Ranchi) • Sarala Birla University (SBU), Ranchi.*
