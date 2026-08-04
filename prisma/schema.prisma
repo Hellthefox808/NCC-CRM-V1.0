@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String             @id @default(uuid())
+  email          String             @unique
+  passwordHash   String
+  role           Role               @default(CADET)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  cadetProfile   CadetProfile?
+  disciplineLogs DisciplineRecord[]
+}
+
+enum Role {
+  ADMIN
+  CADET
+  GUEST
+}
+
+model CadetProfile {
+  id                 String           @id @default(uuid())
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String           @unique
+  enrollmentNo       String?          @unique
+  applicationDate    DateTime         @default(now())
+  fullName           String
+  gender             Gender
+  dob                DateTime
+  aadhaarNumber      String           @unique
+  mobile             String
+  bloodGroup         String
+  identificationMark String
+  status             EnrollmentStatus @default(Submitted)
+  officerRemarks     String?
+  selectionRank      Int?
+
+  // Relations
+  academicDetails AcademicDetails?
+  physicalDetails PhysicalDetails?
+  bankDetails     BankDetails?
+  discipline      DisciplineRecord[]
+
+  @@index([status])
+  @@index([gender])
+}
+
+enum Gender {
+  SD
+  SW
+}
+
+enum EnrollmentStatus {
+  Submitted
+  Physical_Scheduled
+  Medical_Cleared
+  Selected
+  Enrolled
+  Rejected
+}
+
+model AcademicDetails {
+  id                  String       @id @default(uuid())
+  cadet               CadetProfile @relation(fields: [cadetId], references: [id], onDelete: Cascade)
+  cadetId             String       @unique
+  sbuCourse           String
+  sbuDepartment       String
+  sbuRollNo           String       @unique
+  sbuYear             String
+  sbuSemester         String
+  marksPercentage10th Float
+  marksPercentage12th Float
+}
+
+model PhysicalDetails {
+  id                   String       @id @default(uuid())
+  cadet                CadetProfile @relation(fields: [cadetId], references: [id], onDelete: Cascade)
+  cadetId              String       @unique
+  heightCm             Float
+  weightKg             Float
+  run1600mTime         String
+  pushupsCount         Int
+  hasJuniorCertificate Boolean      @default(false)
+  juniorCertificateNo  String?
+  sportsLevel          SportsLevel  @default(None)
+  sportsDetails        String?
+}
+
+enum SportsLevel {
+  None
+  College
+  District
+  State
+  National
+}
+
+model BankDetails {
+  id               String       @id @default(uuid())
+  cadet            CadetProfile @relation(fields: [cadetId], references: [id], onDelete: Cascade)
+  cadetId          String       @unique
+  presentAddress   String
+  permanentAddress String
+  pinCode          String
+  bankName         String
+  accountNumber    String
+  ifscCode         String
+  guardianName     String
+  guardianRelation String
+  guardianMobile   String
+}
+
+model DisciplineRecord {
+  id          String         @id @default(uuid())
+  cadet       CadetProfile   @relation(fields: [cadetId], references: [id], onDelete: Cascade)
+  cadetId     String
+  officer     User           @relation(fields: [officerId], references: [id])
+  officerId   String
+  type        DisciplineType
+  remarks     String
+  date        DateTime       @default(now())
+}
+
+enum DisciplineType {
+  Appreciation
+  Reward
+  Warning
+  Punishment
+}
+
+model Notification {
+  id         String             @id @default(uuid())
+  title      String
+  category   String
+  priority   PriorityLevel      @default(NORMAL)
+  body       String
+  actionType String?
+  actionLabel String?
+  targetRole Role               @default(CADET)
+  createdAt  DateTime           @default(now())
+}
+
+enum PriorityLevel {
+  CRITICAL
+  HIGH
+  NORMAL
+}
