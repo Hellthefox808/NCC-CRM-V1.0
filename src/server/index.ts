@@ -49,15 +49,14 @@ initWebSocketServer(server);
 
 // Start Server
 async function startServer() {
-  const isProd = process.env.NODE_ENV === "production" || fs.existsSync(path.resolve(process.cwd(), "dist/index.html"));
+  const isProd = process.env.NODE_ENV === "production";
 
   if (isProd) {
     console.log("[PROD] Serving static frontend files...");
     const candidatePaths = [
       path.resolve(process.cwd(), "dist"),
       path.resolve(process.cwd(), "dist/client"),
-      path.resolve(__dirname, ".."),
-      path.resolve(__dirname, ".")
+      process.cwd()
     ];
     const distPath = candidatePaths.find((p) => fs.existsSync(path.join(p, "index.html"))) || candidatePaths[0];
 
