@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  ncc-sbu-portal:
+    image: ghcr.io/hellthefox808/ncc-crm-v1.0:latest
+    container_name: ncc-sbu-portal
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - APP_URL=https://ncc.sbu.ac.in
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

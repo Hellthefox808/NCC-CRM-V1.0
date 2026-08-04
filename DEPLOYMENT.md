@@ -144,7 +144,52 @@ graph TD
 
 ---
 
-## 8. Authorship
+## 8. GitHub Actions CD Deployment Flowchart (GHCR & Docker Compose)
+
+```
+GitHub
+    ↓
+GitHub Actions
+    ↓
+Docker Build
+    ↓
+Docker Scan
+    ↓
+Push to GHCR
+    ↓
+SSH to Server
+    ↓
+docker compose pull
+docker compose up -d
+    ↓
+Health Check
+    ↓
+Deployment Complete
+```
+
+### Mermaid CD Flow Diagram
+
+```mermaid
+graph TD
+    A[GitHub Repo] --> B[GitHub Actions Runner]
+    B --> C[Docker Build]
+    C --> D[Docker Security Scan]
+    D --> E[Push to GHCR]
+    E --> F[SSH Connection to Server]
+    F --> G[docker compose pull]
+    G --> H[docker compose up -d]
+    H --> I[Health Check GET /api/v1/health]
+    I --> J[Deployment Complete]
+
+    style A fill:#002147,stroke:#fbbf24,stroke-width:2px,color:#fff
+    style E fill:#002147,stroke:#fbbf24,stroke-width:2px,color:#fff
+    style H fill:#002147,stroke:#fbbf24,stroke-width:2px,color:#fff
+    style J fill:#10b981,stroke:#fbbf24,stroke-width:2px,color:#fff
+```
+
+---
+
+## 9. Authorship
 
 - **Author & Architect**: **Ravi Ranjan Singh**
 - **Role**: Software Engineer • Software Architect • Full Stack Developer • AI SaaS Developer
