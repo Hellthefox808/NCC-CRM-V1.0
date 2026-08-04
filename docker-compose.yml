@@ -1,9 +1,11 @@
 version: '3.8'
 
 services:
-  ncc-sbu-portal:
-    image: ghcr.io/hellthefox808/ncc-crm-v1.0:latest
-    container_name: ncc-sbu-portal
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ncc-backend
     restart: always
     ports:
       - "3000:3000"
@@ -11,7 +13,6 @@ services:
       - PORT=3000
       - NODE_ENV=production
       - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - APP_URL=https://ncc.sbu.ac.in
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/ncc_db?schema=public
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/v1/health"]
@@ -22,6 +23,20 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ncc-frontend
+    restart: always
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_API_URL=http://localhost:3000/api/v1
+      - VITE_WS_HOST=localhost:3000
+    depends_on:
+      - backend
 
   db:
     image: postgres:15-alpine
