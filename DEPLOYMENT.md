@@ -89,7 +89,62 @@ If a release requires rollback:
 
 ---
 
-## 6. Authorship
+## 7. Automated CI/CD Pipeline Flowchart
+
+```
+Source Code
+     │
+     ▼
+Lint + Formatting
+     │
+     ▼
+Unit Tests
+     │
+     ▼
+Security Scan
+     │
+     ▼
+Build
+     │
+     ▼
+Docker Image
+     │
+     ▼
+Container Registry
+     │
+     ▼
+Deploy
+     │
+     ▼
+Health Checks
+     │
+     ▼
+Monitoring & Logging
+```
+
+### Mermaid Visual Flow Diagram
+
+```mermaid
+graph TD
+    A[Source Code] --> B[Lint + Formatting]
+    B --> C[Unit Tests]
+    C --> D[Security Scan]
+    D --> E[Build]
+    E --> F[Docker Image]
+    F --> G[Container Registry]
+    G --> H[Deploy]
+    H --> I[Health Checks]
+    I --> J[Monitoring & Logging]
+
+    style A fill:#002147,stroke:#fbbf24,stroke-width:2px,color:#fff
+    style E fill:#002147,stroke:#fbbf24,stroke-width:2px,color:#fff
+    style H fill:#002147,stroke:#fbbf24,stroke-width:2px,color:#fff
+    style J fill:#002147,stroke:#fbbf24,stroke-width:2px,color:#fff
+```
+
+---
+
+## 8. Authorship
 
 - **Author & Architect**: **Ravi Ranjan Singh**
 - **Role**: Software Engineer • Software Architect • Full Stack Developer • AI SaaS Developer
