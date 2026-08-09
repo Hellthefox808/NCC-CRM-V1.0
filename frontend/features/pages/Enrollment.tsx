@@ -460,56 +460,85 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
       className="min-h-screen w-full flex bg-enrollment-surface font-enrollment-body text-enrollment-primary"
       id="enrollment-section"
     >
-      {/* Left Sidebar / Hero - Ultra-Clear HD SBU & NCC Regimental Section */}
-      <aside className="hidden lg:flex w-[40%] bg-zinc-950 p-12 xl:p-16 flex-col justify-between sticky top-0 h-screen overflow-hidden relative">
-        {/* Ultra-Clear HD Campus & Parade Background Image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 brightness-110 contrast-110 saturate-[1.1]"
+      {/* Left Sidebar / Hero - Ultra-Clear HD SBU & NCC Regimental Section with Motion Effects */}
+      <aside className="hidden lg:flex w-[40%] bg-zinc-950 p-8 xl:p-12 flex-col justify-between sticky top-0 h-screen overflow-hidden relative">
+        {/* Slow-Zoom Motion Camera Background Image */}
+        <motion.div
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat brightness-105 contrast-110 saturate-[1.1]"
           style={{ backgroundImage: `url('/sbu-campus-front.jpg')` }}
           role="img"
           aria-label="Sarala Birla University Campus, Ranchi"
         />
-        {/* Minimal Soft Vignette for 100% Crystal-Clear Image Visibility */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-[#16331e]/25 to-black/65" />
+        {/* Soft Vignette Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-[#0f2415]/30 to-black/75" />
 
-        <div className="relative z-10">
+        {/* High-Contrast Glassmorphic Container for 100% Text Legibility */}
+        <div className="relative z-10 bg-[#09150c]/80 backdrop-blur-xl border border-emerald-500/30 p-6 sm:p-8 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.7)] ring-1 ring-white/10 my-auto">
           {/* Identity Block with SBU & NCC Crest Logos */}
-          <div className="mb-10">
-            <div className="flex items-center gap-3 mb-6">
+          <div className="mb-8">
+            <div className="flex items-center gap-3.5 mb-5">
               {/* SBU Official Emblem Logo */}
-              <div className="relative w-14 h-14 rounded-full bg-white p-1 shadow-2xl border-2 border-emerald-400 ring-2 ring-black/40 flex items-center justify-center overflow-hidden transition-transform hover:scale-105 shrink-0">
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: -4 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="relative w-14 h-14 rounded-full bg-white p-1 shadow-2xl border-2 border-emerald-400 ring-2 ring-black/40 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer"
+              >
                 <img
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_5fO3j9MhxWCOALUorfuM3nZcChQfc2949oaRRyjpIQ&s=10"
                   alt="Sarala Birla University Emblem"
                   className="w-full h-full object-contain rounded-full"
                   referrerPolicy="no-referrer"
                 />
-              </div>
+              </motion.div>
 
-              <div className="h-8 w-0.5 bg-white/50 shadow-sm" />
+              <div className="h-8 w-0.5 bg-white/40 shadow-sm" />
 
               {/* NCC Official Crest Emblem Logo */}
-              <div className="relative w-14 h-14 rounded-full bg-white p-1 shadow-2xl border-2 border-amber-400 ring-2 ring-black/40 flex items-center justify-center overflow-hidden transition-transform hover:scale-105 shrink-0">
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: 4 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="relative w-14 h-14 rounded-full bg-white p-1 shadow-2xl border-2 border-amber-400 ring-2 ring-black/40 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer"
+              >
                 <img
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTZDvUjTIPyVWknpreMHXnyKTvz7-P_uljpSxjPHcXXw&s=10"
                   alt="19 JHR BN NCC Crest"
                   className="w-full h-full object-contain rounded-full"
                   referrerPolicy="no-referrer"
                 />
-              </div>
+              </motion.div>
             </div>
 
-            <h2 className="text-white text-xs font-black tracking-[0.2em] uppercase mb-2 font-enrollment-display drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
-              19 Jharkhand Battalion NCC
-            </h2>
-            <h1 className="text-4xl xl:text-5xl font-extrabold text-white leading-[1.1] font-enrollment-display tracking-tight drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)]">
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-emerald-400 text-xs font-black tracking-[0.22em] uppercase mb-1.5 font-enrollment-display flex items-center gap-1.5"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>19 Jharkhand Battalion NCC</span>
+            </motion.h2>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-3xl xl:text-4xl font-black text-white leading-tight font-enrollment-display tracking-tight drop-shadow-md"
+            >
               Cadet Enrollment
               <br />
               Application
-            </h1>
-            <p className="mt-4 text-emerald-300 font-extrabold text-sm tracking-wide drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
-              Sarala Birla University, Ranchi
-            </p>
+            </motion.h1>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="mt-3.5 inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-400/30 px-3.5 py-1 rounded-full text-emerald-300 font-extrabold text-xs tracking-wide"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Sarala Birla University, Ranchi</span>
+            </motion.div>
           </div>
 
           {/* Vertical Stepper */}
@@ -518,7 +547,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               role="tablist"
               aria-orientation="vertical"
               onKeyDown={(e) => handleStepperKeyDown(e, "vertical", desktopStepRefs)}
-              className="space-y-8 relative"
+              className="space-y-6 relative"
             >
               <div className="absolute left-[11px] top-2 bottom-2 w-px bg-white/20" />
               <motion.div
@@ -556,11 +585,11 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                   >
                     <motion.div
                       initial={false}
-                      animate={{ scale: isActive ? 1.1 : 1 }}
+                      animate={{ scale: isActive ? 1.15 : 1 }}
                       transition={{ type: "spring", stiffness: 340, damping: 22 }}
                       className={`w-6 h-6 rounded-full z-10 flex items-center justify-center transition-colors duration-300 ${
                         isActive
-                          ? "bg-enrollment-accent ring-4 ring-enrollment-accent/25"
+                          ? "bg-enrollment-accent ring-4 ring-enrollment-accent/30 shadow-lg shadow-emerald-500/40"
                           : isCompleted
                             ? "bg-enrollment-accent"
                             : "bg-white/20"
@@ -580,13 +609,13 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                     </motion.div>
                     <span className="flex flex-col">
                       <span
-                        className={`text-sm font-medium transition-colors duration-300 ${
+                        className={`text-sm font-bold transition-colors duration-300 ${
                           isActive ? "text-white" : isCompleted ? "text-white/90" : "text-white/70"
                         }`}
                       >
                         {s.label} Details
                       </span>
-                      <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-enrollment-accent">
+                      <span className="text-[10px] font-black uppercase tracking-[0.14em] text-emerald-400">
                         {isCompleted ? "Completed" : isActive ? "In progress" : "Locked"}
                       </span>
                     </span>
@@ -597,8 +626,9 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
           </nav>
         </div>
 
-        <div className="relative z-10 text-white/70 text-[11px] font-bold tracking-[0.18em] uppercase font-mono drop-shadow-sm">
-          Discipline · Service · Unity
+        <div className="relative z-10 text-white/80 text-[11px] font-black tracking-[0.18em] uppercase font-mono drop-shadow-sm flex items-center justify-between">
+          <span>Discipline · Service · Unity</span>
+          <span className="text-emerald-400 font-extrabold">2026-27</span>
         </div>
       </aside>
 
