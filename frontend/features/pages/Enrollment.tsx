@@ -61,45 +61,45 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
   const [showAllErrors, setShowAllErrors] = useState<boolean>(false);
   const [submittedRecord, setSubmittedRecord] = useState<CadetRecord | null>(null);
 
-  // Form State
+  // Form State - Clean blank form for real cadet applications
   const [formData, setFormData] = useState({
     fullName: "",
     gender: "SD" as "SD" | "SW",
-    dob: "2006-05-15",
+    dob: "",
     aadhaarNumber: "",
     mobile: "",
     email: "",
     fatherName: "",
     motherName: "",
     bloodGroup: "O+",
-    heightCm: "172",
-    weightKg: "64",
-    identificationMark: "Mole on right wrist",
+    heightCm: "",
+    weightKg: "",
+    identificationMark: "",
 
     // SBU Academic
-    sbuDepartment: "Faculty of Engineering & Technology",
-    sbuCourse: "B.Tech Computer Science",
+    sbuDepartment: "",
+    sbuCourse: "",
     sbuRollNo: "",
     sbuYear: "1st Year",
     sbuSemester: "1st Sem",
-    marksPercentage10th: "85.0",
-    marksPercentage12th: "82.5",
+    marksPercentage10th: "",
+    marksPercentage12th: "",
 
     // Physical & Co-curricular
-    run1600mTime: "6 min 15 sec",
-    pushupsCount: "30",
+    run1600mTime: "",
+    pushupsCount: "",
     hasJuniorCertificate: false,
     juniorCertificateNo: "",
-    sportsLevel: "District" as "None" | "College" | "District" | "State" | "National",
+    sportsLevel: "None" as "None" | "College" | "District" | "State" | "National",
     sportsDetails: "",
 
     // Address & Bank
-    presentAddress: "SBU Campus Hostel, Namkum, Ranchi, Jharkhand",
+    presentAddress: "",
     permanentAddress: "",
-    pinCode: "834010",
-    bankName: "State Bank of India",
+    pinCode: "",
+    bankName: "",
     accountNumber: "",
-    ifscCode: "SBIN0001234",
+    ifscCode: "",
 
     // Guardian
     guardianName: "",
@@ -116,9 +116,9 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
   // is unreadable from devtools/storage. Sensitive IDs are still never written.
   // DRAFT_SCHEMA_VERSION: bump whenever the form fields or steps change so any
   // draft written against the old flow is discarded instead of half-restored.
-  const DRAFT_KEY = "ncc-enrollment-draft-v2";
-  const LEGACY_DRAFT_KEY = "ncc-enrollment-draft-v1";
-  const DRAFT_SCHEMA_VERSION = "enroll-2026.1";
+  const DRAFT_KEY = "ncc-enrollment-draft-v3";
+  const LEGACY_DRAFT_KEY = "ncc-enrollment-draft-v2";
+  const DRAFT_SCHEMA_VERSION = "enroll-2026.3";
   const DRAFT_TTL_MS = 24 * 60 * 60 * 1000; // auto-expires after 24 hours
   const SENSITIVE_FIELDS = ["aadhaarNumber", "accountNumber"] as const;
   const [draftRestored, setDraftRestored] = useState(false);
