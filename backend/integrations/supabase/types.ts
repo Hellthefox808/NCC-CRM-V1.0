@@ -8,6 +8,243 @@ export type Database = {
   };
   public: {
     Tables: {
+      activities: {
+        Row: {
+          category: string;
+          created_at: string;
+          description: string;
+          end_time: string | null;
+          id: string;
+          image_url: string | null;
+          location: string;
+          organizer: string | null;
+          start_time: string;
+          status: string;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          category?: string;
+          created_at?: string;
+          description?: string;
+          end_time?: string | null;
+          id?: string;
+          image_url?: string | null;
+          location?: string;
+          organizer?: string | null;
+          start_time: string;
+          status?: string;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          category?: string;
+          created_at?: string;
+          description?: string;
+          end_time?: string | null;
+          id?: string;
+          image_url?: string | null;
+          location?: string;
+          organizer?: string | null;
+          start_time?: string;
+          status?: string;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      activity_participants: {
+        Row: {
+          activity_id: string;
+          cadet_enrollment_id: string;
+          id: string;
+          registered_at: string;
+          remarks: string | null;
+          status: string;
+        };
+        Insert: {
+          activity_id: string;
+          cadet_enrollment_id: string;
+          id?: string;
+          registered_at?: string;
+          remarks?: string | null;
+          status?: string;
+        };
+        Update: {
+          activity_id?: string;
+          cadet_enrollment_id?: string;
+          id?: string;
+          registered_at?: string;
+          remarks?: string | null;
+          status?: string;
+        };
+        Relationships: [];
+      };
+      activity_photos: {
+        Row: {
+          activity_id: string;
+          caption: string | null;
+          created_at: string;
+          id: string;
+          photo_url: string;
+          uploaded_by: string;
+        };
+        Insert: {
+          activity_id: string;
+          caption?: string | null;
+          created_at?: string;
+          id?: string;
+          photo_url: string;
+          uploaded_by?: string;
+        };
+        Update: {
+          activity_id?: string;
+          caption?: string | null;
+          created_at?: string;
+          id?: string;
+          photo_url?: string;
+          uploaded_by?: string;
+        };
+        Relationships: [];
+      };
+      annual_plans: {
+        Row: {
+          category: string;
+          created_at: string;
+          id: string;
+          plan_year: number;
+          remarks: string | null;
+          status: string;
+          target_month: string;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          category?: string;
+          created_at?: string;
+          id?: string;
+          plan_year?: number;
+          remarks?: string | null;
+          status?: string;
+          target_month: string;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          category?: string;
+          created_at?: string;
+          id?: string;
+          plan_year?: number;
+          remarks?: string | null;
+          status?: string;
+          target_month?: string;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      audit_logs: {
+        Row: {
+          action: string;
+          actor: string;
+          created_at: string;
+          id: string;
+          ip: string;
+          metadata: Json | null;
+          target: string;
+        };
+        Insert: {
+          action: string;
+          actor: string;
+          created_at?: string;
+          id?: string;
+          ip?: string;
+          metadata?: Json | null;
+          target?: string;
+        };
+        Update: {
+          action?: string;
+          actor?: string;
+          created_at?: string;
+          id?: string;
+          ip?: string;
+          metadata?: Json | null;
+          target?: string;
+        };
+        Relationships: [];
+      };
+      calendar_events: {
+        Row: {
+          created_at: string;
+          description: string | null;
+          end_time: string;
+          event_type: string;
+          id: string;
+          is_all_day: boolean | null;
+          location: string | null;
+          start_time: string;
+          title: string;
+        };
+        Insert: {
+          created_at?: string;
+          description?: string | null;
+          end_time: string;
+          event_type?: string;
+          id?: string;
+          is_all_day?: boolean | null;
+          location?: string | null;
+          start_time: string;
+          title: string;
+        };
+        Update: {
+          created_at?: string;
+          description?: string | null;
+          end_time?: string;
+          event_type?: string;
+          id?: string;
+          is_all_day?: boolean | null;
+          location?: string | null;
+          start_time?: string;
+          title?: string;
+        };
+        Relationships: [];
+      };
+      staff_attendance: {
+        Row: {
+          clock_in: string;
+          clock_out: string | null;
+          created_at: string;
+          date: string;
+          duty_location: string | null;
+          id: string;
+          remarks: string | null;
+          staff_name: string;
+          staff_role: string;
+        };
+        Insert: {
+          clock_in?: string;
+          clock_out?: string | null;
+          created_at?: string;
+          date?: string;
+          duty_location?: string | null;
+          id?: string;
+          remarks?: string | null;
+          staff_name: string;
+          staff_role?: string;
+        };
+        Update: {
+          clock_in?: string;
+          clock_out?: string | null;
+          created_at?: string;
+          date?: string;
+          duty_location?: string | null;
+          id?: string;
+          remarks?: string | null;
+          staff_name?: string;
+          staff_role?: string;
+        };
+        Relationships: [];
+      };
       app_credentials: {
         Row: {
           created_at: string;
