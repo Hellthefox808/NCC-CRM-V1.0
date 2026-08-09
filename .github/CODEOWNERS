@@ -1,0 +1,14 @@
+# Global Code Ownership Policy — 19 JHR BN NCC Command Portal
+
+# Default owners for all repository files
+* @Hellthefox808
+
+# Security & Authentication boundaries
+/src/routes/api/v1/auth/ @Hellthefox808
+/backend/lib/auth-otp.server.ts @Hellthefox808
+/backend/lib/cadet-registry.server.ts @Hellthefox808
+
+# Infrastructure, CI/CD, & Supabase Migrations
+/.github/workflows/ @Hellthefox808
+/supabase/migrations/ @Hellthefox808
+/Dockerfile @Hellthefox808
