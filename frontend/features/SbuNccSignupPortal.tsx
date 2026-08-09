@@ -445,19 +445,19 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
     }
   };
 
-  // Shared field styling — single source of truth so cadet and officer forms match.
+  // Shared field styling — Light Coffee Cream & Regimental Navy theme.
   const fieldClass =
-    "w-full rounded-[14px] border border-border bg-muted/40 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/70 transition-all focus:border-primary focus:bg-card focus:ring-4 focus:ring-primary/10 focus:outline-none";
+    "w-full rounded-[14px] border border-[#8C5E3C]/25 bg-[#FAF7F2] px-4 py-3 text-sm text-[#3B281C] placeholder:text-[#8C5E3C]/60 transition-all focus:border-[#1E3A8A] focus:bg-white focus:ring-4 focus:ring-[#1E3A8A]/15 focus:outline-none font-medium";
   const fieldWithIconClass = `${fieldClass} pl-11`;
   const labelClass =
-    "mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground";
+    "mb-1.5 block text-[10px] font-black uppercase tracking-[0.16em] text-[#8C5E3C]";
   const submitClass =
-    "w-full rounded-[14px] bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:opacity-95 active:scale-[0.99] cursor-pointer flex items-center justify-center gap-2";
+    "w-full rounded-[14px] bg-[#1E3A8A] py-3.5 text-sm font-bold text-white shadow-lg shadow-[#1E3A8A]/25 transition-all hover:bg-[#152A64] hover:shadow-xl active:scale-[0.99] cursor-pointer flex items-center justify-center gap-2";
   const subTabClass = (active: boolean) =>
-    `pb-3 text-[13px] font-semibold transition-colors cursor-pointer border-b-2 ${
+    `pb-3 text-[13px] font-bold transition-colors cursor-pointer border-b-2 ${
       active
-        ? "text-foreground border-primary"
-        : "text-muted-foreground border-transparent hover:text-foreground"
+        ? "text-[#1E3A8A] border-[#1E3A8A]"
+        : "text-[#8C5E3C]/70 border-transparent hover:text-[#3B281C]"
     }`;
 
   // Portal switch shows a skeleton for one animation beat so the panel swap reads
@@ -709,43 +709,65 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
         animate="visible"
         className="w-full max-w-[1100px] overflow-hidden rounded-[18px] border border-border bg-card shadow-[0_32px_64px_-12px_rgb(0_0_0/0.12)] lg:flex lg:min-h-[680px]"
       >
-        {/* Left: campus identity rail */}
-        <div className="relative hidden bg-zinc-900 lg:block lg:w-[42%]">
+        {/* Left: campus identity rail - Light Coffee & Regimental Image Theme */}
+        <div className="relative hidden bg-[#0f2415] lg:block lg:w-[42%] overflow-hidden">
+          {/* Crystal Clear SBU Campus Photography */}
           <div
-            className="absolute inset-0 bg-cover bg-center opacity-60"
-            style={{ backgroundImage: `url('${campusFront.url}')` }}
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 brightness-105 contrast-105 saturate-[1.1]"
+            style={{ backgroundImage: `url('/sbu-campus-front.jpg')` }}
             role="img"
             aria-label="Sarala Birla University main campus building, Ranchi"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent" />
+          {/* Subtle Regimental Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#09150c]/90 via-[#0f2415]/50 to-[#09150c]/70" />
+
+          {/* Top Crest Badges on Left Rail */}
+          <div className="absolute top-10 left-10 flex items-center gap-3 z-10">
+            <div className="w-11 h-11 rounded-full bg-white p-0.5 shadow-xl border border-emerald-400 flex items-center justify-center overflow-hidden">
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_5fO3j9MhxWCOALUorfuM3nZcChQfc2949oaRRyjpIQ&s=10"
+                alt="SBU Emblem"
+                className="w-full h-full object-contain rounded-full"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="w-11 h-11 rounded-full bg-white p-0.5 shadow-xl border border-amber-400 flex items-center justify-center overflow-hidden">
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTZDvUjTIPyVWknpreMHXnyKTvz7-P_uljpSxjPHcXXw&s=10"
+                alt="NCC Crest"
+                className="w-full h-full object-contain rounded-full"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          </div>
 
           <motion.div
             variants={staggerContainer}
             initial="hidden"
             animate="visible"
-            className="absolute inset-x-10 bottom-12"
+            className="absolute inset-x-10 bottom-12 z-10"
           >
             <motion.div
               variants={staggerItem}
-              className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-md shadow-[0_4px_20px_-6px_rgba(0,0,0,0.25)]"
+              className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-950/60 px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-emerald-300 backdrop-blur-md shadow-lg"
             >
-              <span className="h-2 w-2 rounded-full bg-primary shadow-[0_0_10px_color-mix(in_oklab,var(--primary)_70%,transparent)]" />
-              {"\u00a0"}CADRE PORTAL
+              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>CADRE PORTAL</span>
             </motion.div>
             <motion.h2
               variants={staggerItem}
-              className="mb-5 font-display text-5xl font-bold leading-[1.05] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)] lg:text-6xl"
+              className="mb-4 font-display text-4xl font-extrabold leading-[1.1] tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] lg:text-5xl"
             >
               सरला बिरला विश्वविद्यालय, राँची
             </motion.h2>
             <motion.p
               variants={staggerItem}
-              className="max-w-md text-base leading-[1.65] text-zinc-200 [text-shadow:0_1px_16px_rgba(0,0,0,0.3)]"
+              className="max-w-md text-sm leading-relaxed text-emerald-100/90 font-medium drop-shadow-md"
             >
               Official Senior Division &amp; Senior Wing Army cadre portal of{" "}
-              <strong className="font-semibold text-white">19 Jharkhand Battalion NCC</strong>,
-              Bihar &amp; Jharkhand Directorate — enrollment, attendance, camps and certificate
-              records for the Sarala Birla University company.
+              <strong className="font-bold text-white">19 Jharkhand Battalion NCC</strong>, Bihar
+              &amp; Jharkhand Directorate — enrollment, attendance, camps and certificate records
+              for the Sarala Birla University company.
             </motion.p>
           </motion.div>
         </div>
@@ -755,36 +777,49 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className="flex flex-1 flex-col p-6 sm:p-10 lg:p-14"
+          className="flex flex-1 flex-col p-6 sm:p-10 lg:p-14 bg-[#FFFBF7]"
         >
-          {/* Panel header: crest, university identity, cadre chip */}
+          {/* Panel header: crests, university identity, cadre chip */}
           <motion.div
             variants={staggerItem}
             className="mb-10 flex items-start justify-between gap-4"
           >
-            <div className="flex items-center gap-4">
-              <motion.div
-                whileHover={{ scale: 1.05, rotate: 2 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border bg-card p-1"
-              >
-                <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTZDvUjTIPyVWknpreMHXnyKTvz7-P_uljpSxjPHcXXw&s=10"
-                  alt="Sarala Birla University crest"
-                  className="h-full w-full rounded-lg object-contain"
-                  referrerPolicy="no-referrer"
-                />
-              </motion.div>
+            <div className="flex items-center gap-3.5">
+              <div className="flex items-center gap-2">
+                <motion.div
+                  whileHover={{ scale: 1.08, rotate: -2 }}
+                  className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-emerald-400/60 bg-white p-1 shadow-md"
+                >
+                  <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_5fO3j9MhxWCOALUorfuM3nZcChQfc2949oaRRyjpIQ&s=10"
+                    alt="Sarala Birla University Emblem"
+                    className="h-full w-full rounded-full object-contain"
+                    referrerPolicy="no-referrer"
+                  />
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.08, rotate: 2 }}
+                  className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-amber-400/60 bg-white p-1 shadow-md"
+                >
+                  <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTZDvUjTIPyVWknpreMHXnyKTvz7-P_uljpSxjPHcXXw&s=10"
+                    alt="19 JHR BN NCC Crest"
+                    className="h-full w-full rounded-full object-contain"
+                    referrerPolicy="no-referrer"
+                  />
+                </motion.div>
+              </div>
+
               <div className="min-w-0">
-                <h1 className="font-display text-lg font-semibold leading-none tracking-tight text-foreground">
+                <h1 className="font-display text-lg font-black leading-none tracking-tight text-[#3B281C]">
                   Sarala Birla University
                 </h1>
-                <p className="mt-1.5 text-[11px] font-medium text-muted-foreground">
+                <p className="mt-1 text-[11px] font-bold text-[#8C5E3C]">
                   सरला बिरला विश्वविद्यालय, राँची
                 </p>
               </div>
             </div>
-            <span className="shrink-0 rounded-md border border-border bg-muted px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <span className="shrink-0 rounded-lg border border-[#1E3A8A]/30 bg-[#1E3A8A] px-3 py-1 text-[10px] font-black uppercase tracking-wider text-white shadow-xs">
               2026-27 Cadre
             </span>
           </motion.div>
