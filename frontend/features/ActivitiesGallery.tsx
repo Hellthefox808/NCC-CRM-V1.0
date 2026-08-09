@@ -98,7 +98,7 @@ export const ActivitiesGallery: React.FC = () => {
         style={{ y: shouldReduceMotion ? 0 : parallaxY }}
         className="relative z-10 mx-auto max-w-7xl space-y-10 px-4 sm:px-6 lg:px-8"
       >
-        {/* Header */}
+        {/* Header — High Contrast Clear View */}
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -106,22 +106,22 @@ export const ActivitiesGallery: React.FC = () => {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="mx-auto max-w-3xl space-y-3 text-center"
         >
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
-            <Camera className="h-3.5 w-3.5" strokeWidth={1.75} />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-600/40 bg-blue-50 px-3.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-blue-700 shadow-xs">
+            <Camera className="h-3.5 w-3.5 text-blue-600" strokeWidth={2} />
             Training &amp; Field Record
           </span>
-          <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="text-3xl font-black tracking-tight text-zinc-950 sm:text-4xl">
             NCC Camp Activities &amp; Cadre Overview
           </h2>
-          <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+          <p className="text-sm font-bold leading-relaxed text-zinc-800 sm:text-base">
             Discover battalion training camps, firing ranges, Republic Day trials, adventure
             trekking, and community drives at Sarala Birla University.
           </p>
         </motion.div>
 
-        {/* Primary View Switcher Tabs (Activities vs Camp Overview) */}
+        {/* Primary View Switcher Tabs (Activities vs Camp Overview) — High Contrast */}
         <div className="flex justify-center">
-          <div className="inline-flex gap-1.5 rounded-2xl border border-border bg-muted/60 p-1.5 backdrop-blur-md">
+          <div className="inline-flex gap-1.5 rounded-2xl border border-zinc-300 bg-zinc-100/90 p-1.5 backdrop-blur-md shadow-sm">
             {[
               {
                 mode: "activities" as const,
@@ -143,20 +143,20 @@ export const ActivitiesGallery: React.FC = () => {
                   onClick={() => setActiveViewMode(mode)}
                   aria-pressed={isActive}
                   id={id}
-                  className={`relative flex cursor-pointer items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-semibold outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:text-sm ${
+                  className={`relative flex cursor-pointer items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-black outline-none transition-colors duration-200 sm:text-sm ${
                     isActive
-                      ? "text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "text-white shadow-md"
+                      : "text-zinc-800 hover:text-zinc-950 hover:bg-zinc-200/80"
                   }`}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="activities-view-pill"
-                      transition={{ type: "spring", stiffness: 320, damping: 28 }}
-                      className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-r from-primary to-accent shadow-sm"
+                      transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                      className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 shadow-md"
                     />
                   )}
-                  <Icon className="h-4 w-4" strokeWidth={1.9} />
+                  <Icon className="h-4 w-4 shrink-0" strokeWidth={2.2} />
                   <span>{label}</span>
                 </button>
               );
@@ -498,9 +498,9 @@ export const ActivitiesGallery: React.FC = () => {
         {/* VIEW 2: CADRE ACTIVITIES GALLERY */}
         {activeViewMode === "activities" && (
           <div className="space-y-6">
-            {/* Category Filter Tabs */}
+            {/* Category Filter Tabs — High Contrast Clear View */}
             <div className="space-y-4 text-center">
-              <div className="mx-auto inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 rounded-2xl border border-border bg-muted/60 p-1.5 backdrop-blur-md">
+              <div className="mx-auto inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 rounded-2xl border border-zinc-300 bg-zinc-100/90 p-1.5 backdrop-blur-md shadow-sm">
                 {categories.map((cat) => {
                   const Icon = cat.icon;
                   const count = getCategoryCount(cat.name);
@@ -511,27 +511,27 @@ export const ActivitiesGallery: React.FC = () => {
                       key={cat.name}
                       onClick={() => setSelectedCategory(cat.name)}
                       aria-pressed={isActive}
-                      className={`relative flex cursor-pointer select-none items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                      className={`relative flex cursor-pointer select-none items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-black outline-none transition-colors duration-200 ${
                         isActive
-                          ? "text-primary-foreground"
-                          : "text-muted-foreground hover:text-foreground"
+                          ? "text-white shadow-md"
+                          : "text-zinc-800 hover:text-zinc-950 hover:bg-zinc-200/80"
                       }`}
                       id={`activity-tab-${cat.name.toLowerCase().replace(/\s+/g, "-")}`}
                     >
                       {isActive && (
                         <motion.span
                           layoutId="activity-category-pill"
-                          transition={{ type: "spring", stiffness: 320, damping: 28 }}
-                          className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-r from-primary to-accent shadow-sm"
+                          transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                          className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 shadow-md"
                         />
                       )}
-                      <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.9} />
+                      <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={2.2} />
                       <span>{cat.name}</span>
                       <span
-                        className={`ml-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold transition-colors ${
+                        className={`ml-0.5 rounded-full px-2 py-0.5 text-[10px] font-black transition-colors ${
                           isActive
-                            ? "bg-primary-foreground/20 text-primary-foreground"
-                            : "bg-background text-muted-foreground border border-border"
+                            ? "bg-white/25 text-white"
+                            : "bg-white text-zinc-900 border border-zinc-300 shadow-2xs"
                         }`}
                       >
                         {count}
