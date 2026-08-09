@@ -510,7 +510,7 @@ export const AboutNCC: React.FC = () => {
           </motion.div>
         </motion.div>
 
-        {/* SSB Special Entry Highlight Banner */}
+        {/* SSB Special Entry Highlight Banner — Indian Army Olive Green & Regimental Gold Theme */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -530,23 +530,24 @@ export const AboutNCC: React.FC = () => {
           }}
           whileHover={{ y: -3 }}
           transition={{ type: "spring", stiffness: 260, damping: 26 }}
-          className="group relative overflow-hidden rounded-[18px] border border-border bg-card p-6 text-left shadow-sm transition-colors duration-500 hover:border-primary/40 hover:shadow-lg focus-within:border-primary/50 sm:p-8"
+          className="army-theme-card group relative overflow-hidden rounded-[22px] p-6 text-left shadow-xl transition-all duration-500 sm:p-8"
         >
+          {/* Animated Ambient Army Gold Glare */}
           <motion.span
             aria-hidden
             animate={{ opacity: [0.25, 0.5, 0.25], scale: [1, 1.12, 1] }}
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-            className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-primary/15 blur-3xl transition-opacity duration-500 group-hover:bg-primary/25"
+            className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#C5A059]/20 blur-3xl"
           />
           <motion.span
             aria-hidden
             animate={{ opacity: [0.2, 0.4, 0.2] }}
             transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-            className="pointer-events-none absolute -bottom-24 -left-12 h-56 w-56 rounded-full bg-accent/15 blur-3xl transition-colors duration-500 group-hover:bg-accent/25"
+            className="pointer-events-none absolute -bottom-24 -left-12 h-56 w-56 rounded-full bg-[#3E4F28]/40 blur-3xl"
           />
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent transition-opacity duration-500 group-hover:via-primary"
+            className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#C5A059] via-[#E6C687] to-[#8C6D2B]"
           />
 
           <div className="relative z-10 space-y-8">
@@ -562,29 +563,29 @@ export const AboutNCC: React.FC = () => {
                   variants={itemReveal}
                   whileHover={{ scale: 1.04 }}
                   transition={{ type: "spring", stiffness: 320, damping: 20 }}
-                  className="inline-flex cursor-default items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-primary transition-colors duration-300 hover:border-primary/60 hover:bg-primary/20"
+                  className="army-theme-badge inline-flex cursor-default items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em]"
                 >
                   <motion.span
                     animate={{ rotate: [0, 18, 0, -18, 0] }}
                     transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                    className="inline-flex"
+                    className="inline-flex text-[#E6C687]"
                   >
-                    <Star className="h-3 w-3" strokeWidth={2} />
+                    <Star className="h-3 w-3 fill-[#E6C687]" strokeWidth={2} />
                   </motion.span>
                   Direct Officer Entry
                 </motion.span>
                 <motion.h3
                   variants={itemReveal}
-                  className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl"
+                  className="text-2xl font-black tracking-tight text-[#FAF7F2] sm:text-3xl"
                 >
                   {SSB_SPECIAL_ENTRY_DETAILS.schemeName}
                 </motion.h3>
-                <motion.p variants={itemReveal} className="text-sm font-semibold text-primary">
+                <motion.p variants={itemReveal} className="text-sm font-black text-[#E6C687]">
                   {SSB_SPECIAL_ENTRY_DETAILS.noExamAdvantage}
                 </motion.p>
                 <motion.p
                   variants={itemReveal}
-                  className="text-xs leading-relaxed text-muted-foreground sm:text-[13px]"
+                  className="text-xs font-bold leading-relaxed text-[#DFD7C6] sm:text-[13px]"
                 >
                   Cadets holding a 'C' Certificate with Grade 'A' or 'B' can appear directly for the
                   5-day SSB Interview for {SSB_SPECIAL_ENTRY_DETAILS.cadre} — bypassing the UPSC CDS
@@ -602,7 +603,7 @@ export const AboutNCC: React.FC = () => {
                   },
                 }}
                 tabIndex={0}
-                className="shrink-0 space-y-2 rounded-2xl border border-border bg-muted/50 p-4 text-xs outline-none transition-all duration-300 hover:border-primary/40 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:max-w-xs lg:min-w-64"
+                className="army-theme-box shrink-0 space-y-2.5 rounded-2xl p-5 text-xs outline-none transition-all duration-300 shadow-md lg:max-w-xs lg:min-w-64"
               >
                 {[
                   { k: "Training Academy", v: "OTA Chennai" },
@@ -613,12 +614,12 @@ export const AboutNCC: React.FC = () => {
                   <motion.div
                     key={row.k}
                     variants={itemReveal}
-                    className={`group/row flex items-center justify-between gap-3 rounded-md px-1 py-0.5 transition-colors duration-200 hover:bg-primary/5 ${i < arr.length - 1 ? "border-b border-border/70 pb-2" : ""}`}
+                    className={`group/row flex items-center justify-between gap-3 rounded-md px-1 py-1 transition-colors duration-200 ${i < arr.length - 1 ? "border-b border-[#C5A059]/35 pb-2" : ""}`}
                   >
-                    <dt className="font-medium text-muted-foreground transition-colors duration-200 group-hover/row:text-foreground">
+                    <dt className="font-bold text-[#C5A059]">
                       {row.k}
                     </dt>
-                    <dd className="font-bold text-foreground transition-colors duration-200 group-hover/row:text-primary">
+                    <dd className="font-black text-[#FAF7F2]">
                       {row.v}
                     </dd>
                   </motion.div>
@@ -626,16 +627,16 @@ export const AboutNCC: React.FC = () => {
               </motion.dl>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 border-t border-border pt-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 border-t border-[#C5A059]/40 pt-6 md:grid-cols-2">
               <motion.div
                 variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
                 className="space-y-3"
               >
                 <motion.h4
                   variants={itemReveal}
-                  className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-foreground"
+                  className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.14em] text-[#E6C687]"
                 >
-                  <CheckSquare className="h-4 w-4 text-primary" strokeWidth={1.75} />
+                  <CheckSquare className="h-4 w-4 text-[#C5A059]" strokeWidth={2} />
                   Eligibility Criteria
                 </motion.h4>
                 <ul className="space-y-1.5">
@@ -646,11 +647,11 @@ export const AboutNCC: React.FC = () => {
                       whileHover={{ x: 4 }}
                       transition={{ type: "spring", stiffness: 320, damping: 24 }}
                       tabIndex={0}
-                      className="flex items-start gap-2.5 rounded-lg px-2 py-1.5 text-xs leading-relaxed text-muted-foreground outline-none transition-colors duration-200 hover:bg-primary/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background"
+                      className="flex items-start gap-2.5 rounded-lg px-2 py-1.5 text-xs font-semibold leading-relaxed text-[#E8DCC4] outline-none transition-colors duration-200 hover:bg-[#3E4F28]/50"
                     >
                       <CheckCircle2
-                        className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-                        strokeWidth={1.75}
+                        className="mt-0.5 h-4 w-4 shrink-0 text-[#A4C078]"
+                        strokeWidth={2}
                       />
                       <span>{item}</span>
                     </motion.li>
@@ -664,9 +665,9 @@ export const AboutNCC: React.FC = () => {
               >
                 <motion.h4
                   variants={itemReveal}
-                  className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-foreground"
+                  className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.14em] text-[#E6C687]"
                 >
-                  <Target className="h-4 w-4 text-accent" strokeWidth={1.75} />
+                  <Target className="h-4 w-4 text-[#C5A059]" strokeWidth={2} />
                   Selection Pipeline
                 </motion.h4>
                 <ol className="space-y-1.5">
@@ -677,9 +678,9 @@ export const AboutNCC: React.FC = () => {
                       whileHover={{ x: 4 }}
                       transition={{ type: "spring", stiffness: 320, damping: 24 }}
                       tabIndex={0}
-                      className="group/phase flex items-start gap-2.5 rounded-lg px-2 py-1.5 text-xs leading-relaxed text-muted-foreground outline-none transition-colors duration-200 hover:bg-accent/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background"
+                      className="group/phase flex items-start gap-2.5 rounded-lg px-2 py-1.5 text-xs font-semibold leading-relaxed text-[#E8DCC4] outline-none transition-colors duration-200 hover:bg-[#3E4F28]/50"
                     >
-                      <span className="mt-px flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-accent/30 bg-accent/10 text-[10px] font-bold text-accent transition-all duration-200 group-hover/phase:border-accent group-hover/phase:bg-accent/20 group-focus-visible/phase:border-accent">
+                      <span className="mt-px flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#C5A059] bg-[#3E4F28] text-[10px] font-black text-[#E6C687]">
                         {i + 1}
                       </span>
                       <span>{phase}</span>

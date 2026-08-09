@@ -422,3 +422,24 @@
   border-color: #8C5E3C;
 }
 
+/* Indian Army Olive Green & Regimental Gold Theme Utilities */
+.army-theme-card {
+  background: linear-gradient(135deg, #2A381A 0%, #344720 50%, #222F15 100%);
+  border: 1px solid #C5A059;
+  color: #FAF7F2;
+  box-shadow: 0 20px 50px -10px rgba(34, 47, 21, 0.45);
+}
+
+.army-theme-badge {
+  background: rgba(58, 78, 38, 0.85);
+  border: 1px solid #C5A059;
+  color: #E6C687;
+}
+
+.army-theme-box {
+  background: rgba(26, 36, 16, 0.85);
+  border: 1px solid rgba(197, 160, 89, 0.45);
+  color: #FAF7F2;
+}
+
+
