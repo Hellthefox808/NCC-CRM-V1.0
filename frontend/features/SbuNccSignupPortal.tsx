@@ -55,8 +55,8 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
   // Loading state: which portal panel is swapping, and which sign-in is authenticating.
   const [isSwitchingPortal, setIsSwitchingPortal] = useState(false);
   const [authPending, setAuthPending] = useState<"cadet" | "admin" | null>(null);
-  // Last failed attempt, so the error banner can offer a one-click retry
-  // instead of forcing a page reload.
+  // Temporary Portal Lock Flag (locks portal login for maintenance/verification)
+  const [isPortalLocked] = useState<boolean>(true);
   const [retryAction, setRetryAction] = useState<{ label: string; run: () => void } | null>(null);
 
   // Cadet Login State

@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": ".output/public",
+  "framework": "vite",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
