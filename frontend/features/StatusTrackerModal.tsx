@@ -79,14 +79,14 @@ export const StatusTrackerModal: React.FC<StatusTrackerModalProps> = ({
         {/* Search Bar */}
         <div className="space-y-2">
           <label className="block text-xs font-bold text-zinc-700">
-            Enter Application ID, Aadhaar Number, or SBU Roll Number:
+            Enter Application ID, Aadhaar Number, or NCC Enrolment Number:
           </label>
           <div className="flex space-x-2">
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="e.g. 19JHR-SBU-2026-001 or SBU25BTECH042"
+              placeholder="e.g. 19JHR-SBU-2026-001 or JH24SDA104201"
               className="flex-1 bg-zinc-50 border border-zinc-300 rounded-xl p-2.5 text-xs font-semibold text-zinc-900 focus:ring-2 focus:ring-zinc-900 focus:outline-hidden"
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               id="status-search-input"

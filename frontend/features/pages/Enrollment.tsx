@@ -1125,7 +1125,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
 
                       <div className="space-y-1.5">
                         <label className="block text-xs font-bold text-enrollment-primary uppercase tracking-wider">
-                          SBU University Roll No / Registration No*
+                          NCC Enrolment No*
                         </label>
                         <input
                           type="text"
@@ -1135,7 +1135,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                           onBlur={handleBlur}
                           aria-invalid={!!visibleErrors.sbuRollNo}
                           aria-describedby={visibleErrors.sbuRollNo ? "err-sbuRollNo" : undefined}
-                          placeholder="e.g. SBU25BTECH042"
+                          placeholder="e.g. JH24SDA104201"
                           className="w-full px-4 py-3 rounded-xl border-2 border-slate-100 aria-invalid:border-red-400 aria-invalid:bg-red-50/40 text-sm font-medium text-enrollment-primary placeholder:text-enrollment-placeholder focus:border-enrollment-accent focus:ring-0 focus:outline-hidden transition-all"
                           required
                         />

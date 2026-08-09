@@ -1008,7 +1008,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
                   <form onSubmit={handleCadetLogin} className="space-y-6">
                     <div>
                       <label className={labelClass} htmlFor="cadet-identifier">
-                        SBU Roll No / Username / Regimental No
+                        NCC Enrolment No*
                       </label>
                       <div className="relative">
                         <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -1018,7 +1018,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
                           required
                           value={cadetIdentifier}
                           onChange={(e) => setCadetIdentifier(e.target.value)}
-                          placeholder="SBU2401211"
+                          placeholder="JH24SDA104201"
                           className={fieldWithIconClass}
                         />
                       </div>
@@ -1085,13 +1085,13 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
                 {cadetMode === "signup" && (
                   <form onSubmit={handleCadetSignup} className="space-y-5">
                     <div>
-                      <label className={labelClass}>SBU Roll No / Admission ID*</label>
+                      <label className={labelClass}>NCC Enrolment No*</label>
                       <input
                         type="text"
                         required
                         value={cadetForm.sbuRollNo}
                         onChange={(e) => setCadetForm({ ...cadetForm, sbuRollNo: e.target.value })}
-                        placeholder="SBU25BTECH042"
+                        placeholder="JH24SDA104201"
                         className={fieldClass}
                       />
                     </div>
