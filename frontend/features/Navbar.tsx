@@ -174,14 +174,21 @@ export const Navbar: React.FC<NavbarProps> = ({
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
                   aria-current={isActive ? "page" : undefined}
-                  className={`px-4 py-1.5 rounded-full text-[13px] transition-all cursor-pointer whitespace-nowrap select-none ${
+                  className={`relative px-4 py-1.5 rounded-full text-[13px] transition-colors cursor-pointer whitespace-nowrap select-none ${
                     isActive
-                      ? "bg-primary text-primary-foreground font-semibold shadow-sm"
-                      : "text-muted-foreground hover:text-foreground font-medium hover:bg-card/70"
+                      ? "text-primary-foreground font-bold"
+                      : "text-muted-foreground hover:text-foreground font-medium hover:bg-card/40"
                   }`}
                   id={`nav-link-${item.id}`}
                 >
-                  <span>{item.label}</span>
+                  {isActive && (
+                    <motion.span
+                      layoutId="activeNavTabIndicator"
+                      className="absolute inset-0 rounded-full bg-primary shadow-sm"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">{item.label}</span>
                 </button>
               );
             })}

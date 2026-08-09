@@ -26,10 +26,10 @@ const NCC_CREST =
 const PORTAL_PATHS = ["/login", "/cadet", "/admin"];
 
 const DYNAMIC_TAB_TITLES = [
-  "🇮🇳 19 JHR BN NCC | Sarala Birla University, Ranchi",
-  "🛡️ SBU NCC Cadet Portal | Form 1 Enrollment 2026-27",
-  "🎖️ Unity & Discipline — 19 Jharkhand Battalion",
-  "⭐ Senior Division & Senior Wing Command Centre",
+  "19 JHR BN NCC | Sarala Birla University, Ranchi",
+  "SBU NCC Cadet Portal | Form 1 Enrollment 2026-27",
+  "Unity & Discipline — 19 Jharkhand Battalion NCC",
+  "Senior Division & Senior Wing Command Centre",
 ];
 
 export function AppChrome({ children }: { children: React.ReactNode }) {
@@ -51,17 +51,17 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
     return () => clearInterval(timer);
   }, []);
 
-  // Dynamic Browser Tab Title Sliding / Cycling
+  // Dynamic Browser Tab Title Sliding / Cycling (Clean, no emojis)
   React.useEffect(() => {
     let index = 0;
     const interval = setInterval(() => {
       index = (index + 1) % DYNAMIC_TAB_TITLES.length;
       document.title = DYNAMIC_TAB_TITLES[index];
-    }, 3500);
+    }, 4500);
 
     const handleVisibility = () => {
       if (document.hidden) {
-        document.title = "👋 Return to 19 JHR BN NCC | SBU Ranchi";
+        document.title = "Return to 19 JHR BN NCC | SBU Ranchi";
       } else {
         document.title = DYNAMIC_TAB_TITLES[index];
       }
