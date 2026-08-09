@@ -460,23 +460,32 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
       className="min-h-screen w-full flex bg-enrollment-surface font-enrollment-body text-enrollment-primary"
       id="enrollment-section"
     >
-      {/* Left Sidebar / Hero */}
-      <aside className="hidden lg:flex w-[40%] bg-enrollment-primary p-12 xl:p-16 flex-col justify-between sticky top-0 h-screen">
-        <div>
+      {/* Left Sidebar / Hero - Green Regimental Section with Marching Cadets Background */}
+      <aside className="hidden lg:flex w-[40%] bg-enrollment-primary p-12 xl:p-16 flex-col justify-between sticky top-0 h-screen overflow-hidden relative">
+        {/* Authentic Republic Day Marching Cadets Background Image Overlay */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 brightness-95 contrast-[1.05]"
+          style={{ backgroundImage: `url('/ncc-marching-parade.jpg')` }}
+          role="img"
+          aria-label="NCC Cadets marching in full uniform during Republic Day parade"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#16331e]/92 via-[#16331e]/88 to-[#0f2415]/96 backdrop-blur-[1px]" />
+
+        <div className="relative z-10">
           {/* Identity Block */}
           <div className="mb-12">
-            <div className="w-16 h-16 bg-enrollment-accent rounded-2xl mb-6 flex items-center justify-center shadow-lg shadow-enrollment-accent/20">
+            <div className="w-16 h-16 bg-enrollment-accent rounded-2xl mb-6 flex items-center justify-center shadow-lg shadow-enrollment-accent/30 ring-2 ring-white/20">
               <ShieldCheck className="w-9 h-9 text-white" strokeWidth={2.5} />
             </div>
-            <h2 className="text-white/80 text-xs font-bold tracking-[0.2em] uppercase mb-2 font-enrollment-display">
+            <h2 className="text-white/90 text-xs font-bold tracking-[0.2em] uppercase mb-2 font-enrollment-display">
               19 Jharkhand Battalion NCC
             </h2>
-            <h1 className="text-4xl xl:text-5xl font-bold text-white leading-[1.1] font-enrollment-display">
+            <h1 className="text-4xl xl:text-5xl font-extrabold text-white leading-[1.1] font-enrollment-display tracking-tight drop-shadow-md">
               Cadet Enrollment
               <br />
               Application
             </h1>
-            <p className="mt-4 text-enrollment-accent font-medium text-sm">
+            <p className="mt-4 text-emerald-400 font-extrabold text-sm tracking-wide">
               Sarala Birla University, Ranchi
             </p>
           </div>
@@ -566,7 +575,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
           </nav>
         </div>
 
-        <div className="text-white/40 text-[11px] tracking-[0.15em] uppercase font-medium">
+        <div className="relative z-10 text-white/70 text-[11px] font-bold tracking-[0.18em] uppercase font-mono drop-shadow-sm">
           Discipline · Service · Unity
         </div>
       </aside>
