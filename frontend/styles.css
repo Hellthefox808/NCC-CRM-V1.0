@@ -273,7 +273,6 @@
 
   ::selection {
     background-color: rgba(37, 99, 235, 0.22);
-    background-color: color-mix(in oklab, var(--color-primary) 22%, transparent);
   }
 }
 
@@ -356,12 +355,14 @@
 .gold-gradient-text {
   background: linear-gradient(135deg, #ffe16d 0%, #ffd700 50%, #e9c400 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gold-metallic-text {
   background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 45%, #ffe16d 75%, #d4af37 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
