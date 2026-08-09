@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { maskPublicRecord, sanitizePostgrestQuery, mapToCadetRecord } from "../lib/ncc-db.ts";
 import { bearer, requireOfficer, requireCadetSession } from "../lib/cadet-registry.server.ts";
+import { checkRateLimit, resetRateLimit } from "../lib/rate-limiter.server.ts";
 
 describe("Security & Authorization Unit Tests", () => {
   it("bearer() correctly extracts bearer tokens from Authorization headers", () => {
@@ -79,4 +80,25 @@ describe("Security & Authorization Unit Tests", () => {
     assert.equal(token.startsWith("sess_"), true);
     assert.equal(token.length, 5 + 64);
   });
+
+  it("checkRateLimit() allows attempts within the limit and blocks after exceeding max", () => {
+    const key = `test_rate_limit_${Date.now()}`;
+
+    // First 3 attempts should be allowed
+    for (let i = 0; i < 3; i++) {
+      const result = checkRateLimit(key, { maxAttempts: 3, windowMs: 60000 });
+      assert.equal(result.allowed, true, `attempt ${i + 1} should be allowed`);
+    }
+
+    // 4th attempt should be blocked
+    const blocked = checkRateLimit(key, { maxAttempts: 3, windowMs: 60000 });
+    assert.equal(blocked.allowed, false);
+    assert.equal(blocked.remaining, 0);
+
+    // After reset, should be allowed again
+    resetRateLimit(key);
+    const afterReset = checkRateLimit(key, { maxAttempts: 3, windowMs: 60000 });
+    assert.equal(afterReset.allowed, true);
+  });
 });
+

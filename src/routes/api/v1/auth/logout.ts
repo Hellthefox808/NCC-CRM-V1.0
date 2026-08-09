@@ -18,7 +18,26 @@ export const Route = createFileRoute("/api/v1/auth/logout")({
         if (token) {
           try {
             const admin = await getAdmin();
+            // Resolve actor before deleting the session
+            const { data: session } = await admin
+              .from("app_sessions")
+              .select("email, role")
+              .eq("token", token)
+              .maybeSingle();
+
             await admin.from("app_sessions").delete().eq("token", token);
+
+            if (session) {
+              const { logAuditEvent } = await import("@backend/lib/audit-log.server");
+              const clientIp =
+                request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+              logAuditEvent({
+                actor: (session as any).email || "unknown",
+                action: "logout",
+                target: (session as any).role || "unknown",
+                ip: clientIp,
+              });
+            }
           } catch {
             /* token already terminated */
           }

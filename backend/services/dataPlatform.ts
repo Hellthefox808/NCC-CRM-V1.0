@@ -449,6 +449,95 @@ export class EnterpriseDataPlatform {
   static getExportExcelUrl(): string {
     return `${this.BASE_URL}/export-excel`;
   }
+
+  /**
+   * Fetch Unit Activities
+   */
+  static async getActivities(category?: string, status?: string): Promise<ApiResponse<{ activities: any[] }>> {
+    const params = new URLSearchParams();
+    if (category) params.set("category", category);
+    if (status) params.set("status", status);
+    const qs = params.toString();
+    return this.request(`/activities${qs ? `?${qs}` : ""}`);
+  }
+
+  /**
+   * Create New Activity (Officer-only)
+   */
+  static async createActivity(payload: any): Promise<ApiResponse<{ activity: any }>> {
+    return this.request("/activities", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Fetch Calendar Events
+   */
+  static async getCalendarEvents(): Promise<ApiResponse<{ events: any[] }>> {
+    return this.request("/calendar");
+  }
+
+  /**
+   * Create Calendar Event (Officer-only)
+   */
+  static async createCalendarEvent(payload: any): Promise<ApiResponse<{ event: any }>> {
+    return this.request("/calendar", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Fetch Annual Training Plans
+   */
+  static async getAnnualPlans(year?: number): Promise<ApiResponse<{ plans: any[] }>> {
+    return this.request(`/annual-plans?year=${year || 2026}`);
+  }
+
+  /**
+   * Create Annual Plan Entry (Officer-only)
+   */
+  static async createAnnualPlan(payload: any): Promise<ApiResponse<{ plan: any }>> {
+    return this.request("/annual-plans", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Fetch Staff Attendance for a Date (Officer-only)
+   */
+  static async getStaffAttendance(date?: string): Promise<ApiResponse<{ attendance: any[] }>> {
+    const qs = date ? `?date=${encodeURIComponent(date)}` : "";
+    return this.request(`/staff-attendance${qs}`);
+  }
+
+  /**
+   * Clock-In / Clock-Out PI Staff (Officer-only)
+   */
+  static async clockStaff(payload: {
+    staffName: string;
+    staffRole?: string;
+    action: "clock_in" | "clock_out";
+    dutyLocation?: string;
+    remarks?: string;
+  }): Promise<ApiResponse<{ record: any }>> {
+    return this.request("/staff-attendance", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Fetch Security Audit Logs (Officer-only)
+   */
+  static async getAuditLogs(limit = 50, action?: string): Promise<ApiResponse<{ logs: any[] }>> {
+    const params = new URLSearchParams();
+    params.set("limit", String(limit));
+    if (action) params.set("action", action);
+    return this.request(`/audit?${params.toString()}`);
+  }
 }
 
 export interface CadetRegisterRecord {

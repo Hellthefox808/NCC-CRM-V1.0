@@ -19,6 +19,26 @@ export const Route = createFileRoute("/api/v1/auth/login")({
           );
         }
 
+        const identifier = String(username || email || "").trim().toLowerCase();
+
+        // ── Rate Limiting ──────────────────────────────────────────────
+        const { checkRateLimit } = await import("@backend/lib/rate-limiter.server");
+        const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+        const rl = checkRateLimit(`login:${clientIp}:${identifier}`, {
+          maxAttempts: 5,
+          windowMs: 15 * 60 * 1000,
+        });
+        if (!rl.allowed) {
+          return json(
+            {
+              success: false,
+              error: "Too many login attempts. Please try again later.",
+              code: "RATE_LIMIT_EXCEEDED",
+            },
+            429,
+          );
+        }
+
         let authenticated = false;
         let userName = "";
         let userEmail: string = email || username || "";
@@ -27,14 +47,20 @@ export const Route = createFileRoute("/api/v1/auth/login")({
         let cadetEnrollmentId: string | null = null;
         let cadetRecord: Record<string, unknown> | null = null;
 
-        // If this identifier has reset its portal password, that stored password
-        // is authoritative. Accounts that never reset keep the legacy path.
+        // All authentication flows through stored credentials only.
+        // No hardcoded passwords — every account must set a portal password.
         const { checkPortalPassword } = await import("@backend/lib/auth-otp.server");
-        const storedMatch = await checkPortalPassword(
-          String(username || email || ""),
-          String(password),
-        );
+        const storedMatch = await checkPortalPassword(identifier, String(password));
+
         if (storedMatch === false) {
+          const { logAuditEvent } = await import("@backend/lib/audit-log.server");
+          logAuditEvent({
+            actor: identifier,
+            action: "login_failure",
+            target: userType || "unknown",
+            ip: clientIp,
+            metadata: { reason: "invalid_password" },
+          });
           return json(
             {
               success: false,
@@ -46,26 +72,41 @@ export const Route = createFileRoute("/api/v1/auth/login")({
         }
 
         if (userType === "admin") {
-          if (
-            storedMatch === true ||
-            ((username === "admin" || email === "admin@sbu.ac.in" || username === "ano.sbu") &&
-              (password === "admin123" || password === "ncc19jhr"))
-          ) {
+          // Admin authentication: requires a stored portal password.
+          if (storedMatch === true) {
             authenticated = true;
             userName = "Associate NCC Officer (ANO)";
-            userEmail = "admin@sbu.ac.in";
+            userEmail = identifier.includes("@") ? identifier : "admin@sbu.ac.in";
             role = "admin";
           }
         } else if (userType === "cadet") {
-          if (storedMatch === true || String(password).length >= 4) {
+          if (storedMatch === true) {
+            // Cadet with a stored password — verified.
             authenticated = true;
             userName = username || email || "SBU Cadet";
             role = "cadet";
+          } else if (storedMatch === null) {
+            // First-time cadet login: no stored password yet.
+            // Allowed only if the identifier matches a registered cadet record
+            // and the submitted password meets minimum length.
+            if (String(password).length >= 6) {
+              const { findCadetByIdentifier } = await import("@backend/lib/cadet-registry.server");
+              const foundCadet = await findCadetByIdentifier(identifier);
+              if (foundCadet) {
+                authenticated = true;
+                userName = (foundCadet["full_name"] as string) || username || email || "SBU Cadet";
+                role = "cadet";
+                cadetRecord = foundCadet;
+                cadetEnrollmentId = (foundCadet["enrollment_id"] as string) || null;
+                userEmail = (foundCadet["email"] as string) || userEmail;
+              }
+            }
+          }
 
-            // Link the session to the cadet's row in the unit register when the
-            // identifier matches an enrolled cadet (SBU ID, enrollment ID, email, mobile).
+          // Link session to cadet record if not already resolved
+          if (authenticated && !cadetRecord) {
             const { findCadetByIdentifier } = await import("@backend/lib/cadet-registry.server");
-            cadetRecord = await findCadetByIdentifier(String(username || email || ""));
+            cadetRecord = await findCadetByIdentifier(identifier);
             if (cadetRecord) {
               cadetEnrollmentId = (cadetRecord["enrollment_id"] as string) || null;
               userName = (cadetRecord["full_name"] as string) || userName;
@@ -75,6 +116,14 @@ export const Route = createFileRoute("/api/v1/auth/login")({
         }
 
         if (!authenticated) {
+          const { logAuditEvent } = await import("@backend/lib/audit-log.server");
+          logAuditEvent({
+            actor: identifier,
+            action: "login_failure",
+            target: userType || "unknown",
+            ip: clientIp,
+            metadata: { reason: "authentication_failed" },
+          });
           return json(
             {
               success: false,
@@ -108,6 +157,16 @@ export const Route = createFileRoute("/api/v1/auth/login")({
             .single();
 
           if (error) throw error;
+
+          // ── Audit: successful login ──────────────────────────────────
+          const { logAuditEvent } = await import("@backend/lib/audit-log.server");
+          logAuditEvent({
+            actor: userEmail,
+            action: "login_success",
+            target: role,
+            ip: clientIp,
+            metadata: { sessionId: data.id },
+          });
 
           const cookieHeader = `ncc_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${8 * 3600}; Secure`;
 

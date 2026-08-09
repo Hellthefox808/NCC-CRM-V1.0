@@ -16,13 +16,18 @@ import { Route as CadetDatabaseRouteImport } from './routes/cadet-database'
 import { Route as EnrollRouteImport } from './routes/enroll'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NoticesRouteImport } from './routes/notices'
+import { Route as ApiV1ActivitiesRouteImport } from './routes/api/v1/activities'
 import { Route as ApiV1AiChatRouteImport } from './routes/api/v1/ai-chat'
+import { Route as ApiV1AnnualPlansRouteImport } from './routes/api/v1/annual-plans'
+import { Route as ApiV1AuditRouteImport } from './routes/api/v1/audit'
 import { Route as ApiV1CadetsRouteImport } from './routes/api/v1/cadets'
+import { Route as ApiV1CalendarRouteImport } from './routes/api/v1/calendar'
 import { Route as ApiV1EnrollmentsRouteImport } from './routes/api/v1/enrollments'
 import { Route as ApiV1ExportExcelRouteImport } from './routes/api/v1/export-excel'
 import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
 import { Route as ApiV1MetricsRouteImport } from './routes/api/v1/metrics'
 import { Route as ApiV1NotificationsRouteImport } from './routes/api/v1/notifications'
+import { Route as ApiV1StaffAttendanceRouteImport } from './routes/api/v1/staff-attendance'
 import { Route as ApiV1AuthLoginRouteImport } from './routes/api/v1/auth/login'
 import { Route as ApiV1AuthLogoutRouteImport } from './routes/api/v1/auth/logout'
 import { Route as ApiV1AuthMeRouteImport } from './routes/api/v1/auth/me'
@@ -67,14 +72,34 @@ const NoticesRoute = NoticesRouteImport.update({
   path: '/notices',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1ActivitiesRoute = ApiV1ActivitiesRouteImport.update({
+  id: '/api/v1/activities',
+  path: '/api/v1/activities',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1AiChatRoute = ApiV1AiChatRouteImport.update({
   id: '/api/v1/ai-chat',
   path: '/api/v1/ai-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1AnnualPlansRoute = ApiV1AnnualPlansRouteImport.update({
+  id: '/api/v1/annual-plans',
+  path: '/api/v1/annual-plans',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1AuditRoute = ApiV1AuditRouteImport.update({
+  id: '/api/v1/audit',
+  path: '/api/v1/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1CadetsRoute = ApiV1CadetsRouteImport.update({
   id: '/api/v1/cadets',
   path: '/api/v1/cadets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1CalendarRoute = ApiV1CalendarRouteImport.update({
+  id: '/api/v1/calendar',
+  path: '/api/v1/calendar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiV1EnrollmentsRoute = ApiV1EnrollmentsRouteImport.update({
@@ -100,6 +125,11 @@ const ApiV1MetricsRoute = ApiV1MetricsRouteImport.update({
 const ApiV1NotificationsRoute = ApiV1NotificationsRouteImport.update({
   id: '/api/v1/notifications',
   path: '/api/v1/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1StaffAttendanceRoute = ApiV1StaffAttendanceRouteImport.update({
+  id: '/api/v1/staff-attendance',
+  path: '/api/v1/staff-attendance',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiV1AuthLoginRoute = ApiV1AuthLoginRouteImport.update({
@@ -152,13 +182,18 @@ export interface FileRoutesByFullPath {
   '/enroll': typeof EnrollRoute
   '/login': typeof LoginRoute
   '/notices': typeof NoticesRoute
+  '/api/v1/activities': typeof ApiV1ActivitiesRoute
   '/api/v1/ai-chat': typeof ApiV1AiChatRoute
+  '/api/v1/annual-plans': typeof ApiV1AnnualPlansRoute
+  '/api/v1/audit': typeof ApiV1AuditRoute
   '/api/v1/cadets': typeof ApiV1CadetsRouteWithChildren
+  '/api/v1/calendar': typeof ApiV1CalendarRoute
   '/api/v1/enrollments': typeof ApiV1EnrollmentsRouteWithChildren
   '/api/v1/export-excel': typeof ApiV1ExportExcelRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/metrics': typeof ApiV1MetricsRoute
   '/api/v1/notifications': typeof ApiV1NotificationsRoute
+  '/api/v1/staff-attendance': typeof ApiV1StaffAttendanceRoute
   '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/logout': typeof ApiV1AuthLogoutRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
@@ -176,13 +211,18 @@ export interface FileRoutesByTo {
   '/enroll': typeof EnrollRoute
   '/login': typeof LoginRoute
   '/notices': typeof NoticesRoute
+  '/api/v1/activities': typeof ApiV1ActivitiesRoute
   '/api/v1/ai-chat': typeof ApiV1AiChatRoute
+  '/api/v1/annual-plans': typeof ApiV1AnnualPlansRoute
+  '/api/v1/audit': typeof ApiV1AuditRoute
   '/api/v1/cadets': typeof ApiV1CadetsRouteWithChildren
+  '/api/v1/calendar': typeof ApiV1CalendarRoute
   '/api/v1/enrollments': typeof ApiV1EnrollmentsRouteWithChildren
   '/api/v1/export-excel': typeof ApiV1ExportExcelRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/metrics': typeof ApiV1MetricsRoute
   '/api/v1/notifications': typeof ApiV1NotificationsRoute
+  '/api/v1/staff-attendance': typeof ApiV1StaffAttendanceRoute
   '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/logout': typeof ApiV1AuthLogoutRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
@@ -201,13 +241,18 @@ export interface FileRoutesById {
   '/enroll': typeof EnrollRoute
   '/login': typeof LoginRoute
   '/notices': typeof NoticesRoute
+  '/api/v1/activities': typeof ApiV1ActivitiesRoute
   '/api/v1/ai-chat': typeof ApiV1AiChatRoute
+  '/api/v1/annual-plans': typeof ApiV1AnnualPlansRoute
+  '/api/v1/audit': typeof ApiV1AuditRoute
   '/api/v1/cadets': typeof ApiV1CadetsRouteWithChildren
+  '/api/v1/calendar': typeof ApiV1CalendarRoute
   '/api/v1/enrollments': typeof ApiV1EnrollmentsRouteWithChildren
   '/api/v1/export-excel': typeof ApiV1ExportExcelRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/metrics': typeof ApiV1MetricsRoute
   '/api/v1/notifications': typeof ApiV1NotificationsRoute
+  '/api/v1/staff-attendance': typeof ApiV1StaffAttendanceRoute
   '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/logout': typeof ApiV1AuthLogoutRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
@@ -227,13 +272,18 @@ export interface FileRouteTypes {
     | '/enroll'
     | '/login'
     | '/notices'
+    | '/api/v1/activities'
     | '/api/v1/ai-chat'
+    | '/api/v1/annual-plans'
+    | '/api/v1/audit'
     | '/api/v1/cadets'
+    | '/api/v1/calendar'
     | '/api/v1/enrollments'
     | '/api/v1/export-excel'
     | '/api/v1/health'
     | '/api/v1/metrics'
     | '/api/v1/notifications'
+    | '/api/v1/staff-attendance'
     | '/api/v1/auth/login'
     | '/api/v1/auth/logout'
     | '/api/v1/auth/me'
@@ -251,13 +301,18 @@ export interface FileRouteTypes {
     | '/enroll'
     | '/login'
     | '/notices'
+    | '/api/v1/activities'
     | '/api/v1/ai-chat'
+    | '/api/v1/annual-plans'
+    | '/api/v1/audit'
     | '/api/v1/cadets'
+    | '/api/v1/calendar'
     | '/api/v1/enrollments'
     | '/api/v1/export-excel'
     | '/api/v1/health'
     | '/api/v1/metrics'
     | '/api/v1/notifications'
+    | '/api/v1/staff-attendance'
     | '/api/v1/auth/login'
     | '/api/v1/auth/logout'
     | '/api/v1/auth/me'
@@ -275,13 +330,18 @@ export interface FileRouteTypes {
     | '/enroll'
     | '/login'
     | '/notices'
+    | '/api/v1/activities'
     | '/api/v1/ai-chat'
+    | '/api/v1/annual-plans'
+    | '/api/v1/audit'
     | '/api/v1/cadets'
+    | '/api/v1/calendar'
     | '/api/v1/enrollments'
     | '/api/v1/export-excel'
     | '/api/v1/health'
     | '/api/v1/metrics'
     | '/api/v1/notifications'
+    | '/api/v1/staff-attendance'
     | '/api/v1/auth/login'
     | '/api/v1/auth/logout'
     | '/api/v1/auth/me'
@@ -300,13 +360,18 @@ export interface RootRouteChildren {
   EnrollRoute: typeof EnrollRoute
   LoginRoute: typeof LoginRoute
   NoticesRoute: typeof NoticesRoute
+  ApiV1ActivitiesRoute: typeof ApiV1ActivitiesRoute
   ApiV1AiChatRoute: typeof ApiV1AiChatRoute
+  ApiV1AnnualPlansRoute: typeof ApiV1AnnualPlansRoute
+  ApiV1AuditRoute: typeof ApiV1AuditRoute
   ApiV1CadetsRoute: typeof ApiV1CadetsRouteWithChildren
+  ApiV1CalendarRoute: typeof ApiV1CalendarRoute
   ApiV1EnrollmentsRoute: typeof ApiV1EnrollmentsRouteWithChildren
   ApiV1ExportExcelRoute: typeof ApiV1ExportExcelRoute
   ApiV1HealthRoute: typeof ApiV1HealthRoute
   ApiV1MetricsRoute: typeof ApiV1MetricsRoute
   ApiV1NotificationsRoute: typeof ApiV1NotificationsRoute
+  ApiV1StaffAttendanceRoute: typeof ApiV1StaffAttendanceRoute
   ApiV1AuthLoginRoute: typeof ApiV1AuthLoginRoute
   ApiV1AuthLogoutRoute: typeof ApiV1AuthLogoutRoute
   ApiV1AuthMeRoute: typeof ApiV1AuthMeRoute
@@ -365,6 +430,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NoticesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/activities': {
+      id: '/api/v1/activities'
+      path: '/api/v1/activities'
+      fullPath: '/api/v1/activities'
+      preLoaderRoute: typeof ApiV1ActivitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/ai-chat': {
       id: '/api/v1/ai-chat'
       path: '/api/v1/ai-chat'
@@ -372,11 +444,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1AiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/annual-plans': {
+      id: '/api/v1/annual-plans'
+      path: '/api/v1/annual-plans'
+      fullPath: '/api/v1/annual-plans'
+      preLoaderRoute: typeof ApiV1AnnualPlansRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/audit': {
+      id: '/api/v1/audit'
+      path: '/api/v1/audit'
+      fullPath: '/api/v1/audit'
+      preLoaderRoute: typeof ApiV1AuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/cadets': {
       id: '/api/v1/cadets'
       path: '/api/v1/cadets'
       fullPath: '/api/v1/cadets'
       preLoaderRoute: typeof ApiV1CadetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/calendar': {
+      id: '/api/v1/calendar'
+      path: '/api/v1/calendar'
+      fullPath: '/api/v1/calendar'
+      preLoaderRoute: typeof ApiV1CalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/enrollments': {
@@ -412,6 +505,13 @@ declare module '@tanstack/react-router' {
       path: '/api/v1/notifications'
       fullPath: '/api/v1/notifications'
       preLoaderRoute: typeof ApiV1NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/staff-attendance': {
+      id: '/api/v1/staff-attendance'
+      path: '/api/v1/staff-attendance'
+      fullPath: '/api/v1/staff-attendance'
+      preLoaderRoute: typeof ApiV1StaffAttendanceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/auth/login': {
@@ -518,13 +618,18 @@ const rootRouteChildren: RootRouteChildren = {
   EnrollRoute: EnrollRoute,
   LoginRoute: LoginRoute,
   NoticesRoute: NoticesRoute,
+  ApiV1ActivitiesRoute: ApiV1ActivitiesRoute,
   ApiV1AiChatRoute: ApiV1AiChatRoute,
+  ApiV1AnnualPlansRoute: ApiV1AnnualPlansRoute,
+  ApiV1AuditRoute: ApiV1AuditRoute,
   ApiV1CadetsRoute: ApiV1CadetsRouteWithChildren,
+  ApiV1CalendarRoute: ApiV1CalendarRoute,
   ApiV1EnrollmentsRoute: ApiV1EnrollmentsRouteWithChildren,
   ApiV1ExportExcelRoute: ApiV1ExportExcelRoute,
   ApiV1HealthRoute: ApiV1HealthRoute,
   ApiV1MetricsRoute: ApiV1MetricsRoute,
   ApiV1NotificationsRoute: ApiV1NotificationsRoute,
+  ApiV1StaffAttendanceRoute: ApiV1StaffAttendanceRoute,
   ApiV1AuthLoginRoute: ApiV1AuthLoginRoute,
   ApiV1AuthLogoutRoute: ApiV1AuthLogoutRoute,
   ApiV1AuthMeRoute: ApiV1AuthMeRoute,
