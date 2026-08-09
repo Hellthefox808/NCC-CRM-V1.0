@@ -160,10 +160,6 @@ export const AiCadreAssistant: React.FC<AiCadreAssistantProps> = ({ isOpen, onCl
                     <h3 className="text-sm sm:text-base font-black text-white tracking-tight flex items-center gap-1.5">
                       <span>Subedar Major AI Assistant</span>
                     </h3>
-                    <span className="bg-gradient-to-r from-red-600/30 via-blue-600/30 to-sky-500/30 text-amber-300 text-[10px] px-2.5 py-0.5 rounded-full border border-amber-400/40 uppercase font-black tracking-wider flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 text-amber-400 animate-pulse" />
-                      Gemini 3.1 Pro
-                    </span>
                   </div>
                   <p className="text-[11px] text-zinc-400 font-medium flex items-center gap-1.5 mt-0.5">
                     <Shield className="w-3.5 h-3.5 text-amber-400 shrink-0" />
