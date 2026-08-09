@@ -72,8 +72,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       />
 
       {/* High Contrast Cinematic Vignette & Ambient Glows */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-zinc-950/85 via-zinc-950/65 to-zinc-950/95" />
-      <div className="absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_20%,#09090b_100%)] opacity-90" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-zinc-950/80 via-zinc-950/50 to-zinc-950/90" />
+      <div className="absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_30%,#09090b_95%)] opacity-80" />
       
       {/* Strategic Command Spotlight Orbs */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-[36rem] w-[36rem] rounded-full bg-blue-600/20 blur-[140px] pointer-events-none" />
@@ -91,6 +91,32 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-400 via-amber-200 to-amber-500" />
 
           <div className="relative z-10 mx-auto max-w-3xl space-y-6">
+            {/* Prominent SBU & NCC Crest Logos */}
+            <motion.div variants={itemVariants} className="flex items-center justify-center gap-4 pt-1">
+              {/* SBU Official Crest */}
+              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-zinc-900/90 p-1 border-2 border-amber-400/80 shadow-[0_0_25px_rgba(251,191,36,0.35)] ring-2 ring-white/20 flex items-center justify-center overflow-hidden transition-transform hover:scale-105">
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_5fO3j9MhxWCOALUorfuM3nZcChQfc2949oaRRyjpIQ&s=10"
+                  alt="Sarala Birla University Emblem"
+                  className="w-full h-full object-contain rounded-full bg-white p-1"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+
+              {/* Vertical Gold Keyline Accent */}
+              <div className="h-10 w-0.5 bg-gradient-to-b from-transparent via-amber-400/70 to-transparent" />
+
+              {/* NCC Official Crest */}
+              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-zinc-900/90 p-1 border-2 border-amber-400/80 shadow-[0_0_25px_rgba(251,191,36,0.35)] ring-2 ring-white/20 flex items-center justify-center overflow-hidden transition-transform hover:scale-105">
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTZDvUjTIPyVWknpreMHXnyKTvz7-P_uljpSxjPHcXXw&s=10"
+                  alt="19 JHR BN NCC Crest"
+                  className="w-full h-full object-contain rounded-full bg-white p-1"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </motion.div>
+
             {/* Top Battalion Security Badge */}
             <motion.div variants={itemVariants} className="inline-block">
               <div className="brass-badge inline-flex items-center gap-2.5 rounded-full px-4 py-1.5 backdrop-blur-md">
