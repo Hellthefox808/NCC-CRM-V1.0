@@ -375,12 +375,13 @@ export class EnterpriseDataPlatform {
    */
   static async sendAiMessage(
     message: string,
+    history?: Array<{ role: "user" | "assistant"; content: string }>,
     isLowLatency = false,
     thinkingMode = true,
   ): Promise<ApiResponse<{ reply: string }>> {
     return this.request<{ reply: string }>("/ai-chat", {
       method: "POST",
-      body: JSON.stringify({ message, lowLatency: isLowLatency, thinkingMode }),
+      body: JSON.stringify({ message, history, lowLatency: isLowLatency, thinkingMode }),
     });
   }
 

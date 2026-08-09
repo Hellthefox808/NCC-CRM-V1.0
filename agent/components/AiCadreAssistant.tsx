@@ -84,12 +84,17 @@ export const AiCadreAssistant: React.FC<AiCadreAssistantProps> = ({ isOpen, onCl
       timestamp: getFormattedTime(),
     };
 
+    const historyPayload = messages.slice(-6).map((m) => ({
+      role: m.sender === "user" ? ("user" as const) : ("assistant" as const),
+      content: m.text,
+    }));
+
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setIsLoading(true);
 
     try {
-      const res = await EnterpriseDataPlatform.sendAiMessage(prompt, true);
+      const res = await EnterpriseDataPlatform.sendAiMessage(prompt, historyPayload, true);
       const aiReply =
         res.data?.reply ||
         "Jai Hind! Please visit 19 JHR BN NCC office at Sarala Birla University for further assistance.";
