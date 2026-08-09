@@ -416,43 +416,53 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
           )}
         </div>
 
-        {/* Helpdesk CTA Band */}
-        <div className="surface-inverse rounded-[18px] p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-accent-on-inverse/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
-          <div className="space-y-2 relative z-10">
-            <div className="flex items-center gap-2 text-primary-on-inverse text-xs font-semibold uppercase tracking-wider">
-              <PhoneCall className="w-4 h-4" />
-              <span>Still have questions?</span>
-            </div>
-            <h3 className="font-display text-xl font-bold">
-              SBU NCC Coy Officer &amp; Battalion Helpdesk
-            </h3>
-            <p className="text-sm text-inverse-muted max-w-xl leading-relaxed">
-              Visit the NCC Office at SBU Birla Campus, Mahilong, Ranchi, or ask the 24/7 Subedar
-              Major AI Assistant for instant rules &amp; syllabus guidance.
-            </p>
+        {/* Helpdesk CTA Band - Light Coffee & NCC Tricolor Theme */}
+        <div className="relative overflow-hidden rounded-[22px] bg-[#FAF7F2] border border-[#8C5E3C]/35 p-6 sm:p-8 text-[#3B281C] shadow-lg">
+          {/* Top NCC Tricolor Bar */}
+          <div className="absolute top-0 inset-x-0 h-1.5 grid grid-cols-3">
+            <div className="bg-[#1E3A8A]" title="Navy Blue - Indian Navy Wing" />
+            <div className="bg-[#DC2626]" title="Army Red - Indian Army Wing" />
+            <div className="bg-[#0284C7]" title="Light Blue - Indian Air Force Wing" />
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 shrink-0 relative z-10">
-            {openAiAssistant && (
-              <button
-                onClick={openAiAssistant}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-inverse-elevated/70 hover:bg-inverse-elevated border border-inverse-border text-sm font-semibold transition-all cursor-pointer"
-              >
-                <Sparkles className="w-4 h-4" />
-                <span>Ask AI Assistant</span>
-              </button>
-            )}
-            {onStartEnrollment && (
-              <button
-                onClick={onStartEnrollment}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all cursor-pointer"
-                id="faq-apply-now-btn"
-              >
-                <span>Apply Form 1</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            )}
+          <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-[#8C5E3C]/10 blur-2xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-[#8C5E3C] text-xs font-black uppercase tracking-wider">
+                <PhoneCall className="w-4 h-4 text-[#8C5E3C]" />
+                <span>Still have questions?</span>
+              </div>
+              <h3 className="font-display text-xl sm:text-2xl font-black text-[#3B281C] tracking-tight">
+                SBU NCC Coy Officer &amp; Battalion Helpdesk
+              </h3>
+              <p className="text-xs sm:text-sm text-[#5C3D26] max-w-xl leading-relaxed font-bold">
+                Visit the NCC Office at SBU Birla Campus, Mahilong, Ranchi, or ask the 24/7 Subedar
+                Major AI Assistant for instant rules &amp; syllabus guidance.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3 shrink-0">
+              {openAiAssistant && (
+                <button
+                  onClick={openAiAssistant}
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#F5ECE3] hover:bg-[#8C5E3C] text-[#5C3D26] hover:text-white border border-[#D6C5B3] text-xs sm:text-sm font-extrabold transition-all cursor-pointer shadow-xs"
+                >
+                  <Sparkles className="w-4 h-4 text-[#8C5E3C] group-hover:text-white" />
+                  <span>Ask AI Assistant</span>
+                </button>
+              )}
+              {onStartEnrollment && (
+                <button
+                  onClick={onStartEnrollment}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#DC2626] via-[#1E3A8A] to-[#0284C7] hover:brightness-110 text-white text-xs sm:text-sm font-black shadow-md transition-all cursor-pointer uppercase tracking-wider"
+                  id="faq-apply-now-btn"
+                >
+                  <span>Apply Form 1</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
