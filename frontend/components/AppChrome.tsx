@@ -75,7 +75,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Scroll-spy: keep the navbar active tab in sync with the visible home-page section.
+  // Scroll-spy: keep the navbar active tab in perfect sync with the visible home-page section.
   React.useEffect(() => {
     if (pathname !== "/") return;
 
@@ -101,28 +101,45 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
 
     const visibilityRef: Record<string, number> = {};
 
+    const checkBottomScroll = () => {
+      const isAtBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 120;
+      if (isAtBottom) {
+        setActiveTab("faq");
+        return true;
+      }
+      return false;
+    };
+
+    window.addEventListener("scroll", checkBottomScroll, { passive: true });
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           visibilityRef[entry.target.id] = entry.intersectionRatio;
         });
 
+        if (checkBottomScroll()) return;
+
         const sorted = Object.entries(visibilityRef)
-          .filter(([id]) => idToTab[id])
+          .filter(([id]) => idToTab[id] && visibilityRef[id] > 0)
           .sort((a, b) => b[1] - a[1]);
 
-        if (sorted.length > 0 && sorted[0][1] > 0) {
+        if (sorted.length > 0) {
           setActiveTab(idToTab[sorted[0][0]]);
         }
       },
       {
-        rootMargin: "-35% 0px -35% 0px",
+        rootMargin: "-20% 0px -25% 0px",
         threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
       },
     );
 
     elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    return () => {
+      window.removeEventListener("scroll", checkBottomScroll);
+      observer.disconnect();
+    };
   }, [pathname]);
 
   return (

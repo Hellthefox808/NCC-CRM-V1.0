@@ -165,11 +165,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Center: Segmented navigation */}
-          <nav className="hidden xl:flex shrink-0 items-center gap-1 rounded-full border border-border bg-secondary/80 p-1 shadow-2xs">
+          {/* Center: Segmented navigation — Synced Active Tab & Keyline Dividers */}
+          <nav className="hidden xl:flex shrink-0 items-center rounded-full border border-border bg-secondary/80 p-1 shadow-2xs">
             {navItems.map((item, index) => {
-              const isActive = activeTab === item.id;
-              const isNextActive = navItems[index + 1]?.id === activeTab;
+              const isItemActive = (id: string) =>
+                activeTab === id ||
+                activeTab === `${id}-section` ||
+                activeTab.replace("-section", "") === id;
+
+              const isActive = isItemActive(item.id);
+              const nextItem = navItems[index + 1];
+              const isNextActive = nextItem ? isItemActive(nextItem.id) : false;
+
               return (
                 <React.Fragment key={item.id}>
                   <button
@@ -191,10 +198,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                     )}
                     <span className="relative z-10">{item.label}</span>
                   </button>
+
+                  {/* Clean Vertical Keyline Divider: ONLY rendered between two unselected adjacent tabs */}
                   {index < navItems.length - 1 && !isActive && !isNextActive && (
                     <span
                       aria-hidden="true"
-                      className="h-3.5 w-px bg-border/70 self-center shrink-0"
+                      className="h-3.5 w-px bg-border/80 self-center shrink-0 mx-1"
                     />
                   )}
                 </React.Fragment>
