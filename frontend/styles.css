@@ -1,0 +1,386 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+@source "../frontend";
+@source "../backend";
+@source "../agent";
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * NCC Portal design system — premium, minimal, enterprise SaaS.
+ *
+ * Neutrals: Zinc. Primary: #2563EB. Accent: #7C3AED.
+ * Radius scale is generous (14–18px). Spacing follows an 8px rhythm.
+ * All colors are oklch; components must use semantic tokens, never raw hex.
+ */
+
+@theme inline {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Inter Tight", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-enrollment-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-enrollment-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 2px);
+  --radius-2xl: calc(var(--radius) + 6px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 20px);
+
+  --font-enrollment-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-enrollment-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-muted: var(--primary-muted);
+  --color-accent-brand: var(--accent-brand);
+  --color-accent-brand-foreground: var(--accent-brand-foreground);
+
+  /* Enrollment page theme tokens */
+  --color-enrollment-primary: var(--enrollment-primary);
+  --color-enrollment-primary-hover: var(--enrollment-primary-hover);
+  --color-enrollment-accent: var(--enrollment-accent);
+  --color-enrollment-surface: var(--enrollment-surface);
+  --color-enrollment-muted: var(--enrollment-muted);
+  --color-enrollment-placeholder: var(--enrollment-placeholder);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+
+  /* Inverted (dark) band surfaces: footer, hero overlays, command rails.
+     These exist so a dark band never hardcodes zinc/white literals. */
+  --color-inverse: var(--inverse);
+  --color-inverse-elevated: var(--inverse-elevated);
+  --color-inverse-foreground: var(--inverse-foreground);
+  --color-inverse-muted: var(--inverse-muted);
+  --color-inverse-border: var(--inverse-border);
+  --color-primary-on-inverse: var(--primary-on-inverse);
+  --color-accent-on-inverse: var(--accent-on-inverse);
+
+  /* Enrollment page theme — Field Olive-Sage palette */
+  --color-enrollment-primary: var(--enrollment-primary);
+  --color-enrollment-primary-hover: var(--enrollment-primary-hover);
+  --color-enrollment-accent: var(--enrollment-accent);
+  --color-enrollment-surface: var(--enrollment-surface);
+  --color-enrollment-muted: var(--enrollment-muted);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --shadow-xs: 0 1px 2px 0 oklch(0.21 0.01 264 / 0.05);
+  --shadow-sm: 0 1px 3px 0 oklch(0.21 0.01 264 / 0.08), 0 1px 2px -1px oklch(0.21 0.01 264 / 0.06);
+  --shadow-md:
+    0 4px 12px -2px oklch(0.21 0.01 264 / 0.1), 0 2px 4px -2px oklch(0.21 0.01 264 / 0.06);
+  --shadow-lg:
+    0 12px 28px -8px oklch(0.21 0.01 264 / 0.14), 0 4px 8px -4px oklch(0.21 0.01 264 / 0.08);
+  --shadow-xl: 0 24px 48px -12px oklch(0.21 0.01 264 / 0.18);
+}
+
+:root {
+  --radius: 1rem;
+
+  /* Zinc-based neutral surfaces */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.21 0.006 285.9);
+  --surface: oklch(0.985 0.001 286);
+  --surface-foreground: oklch(0.21 0.006 285.9);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.21 0.006 285.9);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.21 0.006 285.9);
+
+  /* Brand */
+  --primary: oklch(0.546 0.215 262.9); /* #2563EB */
+  --primary-foreground: oklch(0.985 0.001 286);
+  --primary-muted: oklch(0.955 0.022 264);
+
+  /* Enrollment page theme — Field Olive-Sage palette */
+  --enrollment-primary: oklch(0.38 0.08 158); /* #064e3b */
+  --enrollment-primary-hover: oklch(0.43 0.09 158); /* #065f46 */
+  --enrollment-accent: oklch(0.69 0.17 158); /* #10b981 */
+  --enrollment-surface: oklch(0.97 0.02 158); /* #f0fdf4 */
+  --enrollment-muted: oklch(0.55 0.05 158);
+  --enrollment-placeholder: oklch(0.5 0.04 158);
+
+  --accent-brand: oklch(0.541 0.253 293.2); /* #7C3AED */
+  --accent-brand-foreground: oklch(0.985 0.001 286);
+
+  --secondary: oklch(0.967 0.001 286.4);
+  --secondary-foreground: oklch(0.274 0.006 286);
+  --muted: oklch(0.967 0.001 286.4);
+  --muted-foreground: oklch(0.552 0.014 285.9);
+  --accent: oklch(0.967 0.001 286.4);
+  --accent-foreground: oklch(0.274 0.006 286);
+
+  --destructive: oklch(0.577 0.222 27.3);
+  --destructive-foreground: oklch(0.985 0.001 286);
+  --success: oklch(0.596 0.145 163.2);
+  --success-foreground: oklch(0.985 0.001 286);
+  --warning: oklch(0.705 0.163 70.7);
+  --warning-foreground: oklch(0.21 0.006 285.9);
+  --info: oklch(0.617 0.13 234.5);
+  --info-foreground: oklch(0.985 0.001 286);
+
+  --border: oklch(0.92 0.004 286.3);
+  --border-strong: oklch(0.871 0.006 286.3);
+  --input: oklch(0.92 0.004 286.3);
+  --ring: oklch(0.546 0.215 262.9);
+
+  /* Inverted band (dark) — used by footer and hero overlays in both themes */
+  --inverse: oklch(0.165 0.005 285.9);
+  --inverse-elevated: oklch(0.21 0.006 285.9);
+  --inverse-foreground: oklch(0.985 0.001 286);
+  --inverse-muted: oklch(0.712 0.013 286.1);
+  --inverse-border: oklch(1 0 0 / 12%);
+  --primary-on-inverse: oklch(0.72 0.145 254);
+  --accent-on-inverse: oklch(0.73 0.16 296);
+
+  --chart-1: oklch(0.546 0.215 262.9);
+  --chart-2: oklch(0.541 0.253 293.2);
+  --chart-3: oklch(0.596 0.145 163.2);
+  --chart-4: oklch(0.705 0.163 70.7);
+  --chart-5: oklch(0.617 0.13 234.5);
+
+  --sidebar: oklch(0.985 0.001 286);
+  --sidebar-foreground: oklch(0.21 0.006 285.9);
+  --sidebar-primary: oklch(0.546 0.215 262.9);
+  --sidebar-primary-foreground: oklch(0.985 0.001 286);
+  --sidebar-accent: oklch(0.967 0.001 286.4);
+  --sidebar-accent-foreground: oklch(0.274 0.006 286);
+  --sidebar-border: oklch(0.92 0.004 286.3);
+  --sidebar-ring: oklch(0.546 0.215 262.9);
+}
+
+.dark {
+  --background: oklch(0.165 0.005 285.9);
+  --foreground: oklch(0.985 0.001 286);
+  --surface: oklch(0.21 0.006 285.9);
+  --surface-foreground: oklch(0.985 0.001 286);
+  --card: oklch(0.21 0.006 285.9);
+  --card-foreground: oklch(0.985 0.001 286);
+  --popover: oklch(0.21 0.006 285.9);
+  --popover-foreground: oklch(0.985 0.001 286);
+
+  --primary: oklch(0.623 0.19 261.5);
+  --primary-foreground: oklch(0.145 0.005 285.9);
+  --primary-muted: oklch(0.3 0.06 265);
+  --accent-brand: oklch(0.606 0.224 292.7);
+  --accent-brand-foreground: oklch(0.145 0.005 285.9);
+
+  --secondary: oklch(0.274 0.006 286);
+  --secondary-foreground: oklch(0.985 0.001 286);
+  --muted: oklch(0.274 0.006 286);
+  --muted-foreground: oklch(0.712 0.013 286.1);
+  --accent: oklch(0.274 0.006 286);
+  --accent-foreground: oklch(0.985 0.001 286);
+
+  --destructive: oklch(0.637 0.208 25.3);
+  --destructive-foreground: oklch(0.985 0.001 286);
+  --success: oklch(0.696 0.146 162.5);
+  --success-foreground: oklch(0.145 0.005 285.9);
+  --warning: oklch(0.769 0.166 70.1);
+  --warning-foreground: oklch(0.145 0.005 285.9);
+  --info: oklch(0.685 0.126 234.5);
+  --info-foreground: oklch(0.145 0.005 285.9);
+
+  --border: oklch(1 0 0 / 10%);
+  --border-strong: oklch(1 0 0 / 18%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.623 0.19 261.5);
+
+  --sidebar: oklch(0.21 0.006 285.9);
+  --sidebar-foreground: oklch(0.985 0.001 286);
+  --sidebar-primary: oklch(0.623 0.19 261.5);
+  --sidebar-primary-foreground: oklch(0.145 0.005 285.9);
+  --sidebar-accent: oklch(0.274 0.006 286);
+  --sidebar-accent-foreground: oklch(0.985 0.001 286);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.623 0.19 261.5);
+
+  /* Inverted band separates from the page by going one step lighter in dark mode */
+  --inverse: oklch(0.21 0.006 285.9);
+  --inverse-elevated: oklch(0.274 0.006 286);
+  --inverse-border: oklch(1 0 0 / 10%);
+  --primary-on-inverse: oklch(0.72 0.145 254);
+  --accent-on-inverse: oklch(0.73 0.16 296);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  /* WCAG 2.2: a visible, 2px-thick, ≥3:1 focus indicator on every
+     interactive element, including the hand-rolled ones. */
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-primary) 22%, transparent);
+  }
+}
+
+/* Brand gradient used sparingly for hero and emphasis surfaces. */
+@utility brand-gradient {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-accent-brand) 100%
+  );
+}
+
+@utility brand-text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-primary) 0%,
+    var(--color-accent-brand) 100%
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+/* Subtle enterprise panel: used for stat tiles and framed sections. */
+@utility panel {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Inverted band (footer, dark hero overlays). Pairs surface with its
+   on-surface colour so children never restate white/zinc literals. */
+@utility surface-inverse {
+  background-color: var(--color-inverse);
+  color: var(--color-inverse-foreground);
+}
+
+/* Dashboard numerals: lining tabular figures so metric columns align. */
+@utility numeric {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Minimum comfortable pointer target (WCAG 2.2 SC 2.5.8 floor is 24px;
+   40px is the product default for icon-only controls). */
+@utility tap-target {
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+}
+
+/* Section rhythm: 8px-based vertical bands used by page sections. */
+@utility section-y {
+  padding-top: clamp(3.5rem, 6vw, 5.5rem);
+  padding-bottom: clamp(3.5rem, 6vw, 5.5rem);
+}
+
+/* Regimental Glassmorphism & Gold Theme Utilities */
+.glass-card {
+  background: rgba(18, 20, 20, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.glass-card-light {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(37, 99, 235, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.glass-gold-glow {
+  box-shadow:
+    inset 0 0 15px rgba(255, 215, 0, 0.25),
+    0 0 25px rgba(255, 215, 0, 0.2);
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #ffe16d 0%, #ffd700 50%, #e9c400 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-metallic-text {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 45%, #FFE16D 75%, #D4AF37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ncc-tricolor-bar {
+  background: linear-gradient(90deg, #1E3A8A 0%, #1E3A8A 33.3%, #DC2626 33.3%, #DC2626 66.6%, #0284C7 66.6%, #0284C7 100%);
+}
+
+.brass-badge {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.hero-cta-btn {
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 50%, #1E40AF 100%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.hero-cta-btn:hover {
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #1D4ED8 100%);
+  box-shadow: 0 15px 40px -5px rgba(37, 99, 235, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}

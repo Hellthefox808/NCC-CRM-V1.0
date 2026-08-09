@@ -1,0 +1,69 @@
+{
+  "brand": {
+    "name": "19 Jharkhand Battalion NCC (SBU Unit)",
+    "directorate": "Bihar & Jharkhand Directorate",
+    "motto": "Unity and Discipline (Ekta aur Anushasan)",
+    "aesthetic": "Regimental Glassmorphism (Military Prestige + Translucent Glass)"
+  },
+  "colors": {
+    "primary": {
+      "gold": "#FFD700",
+      "goldLight": "#FFE16D",
+      "goldDark": "#E9C400",
+      "blue": "oklch(0.546 0.215 262.9)"
+    },
+    "surface": {
+      "darkGlass": "rgba(18, 20, 20, 0.85)",
+      "lightGlass": "rgba(255, 255, 255, 0.9)",
+      "backgroundDark": "oklch(0.165 0.005 285.9)",
+      "backgroundLight": "oklch(1 0 0)"
+    },
+    "borders": {
+      "gold": "rgba(255, 215, 0, 0.2)",
+      "blue": "rgba(37, 99, 235, 0.15)",
+      "subtle": "oklch(0.92 0.004 286.3)"
+    }
+  },
+  "typography": {
+    "fontFamilies": {
+      "headline": "Manrope, sans-serif",
+      "body": "Work Sans, sans-serif",
+      "mono": "JetBrains Mono, monospace",
+      "form": "Space Grotesk, sans-serif"
+    },
+    "hierarchy": {
+      "h1": "2.5rem - 3.75rem / font-extrabold / tracking-tight",
+      "h2": "1.75rem - 2.25rem / font-bold / tracking-tight",
+      "h3": "1.25rem - 1.5rem / font-semibold",
+      "bodyMd": "1rem / font-normal / leading-relaxed",
+      "badge": "0.75rem / font-mono / font-semibold / uppercase"
+    }
+  },
+  "radii": {
+    "sm": "0.25rem",
+    "md": "0.5rem",
+    "lg": "1rem",
+    "xl": "1.5rem",
+    "2xl": "2rem",
+    "full": "9999px"
+  },
+  "shadows": {
+    "subtle": "0 1px 3px rgba(0, 0, 0, 0.08)",
+    "medium": "0 10px 30px rgba(0, 0, 0, 0.06)",
+    "glassGlow": "inset 0 0 15px rgba(255, 215, 0, 0.25), 0 0 25px rgba(255, 215, 0, 0.2)",
+    "elevation3d": "0 18px 40px -14px rgba(37, 99, 235, 0.55)"
+  },
+  "components": {
+    "Navbar": "Glassmorphic header with active section scroll-spy",
+    "Footer": "Inverted dark band with battalion crest & university links",
+    "HeroSection": "3D visual badge, PET benchmarks, SSB entry pipeline summary",
+    "EnrollmentWizard": "Multi-step Form 1 with local encryption draft recovery",
+    "StatusTrackerModal": "Public tracker with masked Aadhaar and bank details",
+    "AiCadreAssistant": "Floating glass dialog with Subedar Major prompt routing"
+  },
+  "accessibility": {
+    "standard": "WCAG 2.2 AA",
+    "focusStyle": "2px solid ring / 2px outline-offset",
+    "contrastRatio": ">= 4.5:1 text contrast"
+  }
+}

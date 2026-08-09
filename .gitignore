@@ -7,42 +7,26 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Dependency directories
-node_modules/
-jspm_packages/
-web_modules/
-
-# Build & distribution outputs
-dist/
-dist-ssr/
-build/
-coverage/
+node_modules
+dist
+dist-ssr
+.output
+.vinxi
+.tanstack/**
+.nitro
 *.local
 
-# Environment files & secrets (CRITICAL: Never upload secrets to GitHub)
-.env
-.env.local
-.env.development
-.env.test
-.env.production
-.env*.local
-!.env.example
+# Wrangler / Cloudflare
+.wrangler/
+.dev.vars
 
-# Stores & caches
-.cache/
+# Editor directories and files
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
 !.vscode/extensions.json
-.idea/
-
-# OS & Editor files
+.idea
 .DS_Store
-Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 *.sw?
-*.tmp
-scratch/
-tmp/
-temp/
-
