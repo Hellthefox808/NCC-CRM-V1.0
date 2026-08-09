@@ -133,13 +133,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartEnrollment, ope
             </motion.div>
 
             {/* Main Command Title */}
-            <motion.div variants={itemVariants} className="space-y-1">
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#3B281C] font-display uppercase leading-none">
+            <motion.div variants={itemVariants} className="space-y-1.5">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#3B281C] font-display uppercase leading-tight">
                 National Cadet Corps
               </h1>
-              <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#8C5E3C] font-display uppercase leading-tight pt-1">
-                Senior Division & Senior Wing
-              </h2>
+              <p className="text-xs sm:text-sm lg:text-base font-extrabold tracking-[0.2em] text-[#8C5E3C] font-display uppercase pt-0.5">
+                Senior Division (SD) & Senior Wing (SW)
+              </p>
             </motion.div>
 
             {/* Official Motto Banner */}
