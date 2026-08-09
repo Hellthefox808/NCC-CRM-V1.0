@@ -281,7 +281,7 @@ export class EnterpriseDataPlatform {
    */
   static async trackStatus(query: string): Promise<ApiResponse<{ record: CadetRecord }>> {
     const cacheKey = `status:${query.trim().toLowerCase()}`;
-    const cached = dataCache.get(cacheKey);
+    const cached = dataCache.get<CadetRecord>(cacheKey);
     if (cached) return { success: true, data: { record: cached }, meta: { cacheHit: true } };
 
     const res = await dataCache.deduplicate(cacheKey, () =>
@@ -312,7 +312,7 @@ export class EnterpriseDataPlatform {
 
     const queryString = params.toString() ? `?${params.toString()}` : "";
     const cacheKey = `enrollments:${queryString}`;
-    const cached = dataCache.get(cacheKey);
+    const cached = dataCache.get<{ enrollments: CadetRecord[]; count: number }>(cacheKey);
     if (cached) return { success: true, data: cached, meta: { cacheHit: true } };
 
     const res = await dataCache.deduplicate(cacheKey, () =>
@@ -349,7 +349,9 @@ export class EnterpriseDataPlatform {
     ApiResponse<{ notifications: NotificationItem[]; unreadCount: number }>
   > {
     const cacheKey = "notifications_feed";
-    const cached = dataCache.get(cacheKey);
+    const cached = dataCache.get<{ notifications: NotificationItem[]; unreadCount: number }>(
+      cacheKey,
+    );
     if (cached) return { success: true, data: cached, meta: { cacheHit: true } };
 
     const res = await dataCache.deduplicate(cacheKey, () =>
