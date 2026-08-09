@@ -41,6 +41,12 @@ import {
 import { CadetRecord } from "@/types";
 import { EnterpriseDataPlatform } from "@backend/services/dataPlatform";
 
+const DRAFT_KEY = "ncc-enrollment-draft-v3";
+const LEGACY_DRAFT_KEY = "ncc-enrollment-draft-v2";
+const DRAFT_SCHEMA_VERSION = "enroll-2026.3";
+const DRAFT_TTL_MS = 24 * 60 * 60 * 1000; // auto-expires after 24 hours
+const SENSITIVE_FIELDS = ["aadhaarNumber", "accountNumber"] as const;
+
 interface EnrollmentFormProps {
   onSuccessSubmitted?: (record: CadetRecord) => void;
   onSuccess?: (record: CadetRecord) => void;
@@ -114,13 +120,6 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
   // ---- Draft persistence (client-only, survives refresh) ----
   // Stored AES-GCM encrypted under a non-extractable browser key, so the blob
   // is unreadable from devtools/storage. Sensitive IDs are still never written.
-  // DRAFT_SCHEMA_VERSION: bump whenever the form fields or steps change so any
-  // draft written against the old flow is discarded instead of half-restored.
-  const DRAFT_KEY = "ncc-enrollment-draft-v3";
-  const LEGACY_DRAFT_KEY = "ncc-enrollment-draft-v2";
-  const DRAFT_SCHEMA_VERSION = "enroll-2026.3";
-  const DRAFT_TTL_MS = 24 * 60 * 60 * 1000; // auto-expires after 24 hours
-  const SENSITIVE_FIELDS = ["aadhaarNumber", "accountNumber"] as const;
   const [draftRestored, setDraftRestored] = useState(false);
   const [draftExpiresAt, setDraftExpiresAt] = useState<number | null>(null);
   const [draftDiscarded, setDraftDiscarded] = useState<"expired" | "schema-changed" | null>(null);
@@ -370,8 +369,10 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
         spread: 70,
         origin: { y: 0.6 },
       });
-    } catch (err: any) {
-      setErrorMessage(err.message || "An error occurred while submitting the application.");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "An error occurred while submitting the application.";
+      setErrorMessage(message);
     } finally {
       setIsSubmitting(false);
     }
