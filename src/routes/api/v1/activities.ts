@@ -11,7 +11,10 @@ export const Route = createFileRoute("/api/v1/activities")({
 
         try {
           const admin = await getAdmin();
-          let query = admin.from("activities").select("*").order("start_time", { ascending: false });
+          let query = admin
+            .from("activities")
+            .select("*")
+            .order("start_time", { ascending: false });
 
           if (category) query = query.eq("category", category);
           if (status) query = query.eq("status", status);

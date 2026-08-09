@@ -30,7 +30,10 @@ export const Route = createFileRoute("/api/v1/calendar")({
 
         const body = (await request.json().catch(() => ({}))) as Record<string, any>;
         if (!body.title || !body.startTime || !body.endTime) {
-          return json({ success: false, error: "Title, startTime, and endTime are required." }, 400);
+          return json(
+            { success: false, error: "Title, startTime, and endTime are required." },
+            400,
+          );
         }
 
         try {

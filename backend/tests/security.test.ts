@@ -101,4 +101,3 @@ describe("Security & Authorization Unit Tests", () => {
     assert.equal(afterReset.allowed, true);
   });
 });
-

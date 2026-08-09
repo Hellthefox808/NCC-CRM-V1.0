@@ -359,87 +359,99 @@
 }
 
 .gold-metallic-text {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 45%, #FFE16D 75%, #D4AF37 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 45%, #ffe16d 75%, #d4af37 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .ncc-tricolor-bar {
-  background: linear-gradient(90deg, #1E3A8A 0%, #1E3A8A 33.3%, #DC2626 33.3%, #DC2626 66.6%, #0284C7 66.6%, #0284C7 100%);
+  background: linear-gradient(
+    90deg,
+    #1e3a8a 0%,
+    #1e3a8a 33.3%,
+    #dc2626 33.3%,
+    #dc2626 66.6%,
+    #0284c7 66.6%,
+    #0284c7 100%
+  );
 }
 
 .brass-badge {
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(15, 23, 42, 0.9) 100%);
   border: 1px solid rgba(255, 215, 0, 0.35);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .hero-cta-btn {
-  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 50%, #1E40AF 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 10px 30px -5px rgba(37, 99, 235, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .hero-cta-btn:hover {
-  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #1D4ED8 100%);
-  box-shadow: 0 15px 40px -5px rgba(37, 99, 235, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+  box-shadow:
+    0 15px 40px -5px rgba(37, 99, 235, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 /* Light Coffee Palette Utilities */
 .coffee-light-card {
-  background: linear-gradient(135deg, #FAF7F2 0%, #F5EFE6 50%, #EFE5D8 100%);
-  border: 1px solid #D6C5B3;
-  color: #3B281C;
+  background: linear-gradient(135deg, #faf7f2 0%, #f5efe6 50%, #efe5d8 100%);
+  border: 1px solid #d6c5b3;
+  color: #3b281c;
   box-shadow: 0 20px 50px -10px rgba(74, 50, 36, 0.12);
 }
 
 .coffee-light-badge {
   background: rgba(222, 208, 191, 0.65);
-  border: 1px solid #C4B19C;
-  color: #5C3D26;
+  border: 1px solid #c4b19c;
+  color: #5c3d26;
 }
 
 .coffee-light-item {
   background: rgba(247, 241, 233, 0.9);
-  border: 1px solid #DBC9B5;
-  color: #4A3324;
+  border: 1px solid #dbc9b5;
+  color: #4a3324;
 }
 
 .coffee-light-item:hover {
-  border-color: #8C5E3C !important;
-  background-color: #F8F2EA !important;
+  border-color: #8c5e3c !important;
+  background-color: #f8f2ea !important;
 }
 
 .coffee-light-btn {
-  background: linear-gradient(135deg, #4A3222 0%, #342216 100%);
-  color: #FAF5EF;
-  border: 1px solid #6E4A33;
+  background: linear-gradient(135deg, #4a3222 0%, #342216 100%);
+  color: #faf5ef;
+  border: 1px solid #6e4a33;
   box-shadow: 0 4px 14px rgba(52, 34, 22, 0.25);
 }
 
 .coffee-light-btn:hover {
-  background: linear-gradient(135deg, #5C3F2B 0%, #422C1D 100%);
-  border-color: #8C5E3C;
+  background: linear-gradient(135deg, #5c3f2b 0%, #422c1d 100%);
+  border-color: #8c5e3c;
 }
 
 /* Indian Army Olive Green & Regimental Gold Theme Utilities */
 .army-theme-card {
-  background: linear-gradient(135deg, #2A381A 0%, #344720 50%, #222F15 100%);
-  border: 1px solid #C5A059;
-  color: #FAF7F2;
+  background: linear-gradient(135deg, #2a381a 0%, #344720 50%, #222f15 100%);
+  border: 1px solid #c5a059;
+  color: #faf7f2;
   box-shadow: 0 20px 50px -10px rgba(34, 47, 21, 0.45);
 }
 
 .army-theme-badge {
   background: rgba(58, 78, 38, 0.85);
-  border: 1px solid #C5A059;
-  color: #E6C687;
+  border: 1px solid #c5a059;
+  color: #e6c687;
 }
 
 .army-theme-box {
   background: rgba(26, 36, 16, 0.85);
   border: 1px solid rgba(197, 160, 89, 0.45);
-  color: #FAF7F2;
+  color: #faf7f2;
 }
-
-

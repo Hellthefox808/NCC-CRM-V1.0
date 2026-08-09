@@ -158,11 +158,11 @@ export function sanitizePostgrestQuery(input: string): string {
   return input.replace(/[%,.()\\]/g, "");
 }
 
-export type UserRole = "SUPER_ADMIN" | "ADMIN" | "CTO" | "PI_STAFF" | "INSTRUCTOR" | "CADET" | "VIEW_ONLY";
+export type UserRole =
+  "SUPER_ADMIN" | "ADMIN" | "CTO" | "PI_STAFF" | "INSTRUCTOR" | "CADET" | "VIEW_ONLY";
 
 export function isRoleAuthorized(userRole: string | undefined, allowedRoles: UserRole[]): boolean {
   if (!userRole) return false;
   if (userRole === "SUPER_ADMIN" || userRole === "ADMIN" || userRole === "officer") return true;
   return allowedRoles.includes(userRole as UserRole);
 }
-

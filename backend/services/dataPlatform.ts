@@ -453,7 +453,10 @@ export class EnterpriseDataPlatform {
   /**
    * Fetch Unit Activities
    */
-  static async getActivities(category?: string, status?: string): Promise<ApiResponse<{ activities: any[] }>> {
+  static async getActivities(
+    category?: string,
+    status?: string,
+  ): Promise<ApiResponse<{ activities: any[] }>> {
     const params = new URLSearchParams();
     if (category) params.set("category", category);
     if (status) params.set("status", status);

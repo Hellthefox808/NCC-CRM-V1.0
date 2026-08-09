@@ -40,7 +40,10 @@ export const Route = createFileRoute("/api/v1/staff-attendance")({
         const { staffName, staffRole, action, dutyLocation, remarks } = body;
 
         if (!staffName || !action) {
-          return json({ success: false, error: "staffName and action ('clock_in' | 'clock_out') required." }, 400);
+          return json(
+            { success: false, error: "staffName and action ('clock_in' | 'clock_out') required." },
+            400,
+          );
         }
 
         const today = new Date().toISOString().slice(0, 10);
@@ -64,7 +67,11 @@ export const Route = createFileRoute("/api/v1/staff-attendance")({
 
             if (error) throw error;
 
-            return json({ success: true, message: `${staffName} clocked in successfully.`, data: { record: data } });
+            return json({
+              success: true,
+              message: `${staffName} clocked in successfully.`,
+              data: { record: data },
+            });
           } else if (action === "clock_out") {
             // Find latest active clock_in for this staff member today
             const { data: existing } = await admin
@@ -78,7 +85,10 @@ export const Route = createFileRoute("/api/v1/staff-attendance")({
               .maybeSingle();
 
             if (!existing) {
-              return json({ success: false, error: "No active clock-in session found for today." }, 404);
+              return json(
+                { success: false, error: "No active clock-in session found for today." },
+                404,
+              );
             }
 
             const { data, error } = await admin
@@ -93,7 +103,11 @@ export const Route = createFileRoute("/api/v1/staff-attendance")({
 
             if (error) throw error;
 
-            return json({ success: true, message: `${staffName} clocked out successfully.`, data: { record: data } });
+            return json({
+              success: true,
+              message: `${staffName} clocked out successfully.`,
+              data: { record: data },
+            });
           }
 
           return json({ success: false, error: "Invalid action" }, 400);

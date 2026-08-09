@@ -54,7 +54,7 @@ export const Route = createFileRoute("/api/v1/health")({
               dbError: dbErrorDetail,
             },
           },
-          isHealthy ? 200 : 503
+          isHealthy ? 200 : 503,
         );
       },
     },

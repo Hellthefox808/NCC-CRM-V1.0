@@ -65,7 +65,14 @@ export function AttackSurfaceManager() {
       icon: Network,
       color: "text-indigo-400",
       description: "Infrastructure topology, certificate chains & ASN correlation.",
-      tools: ["DNS Topology", "WHOIS Guard", "SSL/TLS Certs", "ASN Mapping", "IP History", "Correlation Engine"],
+      tools: [
+        "DNS Topology",
+        "WHOIS Guard",
+        "SSL/TLS Certs",
+        "ASN Mapping",
+        "IP History",
+        "Correlation Engine",
+      ],
     },
     {
       id: "threat-intel",
@@ -110,7 +117,13 @@ export function AttackSurfaceManager() {
       icon: ShieldCheck,
       color: "text-emerald-500",
       description: "Exposure assessment, risk prioritization & automated response.",
-      tools: ["Exposure Analysis", "Risk Prioritization", "Incident Response", "Threat Hunting", "ASM Ops"],
+      tools: [
+        "Exposure Analysis",
+        "Risk Prioritization",
+        "Incident Response",
+        "Threat Hunting",
+        "ASM Ops",
+      ],
     },
   ];
 
@@ -118,7 +131,12 @@ export function AttackSurfaceManager() {
     { label: "Monitored Subdomains", value: "14 Assets", status: "Clean", icon: Globe },
     { label: "SSL/TLS Cert Validity", value: "Valid (284 Days)", status: "Active", icon: Lock },
     { label: "Open Port Exposure", value: "Ports 80, 443 Only", status: "Hardened", icon: Server },
-    { label: "EPSS Exploit Probability", value: "0.012% (Negligible)", status: "Optimal", icon: Activity },
+    {
+      label: "EPSS Exploit Probability",
+      value: "0.012% (Negligible)",
+      status: "Optimal",
+      icon: Activity,
+    },
   ];
 
   return (
@@ -163,7 +181,10 @@ export function AttackSurfaceManager() {
           {EXPOSURE_METRICS.map((metric, idx) => {
             const Icon = metric.icon;
             return (
-              <div key={idx} className="bg-white/5 border border-white/10 rounded-xl p-3.5 space-y-1">
+              <div
+                key={idx}
+                className="bg-white/5 border border-white/10 rounded-xl p-3.5 space-y-1"
+              >
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold text-zinc-400">{metric.label}</span>
                   <Icon className="w-4 h-4 text-blue-400" />
@@ -202,15 +223,21 @@ export function AttackSurfaceManager() {
                 >
                   <div className="flex items-center space-x-3">
                     <span className="text-xs font-black text-zinc-400 w-5">{stage.number}</span>
-                    <div className={`p-2 rounded-lg ${isSelected ? "bg-blue-500/10 text-blue-400" : "bg-zinc-100 text-zinc-600"}`}>
+                    <div
+                      className={`p-2 rounded-lg ${isSelected ? "bg-blue-500/10 text-blue-400" : "bg-zinc-100 text-zinc-600"}`}
+                    >
                       <Icon className="w-4 h-4" />
                     </div>
                     <div>
                       <p className="text-xs font-extrabold">{stage.title}</p>
-                      <p className="text-[10px] text-zinc-400 truncate max-w-[200px]">{stage.description}</p>
+                      <p className="text-[10px] text-zinc-400 truncate max-w-[200px]">
+                        {stage.description}
+                      </p>
                     </div>
                   </div>
-                  <ChevronRight className={`w-4 h-4 transition-transform ${isSelected ? "text-blue-500 rotate-90" : "text-zinc-400"}`} />
+                  <ChevronRight
+                    className={`w-4 h-4 transition-transform ${isSelected ? "text-blue-500 rotate-90" : "text-zinc-400"}`}
+                  />
                 </button>
               );
             })}
@@ -244,7 +271,9 @@ export function AttackSurfaceManager() {
                   </div>
 
                   <p className="text-xs text-zinc-300 leading-relaxed mb-6">
-                    {current.description} All automated reconnaissance, mapping data, and intelligence feeds are aggregated continuously in the SBU NCC Security Data Engine.
+                    {current.description} All automated reconnaissance, mapping data, and
+                    intelligence feeds are aggregated continuously in the SBU NCC Security Data
+                    Engine.
                   </p>
 
                   <h5 className="text-xs font-black uppercase tracking-wider text-zinc-400 mb-3">
@@ -252,7 +281,10 @@ export function AttackSurfaceManager() {
                   </h5>
                   <div className="grid grid-cols-2 gap-3">
                     {current.tools.map((tool, i) => (
-                      <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center justify-between">
+                      <div
+                        key={i}
+                        className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center justify-between"
+                      >
                         <span className="text-xs font-bold text-zinc-200">{tool}</span>
                         <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                       </div>

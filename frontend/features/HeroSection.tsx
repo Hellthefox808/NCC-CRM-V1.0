@@ -20,10 +20,7 @@ interface HeroSectionProps {
   openAiAssistant?: () => void;
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({
-  onStartEnrollment,
-  openStatusModal,
-}) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ onStartEnrollment, openStatusModal }) => {
   const containerVariants: Variants = {
     hidden: { opacity: 0, y: 25 },
     visible: {
@@ -50,7 +47,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     { icon: Flag, label: "BATTALION UNIT", value: "19 JHR BN NCC", highlight: "Ranchi HQ" },
     { icon: Award, label: "DIRECTORATE", value: "Bihar & Jharkhand", highlight: "Patna HQ" },
     { icon: Users, label: "CAMPUS COMPANY", value: "SBU Ranchi Coy", highlight: "Active Cadre" },
-    { icon: GraduationCap, label: "CERTIFICATIONS", value: "'B' & 'C' Certs", highlight: "Govt. Approved" },
+    {
+      icon: GraduationCap,
+      label: "CERTIFICATIONS",
+      value: "'B' & 'C' Certs",
+      highlight: "Govt. Approved",
+    },
   ];
 
   return (
@@ -73,7 +75,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
       {/* Subtle Soft Vignette for Maximum Campus Image Clarity */}
       <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/30 via-transparent to-black/40" />
-      
+
       {/* Strategic Soft Ambient Glows */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-[36rem] w-[36rem] rounded-full bg-amber-500/10 blur-[140px] pointer-events-none" />
       <div className="absolute bottom-10 right-10 z-10 h-[24rem] w-[24rem] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none" />
@@ -91,7 +93,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           <div className="relative z-10 mx-auto max-w-3xl space-y-6">
             {/* Prominent SBU & NCC Crest Logos */}
-            <motion.div variants={itemVariants} className="flex items-center justify-center gap-4 pt-1">
+            <motion.div
+              variants={itemVariants}
+              className="flex items-center justify-center gap-4 pt-1"
+            >
               {/* SBU Official Crest */}
               <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#FAF7F2] p-1 border-2 border-[#8C5E3C] shadow-[0_0_20px_rgba(140,94,60,0.3)] ring-2 ring-[#5C3D26]/20 flex items-center justify-center overflow-hidden transition-transform hover:scale-105">
                 <img
@@ -203,23 +208,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 className="coffee-light-card rounded-2xl p-4 shadow-md transition-all space-y-1 relative overflow-hidden group"
               >
                 <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-[#8C5E3C] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                
+
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black uppercase tracking-wider text-[#8C5E3C] font-mono">
                     {stat.label}
                   </span>
                   <Icon className="w-4 h-4 text-[#8C5E3C] shrink-0" />
                 </div>
-                
+
                 <p className="text-sm sm:text-base font-black text-[#3B281C] font-display">
                   {stat.value}
                 </p>
 
                 <div className="flex items-center space-x-1 pt-0.5">
                   <CheckCircle2 className="w-3 h-3 text-[#8C5E3C] shrink-0" />
-                  <span className="text-[10px] font-bold text-[#5C4230]">
-                    {stat.highlight}
-                  </span>
+                  <span className="text-[10px] font-bold text-[#5C4230]">{stat.highlight}</span>
                 </div>
               </motion.div>
             );

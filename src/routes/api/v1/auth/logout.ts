@@ -45,11 +45,9 @@ export const Route = createFileRoute("/api/v1/auth/logout")({
 
         const expiredCookie = `ncc_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`;
 
-        return json(
-          { success: true, message: "Session terminated successfully." },
-          200,
-          { "Set-Cookie": expiredCookie },
-        );
+        return json({ success: true, message: "Session terminated successfully." }, 200, {
+          "Set-Cookie": expiredCookie,
+        });
       },
     },
   },

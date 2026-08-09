@@ -192,7 +192,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <span className="relative z-10">{item.label}</span>
                   </button>
                   {index < navItems.length - 1 && !isActive && !isNextActive && (
-                    <span aria-hidden="true" className="h-3.5 w-px bg-border/70 self-center shrink-0" />
+                    <span
+                      aria-hidden="true"
+                      className="h-3.5 w-px bg-border/70 self-center shrink-0"
+                    />
                   )}
                 </React.Fragment>
               );

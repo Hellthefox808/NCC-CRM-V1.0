@@ -19,7 +19,9 @@ export const Route = createFileRoute("/api/v1/auth/login")({
           );
         }
 
-        const identifier = String(username || email || "").trim().toLowerCase();
+        const identifier = String(username || email || "")
+          .trim()
+          .toLowerCase();
 
         // ── Rate Limiting ──────────────────────────────────────────────
         const { checkRateLimit } = await import("@backend/lib/rate-limiter.server");
@@ -192,7 +194,10 @@ export const Route = createFileRoute("/api/v1/auth/login")({
             { "Set-Cookie": cookieHeader },
           );
         } catch {
-          return json({ success: false, error: "Authentication system error. Please try again." }, 500);
+          return json(
+            { success: false, error: "Authentication system error. Please try again." },
+            500,
+          );
         }
       },
     },

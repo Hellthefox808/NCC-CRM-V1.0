@@ -223,9 +223,7 @@ export const AboutNCC: React.FC = () => {
                     <span className="mt-px font-mono text-[10px] font-bold tabular-nums text-[#8C5E3C]">
                       {String(idx + 1).padStart(2, "0")}
                     </span>
-                    <span className="text-[11px] font-bold leading-snug text-[#3B281C]">
-                      {aim}
-                    </span>
+                    <span className="text-[11px] font-bold leading-snug text-[#3B281C]">{aim}</span>
                   </motion.li>
                 ))}
               </ul>
@@ -292,7 +290,9 @@ export const AboutNCC: React.FC = () => {
                       tabRefs.current[next]?.focus();
                     }}
                     className={`relative cursor-pointer rounded-lg px-4 py-2 text-xs font-black transition-colors outline-none ${
-                      isActive ? "text-white" : "text-zinc-800 hover:text-zinc-950 hover:bg-zinc-200/80"
+                      isActive
+                        ? "text-white"
+                        : "text-zinc-800 hover:text-zinc-950 hover:bg-zinc-200/80"
                     }`}
                   >
                     {isActive && (
@@ -472,7 +472,9 @@ export const AboutNCC: React.FC = () => {
                           >
                             <GroupIcon className="h-4 w-4" strokeWidth={2} />
                           </motion.span>
-                          <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] ${g.colorScheme.badge}`}>
+                          <span
+                            className={`rounded-full border px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] ${g.colorScheme.badge}`}
+                          >
                             {g.label}
                           </span>
                         </div>
@@ -654,12 +656,8 @@ export const AboutNCC: React.FC = () => {
                     variants={itemReveal}
                     className={`group/row flex items-center justify-between gap-3 rounded-md px-1 py-1 transition-colors duration-200 ${i < arr.length - 1 ? "border-b border-[#C5A059]/35 pb-2" : ""}`}
                   >
-                    <dt className="font-bold text-[#C5A059]">
-                      {row.k}
-                    </dt>
-                    <dd className="font-black text-[#FAF7F2]">
-                      {row.v}
-                    </dd>
+                    <dt className="font-bold text-[#C5A059]">{row.k}</dt>
+                    <dd className="font-black text-[#FAF7F2]">{row.v}</dd>
                   </motion.div>
                 ))}
               </motion.dl>

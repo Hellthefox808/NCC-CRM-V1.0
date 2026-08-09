@@ -22,7 +22,7 @@ export const Route = createFileRoute("/api/v1/photos")({
           if (!body.activity_id || !body.file_name || !body.content_type) {
             return json(
               { success: false, error: "activity_id, file_name, and content_type are required" },
-              400
+              400,
             );
           }
 
@@ -31,16 +31,13 @@ export const Route = createFileRoute("/api/v1/photos")({
           if (!allowedTypes.includes(body.content_type)) {
             return json(
               { success: false, error: "Only JPEG, PNG, and WebP images are allowed" },
-              400
+              400,
             );
           }
 
           const maxSize = 10 * 1024 * 1024; // 10MB limit
           if (body.file_size_bytes && body.file_size_bytes > maxSize) {
-            return json(
-              { success: false, error: "File size exceeds 10MB limit" },
-              400
-            );
+            return json({ success: false, error: "File size exceeds 10MB limit" }, 400);
           }
 
           const year = new Date().getFullYear();

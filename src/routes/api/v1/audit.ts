@@ -10,7 +10,10 @@ export const Route = createFileRoute("/api/v1/audit")({
         if (!gate.ok) return json({ success: false, error: gate.error }, gate.status);
 
         const url = new URL(request.url);
-        const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get("limit") || "50", 10)));
+        const limit = Math.min(
+          100,
+          Math.max(1, parseInt(url.searchParams.get("limit") || "50", 10)),
+        );
         const action = url.searchParams.get("action");
 
         try {
