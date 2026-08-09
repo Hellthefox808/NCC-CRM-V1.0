@@ -233,24 +233,24 @@ export const AboutNCC: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Verified Research: Physical Fitness Benchmarks (SD & SW) */}
+        {/* Verified Research: Physical Fitness Benchmarks (SD & SW) — Related Colors & Motion Effects */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
-          className="rounded-2xl border border-border bg-card p-6 text-left shadow-2xs sm:p-8"
+          className="rounded-2xl border border-zinc-300 bg-white p-6 text-left shadow-sm sm:p-8"
         >
-          <div className="flex flex-col gap-5 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-col gap-5 border-b border-zinc-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                <Activity className="h-3.5 w-3.5 text-primary" strokeWidth={1.75} />
+              <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-blue-700 shadow-xs">
+                <Activity className="h-3.5 w-3.5 text-blue-600" strokeWidth={2} />
                 <span>Training Standards</span>
               </div>
-              <h3 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+              <h3 className="text-xl font-black tracking-tight text-zinc-950 sm:text-2xl">
                 Physical Efficiency Test (PET) Benchmarks
               </h3>
-              <p className="max-w-xl text-xs leading-relaxed text-muted-foreground">
+              <p className="max-w-xl text-xs font-bold leading-relaxed text-zinc-800">
                 Qualifying marks published for Senior Division and Senior Wing cadets under
                 battalion training orders.
               </p>
@@ -260,7 +260,7 @@ export const AboutNCC: React.FC = () => {
               role="tablist"
               aria-label="Physical Efficiency Test division"
               aria-orientation="horizontal"
-              className="inline-flex shrink-0 items-center gap-1 rounded-xl border border-border bg-muted/50 p-1"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-zinc-300 bg-zinc-100/90 p-1.5 shadow-sm"
             >
               {PET_TABS.map((tab, index) => {
                 const isActive = activeTab === tab.key;
@@ -291,16 +291,16 @@ export const AboutNCC: React.FC = () => {
                       setActiveTab(PET_TABS[next].key);
                       tabRefs.current[next]?.focus();
                     }}
-                    className={`relative cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card ${
-                      isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                    className={`relative cursor-pointer rounded-lg px-4 py-2 text-xs font-black transition-colors outline-none ${
+                      isActive ? "text-white" : "text-zinc-800 hover:text-zinc-950 hover:bg-zinc-200/80"
                     }`}
                   >
                     {isActive && (
                       <motion.span
                         layoutId="pet-tab-pill"
                         aria-hidden="true"
-                        className="absolute inset-0 rounded-lg bg-card shadow-2xs ring-1 ring-border"
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                        className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 shadow-md"
+                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
                       />
                     )}
                     <span className="relative z-10" aria-hidden="true">
@@ -313,7 +313,7 @@ export const AboutNCC: React.FC = () => {
             </div>
           </div>
 
-          {/* Physical Standards Display */}
+          {/* Physical Standards Display — Related Category Colors & Motion Effects */}
           {(() => {
             const s =
               activeTab === "sd"
@@ -326,6 +326,12 @@ export const AboutNCC: React.FC = () => {
                       icon: Zap,
                       label: "Endurance Test",
                       headline: PHYSICAL_FITNESS_STANDARDS.sdMale.run,
+                      colorScheme: {
+                        badge: "bg-blue-50 border-blue-200 text-blue-700",
+                        iconBg: "bg-blue-100 border-blue-300 text-blue-700",
+                        hoverBorder: "hover:border-blue-500",
+                        glow: "bg-blue-500/10",
+                      },
                       rows: [
                         {
                           k: "Excellent",
@@ -339,6 +345,12 @@ export const AboutNCC: React.FC = () => {
                       icon: Activity,
                       label: "Strength Exercises",
                       headline: "Upper Body & Core",
+                      colorScheme: {
+                        badge: "bg-emerald-50 border-emerald-200 text-emerald-700",
+                        iconBg: "bg-emerald-100 border-emerald-300 text-emerald-700",
+                        hoverBorder: "hover:border-emerald-500",
+                        glow: "bg-emerald-500/10",
+                      },
                       rows: [
                         { k: "Pull-ups", v: PHYSICAL_FITNESS_STANDARDS.sdMale.pullups },
                         { k: "Push-ups", v: PHYSICAL_FITNESS_STANDARDS.sdMale.pushups },
@@ -349,6 +361,12 @@ export const AboutNCC: React.FC = () => {
                       icon: Target,
                       label: "Anthropometric Standards",
                       headline: "Height & Chest",
+                      colorScheme: {
+                        badge: "bg-indigo-50 border-indigo-200 text-indigo-700",
+                        iconBg: "bg-indigo-100 border-indigo-300 text-indigo-700",
+                        hoverBorder: "hover:border-indigo-500",
+                        glow: "bg-indigo-500/10",
+                      },
                       rows: [
                         {
                           k: "Min height",
@@ -364,6 +382,12 @@ export const AboutNCC: React.FC = () => {
                       icon: Zap,
                       label: "Endurance Test",
                       headline: PHYSICAL_FITNESS_STANDARDS.swFemale.run,
+                      colorScheme: {
+                        badge: "bg-blue-50 border-blue-200 text-blue-700",
+                        iconBg: "bg-blue-100 border-blue-300 text-blue-700",
+                        hoverBorder: "hover:border-blue-500",
+                        glow: "bg-blue-500/10",
+                      },
                       rows: [
                         {
                           k: "Excellent",
@@ -377,6 +401,12 @@ export const AboutNCC: React.FC = () => {
                       icon: Activity,
                       label: "Agility & Core",
                       headline: "Flexibility & Speed",
+                      colorScheme: {
+                        badge: "bg-emerald-50 border-emerald-200 text-emerald-700",
+                        iconBg: "bg-emerald-100 border-emerald-300 text-emerald-700",
+                        hoverBorder: "hover:border-emerald-500",
+                        glow: "bg-emerald-500/10",
+                      },
                       rows: [
                         { k: "Shuttle run", v: PHYSICAL_FITNESS_STANDARDS.swFemale.shuttleRun },
                         {
@@ -389,6 +419,12 @@ export const AboutNCC: React.FC = () => {
                       icon: Target,
                       label: "Anthropometric Standards",
                       headline: "Height & BMI",
+                      colorScheme: {
+                        badge: "bg-indigo-50 border-indigo-200 text-indigo-700",
+                        iconBg: "bg-indigo-100 border-indigo-300 text-indigo-700",
+                        hoverBorder: "hover:border-indigo-500",
+                        glow: "bg-indigo-500/10",
+                      },
                       rows: [
                         {
                           k: "Min height",
@@ -407,55 +443,57 @@ export const AboutNCC: React.FC = () => {
                   role="tabpanel"
                   aria-labelledby={`pet-tab-${activeTab}`}
                   tabIndex={0}
-                  initial={{ opacity: 0, y: 12 }}
+                  initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] as const }}
-                  className="mt-6 grid grid-cols-1 gap-4 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-card md:grid-cols-3"
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] as const }}
+                  className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-3"
                 >
                   {groups.map((g, gi) => {
                     const GroupIcon = g.icon;
                     return (
                       <motion.div
                         key={g.label}
-                        initial={{ opacity: 0, y: 14 }}
+                        initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
-                          duration: 0.35,
-                          delay: 0.06 + gi * 0.07,
+                          duration: 0.38,
+                          delay: 0.05 + gi * 0.08,
                           ease: [0.22, 1, 0.36, 1] as const,
                         }}
-                        whileHover={{ y: -3 }}
-                        className="group rounded-xl border border-border bg-background p-5 transition-colors hover:border-primary/30 hover:shadow-md"
+                        whileHover={{ y: -6, scale: 1.02 }}
+                        className={`group relative overflow-hidden rounded-xl border border-zinc-200/90 bg-white p-5 transition-all duration-300 shadow-2xs hover:shadow-xl ${g.colorScheme.hoverBorder}`}
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2.5">
                           <motion.span
-                            whileHover={{ scale: 1.08, rotate: -4 }}
-                            transition={{ type: "spring", stiffness: 320, damping: 18 }}
-                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary"
+                            whileHover={{ scale: 1.15, rotate: -6 }}
+                            transition={{ type: "spring", stiffness: 350, damping: 16 }}
+                            className={`flex h-8 w-8 items-center justify-center rounded-lg border shadow-2xs ${g.colorScheme.iconBg}`}
                           >
-                            <GroupIcon className="h-4 w-4" strokeWidth={1.75} />
+                            <GroupIcon className="h-4 w-4" strokeWidth={2} />
                           </motion.span>
-                          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                          <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] ${g.colorScheme.badge}`}>
                             {g.label}
                           </span>
                         </div>
-                        <p className="mt-3 text-sm font-semibold tracking-tight text-foreground">
+                        <p className="mt-3.5 text-base font-black tracking-tight text-zinc-950">
                           {g.headline}
                         </p>
-                        <dl className="mt-3 divide-y divide-border/70 border-t border-border/70 text-xs">
+                        <dl className="mt-3.5 divide-y divide-zinc-200/80 border-t border-zinc-200/80 text-xs">
                           {g.rows.map((r, ri) => (
                             <motion.div
                               key={r.k}
                               initial={{ opacity: 0, x: -6 }}
                               animate={{ opacity: 1, x: 0 }}
-                              transition={{ duration: 0.3, delay: 0.14 + gi * 0.07 + ri * 0.05 }}
-                              className="flex items-start justify-between gap-3 py-2"
+                              transition={{ duration: 0.3, delay: 0.12 + gi * 0.07 + ri * 0.05 }}
+                              className="flex items-start justify-between gap-3 py-2.5"
                             >
-                              <dt className="text-muted-foreground">{r.k}</dt>
+                              <dt className="font-bold text-zinc-700">{r.k}</dt>
                               <dd
-                                className={`text-right font-medium tabular-nums ${
-                                  "good" in r && r.good ? "text-emerald-600" : "text-foreground"
+                                className={`text-right font-black tabular-nums ${
+                                  "good" in r && r.good
+                                    ? "text-emerald-700 font-extrabold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200"
+                                    : "text-zinc-950"
                                 }`}
                               >
                                 {r.v}
@@ -471,25 +509,25 @@ export const AboutNCC: React.FC = () => {
             );
           })()}
 
-          {/* Medical mandatory bullets */}
+          {/* Medical Mandatory Bullets — Sapphire Blue Medical Theme */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] as const }}
-            className="relative mt-6 overflow-hidden rounded-xl border border-primary/20 bg-primary/5 p-5"
+            className="relative mt-6 overflow-hidden rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50/80 via-indigo-50/60 to-blue-50/80 p-5 shadow-2xs"
           >
             <motion.span
               aria-hidden="true"
               animate={{ opacity: [0.25, 0.5, 0.25], scale: [1, 1.12, 1] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/20 blur-2xl"
+              className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-blue-400/20 blur-2xl"
             />
-            <h4 className="relative flex items-center gap-2 text-xs font-semibold text-foreground">
-              <ShieldCheck className="h-4 w-4 text-primary" strokeWidth={1.75} />
+            <h4 className="relative flex items-center gap-2 text-xs font-black text-blue-950 uppercase tracking-wider">
+              <ShieldCheck className="h-4 w-4 text-blue-600" strokeWidth={2} />
               <span>Mandatory Medical Fitness Standards</span>
             </h4>
-            <div className="relative mt-3 grid grid-cols-1 gap-3 text-[11px] leading-relaxed text-muted-foreground sm:grid-cols-3">
+            <div className="relative mt-3 grid grid-cols-1 gap-3 text-[11px] font-bold leading-relaxed text-zinc-800 sm:grid-cols-3">
               {PHYSICAL_FITNESS_STANDARDS.medicalMandatory.map((med, i) => (
                 <motion.div
                   key={i}
@@ -497,11 +535,11 @@ export const AboutNCC: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.35, delay: 0.1 + i * 0.08 }}
-                  className="flex items-start gap-2"
+                  className="flex items-start gap-2 rounded-lg bg-white/70 p-2.5 border border-blue-100 shadow-2xs"
                 >
                   <CheckCircle2
-                    className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary"
-                    strokeWidth={1.75}
+                    className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-600"
+                    strokeWidth={2}
                   />
                   <span>{med}</span>
                 </motion.div>
