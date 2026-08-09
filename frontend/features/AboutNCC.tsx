@@ -783,7 +783,7 @@ export const AboutNCC: React.FC = () => {
           </div>
         </div>
 
-        {/* Official NCC Act: Cessation of Enrollment & Discharge Rules Section */}
+        {/* Official NCC Act: Cessation of Enrollment & Discharge Rules Section — Elite Cream & Warm Peach Theme */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -801,41 +801,42 @@ export const AboutNCC: React.FC = () => {
               },
             },
           }}
-          className="group relative overflow-hidden rounded-[18px] border border-border bg-card p-6 text-left shadow-sm transition-colors duration-500 hover:border-primary/40 sm:p-8"
+          className="group relative overflow-hidden rounded-[22px] border-2 border-[#F5D5C6] bg-gradient-to-br from-[#FFFBF5] via-[#FFF6EF] to-[#FFEFE4] p-6 text-left shadow-xl shadow-[#F5D5C6]/30 transition-colors duration-500 sm:p-8"
         >
+          {/* Ambient Warm Peach Ambient Orbs */}
           <motion.span
             aria-hidden
-            animate={{ opacity: [0.18, 0.4, 0.18], scale: [1, 1.1, 1] }}
+            animate={{ opacity: [0.25, 0.5, 0.25], scale: [1, 1.1, 1] }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            className="pointer-events-none absolute -left-20 -top-24 h-64 w-64 rounded-full bg-accent/15 blur-3xl"
+            className="pointer-events-none absolute -left-20 -top-24 h-64 w-64 rounded-full bg-[#FCE6DC]/60 blur-3xl"
           />
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent"
+            className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#F7C6B2] via-[#E88C6B] to-[#F7C6B2]"
           />
 
           <div className="relative z-10 space-y-6">
             <motion.div
               variants={itemReveal}
-              className="flex flex-col justify-between gap-4 border-b border-border pb-5 md:flex-row md:items-center"
+              className="flex flex-col justify-between gap-4 border-b border-[#F2D5C7] pb-5 md:flex-row md:items-center"
             >
               <div className="space-y-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-accent">
-                  <ShieldCheck className="h-3.5 w-3.5" strokeWidth={1.75} />
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#F2BBA4] bg-[#FDE8DD] px-3.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#C85228] shadow-2xs">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#C85228]" strokeWidth={2} />
                   Statutory Regulations • NCC Act 1948
                 </span>
-                <h3 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
+                <h3 className="text-2xl font-black tracking-tight text-[#3B2317] sm:text-3xl">
                   Cessation of Enrollment &amp; Discharge Regulations
                 </h3>
               </div>
-              <span className="rounded-lg border border-border bg-muted/60 px-3 py-1.5 text-[11px] font-semibold text-muted-foreground">
+              <span className="rounded-xl border border-[#F2C4B0] bg-white/90 px-3.5 py-1.5 text-[11px] font-black text-[#7C4028] shadow-2xs">
                 19 JHR BN NCC • SBU Battalion Standing Orders
               </span>
             </motion.div>
 
             <motion.p
               variants={itemReveal}
-              className="max-w-4xl text-xs leading-relaxed text-muted-foreground sm:text-[13px]"
+              className="max-w-4xl text-xs font-bold leading-relaxed text-[#5C3A29] sm:text-[13px]"
             >
               As mandated under Section 12 &amp; 13 of the National Cadet Corps Act 1948 and Rule 13
               of NCC Rules, enrollment in Senior Division / Senior Wing at Sarala Birla University
@@ -864,22 +865,22 @@ export const AboutNCC: React.FC = () => {
                 <motion.div
                   key={clause.title}
                   variants={itemReveal}
-                  whileHover={{ y: -3 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 24 }}
+                  whileHover={{ y: -4, scale: 1.01 }}
+                  transition={{ type: "spring", stiffness: 320, damping: 24 }}
                   tabIndex={0}
-                  className="group/clause relative space-y-2 overflow-hidden rounded-2xl border border-border bg-muted/40 p-4 outline-none transition-colors duration-300 hover:border-primary/40 hover:bg-muted/70 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="group/clause relative space-y-2 overflow-hidden rounded-2xl border border-[#F5D5C6] bg-white/95 p-5 shadow-2xs outline-none transition-all duration-300 hover:border-[#E88C6B] hover:shadow-lg focus-visible:ring-2 focus-visible:ring-[#C85228]"
                 >
                   <span
                     aria-hidden
-                    className="absolute inset-y-0 left-0 w-0.5 origin-top scale-y-0 bg-gradient-to-b from-primary to-accent transition-transform duration-300 group-hover/clause:scale-y-100 group-focus-visible/clause:scale-y-100"
+                    className="absolute inset-y-0 left-0 w-1 origin-top scale-y-0 bg-gradient-to-b from-[#E86A38] to-[#C84B1B] transition-transform duration-300 group-hover/clause:scale-y-100 group-focus-visible/clause:scale-y-100"
                   />
-                  <h4 className="flex items-start gap-2 text-xs font-bold text-foreground">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10 text-[10px] font-bold text-primary transition-colors duration-300 group-hover/clause:border-primary group-hover/clause:bg-primary/20">
+                  <h4 className="flex items-start gap-2.5 text-xs font-black text-[#3B2317] sm:text-sm">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#F2B59D] bg-[#FDEAE1] text-[10px] font-black text-[#C84B1B] shadow-2xs transition-colors duration-300 group-hover/clause:border-[#C84B1B] group-hover/clause:bg-[#E86A38] group-hover/clause:text-white">
                       {i + 1}
                     </span>
                     <span>{clause.title}</span>
                   </h4>
-                  <p className="pl-7 text-xs leading-relaxed text-muted-foreground">
+                  <p className="pl-7 text-xs font-bold leading-relaxed text-[#58392A]">
                     {clause.body}
                   </p>
                 </motion.div>
