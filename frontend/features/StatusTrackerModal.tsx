@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   AlertCircle,
   CheckCircle2,
@@ -30,35 +30,39 @@ export const StatusTrackerModal: React.FC<StatusTrackerModalProps> = ({
   const [record, setRecord] = useState<CadetRecord | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSearch = async (searchStr?: string) => {
-    const q = (searchStr || query).trim();
-    if (!q) {
-      setErrorMsg("Please enter Application ID, Aadhaar Number, or SBU Roll No.");
-      return;
-    }
-
-    setIsLoading(true);
-    setErrorMsg("");
-    setRecord(null);
-
-    try {
-      const res = await EnterpriseDataPlatform.trackStatus(q);
-      if (!res.success || !res.data?.record) {
-        throw new Error(res.error || "No enrollment record found matching your query.");
+  const handleSearch = useCallback(
+    async (searchStr?: string) => {
+      const q = (searchStr || query).trim();
+      if (!q) {
+        setErrorMsg("Please enter Application ID, Aadhaar Number, or NCC Enrolment Number.");
+        return;
       }
-      setRecord(res.data.record);
-    } catch (err: any) {
-      setErrorMsg(err.message || "No record found.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
+      setIsLoading(true);
+      setErrorMsg("");
+      setRecord(null);
+
+      try {
+        const res = await EnterpriseDataPlatform.trackStatus(q);
+        if (!res.success || !res.data?.record) {
+          throw new Error(res.error || "No enrollment record found matching your query.");
+        }
+        setRecord(res.data.record);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "No record found.";
+        setErrorMsg(message);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [query],
+  );
 
   useEffect(() => {
     if (initialQuery) {
       handleSearch(initialQuery);
     }
-  }, [initialQuery]);
+  }, [initialQuery, handleSearch]);
 
   if (!isOpen) return null;
 
