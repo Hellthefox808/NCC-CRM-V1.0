@@ -498,45 +498,54 @@ export const ActivitiesGallery: React.FC = () => {
         {/* VIEW 2: CADRE ACTIVITIES GALLERY */}
         {activeViewMode === "activities" && (
           <div className="space-y-6">
-            {/* Category Filter Tabs — High Contrast Clear View */}
+            {/* Category Filter Bar — Distinct Item Separation & Vertical Dividers */}
             <div className="space-y-4 text-center">
-              <div className="mx-auto inline-flex max-w-full flex-wrap items-center justify-center gap-1.5 rounded-2xl border border-zinc-300 bg-zinc-100/90 p-1.5 backdrop-blur-md shadow-sm">
-                {categories.map((cat) => {
+              <div className="mx-auto inline-flex max-w-full flex-wrap items-center justify-center gap-2 sm:gap-2.5 rounded-2xl border border-zinc-300/80 bg-zinc-100/90 p-2 backdrop-blur-md shadow-sm">
+                {categories.map((cat, index) => {
                   const Icon = cat.icon;
                   const count = getCategoryCount(cat.name);
                   const isActive = selectedCategory === cat.name;
+                  const isNextActive = categories[index + 1]?.name === selectedCategory;
 
                   return (
-                    <button
-                      key={cat.name}
-                      onClick={() => setSelectedCategory(cat.name)}
-                      aria-pressed={isActive}
-                      className={`relative flex cursor-pointer select-none items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-black outline-none transition-colors duration-200 ${
-                        isActive
-                          ? "text-white shadow-md"
-                          : "text-zinc-800 hover:text-zinc-950 hover:bg-zinc-200/80"
-                      }`}
-                      id={`activity-tab-${cat.name.toLowerCase().replace(/\s+/g, "-")}`}
-                    >
-                      {isActive && (
-                        <motion.span
-                          layoutId="activity-category-pill"
-                          transition={{ type: "spring", stiffness: 350, damping: 28 }}
-                          className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 shadow-md"
+                    <React.Fragment key={cat.name}>
+                      <button
+                        onClick={() => setSelectedCategory(cat.name)}
+                        aria-pressed={isActive}
+                        className={`relative flex cursor-pointer select-none items-center gap-2 rounded-xl px-4 py-2 text-xs font-black outline-none transition-all duration-200 border ${
+                          isActive
+                            ? "border-transparent text-white shadow-md"
+                            : "border-zinc-200/90 bg-white text-zinc-800 hover:text-zinc-950 hover:bg-zinc-100 hover:border-zinc-300 shadow-2xs"
+                        }`}
+                        id={`activity-tab-${cat.name.toLowerCase().replace(/\s+/g, "-")}`}
+                      >
+                        {isActive && (
+                          <motion.span
+                            layoutId="activity-category-pill"
+                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                            className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 shadow-md"
+                          />
+                        )}
+                        <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={2.2} />
+                        <span>{cat.name}</span>
+                        <span
+                          className={`ml-0.5 rounded-full px-2 py-0.5 text-[10px] font-black transition-colors ${
+                            isActive
+                              ? "bg-white/25 text-white"
+                              : "bg-zinc-100 text-zinc-900 border border-zinc-300 shadow-2xs"
+                          }`}
+                        >
+                          {count}
+                        </span>
+                      </button>
+                      {/* Subtle vertical keyline separator between unselected items */}
+                      {index < categories.length - 1 && !isActive && !isNextActive && (
+                        <span
+                          aria-hidden="true"
+                          className="h-4 w-px bg-zinc-300/70 self-center hidden sm:inline-block shrink-0"
                         />
                       )}
-                      <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={2.2} />
-                      <span>{cat.name}</span>
-                      <span
-                        className={`ml-0.5 rounded-full px-2 py-0.5 text-[10px] font-black transition-colors ${
-                          isActive
-                            ? "bg-white/25 text-white"
-                            : "bg-white text-zinc-900 border border-zinc-300 shadow-2xs"
-                        }`}
-                      >
-                        {count}
-                      </span>
-                    </button>
+                    </React.Fragment>
                   );
                 })}
               </div>

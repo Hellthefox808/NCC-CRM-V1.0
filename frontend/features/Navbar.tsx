@@ -166,30 +166,35 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Center: Segmented navigation */}
-          <nav className="hidden xl:flex shrink-0 items-center gap-0.5 rounded-full border border-border bg-secondary/70 p-1">
-            {navItems.map((item) => {
+          <nav className="hidden xl:flex shrink-0 items-center gap-1 rounded-full border border-border bg-secondary/80 p-1 shadow-2xs">
+            {navItems.map((item, index) => {
               const isActive = activeTab === item.id;
+              const isNextActive = navItems[index + 1]?.id === activeTab;
               return (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  aria-current={isActive ? "page" : undefined}
-                  className={`relative px-4 py-1.5 rounded-full text-[13px] transition-colors cursor-pointer whitespace-nowrap select-none ${
-                    isActive
-                      ? "text-primary-foreground font-bold"
-                      : "text-muted-foreground hover:text-foreground font-medium hover:bg-card/40"
-                  }`}
-                  id={`nav-link-${item.id}`}
-                >
-                  {isActive && (
-                    <motion.span
-                      layoutId="activeNavTabIndicator"
-                      className="absolute inset-0 rounded-full bg-primary shadow-sm"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    />
+                <React.Fragment key={item.id}>
+                  <button
+                    onClick={() => handleNavClick(item.id)}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`relative px-4 py-1.5 rounded-full text-[13px] transition-colors cursor-pointer whitespace-nowrap select-none ${
+                      isActive
+                        ? "text-primary-foreground font-bold"
+                        : "text-muted-foreground hover:text-foreground font-semibold hover:bg-card/50"
+                    }`}
+                    id={`nav-link-${item.id}`}
+                  >
+                    {isActive && (
+                      <motion.span
+                        layoutId="activeNavTabIndicator"
+                        className="absolute inset-0 rounded-full bg-primary shadow-sm"
+                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      />
+                    )}
+                    <span className="relative z-10">{item.label}</span>
+                  </button>
+                  {index < navItems.length - 1 && !isActive && !isNextActive && (
+                    <span aria-hidden="true" className="h-3.5 w-px bg-border/70 self-center shrink-0" />
                   )}
-                  <span className="relative z-10">{item.label}</span>
-                </button>
+                </React.Fragment>
               );
             })}
           </nav>
