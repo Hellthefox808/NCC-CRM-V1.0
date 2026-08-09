@@ -460,24 +460,45 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
       className="min-h-screen w-full flex bg-enrollment-surface font-enrollment-body text-enrollment-primary"
       id="enrollment-section"
     >
-      {/* Left Sidebar / Hero - Green Regimental Section with Marching Cadets Background */}
+      {/* Left Sidebar / Hero - Green Regimental Section with Clear Background & SBU/NCC Logos */}
       <aside className="hidden lg:flex w-[40%] bg-enrollment-primary p-12 xl:p-16 flex-col justify-between sticky top-0 h-screen overflow-hidden relative">
-        {/* Authentic Republic Day Marching Cadets Background Image Overlay */}
+        {/* Crystal Clear Parade / Campus Background Image Overlay */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 brightness-95 contrast-[1.05]"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 brightness-105 contrast-105"
           style={{ backgroundImage: `url('/ncc-marching-parade.jpg')` }}
           role="img"
-          aria-label="NCC Cadets marching in full uniform during Republic Day parade"
+          aria-label="NCC Cadets marching in full uniform"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#16331e]/92 via-[#16331e]/88 to-[#0f2415]/96 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2415]/75 via-[#122e1b]/60 to-[#0a180e]/80 backdrop-blur-[0.5px]" />
 
         <div className="relative z-10">
-          {/* Identity Block */}
-          <div className="mb-12">
-            <div className="w-16 h-16 bg-enrollment-accent rounded-2xl mb-6 flex items-center justify-center shadow-lg shadow-enrollment-accent/30 ring-2 ring-white/20">
-              <ShieldCheck className="w-9 h-9 text-white" strokeWidth={2.5} />
+          {/* Identity Block with SBU & NCC Crest Logos */}
+          <div className="mb-10">
+            <div className="flex items-center gap-3 mb-6">
+              {/* SBU Official Emblem Logo */}
+              <div className="relative w-14 h-14 rounded-full bg-white p-1 shadow-xl border-2 border-emerald-400/50 ring-2 ring-black/20 flex items-center justify-center overflow-hidden transition-transform hover:scale-105 shrink-0">
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_5fO3j9MhxWCOALUorfuM3nZcChQfc2949oaRRyjpIQ&s=10"
+                  alt="Sarala Birla University Emblem"
+                  className="w-full h-full object-contain rounded-full"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+
+              <div className="h-8 w-0.5 bg-white/40" />
+
+              {/* NCC Official Crest Emblem Logo */}
+              <div className="relative w-14 h-14 rounded-full bg-white p-1 shadow-xl border-2 border-amber-400/60 ring-2 ring-black/20 flex items-center justify-center overflow-hidden transition-transform hover:scale-105 shrink-0">
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTZDvUjTIPyVWknpreMHXnyKTvz7-P_uljpSxjPHcXXw&s=10"
+                  alt="19 JHR BN NCC Crest"
+                  className="w-full h-full object-contain rounded-full"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
             </div>
-            <h2 className="text-white/90 text-xs font-bold tracking-[0.2em] uppercase mb-2 font-enrollment-display">
+
+            <h2 className="text-white/95 text-xs font-black tracking-[0.2em] uppercase mb-2 font-enrollment-display drop-shadow-sm">
               19 Jharkhand Battalion NCC
             </h2>
             <h1 className="text-4xl xl:text-5xl font-extrabold text-white leading-[1.1] font-enrollment-display tracking-tight drop-shadow-md">
@@ -485,7 +506,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               <br />
               Application
             </h1>
-            <p className="mt-4 text-emerald-400 font-extrabold text-sm tracking-wide">
+            <p className="mt-4 text-emerald-300 font-extrabold text-sm tracking-wide drop-shadow-xs">
               Sarala Birla University, Ranchi
             </p>
           </div>
