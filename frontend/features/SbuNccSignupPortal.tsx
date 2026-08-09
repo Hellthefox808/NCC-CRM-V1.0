@@ -21,10 +21,13 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { BATTALION_DETAILS } from "@/data/nccData";
-import { EnterpriseDataPlatform } from "@backend/services/dataPlatform";
+import { EnterpriseDataPlatform, type UserSessionProfile } from "@backend/services/dataPlatform";
 
 interface SbuNccSignupPortalProps {
-  onLoginSuccess: (userType: "cadet" | "admin", userData?: Record<string, unknown>) => void;
+  onLoginSuccess: (
+    userType: "cadet" | "admin",
+    userData?: UserSessionProfile | Record<string, unknown>,
+  ) => void;
   onOpenEnrollmentForm: () => void;
   defaultSection?: "cadets" | "admin";
 }
