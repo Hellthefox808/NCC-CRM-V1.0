@@ -58,21 +58,21 @@ export class DataPlatformError extends Error {
 
 // Client-Side In-Memory Cache Store with TTL & Request Deduplication
 class QueryCache {
-  private cache = new Map<string, { data: any; expiry: number }>();
-  private inFlight = new Map<string, Promise<any>>();
+  private cache = new Map<string, { data: unknown; expiry: number }>();
+  private inFlight = new Map<string, Promise<unknown>>();
 
-  set(key: string, data: any, ttlMs = 15000) {
+  set(key: string, data: unknown, ttlMs = 15000) {
     this.cache.set(key, { data, expiry: Date.now() + ttlMs });
   }
 
-  get(key: string): any | null {
+  get<T = unknown>(key: string): T | null {
     const item = this.cache.get(key);
     if (!item) return null;
     if (Date.now() > item.expiry) {
       this.cache.delete(key);
       return null;
     }
-    return item.data;
+    return item.data as T;
   }
 
   invalidatePattern(pattern: string) {
@@ -138,7 +138,7 @@ export class EnterpriseDataPlatform {
       ...((options.headers as Record<string, string>) || {}),
     };
 
-    let lastError: any;
+    let lastError: unknown;
 
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
@@ -159,7 +159,7 @@ export class EnterpriseDataPlatform {
         }
 
         return json as ApiResponse<T>;
-      } catch (err: any) {
+      } catch (err: unknown) {
         lastError = err;
         // Don't retry client 4xx errors
         if (err instanceof DataPlatformError && err.status >= 400 && err.status < 500) {
@@ -185,12 +185,17 @@ export class EnterpriseDataPlatform {
     email?: string;
     password?: string;
   }): Promise<
-    ApiResponse<{ token: string; userType: "cadet" | "admin"; user: any; expiresAt: string }>
+    ApiResponse<{
+      token: string;
+      userType: "cadet" | "admin";
+      user: UserSessionProfile;
+      expiresAt: string;
+    }>
   > {
     const res = await this.request<{
       token: string;
       userType: "cadet" | "admin";
-      user: any;
+      user: UserSessionProfile;
       expiresAt: string;
     }>("/auth/login", {
       method: "POST",
@@ -457,7 +462,7 @@ export class EnterpriseDataPlatform {
   static async getActivities(
     category?: string,
     status?: string,
-  ): Promise<ApiResponse<{ activities: any[] }>> {
+  ): Promise<ApiResponse<{ activities: ActivityRecord[] }>> {
     const params = new URLSearchParams();
     if (category) params.set("category", category);
     if (status) params.set("status", status);
@@ -468,7 +473,9 @@ export class EnterpriseDataPlatform {
   /**
    * Create New Activity (Officer-only)
    */
-  static async createActivity(payload: any): Promise<ApiResponse<{ activity: any }>> {
+  static async createActivity(
+    payload: Partial<ActivityRecord>,
+  ): Promise<ApiResponse<{ activity: ActivityRecord }>> {
     return this.request("/activities", {
       method: "POST",
       body: JSON.stringify(payload),
@@ -478,14 +485,16 @@ export class EnterpriseDataPlatform {
   /**
    * Fetch Calendar Events
    */
-  static async getCalendarEvents(): Promise<ApiResponse<{ events: any[] }>> {
+  static async getCalendarEvents(): Promise<ApiResponse<{ events: CalendarEventRecord[] }>> {
     return this.request("/calendar");
   }
 
   /**
    * Create Calendar Event (Officer-only)
    */
-  static async createCalendarEvent(payload: any): Promise<ApiResponse<{ event: any }>> {
+  static async createCalendarEvent(
+    payload: Partial<CalendarEventRecord>,
+  ): Promise<ApiResponse<{ event: CalendarEventRecord }>> {
     return this.request("/calendar", {
       method: "POST",
       body: JSON.stringify(payload),
@@ -495,14 +504,16 @@ export class EnterpriseDataPlatform {
   /**
    * Fetch Annual Training Plans
    */
-  static async getAnnualPlans(year?: number): Promise<ApiResponse<{ plans: any[] }>> {
+  static async getAnnualPlans(year?: number): Promise<ApiResponse<{ plans: AnnualPlanRecord[] }>> {
     return this.request(`/annual-plans?year=${year || 2026}`);
   }
 
   /**
    * Create Annual Plan Entry (Officer-only)
    */
-  static async createAnnualPlan(payload: any): Promise<ApiResponse<{ plan: any }>> {
+  static async createAnnualPlan(
+    payload: Partial<AnnualPlanRecord>,
+  ): Promise<ApiResponse<{ plan: AnnualPlanRecord }>> {
     return this.request("/annual-plans", {
       method: "POST",
       body: JSON.stringify(payload),
@@ -512,7 +523,9 @@ export class EnterpriseDataPlatform {
   /**
    * Fetch Staff Attendance for a Date (Officer-only)
    */
-  static async getStaffAttendance(date?: string): Promise<ApiResponse<{ attendance: any[] }>> {
+  static async getStaffAttendance(
+    date?: string,
+  ): Promise<ApiResponse<{ attendance: StaffAttendanceRecord[] }>> {
     const qs = date ? `?date=${encodeURIComponent(date)}` : "";
     return this.request(`/staff-attendance${qs}`);
   }
@@ -526,7 +539,7 @@ export class EnterpriseDataPlatform {
     action: "clock_in" | "clock_out";
     dutyLocation?: string;
     remarks?: string;
-  }): Promise<ApiResponse<{ record: any }>> {
+  }): Promise<ApiResponse<{ record: StaffAttendanceRecord }>> {
     return this.request("/staff-attendance", {
       method: "POST",
       body: JSON.stringify(payload),
@@ -536,12 +549,78 @@ export class EnterpriseDataPlatform {
   /**
    * Fetch Security Audit Logs (Officer-only)
    */
-  static async getAuditLogs(limit = 50, action?: string): Promise<ApiResponse<{ logs: any[] }>> {
+  static async getAuditLogs(
+    limit = 50,
+    action?: string,
+  ): Promise<ApiResponse<{ logs: AuditLogRecord[] }>> {
     const params = new URLSearchParams();
     params.set("limit", String(limit));
     if (action) params.set("action", action);
     return this.request(`/audit?${params.toString()}`);
   }
+}
+
+export interface UserSessionProfile {
+  id: string;
+  email: string;
+  role: string;
+  name?: string;
+}
+
+export interface ActivityRecord {
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  image_url?: string;
+  location: string;
+  start_time: string;
+  end_time?: string;
+  status: string;
+  organizer?: string;
+  created_at?: string;
+}
+
+export interface CalendarEventRecord {
+  id: string;
+  title: string;
+  event_type: string;
+  start_time: string;
+  end_time: string;
+  location: string;
+  description?: string;
+  is_all_day?: boolean;
+}
+
+export interface AnnualPlanRecord {
+  id: string;
+  plan_year: number;
+  title: string;
+  category: string;
+  target_month: string;
+  status: string;
+  remarks?: string;
+}
+
+export interface StaffAttendanceRecord {
+  id: string;
+  staff_name: string;
+  staff_role: string;
+  date: string;
+  clock_in: string;
+  clock_out?: string | null;
+  duty_location?: string;
+  remarks?: string;
+}
+
+export interface AuditLogRecord {
+  id: string;
+  actor: string;
+  action: string;
+  target: string;
+  ip: string;
+  metadata?: Record<string, unknown>;
+  created_at: string;
 }
 
 export interface CadetRegisterRecord {
