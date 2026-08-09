@@ -105,27 +105,27 @@ export const AboutNCC: React.FC = () => {
         {/* Leadership Carousel Section */}
         <LeadershipCarousel autoPlayInterval={4000} />
 
-        {/* Charter: Motto, Aims & Song */}
+        {/* Charter: Motto, Aims & Song — Light Coffee Theme */}
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="surface-inverse relative overflow-hidden rounded-[22px] border border-white/10 p-6 text-left shadow-2xl shadow-primary/10 sm:p-10"
+          className="coffee-light-card relative overflow-hidden rounded-[22px] p-6 text-left sm:p-10"
         >
           {/* animated ambient washes */}
           <motion.span
-            animate={{ scale: [1, 1.08, 1], opacity: [0.35, 0.55, 0.35] }}
+            animate={{ scale: [1, 1.08, 1], opacity: [0.25, 0.45, 0.25] }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-primary/25 blur-3xl"
+            className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[#D4C2AB]/40 blur-3xl"
           />
           <motion.span
-            animate={{ scale: [1, 1.12, 1], opacity: [0.25, 0.45, 0.25] }}
+            animate={{ scale: [1, 1.12, 1], opacity: [0.2, 0.35, 0.2] }}
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-accent-brand/20 blur-3xl"
+            className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#8C5E3C]/20 blur-3xl"
           />
-          <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/80 to-transparent opacity-80" />
-          <span className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent-brand/40 to-transparent opacity-60" />
+          <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#8C5E3C]/50 to-transparent opacity-80" />
+          <span className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#6E4A33]/30 to-transparent opacity-60" />
 
           <div className="relative z-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:gap-14">
             {/* Motto rail */}
@@ -136,8 +136,8 @@ export const AboutNCC: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
               className="space-y-5"
             >
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-gradient-to-r from-white/10 to-white/5 px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-accent-on-inverse shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]">
-                <Flag className="h-3.5 w-3.5 text-primary-on-inverse" strokeWidth={1.75} />
+              <div className="coffee-light-badge inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em]">
+                <Flag className="h-3.5 w-3.5 text-[#7A5435]" strokeWidth={2} />
                 <span>Charter &amp; Motto</span>
               </div>
 
@@ -147,7 +147,7 @@ export const AboutNCC: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.25 }}
-                  className="text-2xl font-semibold leading-tight tracking-tight text-white sm:text-[2.25rem]"
+                  className="text-2xl font-black leading-tight tracking-tight text-[#3B281C] sm:text-[2.25rem]"
                 >
                   &ldquo;{BATTALION_DETAILS.motto}&rdquo;
                 </motion.h3>
@@ -156,7 +156,7 @@ export const AboutNCC: React.FC = () => {
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.35 }}
-                  className="text-sm font-medium text-accent-on-inverse"
+                  className="text-sm font-bold text-[#7A5435]"
                 >
                   {BATTALION_DETAILS.mottoHindi}
                 </motion.p>
@@ -167,19 +167,19 @@ export const AboutNCC: React.FC = () => {
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="h-px w-20 origin-left bg-gradient-to-r from-primary to-accent-brand"
+                className="h-1 w-20 origin-left rounded-full bg-gradient-to-r from-[#8C5E3C] to-[#5C3D26]"
               />
 
               <motion.button
                 whileHover={{ scale: 1.02, x: 2 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setShowSongModal(true)}
-                className="group inline-flex cursor-pointer items-center gap-2.5 rounded-xl border border-white/15 bg-gradient-to-r from-white/10 to-white/5 px-4 py-2.5 text-xs font-semibold tracking-wide text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] transition-colors hover:border-primary/40 hover:from-primary/20 hover:to-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                className="coffee-light-btn group inline-flex cursor-pointer items-center gap-2.5 rounded-xl px-4 py-2.5 text-xs font-bold tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C5E3C] focus-visible:ring-offset-2"
                 id="ncc-song-btn"
               >
-                <Music className="h-4 w-4 text-primary-on-inverse" strokeWidth={1.75} />
+                <Music className="h-4 w-4 text-[#D6C4B0]" strokeWidth={1.75} />
                 <span>Read the NCC Song &mdash; &ldquo;Hum Sab Bharatiya Hain&rdquo;</span>
-                <ChevronRight className="h-3.5 w-3.5 text-white/50 transition-transform group-hover:translate-x-0.5 group-hover:text-primary-on-inverse" />
+                <ChevronRight className="h-3.5 w-3.5 text-[#D6C4B0]/70 transition-transform group-hover:translate-x-0.5 group-hover:text-white" />
               </motion.button>
             </motion.div>
 
@@ -191,10 +191,10 @@ export const AboutNCC: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="space-y-4"
             >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/45">
+              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#7A5435]">
                 Aims of the Corps
               </p>
-              <p className="text-xs leading-relaxed text-white/70">
+              <p className="text-xs leading-relaxed text-[#5C4230] font-medium">
                 The NCC develops character, comradeship, discipline, a secular outlook, the spirit
                 of adventure and the ideals of selfless service amongst young citizens &mdash;
                 creating a pool of organised, trained and motivated youth with leadership qualities
@@ -217,15 +217,13 @@ export const AboutNCC: React.FC = () => {
                     transition={{ duration: 0.4, delay: 0.3 + idx * 0.06 }}
                     whileHover={{
                       scale: 1.02,
-                      borderColor: "rgba(124, 58, 237, 0.35)",
-                      backgroundColor: "rgba(255,255,255,0.07)",
                     }}
-                    className="flex items-start gap-2.5 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 transition-colors"
+                    className="coffee-light-item flex items-start gap-2.5 rounded-xl px-3 py-2.5 transition-all shadow-xs"
                   >
-                    <span className="mt-px font-mono text-[10px] font-semibold tabular-nums text-primary-on-inverse">
+                    <span className="mt-px font-mono text-[10px] font-bold tabular-nums text-[#8C5E3C]">
                       {String(idx + 1).padStart(2, "0")}
                     </span>
-                    <span className="text-[11px] font-medium leading-snug text-white/85">
+                    <span className="text-[11px] font-bold leading-snug text-[#3B281C]">
                       {aim}
                     </span>
                   </motion.li>

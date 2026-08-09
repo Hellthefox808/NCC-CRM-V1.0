@@ -384,3 +384,41 @@
   background: linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #1D4ED8 100%);
   box-shadow: 0 15px 40px -5px rgba(37, 99, 235, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
+
+/* Light Coffee Palette Utilities */
+.coffee-light-card {
+  background: linear-gradient(135deg, #FAF7F2 0%, #F5EFE6 50%, #EFE5D8 100%);
+  border: 1px solid #D6C5B3;
+  color: #3B281C;
+  box-shadow: 0 20px 50px -10px rgba(74, 50, 36, 0.12);
+}
+
+.coffee-light-badge {
+  background: rgba(222, 208, 191, 0.65);
+  border: 1px solid #C4B19C;
+  color: #5C3D26;
+}
+
+.coffee-light-item {
+  background: rgba(247, 241, 233, 0.9);
+  border: 1px solid #DBC9B5;
+  color: #4A3324;
+}
+
+.coffee-light-item:hover {
+  border-color: #8C5E3C !important;
+  background-color: #F8F2EA !important;
+}
+
+.coffee-light-btn {
+  background: linear-gradient(135deg, #4A3222 0%, #342216 100%);
+  color: #FAF5EF;
+  border: 1px solid #6E4A33;
+  box-shadow: 0 4px 14px rgba(52, 34, 22, 0.25);
+}
+
+.coffee-light-btn:hover {
+  background: linear-gradient(135deg, #5C3F2B 0%, #422C1D 100%);
+  border-color: #8C5E3C;
+}
+
