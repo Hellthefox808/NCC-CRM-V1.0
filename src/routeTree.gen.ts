@@ -27,6 +27,7 @@ import { Route as ApiV1ExportExcelRouteImport } from './routes/api/v1/export-exc
 import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
 import { Route as ApiV1MetricsRouteImport } from './routes/api/v1/metrics'
 import { Route as ApiV1NotificationsRouteImport } from './routes/api/v1/notifications'
+import { Route as ApiV1PhotosRouteImport } from './routes/api/v1/photos'
 import { Route as ApiV1StaffAttendanceRouteImport } from './routes/api/v1/staff-attendance'
 import { Route as ApiV1AuthLoginRouteImport } from './routes/api/v1/auth/login'
 import { Route as ApiV1AuthLogoutRouteImport } from './routes/api/v1/auth/logout'
@@ -127,6 +128,11 @@ const ApiV1NotificationsRoute = ApiV1NotificationsRouteImport.update({
   path: '/api/v1/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1PhotosRoute = ApiV1PhotosRouteImport.update({
+  id: '/api/v1/photos',
+  path: '/api/v1/photos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1StaffAttendanceRoute = ApiV1StaffAttendanceRouteImport.update({
   id: '/api/v1/staff-attendance',
   path: '/api/v1/staff-attendance',
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/metrics': typeof ApiV1MetricsRoute
   '/api/v1/notifications': typeof ApiV1NotificationsRoute
+  '/api/v1/photos': typeof ApiV1PhotosRoute
   '/api/v1/staff-attendance': typeof ApiV1StaffAttendanceRoute
   '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/logout': typeof ApiV1AuthLogoutRoute
@@ -222,6 +229,7 @@ export interface FileRoutesByTo {
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/metrics': typeof ApiV1MetricsRoute
   '/api/v1/notifications': typeof ApiV1NotificationsRoute
+  '/api/v1/photos': typeof ApiV1PhotosRoute
   '/api/v1/staff-attendance': typeof ApiV1StaffAttendanceRoute
   '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/logout': typeof ApiV1AuthLogoutRoute
@@ -252,6 +260,7 @@ export interface FileRoutesById {
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/metrics': typeof ApiV1MetricsRoute
   '/api/v1/notifications': typeof ApiV1NotificationsRoute
+  '/api/v1/photos': typeof ApiV1PhotosRoute
   '/api/v1/staff-attendance': typeof ApiV1StaffAttendanceRoute
   '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/logout': typeof ApiV1AuthLogoutRoute
@@ -283,6 +292,7 @@ export interface FileRouteTypes {
     | '/api/v1/health'
     | '/api/v1/metrics'
     | '/api/v1/notifications'
+    | '/api/v1/photos'
     | '/api/v1/staff-attendance'
     | '/api/v1/auth/login'
     | '/api/v1/auth/logout'
@@ -312,6 +322,7 @@ export interface FileRouteTypes {
     | '/api/v1/health'
     | '/api/v1/metrics'
     | '/api/v1/notifications'
+    | '/api/v1/photos'
     | '/api/v1/staff-attendance'
     | '/api/v1/auth/login'
     | '/api/v1/auth/logout'
@@ -341,6 +352,7 @@ export interface FileRouteTypes {
     | '/api/v1/health'
     | '/api/v1/metrics'
     | '/api/v1/notifications'
+    | '/api/v1/photos'
     | '/api/v1/staff-attendance'
     | '/api/v1/auth/login'
     | '/api/v1/auth/logout'
@@ -371,6 +383,7 @@ export interface RootRouteChildren {
   ApiV1HealthRoute: typeof ApiV1HealthRoute
   ApiV1MetricsRoute: typeof ApiV1MetricsRoute
   ApiV1NotificationsRoute: typeof ApiV1NotificationsRoute
+  ApiV1PhotosRoute: typeof ApiV1PhotosRoute
   ApiV1StaffAttendanceRoute: typeof ApiV1StaffAttendanceRoute
   ApiV1AuthLoginRoute: typeof ApiV1AuthLoginRoute
   ApiV1AuthLogoutRoute: typeof ApiV1AuthLogoutRoute
@@ -507,6 +520,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/photos': {
+      id: '/api/v1/photos'
+      path: '/api/v1/photos'
+      fullPath: '/api/v1/photos'
+      preLoaderRoute: typeof ApiV1PhotosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/staff-attendance': {
       id: '/api/v1/staff-attendance'
       path: '/api/v1/staff-attendance'
@@ -629,6 +649,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1HealthRoute: ApiV1HealthRoute,
   ApiV1MetricsRoute: ApiV1MetricsRoute,
   ApiV1NotificationsRoute: ApiV1NotificationsRoute,
+  ApiV1PhotosRoute: ApiV1PhotosRoute,
   ApiV1StaffAttendanceRoute: ApiV1StaffAttendanceRoute,
   ApiV1AuthLoginRoute: ApiV1AuthLoginRoute,
   ApiV1AuthLogoutRoute: ApiV1AuthLogoutRoute,
