@@ -24,7 +24,7 @@ import { BATTALION_DETAILS } from "@/data/nccData";
 import { EnterpriseDataPlatform } from "@backend/services/dataPlatform";
 
 interface SbuNccSignupPortalProps {
-  onLoginSuccess: (userType: "cadet" | "admin", userData?: any) => void;
+  onLoginSuccess: (userType: "cadet" | "admin", userData?: Record<string, unknown>) => void;
   onOpenEnrollmentForm: () => void;
   defaultSection?: "cadets" | "admin";
 }
@@ -163,11 +163,13 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
         });
         setRetryAction({ label: "Retry sign in", run: () => void submitCadetLogin() });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setAuthPending(null);
+      const message =
+        err instanceof Error ? err.message : "Authentication failed. Please check credentials.";
       setNoticeMessage({
         type: "error",
-        text: err.message || "Authentication failed. Please check credentials.",
+        text: message,
       });
       setRetryAction({ label: "Retry sign in", run: () => void submitCadetLogin() });
     }
@@ -239,9 +241,10 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
         });
         setRetryAction({ label: "Retry sign in", run: () => void submitAdminLogin() });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setAuthPending(null);
-      setNoticeMessage({ type: "error", text: err.message || "Officer authentication failed." });
+      const message = err instanceof Error ? err.message : "Officer authentication failed.";
+      setNoticeMessage({ type: "error", text: message });
       setRetryAction({ label: "Retry sign in", run: () => void submitAdminLogin() });
     }
   };
@@ -381,11 +384,12 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
           : res.message ||
             "If this account exists on the unit register, a verification code has been issued.",
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       setRecovery((r) => ({ ...r, pending: false }));
+      const message = err instanceof Error ? err.message : "Could not issue a verification code.";
       setNoticeMessage({
         type: "error",
-        text: err?.message || "Could not issue a verification code.",
+        text: message,
       });
       setRetryAction({
         label: "Retry sending code",
@@ -438,9 +442,10 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
         type: "success",
         text: "Password reset successfully. Sign in with your new password.",
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       setRecovery((r) => ({ ...r, pending: false }));
-      setNoticeMessage({ type: "error", text: err?.message || "Could not verify the code." });
+      const message = err instanceof Error ? err.message : "Could not verify the code.";
+      setNoticeMessage({ type: "error", text: message });
       setRetryAction({ label: "Retry verification", run: () => void submitRecoveryReset() });
     }
   };
@@ -472,11 +477,13 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
     try {
       setActiveSection(section);
       window.setTimeout(() => setIsSwitchingPortal(false), 420);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setIsSwitchingPortal(false);
+      const message =
+        err instanceof Error ? err.message : "Could not switch portals. Please try again.";
       setNoticeMessage({
         type: "error",
-        text: err?.message || "Could not switch portals. Please try again.",
+        text: message,
       });
       setRetryAction({ label: "Retry portal switch", run: () => switchSection(section, true) });
     }
