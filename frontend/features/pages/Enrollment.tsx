@@ -460,23 +460,24 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
       className="min-h-screen w-full flex bg-enrollment-surface font-enrollment-body text-enrollment-primary"
       id="enrollment-section"
     >
-      {/* Left Sidebar / Hero - Green Regimental Section with Clear Background & SBU/NCC Logos */}
-      <aside className="hidden lg:flex w-[40%] bg-enrollment-primary p-12 xl:p-16 flex-col justify-between sticky top-0 h-screen overflow-hidden relative">
-        {/* Crystal Clear Parade / Campus Background Image Overlay */}
+      {/* Left Sidebar / Hero - Ultra-Clear HD SBU & NCC Regimental Section */}
+      <aside className="hidden lg:flex w-[40%] bg-zinc-950 p-12 xl:p-16 flex-col justify-between sticky top-0 h-screen overflow-hidden relative">
+        {/* Ultra-Clear HD Campus & Parade Background Image */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 brightness-105 contrast-105"
-          style={{ backgroundImage: `url('/ncc-marching-parade.jpg')` }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 brightness-110 contrast-110 saturate-[1.1]"
+          style={{ backgroundImage: `url('/sbu-campus-front.jpg')` }}
           role="img"
-          aria-label="NCC Cadets marching in full uniform"
+          aria-label="Sarala Birla University Campus, Ranchi"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2415]/75 via-[#122e1b]/60 to-[#0a180e]/80 backdrop-blur-[0.5px]" />
+        {/* Minimal Soft Vignette for 100% Crystal-Clear Image Visibility */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-[#16331e]/25 to-black/65" />
 
         <div className="relative z-10">
           {/* Identity Block with SBU & NCC Crest Logos */}
           <div className="mb-10">
             <div className="flex items-center gap-3 mb-6">
               {/* SBU Official Emblem Logo */}
-              <div className="relative w-14 h-14 rounded-full bg-white p-1 shadow-xl border-2 border-emerald-400/50 ring-2 ring-black/20 flex items-center justify-center overflow-hidden transition-transform hover:scale-105 shrink-0">
+              <div className="relative w-14 h-14 rounded-full bg-white p-1 shadow-2xl border-2 border-emerald-400 ring-2 ring-black/40 flex items-center justify-center overflow-hidden transition-transform hover:scale-105 shrink-0">
                 <img
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_5fO3j9MhxWCOALUorfuM3nZcChQfc2949oaRRyjpIQ&s=10"
                   alt="Sarala Birla University Emblem"
@@ -485,10 +486,10 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                 />
               </div>
 
-              <div className="h-8 w-0.5 bg-white/40" />
+              <div className="h-8 w-0.5 bg-white/50 shadow-sm" />
 
               {/* NCC Official Crest Emblem Logo */}
-              <div className="relative w-14 h-14 rounded-full bg-white p-1 shadow-xl border-2 border-amber-400/60 ring-2 ring-black/20 flex items-center justify-center overflow-hidden transition-transform hover:scale-105 shrink-0">
+              <div className="relative w-14 h-14 rounded-full bg-white p-1 shadow-2xl border-2 border-amber-400 ring-2 ring-black/40 flex items-center justify-center overflow-hidden transition-transform hover:scale-105 shrink-0">
                 <img
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTZDvUjTIPyVWknpreMHXnyKTvz7-P_uljpSxjPHcXXw&s=10"
                   alt="19 JHR BN NCC Crest"
@@ -498,15 +499,15 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               </div>
             </div>
 
-            <h2 className="text-white/95 text-xs font-black tracking-[0.2em] uppercase mb-2 font-enrollment-display drop-shadow-sm">
+            <h2 className="text-white text-xs font-black tracking-[0.2em] uppercase mb-2 font-enrollment-display drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
               19 Jharkhand Battalion NCC
             </h2>
-            <h1 className="text-4xl xl:text-5xl font-extrabold text-white leading-[1.1] font-enrollment-display tracking-tight drop-shadow-md">
+            <h1 className="text-4xl xl:text-5xl font-extrabold text-white leading-[1.1] font-enrollment-display tracking-tight drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)]">
               Cadet Enrollment
               <br />
               Application
             </h1>
-            <p className="mt-4 text-emerald-300 font-extrabold text-sm tracking-wide drop-shadow-xs">
+            <p className="mt-4 text-emerald-300 font-extrabold text-sm tracking-wide drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
               Sarala Birla University, Ranchi
             </p>
           </div>
