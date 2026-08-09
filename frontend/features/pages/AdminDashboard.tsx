@@ -360,9 +360,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
         setSelectedRecord(null);
         fetchEnrollments();
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed";
       console.error("Failed to update status:", err);
-      showToast(`Error updating status: ${err.message || "Failed"}`);
+      showToast(`Error updating status: ${message}`);
     } finally {
       setIsUpdating(false);
     }
@@ -386,7 +387,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
         title: broadcastSubject,
         body: broadcastBody,
         category: "Parade Order",
-        priority: "HIGH" as any,
+        priority: "High",
       });
 
       if (res.success) {
@@ -408,8 +409,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
           `📢 Realtime Broadcast Dispatched to ${broadcastTarget} & Synced across WebSockets!`,
         );
       }
-    } catch (err: any) {
-      showToast(`Broadcast Error: ${err.message || "Failed to dispatch notice"}`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to dispatch notice";
+      showToast(`Broadcast Error: ${message}`);
     }
   };
 
@@ -594,7 +596,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
               return (
                 <button
                   key={item.id}
-                  onClick={() => setActiveTab(item.id as any)}
+                  onClick={() => setActiveTab(item.id as typeof activeTab)}
                   className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     isActive
                       ? "bg-blue-500 text-zinc-950 shadow-md font-black"
@@ -652,7 +654,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                       <button
                         key={item.id}
                         onClick={() => {
-                          setActiveTab(item.id as any);
+                          setActiveTab(item.id as typeof activeTab);
                           setMobileSidebarOpen(false);
                         }}
                         className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all text-left ${
@@ -2073,7 +2075,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                   <select
                     value={newDisciplineForm.type}
                     onChange={(e) =>
-                      setNewDisciplineForm({ ...newDisciplineForm, type: e.target.value as any })
+                      setNewDisciplineForm({
+                        ...newDisciplineForm,
+                        type: e.target.value as DisciplineEntry["type"],
+                      })
                     }
                     className="w-full mt-1 px-3 py-2 bg-white border border-zinc-300 rounded-xl font-bold"
                   >

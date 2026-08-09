@@ -19,11 +19,11 @@ export const Route = createFileRoute("/api/v1/auth/logout")({
           try {
             const admin = await getAdmin();
             // Resolve actor before deleting the session
-            const { data: session } = await admin
+            const { data: session } = (await admin
               .from("app_sessions")
               .select("email, role")
               .eq("token", token)
-              .maybeSingle();
+              .maybeSingle()) as { data: { email: string; role: string } | null };
 
             await admin.from("app_sessions").delete().eq("token", token);
 
@@ -32,9 +32,9 @@ export const Route = createFileRoute("/api/v1/auth/logout")({
               const clientIp =
                 request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
               logAuditEvent({
-                actor: (session as any).email || "unknown",
+                actor: session.email || "unknown",
                 action: "logout",
-                target: (session as any).role || "unknown",
+                target: session.role || "unknown",
                 ip: clientIp,
               });
             }

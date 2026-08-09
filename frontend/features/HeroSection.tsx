@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "motion/react";
+import { motion, type Variants } from "motion/react";
 import {
   Award,
   ChevronRight,
@@ -24,7 +24,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onStartEnrollment,
   openStatusModal,
 }) => {
-  const containerVariants: any = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0, y: 25 },
     visible: {
       opacity: 1,
@@ -37,7 +37,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     },
   };
 
-  const itemVariants: any = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 16 },
     visible: {
       opacity: 1,
