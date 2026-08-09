@@ -61,9 +61,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       {/* Tricolor Top Brand Hairline Bar */}
       <div className="ncc-tricolor-bar absolute top-0 inset-x-0 h-1.5 z-30" />
 
-      {/* Background Campus Image — User uploaded Sarala Birla University main campus photo */}
+      {/* Background Campus Image — Crystal Clear User Uploaded SBU Campus Photo */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 scale-105"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 brightness-[1.03] contrast-[1.05]"
         style={{
           backgroundImage: `url('/sbu-campus-front.jpg')`,
         }}
@@ -71,21 +71,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         aria-label="Sarala Birla University main administrative campus building, Ranchi"
       />
 
-      {/* Light Contrast Overlay for Campus Building Visibility */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-[#2A1C14]/75 via-[#3B281C]/50 to-[#2A1C14]/85" />
-      <div className="absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_35%,#1A100A_95%)] opacity-75" />
+      {/* Subtle Soft Vignette for Maximum Campus Image Clarity */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/30 via-transparent to-black/40" />
       
-      {/* Strategic Command Spotlight Orbs — Warm Amber/Coffee Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-[36rem] w-[36rem] rounded-full bg-[#8C5E3C]/20 blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-10 right-10 z-10 h-[24rem] w-[24rem] rounded-full bg-[#D6C5B3]/25 blur-[120px] pointer-events-none" />
+      {/* Strategic Soft Ambient Glows */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-[36rem] w-[36rem] rounded-full bg-amber-500/10 blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-10 right-10 z-10 h-[24rem] w-[24rem] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none" />
 
-      {/* Main Command Hero Card Container — Light Coffee Theme */}
+      {/* Main Command Hero Card Container — Light Coffee Theme with Strong Blur & Shadow */}
       <div className="relative z-20 mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 my-auto">
         <motion.div
           initial="hidden"
           animate="visible"
           variants={containerVariants}
-          className="coffee-light-card relative overflow-hidden rounded-3xl p-6 sm:p-10 lg:p-12 text-center shadow-[0_25px_70px_rgba(59,40,28,0.35)] backdrop-blur-2xl ring-1 ring-inset ring-[#8C5E3C]/30"
+          className="coffee-light-card relative overflow-hidden rounded-3xl p-6 sm:p-10 lg:p-12 text-center shadow-[0_30px_90px_rgba(0,0,0,0.55)] backdrop-blur-3xl ring-1 ring-inset ring-[#8C5E3C]/35"
         >
           {/* Top Foil Accent Bar */}
           <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#8C5E3C] via-[#D6C5B3] to-[#5C3D26]" />
