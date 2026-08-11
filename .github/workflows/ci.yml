@@ -9,6 +9,14 @@ on:
 permissions:
   contents: read
 
+env:
+  NODE_ENV: test
+  VITE_SUPABASE_URL: https://placeholder-ci.supabase.co
+  VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+  SUPABASE_SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder_service_role
+  JWT_SECRET: ci-test-jwt-secret-minimum-32-characters-long
+  SESSION_SECRET: ci-test-session-secret-minimum-32-characters-long
+
 jobs:
   audit-and-test:
     name: Security Scan, Unit Tests & SSR Production Build

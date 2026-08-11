@@ -77,8 +77,8 @@ export const Route = createFileRoute("/api/v1/auth/login")({
         let userEmail: string = email || username || "";
         let role = "cadet";
 
-        let cadetEnrollmentId: string | null = null;
-        let cadetRecord: Record<string, unknown> | null = null;
+        const cadetEnrollmentId: string | null = null;
+        const cadetRecord: Record<string, unknown> | null = null;
 
         // All authentication flows through stored credentials only.
         // No hardcoded passwords — every account must set a portal password.
