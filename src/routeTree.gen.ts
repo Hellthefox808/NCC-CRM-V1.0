@@ -27,16 +27,28 @@ import { Route as ApiV1ExportExcelRouteImport } from './routes/api/v1/export-exc
 import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
 import { Route as ApiV1MetricsRouteImport } from './routes/api/v1/metrics'
 import { Route as ApiV1NotificationsRouteImport } from './routes/api/v1/notifications'
+import { Route as ApiV1OnboardingRouteImport } from './routes/api/v1/onboarding'
 import { Route as ApiV1PhotosRouteImport } from './routes/api/v1/photos'
 import { Route as ApiV1StaffAttendanceRouteImport } from './routes/api/v1/staff-attendance'
+import { Route as ApiV1AuthActivateRouteImport } from './routes/api/v1/auth/activate'
 import { Route as ApiV1AuthLoginRouteImport } from './routes/api/v1/auth/login'
 import { Route as ApiV1AuthLogoutRouteImport } from './routes/api/v1/auth/logout'
 import { Route as ApiV1AuthMeRouteImport } from './routes/api/v1/auth/me'
+import { Route as ApiV1AuthSetPasswordRouteImport } from './routes/api/v1/auth/set-password'
 import { Route as ApiV1CadetsMeRouteImport } from './routes/api/v1/cadets/me'
+import { Route as ApiV1CalendarIdRouteImport } from './routes/api/v1/calendar.$id'
 import { Route as ApiV1EnrollmentsStatusRouteImport } from './routes/api/v1/enrollments.status'
+import { Route as ApiV1OnboardingStepRouteImport } from './routes/api/v1/onboarding.$step'
 import { Route as ApiV1AuthOtpRequestRouteImport } from './routes/api/v1/auth/otp.request'
 import { Route as ApiV1AuthOtpVerifyRouteImport } from './routes/api/v1/auth/otp.verify'
+import { Route as ApiV1CalendarIdCancelRouteImport } from './routes/api/v1/calendar.$id.cancel'
+import { Route as ApiV1CalendarIdPublishRouteImport } from './routes/api/v1/calendar.$id.publish'
+import { Route as ApiV1CalendarIdRemindersRouteImport } from './routes/api/v1/calendar.$id.reminders'
 import { Route as ApiV1EnrollmentsStatusQueryRouteImport } from './routes/api/v1/enrollments.status.$query'
+import { Route as ApiV1NotificationsIdReadRouteImport } from './routes/api/v1/notifications.$id.read'
+import { Route as ApiV1AnoApplicationsIdApproveRouteImport } from './routes/api/v1/ano/applications.$id.approve'
+import { Route as ApiV1AnoApplicationsIdRejectRouteImport } from './routes/api/v1/ano/applications.$id.reject'
+import { Route as ApiV1AnoApplicationsIdRequestCorrectionRouteImport } from './routes/api/v1/ano/applications.$id.request-correction'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -128,6 +140,11 @@ const ApiV1NotificationsRoute = ApiV1NotificationsRouteImport.update({
   path: '/api/v1/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1OnboardingRoute = ApiV1OnboardingRouteImport.update({
+  id: '/api/v1/onboarding',
+  path: '/api/v1/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1PhotosRoute = ApiV1PhotosRouteImport.update({
   id: '/api/v1/photos',
   path: '/api/v1/photos',
@@ -136,6 +153,11 @@ const ApiV1PhotosRoute = ApiV1PhotosRouteImport.update({
 const ApiV1StaffAttendanceRoute = ApiV1StaffAttendanceRouteImport.update({
   id: '/api/v1/staff-attendance',
   path: '/api/v1/staff-attendance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1AuthActivateRoute = ApiV1AuthActivateRouteImport.update({
+  id: '/api/v1/auth/activate',
+  path: '/api/v1/auth/activate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiV1AuthLoginRoute = ApiV1AuthLoginRouteImport.update({
@@ -153,15 +175,30 @@ const ApiV1AuthMeRoute = ApiV1AuthMeRouteImport.update({
   path: '/api/v1/auth/me',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1AuthSetPasswordRoute = ApiV1AuthSetPasswordRouteImport.update({
+  id: '/api/v1/auth/set-password',
+  path: '/api/v1/auth/set-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1CadetsMeRoute = ApiV1CadetsMeRouteImport.update({
   id: '/me',
   path: '/me',
   getParentRoute: () => ApiV1CadetsRoute,
 } as any)
+const ApiV1CalendarIdRoute = ApiV1CalendarIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiV1CalendarRoute,
+} as any)
 const ApiV1EnrollmentsStatusRoute = ApiV1EnrollmentsStatusRouteImport.update({
   id: '/status',
   path: '/status',
   getParentRoute: () => ApiV1EnrollmentsRoute,
+} as any)
+const ApiV1OnboardingStepRoute = ApiV1OnboardingStepRouteImport.update({
+  id: '/$step',
+  path: '/$step',
+  getParentRoute: () => ApiV1OnboardingRoute,
 } as any)
 const ApiV1AuthOtpRequestRoute = ApiV1AuthOtpRequestRouteImport.update({
   id: '/api/v1/auth/otp/request',
@@ -173,11 +210,51 @@ const ApiV1AuthOtpVerifyRoute = ApiV1AuthOtpVerifyRouteImport.update({
   path: '/api/v1/auth/otp/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1CalendarIdCancelRoute = ApiV1CalendarIdCancelRouteImport.update({
+  id: '/cancel',
+  path: '/cancel',
+  getParentRoute: () => ApiV1CalendarIdRoute,
+} as any)
+const ApiV1CalendarIdPublishRoute = ApiV1CalendarIdPublishRouteImport.update({
+  id: '/publish',
+  path: '/publish',
+  getParentRoute: () => ApiV1CalendarIdRoute,
+} as any)
+const ApiV1CalendarIdRemindersRoute =
+  ApiV1CalendarIdRemindersRouteImport.update({
+    id: '/reminders',
+    path: '/reminders',
+    getParentRoute: () => ApiV1CalendarIdRoute,
+  } as any)
 const ApiV1EnrollmentsStatusQueryRoute =
   ApiV1EnrollmentsStatusQueryRouteImport.update({
     id: '/$query',
     path: '/$query',
     getParentRoute: () => ApiV1EnrollmentsStatusRoute,
+  } as any)
+const ApiV1NotificationsIdReadRoute =
+  ApiV1NotificationsIdReadRouteImport.update({
+    id: '/$id/read',
+    path: '/$id/read',
+    getParentRoute: () => ApiV1NotificationsRoute,
+  } as any)
+const ApiV1AnoApplicationsIdApproveRoute =
+  ApiV1AnoApplicationsIdApproveRouteImport.update({
+    id: '/api/v1/ano/applications/$id/approve',
+    path: '/api/v1/ano/applications/$id/approve',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiV1AnoApplicationsIdRejectRoute =
+  ApiV1AnoApplicationsIdRejectRouteImport.update({
+    id: '/api/v1/ano/applications/$id/reject',
+    path: '/api/v1/ano/applications/$id/reject',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiV1AnoApplicationsIdRequestCorrectionRoute =
+  ApiV1AnoApplicationsIdRequestCorrectionRouteImport.update({
+    id: '/api/v1/ano/applications/$id/request-correction',
+    path: '/api/v1/ano/applications/$id/request-correction',
+    getParentRoute: () => rootRouteImport,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -193,22 +270,34 @@ export interface FileRoutesByFullPath {
   '/api/v1/annual-plans': typeof ApiV1AnnualPlansRoute
   '/api/v1/audit': typeof ApiV1AuditRoute
   '/api/v1/cadets': typeof ApiV1CadetsRouteWithChildren
-  '/api/v1/calendar': typeof ApiV1CalendarRoute
+  '/api/v1/calendar': typeof ApiV1CalendarRouteWithChildren
   '/api/v1/enrollments': typeof ApiV1EnrollmentsRouteWithChildren
   '/api/v1/export-excel': typeof ApiV1ExportExcelRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/metrics': typeof ApiV1MetricsRoute
-  '/api/v1/notifications': typeof ApiV1NotificationsRoute
+  '/api/v1/notifications': typeof ApiV1NotificationsRouteWithChildren
+  '/api/v1/onboarding': typeof ApiV1OnboardingRouteWithChildren
   '/api/v1/photos': typeof ApiV1PhotosRoute
   '/api/v1/staff-attendance': typeof ApiV1StaffAttendanceRoute
+  '/api/v1/auth/activate': typeof ApiV1AuthActivateRoute
   '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/logout': typeof ApiV1AuthLogoutRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
+  '/api/v1/auth/set-password': typeof ApiV1AuthSetPasswordRoute
   '/api/v1/cadets/me': typeof ApiV1CadetsMeRoute
+  '/api/v1/calendar/$id': typeof ApiV1CalendarIdRouteWithChildren
   '/api/v1/enrollments/status': typeof ApiV1EnrollmentsStatusRouteWithChildren
+  '/api/v1/onboarding/$step': typeof ApiV1OnboardingStepRoute
   '/api/v1/auth/otp/request': typeof ApiV1AuthOtpRequestRoute
   '/api/v1/auth/otp/verify': typeof ApiV1AuthOtpVerifyRoute
+  '/api/v1/calendar/$id/cancel': typeof ApiV1CalendarIdCancelRoute
+  '/api/v1/calendar/$id/publish': typeof ApiV1CalendarIdPublishRoute
+  '/api/v1/calendar/$id/reminders': typeof ApiV1CalendarIdRemindersRoute
   '/api/v1/enrollments/status/$query': typeof ApiV1EnrollmentsStatusQueryRoute
+  '/api/v1/notifications/$id/read': typeof ApiV1NotificationsIdReadRoute
+  '/api/v1/ano/applications/$id/approve': typeof ApiV1AnoApplicationsIdApproveRoute
+  '/api/v1/ano/applications/$id/reject': typeof ApiV1AnoApplicationsIdRejectRoute
+  '/api/v1/ano/applications/$id/request-correction': typeof ApiV1AnoApplicationsIdRequestCorrectionRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -223,22 +312,34 @@ export interface FileRoutesByTo {
   '/api/v1/annual-plans': typeof ApiV1AnnualPlansRoute
   '/api/v1/audit': typeof ApiV1AuditRoute
   '/api/v1/cadets': typeof ApiV1CadetsRouteWithChildren
-  '/api/v1/calendar': typeof ApiV1CalendarRoute
+  '/api/v1/calendar': typeof ApiV1CalendarRouteWithChildren
   '/api/v1/enrollments': typeof ApiV1EnrollmentsRouteWithChildren
   '/api/v1/export-excel': typeof ApiV1ExportExcelRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/metrics': typeof ApiV1MetricsRoute
-  '/api/v1/notifications': typeof ApiV1NotificationsRoute
+  '/api/v1/notifications': typeof ApiV1NotificationsRouteWithChildren
+  '/api/v1/onboarding': typeof ApiV1OnboardingRouteWithChildren
   '/api/v1/photos': typeof ApiV1PhotosRoute
   '/api/v1/staff-attendance': typeof ApiV1StaffAttendanceRoute
+  '/api/v1/auth/activate': typeof ApiV1AuthActivateRoute
   '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/logout': typeof ApiV1AuthLogoutRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
+  '/api/v1/auth/set-password': typeof ApiV1AuthSetPasswordRoute
   '/api/v1/cadets/me': typeof ApiV1CadetsMeRoute
+  '/api/v1/calendar/$id': typeof ApiV1CalendarIdRouteWithChildren
   '/api/v1/enrollments/status': typeof ApiV1EnrollmentsStatusRouteWithChildren
+  '/api/v1/onboarding/$step': typeof ApiV1OnboardingStepRoute
   '/api/v1/auth/otp/request': typeof ApiV1AuthOtpRequestRoute
   '/api/v1/auth/otp/verify': typeof ApiV1AuthOtpVerifyRoute
+  '/api/v1/calendar/$id/cancel': typeof ApiV1CalendarIdCancelRoute
+  '/api/v1/calendar/$id/publish': typeof ApiV1CalendarIdPublishRoute
+  '/api/v1/calendar/$id/reminders': typeof ApiV1CalendarIdRemindersRoute
   '/api/v1/enrollments/status/$query': typeof ApiV1EnrollmentsStatusQueryRoute
+  '/api/v1/notifications/$id/read': typeof ApiV1NotificationsIdReadRoute
+  '/api/v1/ano/applications/$id/approve': typeof ApiV1AnoApplicationsIdApproveRoute
+  '/api/v1/ano/applications/$id/reject': typeof ApiV1AnoApplicationsIdRejectRoute
+  '/api/v1/ano/applications/$id/request-correction': typeof ApiV1AnoApplicationsIdRequestCorrectionRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -254,22 +355,34 @@ export interface FileRoutesById {
   '/api/v1/annual-plans': typeof ApiV1AnnualPlansRoute
   '/api/v1/audit': typeof ApiV1AuditRoute
   '/api/v1/cadets': typeof ApiV1CadetsRouteWithChildren
-  '/api/v1/calendar': typeof ApiV1CalendarRoute
+  '/api/v1/calendar': typeof ApiV1CalendarRouteWithChildren
   '/api/v1/enrollments': typeof ApiV1EnrollmentsRouteWithChildren
   '/api/v1/export-excel': typeof ApiV1ExportExcelRoute
   '/api/v1/health': typeof ApiV1HealthRoute
   '/api/v1/metrics': typeof ApiV1MetricsRoute
-  '/api/v1/notifications': typeof ApiV1NotificationsRoute
+  '/api/v1/notifications': typeof ApiV1NotificationsRouteWithChildren
+  '/api/v1/onboarding': typeof ApiV1OnboardingRouteWithChildren
   '/api/v1/photos': typeof ApiV1PhotosRoute
   '/api/v1/staff-attendance': typeof ApiV1StaffAttendanceRoute
+  '/api/v1/auth/activate': typeof ApiV1AuthActivateRoute
   '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/logout': typeof ApiV1AuthLogoutRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
+  '/api/v1/auth/set-password': typeof ApiV1AuthSetPasswordRoute
   '/api/v1/cadets/me': typeof ApiV1CadetsMeRoute
+  '/api/v1/calendar/$id': typeof ApiV1CalendarIdRouteWithChildren
   '/api/v1/enrollments/status': typeof ApiV1EnrollmentsStatusRouteWithChildren
+  '/api/v1/onboarding/$step': typeof ApiV1OnboardingStepRoute
   '/api/v1/auth/otp/request': typeof ApiV1AuthOtpRequestRoute
   '/api/v1/auth/otp/verify': typeof ApiV1AuthOtpVerifyRoute
+  '/api/v1/calendar/$id/cancel': typeof ApiV1CalendarIdCancelRoute
+  '/api/v1/calendar/$id/publish': typeof ApiV1CalendarIdPublishRoute
+  '/api/v1/calendar/$id/reminders': typeof ApiV1CalendarIdRemindersRoute
   '/api/v1/enrollments/status/$query': typeof ApiV1EnrollmentsStatusQueryRoute
+  '/api/v1/notifications/$id/read': typeof ApiV1NotificationsIdReadRoute
+  '/api/v1/ano/applications/$id/approve': typeof ApiV1AnoApplicationsIdApproveRoute
+  '/api/v1/ano/applications/$id/reject': typeof ApiV1AnoApplicationsIdRejectRoute
+  '/api/v1/ano/applications/$id/request-correction': typeof ApiV1AnoApplicationsIdRequestCorrectionRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -292,16 +405,28 @@ export interface FileRouteTypes {
     | '/api/v1/health'
     | '/api/v1/metrics'
     | '/api/v1/notifications'
+    | '/api/v1/onboarding'
     | '/api/v1/photos'
     | '/api/v1/staff-attendance'
+    | '/api/v1/auth/activate'
     | '/api/v1/auth/login'
     | '/api/v1/auth/logout'
     | '/api/v1/auth/me'
+    | '/api/v1/auth/set-password'
     | '/api/v1/cadets/me'
+    | '/api/v1/calendar/$id'
     | '/api/v1/enrollments/status'
+    | '/api/v1/onboarding/$step'
     | '/api/v1/auth/otp/request'
     | '/api/v1/auth/otp/verify'
+    | '/api/v1/calendar/$id/cancel'
+    | '/api/v1/calendar/$id/publish'
+    | '/api/v1/calendar/$id/reminders'
     | '/api/v1/enrollments/status/$query'
+    | '/api/v1/notifications/$id/read'
+    | '/api/v1/ano/applications/$id/approve'
+    | '/api/v1/ano/applications/$id/reject'
+    | '/api/v1/ano/applications/$id/request-correction'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -322,16 +447,28 @@ export interface FileRouteTypes {
     | '/api/v1/health'
     | '/api/v1/metrics'
     | '/api/v1/notifications'
+    | '/api/v1/onboarding'
     | '/api/v1/photos'
     | '/api/v1/staff-attendance'
+    | '/api/v1/auth/activate'
     | '/api/v1/auth/login'
     | '/api/v1/auth/logout'
     | '/api/v1/auth/me'
+    | '/api/v1/auth/set-password'
     | '/api/v1/cadets/me'
+    | '/api/v1/calendar/$id'
     | '/api/v1/enrollments/status'
+    | '/api/v1/onboarding/$step'
     | '/api/v1/auth/otp/request'
     | '/api/v1/auth/otp/verify'
+    | '/api/v1/calendar/$id/cancel'
+    | '/api/v1/calendar/$id/publish'
+    | '/api/v1/calendar/$id/reminders'
     | '/api/v1/enrollments/status/$query'
+    | '/api/v1/notifications/$id/read'
+    | '/api/v1/ano/applications/$id/approve'
+    | '/api/v1/ano/applications/$id/reject'
+    | '/api/v1/ano/applications/$id/request-correction'
   id:
     | '__root__'
     | '/'
@@ -352,16 +489,28 @@ export interface FileRouteTypes {
     | '/api/v1/health'
     | '/api/v1/metrics'
     | '/api/v1/notifications'
+    | '/api/v1/onboarding'
     | '/api/v1/photos'
     | '/api/v1/staff-attendance'
+    | '/api/v1/auth/activate'
     | '/api/v1/auth/login'
     | '/api/v1/auth/logout'
     | '/api/v1/auth/me'
+    | '/api/v1/auth/set-password'
     | '/api/v1/cadets/me'
+    | '/api/v1/calendar/$id'
     | '/api/v1/enrollments/status'
+    | '/api/v1/onboarding/$step'
     | '/api/v1/auth/otp/request'
     | '/api/v1/auth/otp/verify'
+    | '/api/v1/calendar/$id/cancel'
+    | '/api/v1/calendar/$id/publish'
+    | '/api/v1/calendar/$id/reminders'
     | '/api/v1/enrollments/status/$query'
+    | '/api/v1/notifications/$id/read'
+    | '/api/v1/ano/applications/$id/approve'
+    | '/api/v1/ano/applications/$id/reject'
+    | '/api/v1/ano/applications/$id/request-correction'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -377,19 +526,25 @@ export interface RootRouteChildren {
   ApiV1AnnualPlansRoute: typeof ApiV1AnnualPlansRoute
   ApiV1AuditRoute: typeof ApiV1AuditRoute
   ApiV1CadetsRoute: typeof ApiV1CadetsRouteWithChildren
-  ApiV1CalendarRoute: typeof ApiV1CalendarRoute
+  ApiV1CalendarRoute: typeof ApiV1CalendarRouteWithChildren
   ApiV1EnrollmentsRoute: typeof ApiV1EnrollmentsRouteWithChildren
   ApiV1ExportExcelRoute: typeof ApiV1ExportExcelRoute
   ApiV1HealthRoute: typeof ApiV1HealthRoute
   ApiV1MetricsRoute: typeof ApiV1MetricsRoute
-  ApiV1NotificationsRoute: typeof ApiV1NotificationsRoute
+  ApiV1NotificationsRoute: typeof ApiV1NotificationsRouteWithChildren
+  ApiV1OnboardingRoute: typeof ApiV1OnboardingRouteWithChildren
   ApiV1PhotosRoute: typeof ApiV1PhotosRoute
   ApiV1StaffAttendanceRoute: typeof ApiV1StaffAttendanceRoute
+  ApiV1AuthActivateRoute: typeof ApiV1AuthActivateRoute
   ApiV1AuthLoginRoute: typeof ApiV1AuthLoginRoute
   ApiV1AuthLogoutRoute: typeof ApiV1AuthLogoutRoute
   ApiV1AuthMeRoute: typeof ApiV1AuthMeRoute
+  ApiV1AuthSetPasswordRoute: typeof ApiV1AuthSetPasswordRoute
   ApiV1AuthOtpRequestRoute: typeof ApiV1AuthOtpRequestRoute
   ApiV1AuthOtpVerifyRoute: typeof ApiV1AuthOtpVerifyRoute
+  ApiV1AnoApplicationsIdApproveRoute: typeof ApiV1AnoApplicationsIdApproveRoute
+  ApiV1AnoApplicationsIdRejectRoute: typeof ApiV1AnoApplicationsIdRejectRoute
+  ApiV1AnoApplicationsIdRequestCorrectionRoute: typeof ApiV1AnoApplicationsIdRequestCorrectionRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -520,6 +675,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/onboarding': {
+      id: '/api/v1/onboarding'
+      path: '/api/v1/onboarding'
+      fullPath: '/api/v1/onboarding'
+      preLoaderRoute: typeof ApiV1OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/photos': {
       id: '/api/v1/photos'
       path: '/api/v1/photos'
@@ -532,6 +694,13 @@ declare module '@tanstack/react-router' {
       path: '/api/v1/staff-attendance'
       fullPath: '/api/v1/staff-attendance'
       preLoaderRoute: typeof ApiV1StaffAttendanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/auth/activate': {
+      id: '/api/v1/auth/activate'
+      path: '/api/v1/auth/activate'
+      fullPath: '/api/v1/auth/activate'
+      preLoaderRoute: typeof ApiV1AuthActivateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/auth/login': {
@@ -555,6 +724,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1AuthMeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/auth/set-password': {
+      id: '/api/v1/auth/set-password'
+      path: '/api/v1/auth/set-password'
+      fullPath: '/api/v1/auth/set-password'
+      preLoaderRoute: typeof ApiV1AuthSetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/cadets/me': {
       id: '/api/v1/cadets/me'
       path: '/me'
@@ -562,12 +738,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1CadetsMeRouteImport
       parentRoute: typeof ApiV1CadetsRoute
     }
+    '/api/v1/calendar/$id': {
+      id: '/api/v1/calendar/$id'
+      path: '/$id'
+      fullPath: '/api/v1/calendar/$id'
+      preLoaderRoute: typeof ApiV1CalendarIdRouteImport
+      parentRoute: typeof ApiV1CalendarRoute
+    }
     '/api/v1/enrollments/status': {
       id: '/api/v1/enrollments/status'
       path: '/status'
       fullPath: '/api/v1/enrollments/status'
       preLoaderRoute: typeof ApiV1EnrollmentsStatusRouteImport
       parentRoute: typeof ApiV1EnrollmentsRoute
+    }
+    '/api/v1/onboarding/$step': {
+      id: '/api/v1/onboarding/$step'
+      path: '/$step'
+      fullPath: '/api/v1/onboarding/$step'
+      preLoaderRoute: typeof ApiV1OnboardingStepRouteImport
+      parentRoute: typeof ApiV1OnboardingRoute
     }
     '/api/v1/auth/otp/request': {
       id: '/api/v1/auth/otp/request'
@@ -583,12 +773,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1AuthOtpVerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/calendar/$id/cancel': {
+      id: '/api/v1/calendar/$id/cancel'
+      path: '/cancel'
+      fullPath: '/api/v1/calendar/$id/cancel'
+      preLoaderRoute: typeof ApiV1CalendarIdCancelRouteImport
+      parentRoute: typeof ApiV1CalendarIdRoute
+    }
+    '/api/v1/calendar/$id/publish': {
+      id: '/api/v1/calendar/$id/publish'
+      path: '/publish'
+      fullPath: '/api/v1/calendar/$id/publish'
+      preLoaderRoute: typeof ApiV1CalendarIdPublishRouteImport
+      parentRoute: typeof ApiV1CalendarIdRoute
+    }
+    '/api/v1/calendar/$id/reminders': {
+      id: '/api/v1/calendar/$id/reminders'
+      path: '/reminders'
+      fullPath: '/api/v1/calendar/$id/reminders'
+      preLoaderRoute: typeof ApiV1CalendarIdRemindersRouteImport
+      parentRoute: typeof ApiV1CalendarIdRoute
+    }
     '/api/v1/enrollments/status/$query': {
       id: '/api/v1/enrollments/status/$query'
       path: '/$query'
       fullPath: '/api/v1/enrollments/status/$query'
       preLoaderRoute: typeof ApiV1EnrollmentsStatusQueryRouteImport
       parentRoute: typeof ApiV1EnrollmentsStatusRoute
+    }
+    '/api/v1/notifications/$id/read': {
+      id: '/api/v1/notifications/$id/read'
+      path: '/$id/read'
+      fullPath: '/api/v1/notifications/$id/read'
+      preLoaderRoute: typeof ApiV1NotificationsIdReadRouteImport
+      parentRoute: typeof ApiV1NotificationsRoute
+    }
+    '/api/v1/ano/applications/$id/approve': {
+      id: '/api/v1/ano/applications/$id/approve'
+      path: '/api/v1/ano/applications/$id/approve'
+      fullPath: '/api/v1/ano/applications/$id/approve'
+      preLoaderRoute: typeof ApiV1AnoApplicationsIdApproveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/ano/applications/$id/reject': {
+      id: '/api/v1/ano/applications/$id/reject'
+      path: '/api/v1/ano/applications/$id/reject'
+      fullPath: '/api/v1/ano/applications/$id/reject'
+      preLoaderRoute: typeof ApiV1AnoApplicationsIdRejectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/ano/applications/$id/request-correction': {
+      id: '/api/v1/ano/applications/$id/request-correction'
+      path: '/api/v1/ano/applications/$id/request-correction'
+      fullPath: '/api/v1/ano/applications/$id/request-correction'
+      preLoaderRoute: typeof ApiV1AnoApplicationsIdRequestCorrectionRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -603,6 +842,34 @@ const ApiV1CadetsRouteChildren: ApiV1CadetsRouteChildren = {
 
 const ApiV1CadetsRouteWithChildren = ApiV1CadetsRoute._addFileChildren(
   ApiV1CadetsRouteChildren,
+)
+
+interface ApiV1CalendarIdRouteChildren {
+  ApiV1CalendarIdCancelRoute: typeof ApiV1CalendarIdCancelRoute
+  ApiV1CalendarIdPublishRoute: typeof ApiV1CalendarIdPublishRoute
+  ApiV1CalendarIdRemindersRoute: typeof ApiV1CalendarIdRemindersRoute
+}
+
+const ApiV1CalendarIdRouteChildren: ApiV1CalendarIdRouteChildren = {
+  ApiV1CalendarIdCancelRoute: ApiV1CalendarIdCancelRoute,
+  ApiV1CalendarIdPublishRoute: ApiV1CalendarIdPublishRoute,
+  ApiV1CalendarIdRemindersRoute: ApiV1CalendarIdRemindersRoute,
+}
+
+const ApiV1CalendarIdRouteWithChildren = ApiV1CalendarIdRoute._addFileChildren(
+  ApiV1CalendarIdRouteChildren,
+)
+
+interface ApiV1CalendarRouteChildren {
+  ApiV1CalendarIdRoute: typeof ApiV1CalendarIdRouteWithChildren
+}
+
+const ApiV1CalendarRouteChildren: ApiV1CalendarRouteChildren = {
+  ApiV1CalendarIdRoute: ApiV1CalendarIdRouteWithChildren,
+}
+
+const ApiV1CalendarRouteWithChildren = ApiV1CalendarRoute._addFileChildren(
+  ApiV1CalendarRouteChildren,
 )
 
 interface ApiV1EnrollmentsStatusRouteChildren {
@@ -630,6 +897,29 @@ const ApiV1EnrollmentsRouteChildren: ApiV1EnrollmentsRouteChildren = {
 const ApiV1EnrollmentsRouteWithChildren =
   ApiV1EnrollmentsRoute._addFileChildren(ApiV1EnrollmentsRouteChildren)
 
+interface ApiV1NotificationsRouteChildren {
+  ApiV1NotificationsIdReadRoute: typeof ApiV1NotificationsIdReadRoute
+}
+
+const ApiV1NotificationsRouteChildren: ApiV1NotificationsRouteChildren = {
+  ApiV1NotificationsIdReadRoute: ApiV1NotificationsIdReadRoute,
+}
+
+const ApiV1NotificationsRouteWithChildren =
+  ApiV1NotificationsRoute._addFileChildren(ApiV1NotificationsRouteChildren)
+
+interface ApiV1OnboardingRouteChildren {
+  ApiV1OnboardingStepRoute: typeof ApiV1OnboardingStepRoute
+}
+
+const ApiV1OnboardingRouteChildren: ApiV1OnboardingRouteChildren = {
+  ApiV1OnboardingStepRoute: ApiV1OnboardingStepRoute,
+}
+
+const ApiV1OnboardingRouteWithChildren = ApiV1OnboardingRoute._addFileChildren(
+  ApiV1OnboardingRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
@@ -643,19 +933,26 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1AnnualPlansRoute: ApiV1AnnualPlansRoute,
   ApiV1AuditRoute: ApiV1AuditRoute,
   ApiV1CadetsRoute: ApiV1CadetsRouteWithChildren,
-  ApiV1CalendarRoute: ApiV1CalendarRoute,
+  ApiV1CalendarRoute: ApiV1CalendarRouteWithChildren,
   ApiV1EnrollmentsRoute: ApiV1EnrollmentsRouteWithChildren,
   ApiV1ExportExcelRoute: ApiV1ExportExcelRoute,
   ApiV1HealthRoute: ApiV1HealthRoute,
   ApiV1MetricsRoute: ApiV1MetricsRoute,
-  ApiV1NotificationsRoute: ApiV1NotificationsRoute,
+  ApiV1NotificationsRoute: ApiV1NotificationsRouteWithChildren,
+  ApiV1OnboardingRoute: ApiV1OnboardingRouteWithChildren,
   ApiV1PhotosRoute: ApiV1PhotosRoute,
   ApiV1StaffAttendanceRoute: ApiV1StaffAttendanceRoute,
+  ApiV1AuthActivateRoute: ApiV1AuthActivateRoute,
   ApiV1AuthLoginRoute: ApiV1AuthLoginRoute,
   ApiV1AuthLogoutRoute: ApiV1AuthLogoutRoute,
   ApiV1AuthMeRoute: ApiV1AuthMeRoute,
+  ApiV1AuthSetPasswordRoute: ApiV1AuthSetPasswordRoute,
   ApiV1AuthOtpRequestRoute: ApiV1AuthOtpRequestRoute,
   ApiV1AuthOtpVerifyRoute: ApiV1AuthOtpVerifyRoute,
+  ApiV1AnoApplicationsIdApproveRoute: ApiV1AnoApplicationsIdApproveRoute,
+  ApiV1AnoApplicationsIdRejectRoute: ApiV1AnoApplicationsIdRejectRoute,
+  ApiV1AnoApplicationsIdRequestCorrectionRoute:
+    ApiV1AnoApplicationsIdRequestCorrectionRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -5,11 +5,16 @@ import { bearer, requireOfficer, requireCadetSession } from "../lib/cadet-regist
 import { checkRateLimit, resetRateLimit } from "../lib/rate-limiter.server.ts";
 
 describe("Security & Authorization Unit Tests", () => {
-  it("bearer() correctly extracts bearer tokens from Authorization headers", () => {
+  it("bearer() correctly extracts bearer tokens from Authorization headers or HttpOnly cookies", () => {
     const req1 = new Request("https://localhost/api/v1/cadets", {
       headers: { authorization: "Bearer sess_abc123" },
     });
     assert.equal(bearer(req1), "sess_abc123");
+
+    const reqCookie = new Request("https://localhost/api/v1/cadets", {
+      headers: { cookie: "ncc_session=sess_cookie456; Other=value" },
+    });
+    assert.equal(bearer(reqCookie), "sess_cookie456");
 
     const req2 = new Request("https://localhost/api/v1/cadets", {
       headers: { authorization: "Basic admin:secret" },
@@ -36,7 +41,7 @@ describe("Security & Authorization Unit Tests", () => {
     assert.equal(gate.error, "Cadet sign-in required.");
   });
 
-  it("maskPublicRecord() securely masks Aadhaar and bank account PII for public status tracking", () => {
+  it("maskPublicRecord() strictly strips PII for public status tracking", () => {
     const dummyRow = {
       id: "19JHR-SBU-2026-101",
       enrollment_no: "JH/26/SD/104512",
@@ -56,13 +61,33 @@ describe("Security & Authorization Unit Tests", () => {
     };
 
     const mapped = mapToCadetRecord(dummyRow);
-    const masked = maskPublicRecord(mapped);
+    const masked = maskPublicRecord(mapped) as any;
 
     assert.equal(masked.id, "19JHR-SBU-2026-101");
     assert.equal(masked.fullName, "Aditya Kumar Singh");
-    assert.equal(masked.aadhaarNumber, "••••••••6541");
-    assert.equal(masked.accountNumber, "•••••••4551");
-    assert.equal(masked.ifscCode, "SBIN••••••");
+    assert.equal(masked.enrollmentNo, "JH/26/SD/104512");
+    assert.equal(masked.status, "Enrolled");
+    // Verify all sensitive PII fields are completely stripped (undefined)
+    assert.equal(masked.aadhaarNumber, undefined);
+    assert.equal(masked.accountNumber, undefined);
+    assert.equal(masked.ifscCode, undefined);
+    assert.equal(masked.dob, undefined);
+    assert.equal(masked.mobile, undefined);
+    assert.equal(masked.email, undefined);
+  });
+
+  it("hashPassword() and verifyPasswordHash() use salted scrypt for secure password storage", async () => {
+    const { hashPassword, verifyPasswordHash } = await import("../lib/auth-otp.server.ts");
+
+    const pass = "Complex#Secret123";
+    const hashed = await hashPassword(pass, "user@sbu.ac.in");
+
+    assert.ok(hashed.startsWith("scrypt$"));
+    const match = await verifyPasswordHash(pass, hashed, "user@sbu.ac.in");
+    assert.equal(match, true);
+
+    const wrongMatch = await verifyPasswordHash("WrongPassword999", hashed, "user@sbu.ac.in");
+    assert.equal(wrongMatch, false);
   });
 
   it("sanitizePostgrestQuery() strips dangerous characters to prevent filter injection", () => {
@@ -99,5 +124,25 @@ describe("Security & Authorization Unit Tests", () => {
     resetRateLimit(key);
     const afterReset = checkRateLimit(key, { maxAttempts: 3, windowMs: 60000 });
     assert.equal(afterReset.allowed, true);
+  });
+
+  it("loginRequestSchema enforces minimum 8-character password requirement", async () => {
+    const { loginRequestSchema } = await import("../lib/validation.schemas.ts");
+
+    const shortPayload = {
+      userType: "cadet",
+      email: "cadet@sbu.ac.in",
+      password: "12345", // Only 5 chars
+    };
+    const resShort = loginRequestSchema.safeParse(shortPayload);
+    assert.equal(resShort.success, false);
+
+    const validPayload = {
+      userType: "cadet",
+      email: "cadet@sbu.ac.in",
+      password: "PassWord123!", // 12 chars
+    };
+    const resValid = loginRequestSchema.safeParse(validPayload);
+    assert.equal(resValid.success, true);
   });
 });

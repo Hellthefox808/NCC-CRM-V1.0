@@ -455,12 +455,12 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
 
   // Shared field styling — Light Coffee Cream & Regimental Navy theme.
   const fieldClass =
-    "w-full rounded-[14px] border border-[#8C5E3C]/25 bg-[#FAF7F2] px-4 py-3 text-sm text-[#3B281C] placeholder:text-[#8C5E3C]/60 transition-all focus:border-[#1E3A8A] focus:bg-white focus:ring-4 focus:ring-[#1E3A8A]/15 focus:outline-none font-medium";
+    "w-full rounded-[14px] border border-[#8C5E3C]/25 bg-[#FAF7F2] px-4 py-3 text-sm text-[#3B281C] placeholder:text-[#8C5E3C]/50 transition-all duration-200 ease-out field-focus-glow focus:outline-none font-medium tracking-[0.01em]";
   const fieldWithIconClass = `${fieldClass} pl-11`;
   const labelClass =
-    "mb-1.5 block text-[10px] font-black uppercase tracking-[0.16em] text-[#8C5E3C]";
+    "mb-1.5 block text-[10px] font-black uppercase tracking-[0.16em] text-[#8C5E3C] label-lift";
   const submitClass =
-    "w-full rounded-[14px] bg-[#1E3A8A] py-3.5 text-sm font-bold text-white shadow-lg shadow-[#1E3A8A]/25 transition-all hover:bg-[#152A64] hover:shadow-xl active:scale-[0.99] cursor-pointer flex items-center justify-center gap-2";
+    "w-full rounded-[14px] bg-[#1E3A8A] py-3.5 text-sm font-bold text-white shadow-lg shadow-[#1E3A8A]/25 transition-all duration-200 hover:bg-[#152A64] hover:shadow-xl active:scale-[0.985] cursor-pointer flex items-center justify-center gap-2 btn-shine";
   const subTabClass = (active: boolean) =>
     `pb-3 text-[13px] font-bold transition-colors cursor-pointer border-b-2 ${
       active
@@ -710,14 +710,14 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
 
   return (
     <section
-      className="flex min-h-[85vh] items-center justify-center bg-muted/40 px-4 py-10 sm:px-6 sm:py-14"
+      className="flex min-h-[85vh] items-center justify-center portal-ambient-bg px-4 py-10 sm:px-6 sm:py-14"
       id="sbu-signup-portal-section"
     >
       <motion.div
         variants={cardVariants}
         initial="hidden"
         animate="visible"
-        className="w-full max-w-[1100px] overflow-hidden rounded-[18px] border border-border bg-card shadow-[0_32px_64px_-12px_rgb(0_0_0/0.12)] lg:flex lg:min-h-[680px]"
+        className="w-full max-w-[1100px] overflow-hidden rounded-[22px] border border-border/80 bg-card shadow-[0_32px_64px_-12px_rgb(0_0_0/0.14)] card-hover-lift lg:flex lg:min-h-[680px]"
       >
         {/* Left: campus identity rail - Light Coffee & Regimental Image Theme */}
         <div className="relative hidden bg-[#0f2415] lg:block lg:w-[42%] overflow-hidden">
@@ -733,7 +733,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
 
           {/* Top Crest Badges on Left Rail */}
           <div className="absolute top-10 left-10 flex items-center gap-3 z-10">
-            <div className="w-11 h-11 rounded-full bg-white p-0.5 shadow-xl border border-emerald-400 flex items-center justify-center overflow-hidden">
+            <div className="w-11 h-11 rounded-full bg-white p-0.5 shadow-xl border border-emerald-400 flex items-center justify-center overflow-hidden crest-pulse-ring">
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_5fO3j9MhxWCOALUorfuM3nZcChQfc2949oaRRyjpIQ&s=10"
                 alt="SBU Emblem"
@@ -766,7 +766,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
             </motion.div>
             <motion.h2
               variants={staggerItem}
-              className="mb-4 font-display text-4xl font-extrabold leading-[1.1] tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] lg:text-5xl"
+              className="mb-4 font-display text-4xl font-extrabold leading-[1.08] tracking-[-0.02em] text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] lg:text-5xl text-render-premium"
             >
               सरला बिरला विश्वविद्यालय, राँची
             </motion.h2>
@@ -787,7 +787,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className="flex flex-1 flex-col p-6 sm:p-10 lg:p-14 bg-[#FFFBF7]"
+          className="flex flex-1 flex-col p-6 sm:p-10 lg:p-14 bg-[#FFFBF7] text-render-premium"
         >
           {/* Panel header: crests, university identity, cadre chip */}
           <motion.div
@@ -798,7 +798,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
               <div className="flex items-center gap-2">
                 <motion.div
                   whileHover={{ scale: 1.08, rotate: -2 }}
-                  className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-emerald-400/60 bg-white p-1 shadow-md"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-emerald-400/60 bg-white p-1 shadow-md crest-pulse-ring"
                 >
                   <img
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_5fO3j9MhxWCOALUorfuM3nZcChQfc2949oaRRyjpIQ&s=10"
@@ -821,7 +821,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
               </div>
 
               <div className="min-w-0">
-                <h1 className="font-display text-lg font-black leading-none tracking-tight text-[#3B281C]">
+                <h1 className="font-display text-lg font-black leading-none tracking-[-0.02em] text-[#3B281C]">
                   Sarala Birla University
                 </h1>
                 <p className="mt-1 text-[11px] font-bold text-[#8C5E3C]">
@@ -1006,7 +1006,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
 
                 {cadetMode === "login" && authPending !== "cadet" && (
                   <form onSubmit={handleCadetLogin} className="space-y-6">
-                    <div>
+                    <div className="label-lift-parent">
                       <label className={labelClass} htmlFor="cadet-identifier">
                         NCC Enrolment No*
                       </label>
@@ -1024,7 +1024,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
                       </div>
                     </div>
 
-                    <div>
+                    <div className="label-lift-parent">
                       <label className={labelClass} htmlFor="cadet-password">
                         Portal Password
                       </label>
@@ -1333,7 +1333,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
 
           {/* IT support keyline */}
           <div className="mt-12 flex items-center gap-4">
-            <div className="h-px flex-1 bg-border" />
+            <div className="flex-1 divider-gradient" />
             <p className="whitespace-nowrap text-[10px] font-medium text-muted-foreground">
               Support{" "}
               <a
@@ -1350,7 +1350,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
                 19 JHR BN HQ
               </a>
             </p>
-            <div className="h-px flex-1 bg-border" />
+            <div className="flex-1 divider-gradient" />
           </div>
         </motion.div>
       </motion.div>

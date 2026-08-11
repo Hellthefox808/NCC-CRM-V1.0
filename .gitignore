@@ -30,6 +30,7 @@ dist-ssr
 .nitro
 .wrangler/
 .next/
+.vercel/
 .cache/
 
 # Local Database & Backups

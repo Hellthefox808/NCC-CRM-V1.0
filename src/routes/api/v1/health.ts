@@ -38,6 +38,10 @@ export const Route = createFileRoute("/api/v1/health")({
           dbErrorDetail = err instanceof Error ? err.message : String(err);
         }
 
+        if (dbErrorDetail) {
+          console.error("[Health Probe Database Error]", dbErrorDetail);
+        }
+
         const isHealthy = dbOk;
 
         return json(
@@ -51,7 +55,6 @@ export const Route = createFileRoute("/api/v1/health")({
             uptimeSeconds: Math.floor((Date.now() - STARTED_AT) / 1000),
             checks: {
               database: dbOk ? "CONNECTED" : "DISCONNECTED",
-              dbError: dbErrorDetail,
             },
           },
           isHealthy ? 200 : 503,

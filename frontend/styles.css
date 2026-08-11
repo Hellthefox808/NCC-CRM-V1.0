@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;400;500;600;700&family=Inter+Tight:wght@400;500;600;700;800;900&family=Inter:opsz,wght@14..32,300..800&family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 @source "../frontend";
 @source "../backend";
@@ -456,4 +456,123 @@
   background: rgba(26, 36, 16, 0.85);
   border: 1px solid rgba(197, 160, 89, 0.45);
   color: #faf7f2;
+}
+
+/* ─── Premium UI Polish ─────────────────────────────────────────── */
+
+/* Warm ambient background for login portal */
+.portal-ambient-bg {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 110%, rgba(30, 58, 138, 0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(124, 58, 237, 0.03) 0%, transparent 60%),
+    linear-gradient(180deg, #fffcf7 0%, #faf5ee 40%, #f5efe6 100%);
+}
+
+/* Smooth field focus glow — replaces harsh ring with ambient spread */
+.field-focus-glow:focus {
+  border-color: #1e3a8a;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 3px rgba(30, 58, 138, 0.1),
+    0 1px 3px rgba(30, 58, 138, 0.08);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.25s ease,
+    background 0.2s ease;
+}
+
+/* Button hover shine — subtle top-edge light sweep */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.15) 45%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.15) 55%,
+    transparent 60%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.5s ease;
+}
+
+.btn-shine:hover::after {
+  transform: translateX(120%);
+}
+
+/* Card entrance shadow — deeper on hover for lift effect */
+.card-hover-lift {
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.card-hover-lift:hover {
+  box-shadow:
+    0 20px 48px -12px rgba(0, 0, 0, 0.15),
+    0 8px 16px -8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+/* Smooth text rendering for premium feel */
+.text-render-premium {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings:
+    "kern" 1,
+    "liga" 1,
+    "calt" 1;
+}
+
+/* Subtle gradient divider line */
+.divider-gradient {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(140, 94, 60, 0.2) 20%,
+    rgba(30, 58, 138, 0.15) 50%,
+    rgba(140, 94, 60, 0.2) 80%,
+    transparent 100%
+  );
+}
+
+/* Label micro-animation on input focus-within */
+.label-lift {
+  transition:
+    color 0.2s ease,
+    letter-spacing 0.3s ease;
+}
+
+.label-lift-parent:focus-within .label-lift {
+  color: #1e3a8a;
+  letter-spacing: 0.2em;
+}
+
+/* Crest badge subtle pulse ring */
+@keyframes crest-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+}
+
+.crest-pulse-ring {
+  animation: crest-pulse 3s ease-in-out infinite;
+}
+
+/* Portal tab pill smooth magnetic snap */
+.portal-pill-snap {
+  transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }

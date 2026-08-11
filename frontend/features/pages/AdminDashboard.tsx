@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import * as XLSX from "xlsx";
 import { NotificationsFeed } from "@frontend/features/NotificationsFeed";
 import { StatsOverview } from "@frontend/features/Admin/StatsOverview";
 import { RecentRegistrations } from "@frontend/features/Admin/RecentRegistrations";

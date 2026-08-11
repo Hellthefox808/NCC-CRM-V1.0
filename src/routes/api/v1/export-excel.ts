@@ -1,6 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import * as XLSX from "xlsx";
 import { getAdmin, json, mapToCadetRecord } from "@backend/lib/ncc-db";
+
+function escapeCsvField(val: unknown): string {
+  if (val === null || val === undefined) return '""';
+  const str = String(val);
+  if (/[",\n\r]/.test(str)) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return `"${str}"`;
+}
+
+function generateCsv(data: Record<string, unknown>[]): string {
+  if (data.length === 0) return "";
+  const headers = Object.keys(data[0]);
+  const headerRow = headers.map(escapeCsvField).join(",");
+  const dataRows = data.map((row) => headers.map((h) => escapeCsvField(row[h])).join(","));
+  return [headerRow, ...dataRows].join("\r\n");
+}
 
 export const Route = createFileRoute("/api/v1/export-excel")({
   server: {
@@ -46,42 +62,30 @@ export const Route = createFileRoute("/api/v1/export-excel")({
             "Officer Remarks": e.officerRemarks || "",
           }));
 
-          const bankData = enrollments.map((e, idx) => ({
-            "S.No": idx + 1,
-            "Application ID": e.id,
-            "Cadet Name": e.fullName,
-            "SBU Roll No": e.sbuRollNo,
-            "Bank Name": e.bankName,
-            "Account Number": e.accountNumber,
-            "IFSC Code": e.ifscCode,
-            "Aadhaar Number": e.aadhaarNumber,
-            "Mobile Number": e.mobile,
-          }));
+          const csvContent = "\uFEFF" + generateCsv(nominalRollData);
 
-          const workbook = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(
-            workbook,
-            XLSX.utils.json_to_sheet(nominalRollData),
-            "Nominal Roll 19 JHR BN",
-          );
-          XLSX.utils.book_append_sheet(
-            workbook,
-            XLSX.utils.json_to_sheet(bankData),
-            "Bank Details",
-          );
+          // Record audit log event for export data action
+          const { logAuditEvent } = await import("@backend/lib/audit-log.server");
+          const { extractClientIp } = await import("@backend/lib/validation.schemas");
+          logAuditEvent({
+            actor: "ANO Officer",
+            action: "export_data",
+            target: "Nominal Roll CSV Export",
+            ip: extractClientIp(request),
+            metadata: { count: enrollments.length },
+          });
 
-          const buffer = XLSX.write(workbook, { type: "array", bookType: "xlsx" });
-
-          return new Response(buffer, {
+          return new Response(csvContent, {
             headers: {
-              "Content-Disposition": 'attachment; filename="NCC_19JHR_BN_Enrollments.xlsx"',
-              "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              "Content-Disposition": 'attachment; filename="NCC_19JHR_BN_Enrollments.csv"',
+              "Content-Type": "text/csv; charset=utf-8",
             },
           });
         } catch {
-          return json({ success: false, error: "Failed to generate Excel sheet." }, 500);
+          return json({ success: false, error: "Failed to generate CSV export." }, 500);
         }
       },
     },
   },
 });
+

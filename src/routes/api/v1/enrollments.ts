@@ -88,42 +88,31 @@ export const Route = createFileRoute("/api/v1/enrollments")({
       },
 
       POST: async ({ request }) => {
-        const data = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+        const { cadetEnrollmentSchema, validateRequestBody } =
+          await import("@backend/lib/validation.schemas");
+        const rawBody = await request.json().catch(() => ({}));
+        const validation = validateRequestBody(
+          cadetEnrollmentSchema,
+          rawBody,
+          "cadet enrollment application",
+        );
 
-        if (!data.fullName || !data.aadhaarNumber || !data.sbuRollNo || !data.mobile) {
+        if (!validation.success) {
           return json(
             {
               success: false,
-              error: "Missing required fields: fullName, aadhaarNumber, sbuRollNo, mobile.",
+              error: validation.error,
               code: "VALIDATION_FAILED",
+              details: validation.issues.map((issue) => ({
+                field: issue.path.join("."),
+                message: issue.message,
+              })),
             },
             400,
           );
         }
 
-        const cleanAadhaar = String(data.aadhaarNumber).replace(/\D/g, "");
-        if (cleanAadhaar.length !== 12) {
-          return json(
-            {
-              success: false,
-              error: "Aadhaar number must be exactly 12 numeric digits.",
-              code: "VALIDATION_FAILED",
-            },
-            400,
-          );
-        }
-
-        const cleanMobile = String(data.mobile).replace(/\D/g, "");
-        if (cleanMobile.length !== 10) {
-          return json(
-            {
-              success: false,
-              error: "Mobile number must be exactly 10 numeric digits.",
-              code: "VALIDATION_FAILED",
-            },
-            400,
-          );
-        }
+        const data = validation.data;
 
         try {
           const admin = await getAdmin();
@@ -135,12 +124,25 @@ export const Route = createFileRoute("/api/v1/enrollments")({
 
           if (error) throw error;
 
+          const mapped = mapToCadetRecord(inserted);
+
+          // Enqueue application acknowledgement email
+          const { queueEmailJob } = await import("@backend/services/queue/queue.service");
+          if (mapped.email) {
+            await queueEmailJob("sendApplicationAcknowledgement", mapped.email, {
+              recipient: mapped.email,
+              applicantName: mapped.fullName,
+              applicationId: mapped.id,
+              submissionDate: mapped.applicationDate || new Date().toISOString().split("T")[0],
+            });
+          }
+
           return json(
             {
               success: true,
               message:
                 "NCC Enrollment Application submitted successfully to 19 Jharkhand Battalion, Ranchi.",
-              data: { enrollment: mapToCadetRecord(inserted) },
+              data: { enrollment: mapped },
             },
             201,
           );

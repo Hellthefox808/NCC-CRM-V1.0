@@ -61,6 +61,27 @@ export function logAuditEvent(event: AuditEvent): void {
   });
 }
 
+export async function recordAuditLog(params: {
+  actorId?: string;
+  actor?: string;
+  action: string;
+  target: string;
+  details?: string;
+  metadata?: Record<string, unknown>;
+  ip?: string;
+}): Promise<void> {
+  logAuditEvent({
+    actor: params.actorId || params.actor || "system",
+    action: params.action as AuditAction,
+    target: params.target,
+    ip: params.ip,
+    metadata: {
+      ...(params.details ? { details: params.details } : {}),
+      ...(params.metadata || {}),
+    },
+  });
+}
+
 async function persistAuditEvent(event: AuditEvent, timestamp: string): Promise<void> {
   try {
     const admin = await getAdmin();
@@ -71,7 +92,7 @@ async function persistAuditEvent(event: AuditEvent, timestamp: string): Promise<
       ip: event.ip || "unknown",
       metadata: event.metadata ? JSON.stringify(event.metadata) : null,
       created_at: timestamp,
-    } as any);
+    });
   } catch {
     // Silently fail — audit logging must never break the application.
     // The structured console log above ensures the event is always recorded somewhere.

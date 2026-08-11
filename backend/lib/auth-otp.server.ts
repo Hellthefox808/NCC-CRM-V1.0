@@ -1,11 +1,4 @@
-/**
- * One-time password (OTP) issuing / verification for the portal's
- * "forgot password" flow, plus portal password storage.
- *
- * Codes are never stored in plain text: only a SHA-256 hash of
- * `code:identifier` is persisted, so a database read cannot reveal a live code.
- */
-
+import crypto from "node:crypto";
 import { getAdmin } from "@backend/lib/ncc-db";
 
 export const OTP_TTL_MINUTES = 10;
@@ -24,8 +17,36 @@ async function sha256(value: string): Promise<string> {
 export const hashCode = (code: string, identifier: string) =>
   sha256(`${code}:${identifier.trim().toLowerCase()}`);
 
-export const hashPassword = (password: string, identifier: string) =>
-  sha256(`ncc-portal:${identifier.trim().toLowerCase()}:${password}`);
+export async function hashPassword(password: string, _identifier?: string): Promise<string> {
+  const salt = crypto.randomBytes(16).toString("hex");
+  const derived = crypto.scryptSync(password, salt, 64, { N: 16384, r: 8, p: 1 }).toString("hex");
+  return `scrypt$N=16384,r=8,p=1$${salt}$${derived}`;
+}
+
+export async function verifyPasswordHash(
+  password: string,
+  storedHash: string,
+  identifier?: string,
+): Promise<boolean> {
+  if (!storedHash) return false;
+  if (storedHash.startsWith("scrypt$")) {
+    const parts = storedHash.split("$");
+    if (parts.length < 4) return false;
+    const salt = parts[2];
+    const originalHash = parts[3];
+    const derived = crypto.scryptSync(password, salt, 64, { N: 16384, r: 8, p: 1 }).toString("hex");
+    try {
+      return crypto.timingSafeEqual(Buffer.from(derived, "hex"), Buffer.from(originalHash, "hex"));
+    } catch {
+      return false;
+    }
+  }
+  // Backward compatibility check for legacy SHA-256 hashes during migration
+  const legacyHash = await sha256(
+    `ncc-portal:${(identifier || "").trim().toLowerCase()}:${password}`,
+  );
+  return legacyHash === storedHash;
+}
 
 export function generateOtp(): string {
   const n = crypto.getRandomValues(new Uint32Array(1))[0] % 1_000_000;
@@ -167,7 +188,7 @@ export async function setPortalPassword(identifier: string, password: string) {
 
 /**
  * Returns true/false when a stored password exists for the identifier,
- * or null when the account has never set one (legacy sign-in path applies).
+ * or null when the account has never set one.
  */
 export async function checkPortalPassword(
   identifier: string,
@@ -181,5 +202,5 @@ export async function checkPortalPassword(
     .eq("identifier", key)
     .maybeSingle();
   if (!data) return null;
-  return (await hashPassword(password, key)) === (data as any).password_hash;
+  return verifyPasswordHash(password, (data as any).password_hash, key);
 }

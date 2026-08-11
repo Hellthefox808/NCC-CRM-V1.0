@@ -1,25 +1,25 @@
 /**
- * In-memory sliding window rate limiter for the NCC portal.
+ * Hybrid Rate Limiter for the 19 JHR BN NCC Portal.
  *
- * Provides brute-force protection for login, OTP, and other
- * abuse-sensitive endpoints without requiring an external store.
- *
- * IMPORTANT: This works per-process. In a multi-instance deployment,
- * upgrade to a shared store (Redis / Supabase row) for global limits.
+ * Supports both:
+ * 1. Synchronous sliding window in-memory rate limiting (zero latency overhead)
+ * 2. Asynchronous distributed rate limiting via Redis (TCP or Upstash REST)
  */
+
+import { redisRateLimit, redisDel } from "./redis.server";
 
 interface RateLimitEntry {
   timestamps: number[];
 }
 
-interface RateLimitOptions {
+export interface RateLimitOptions {
   /** Maximum number of attempts allowed within the window. */
   maxAttempts: number;
   /** Time window in milliseconds. */
   windowMs: number;
 }
 
-interface RateLimitResult {
+export interface RateLimitResult {
   allowed: boolean;
   remaining: number;
   retryAfterMs: number;
@@ -44,10 +44,7 @@ function pruneIfNeeded(windowMs: number) {
 }
 
 /**
- * Checks and records an attempt against the sliding window for `key`.
- *
- * Returns `{ allowed: true }` if the attempt is within limits,
- * or `{ allowed: false, retryAfterMs }` if the rate limit is exceeded.
+ * Checks and records an attempt against the sliding window for `key` in memory.
  */
 export function checkRateLimit(key: string, options: RateLimitOptions): RateLimitResult {
   const { maxAttempts, windowMs } = options;
@@ -82,7 +79,35 @@ export function checkRateLimit(key: string, options: RateLimitOptions): RateLimi
   };
 }
 
+/**
+ * Distributed rate limiter using Redis if available, with in-memory fallback.
+ */
+export async function checkRateLimitAsync(
+  key: string,
+  options: RateLimitOptions,
+): Promise<RateLimitResult> {
+  const windowSeconds = Math.ceil(options.windowMs / 1000) || 1;
+
+  try {
+    const redisResult = await redisRateLimit(key, options.maxAttempts, windowSeconds);
+    return {
+      allowed: redisResult.allowed,
+      remaining: redisResult.remaining,
+      retryAfterMs: redisResult.retryAfterSeconds * 1000,
+    };
+  } catch (err) {
+    console.warn("[RateLimiter Async Warning] Falling back to in-memory limiter:", err);
+    return checkRateLimit(key, options);
+  }
+}
+
 /** Resets the rate limit counter for a specific key (e.g., after successful login). */
 export function resetRateLimit(key: string): void {
   store.delete(key);
+}
+
+/** Asynchronously resets the rate limit counter in Redis and in memory. */
+export async function resetRateLimitAsync(key: string): Promise<void> {
+  store.delete(key);
+  await redisDel(key).catch(() => {});
 }

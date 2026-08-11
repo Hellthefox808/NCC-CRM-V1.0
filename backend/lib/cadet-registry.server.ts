@@ -15,7 +15,12 @@ export interface AdminGate {
 
 export function bearer(request: Request): string | null {
   const header = request.headers.get("authorization") || "";
-  return header.toLowerCase().startsWith("bearer ") ? header.slice(7).trim() : null;
+  if (header.toLowerCase().startsWith("bearer ")) {
+    return header.slice(7).trim();
+  }
+  const cookieHeader = request.headers.get("cookie") || "";
+  const match = cookieHeader.match(/(?:^|;\s*)ncc_session=([^;]+)/);
+  return match ? match[1] : null;
 }
 
 /** Validates the portal session token and requires the officer (admin) role. */

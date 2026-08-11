@@ -1,6 +1,23 @@
 version: "3.8"
 
 services:
+  # Redis caching & distributed rate-limiting service
+  redis:
+    image: redis:7-alpine
+    container_name: ncc_redis
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel notice
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # NCC Command Centre Web Application (TanStack Start / Nitro SSR)
   ncc-app:
     build:
       context: .
@@ -11,8 +28,12 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - REDIS_URL=redis://redis:6379
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+    depends_on:
+      redis:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test:
@@ -28,3 +49,7 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+
+volumes:
+  redis_data:
+    driver: local

@@ -81,8 +81,8 @@ export function buildEnrollmentRow(data: any) {
     email: data.email || `${data.aadhaarNumber}@sbu.ac.in`,
     blood_group: data.bloodGroup || "O+",
     identification_mark: data.identificationMark || "NIL",
-    status: "Submitted",
-    officer_remarks: "Online application submitted successfully.",
+    status: "PENDING_ANO_REVIEW",
+    officer_remarks: "Application received and pending ANO review.",
     sbu_course: data.sbuCourse || "Unknown",
     sbu_department: data.sbuDepartment || "Sarala Birla University",
     sbu_roll_no: data.sbuRollNo,
@@ -133,23 +133,29 @@ export function json(body: unknown, status = 200, headers: Record<string, string
 
 export function bearerToken(request: Request): string | null {
   const header = request.headers.get("authorization");
-  return header && header.startsWith("Bearer ") ? header.substring(7) : null;
+  if (header && header.startsWith("Bearer ")) {
+    return header.substring(7);
+  }
+  const cookieHeader = request.headers.get("cookie");
+  if (cookieHeader) {
+    const match = cookieHeader.match(/(?:^|;\s*)ncc_session=([^;]+)/);
+    if (match) return match[1];
+  }
+  return null;
 }
 
-/** Masks sensitive identifiers (Aadhaar, bank account numbers) for public tracking responses. */
+/** Returns a strictly minimized record for public tracking, stripping all PII. */
 export function maskPublicRecord(record: ReturnType<typeof mapToCadetRecord>) {
-  const mask = (val?: string) => {
-    if (!val) return "";
-    const clean = val.replace(/\s+/g, "");
-    if (clean.length <= 4) return clean;
-    return `${"•".repeat(Math.min(8, clean.length - 4))}${clean.slice(-4)}`;
-  };
-
   return {
-    ...record,
-    aadhaarNumber: mask(record.aadhaarNumber),
-    accountNumber: mask(record.accountNumber),
-    ifscCode: record.ifscCode ? `${record.ifscCode.slice(0, 4)}••••••` : "",
+    id: record.id,
+    fullName: record.fullName,
+    enrollmentNo: record.enrollmentNo || undefined,
+    status: record.status,
+    applicationDate: record.applicationDate,
+    officerRemarks: record.officerRemarks || undefined,
+    selectionRank: record.selectionRank ?? undefined,
+    sbuCourse: record.sbuCourse || "",
+    sbuDepartment: record.sbuDepartment || "",
   };
 }
 

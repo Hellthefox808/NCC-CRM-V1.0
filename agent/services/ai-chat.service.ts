@@ -119,26 +119,41 @@ For enrollment applications, physical fitness benchmarks, camp details, or certi
 
 export async function handleAiChatRequest(request: Request) {
   const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
-  const message = typeof body.message === "string" ? body.message.trim() : "";
+  const rawMessage = typeof body.message === "string" ? body.message.trim() : "";
   const history = Array.isArray(body.history)
     ? (body.history as Array<{ role: "user" | "assistant"; content: string }>)
     : [];
   const lowLatency = Boolean(body.lowLatency);
   const thinkingMode = body.thinkingMode !== false;
 
-  if (!message) {
+  if (!rawMessage) {
     return json({ success: false, error: "Message prompt is required." }, 400);
   }
 
-  // Rate Limiting Protection (Max 15 requests per minute per IP)
+  // Maximum Prompt Length Ceiling (1000 characters)
+  if (rawMessage.length > 1000) {
+    return json(
+      {
+        success: false,
+        error: "Message prompt exceeds maximum length of 1000 characters.",
+        code: "PROMPT_TOO_LONG",
+      },
+      400,
+    );
+  }
+
+  const message = rawMessage;
+
+  // Rate Limiting Protection (Max 10 requests per minute per IP)
   const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
   const { checkRateLimit } = await import("@backend/lib/rate-limiter.server");
-  const rateCheck = checkRateLimit(`ai_chat:${clientIp}`, { maxAttempts: 15, windowMs: 60000 });
+  const rateCheck = checkRateLimit(`ai_chat:${clientIp}`, { maxAttempts: 10, windowMs: 60000 });
   if (!rateCheck.allowed) {
     return json(
       {
         success: false,
         error: `Rate limit exceeded. Please wait ${Math.ceil(rateCheck.retryAfterMs / 1000)} seconds before asking again.`,
+        code: "RATE_LIMIT_EXCEEDED",
       },
       429,
     );

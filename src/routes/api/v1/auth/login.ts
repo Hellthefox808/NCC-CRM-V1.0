@@ -1,41 +1,72 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getAdmin, json } from "@backend/lib/ncc-db";
+import {
+  loginRequestSchema,
+  validateRequestBody,
+  extractClientIp,
+} from "@backend/lib/validation.schemas";
 
 export const Route = createFileRoute("/api/v1/auth/login")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
-        const { userType, username, password, email } = body as Record<string, string | undefined>;
+        // Parse and validate request body with comprehensive schema validation
+        const rawBody = await request.json().catch(() => ({}));
+        const validation = validateRequestBody(loginRequestSchema, rawBody, "login request");
 
-        if (!userType || (!username && !email) || !password) {
+        if (!validation.success) {
           return json(
             {
               success: false,
-              error: "Invalid request payload. Credentials required.",
+              error: validation.error,
               code: "AUTH_VALIDATION_FAILED",
+              details: validation.issues.map((issue) => ({
+                field: issue.path.join("."),
+                message: issue.message,
+              })),
             },
             400,
           );
         }
 
+        const { userType, username, email, password } = validation.data;
+
+        // Normalize identifier for consistent processing
         const identifier = String(username || email || "")
           .trim()
           .toLowerCase();
 
+        // Extract and validate client IP for rate limiting and audit logging
+        const clientIp = extractClientIp(request);
+
         // ── Rate Limiting ──────────────────────────────────────────────
         const { checkRateLimit } = await import("@backend/lib/rate-limiter.server");
-        const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
         const rl = checkRateLimit(`login:${clientIp}:${identifier}`, {
           maxAttempts: 5,
-          windowMs: 15 * 60 * 1000,
+          windowMs: 15 * 60 * 1000, // 15 minutes
         });
+
         if (!rl.allowed) {
+          // Log rate limit violation for security monitoring
+          const { logAuditEvent } = await import("@backend/lib/audit-log.server");
+          logAuditEvent({
+            actor: identifier,
+            action: "login_failure",
+            target: userType,
+            ip: clientIp,
+            metadata: {
+              reason: "rate_limit_exceeded",
+              attempts: rl.remaining,
+              retryAfter: Math.ceil(rl.retryAfterMs / 1000),
+            },
+          });
+
           return json(
             {
               success: false,
               error: "Too many login attempts. Please try again later.",
               code: "RATE_LIMIT_EXCEEDED",
+              retryAfter: Math.ceil(rl.retryAfterMs / 1000),
             },
             429,
           );
@@ -83,37 +114,29 @@ export const Route = createFileRoute("/api/v1/auth/login")({
           }
         } else if (userType === "cadet") {
           if (storedMatch === true) {
-            // Cadet with a stored password — verified.
+            // Cadet with a verified stored password.
             authenticated = true;
             userName = username || email || "SBU Cadet";
             role = "cadet";
           } else if (storedMatch === null) {
-            // First-time cadet login: no stored password yet.
-            // Allowed only if the identifier matches a registered cadet record
-            // and the submitted password meets minimum length.
-            if (String(password).length >= 6) {
-              const { findCadetByIdentifier } = await import("@backend/lib/cadet-registry.server");
-              const foundCadet = await findCadetByIdentifier(identifier);
-              if (foundCadet) {
-                authenticated = true;
-                userName = (foundCadet["full_name"] as string) || username || email || "SBU Cadet";
-                role = "cadet";
-                cadetRecord = foundCadet;
-                cadetEnrollmentId = (foundCadet["enrollment_id"] as string) || null;
-                userEmail = (foundCadet["email"] as string) || userEmail;
-              }
-            }
-          }
-
-          // Link session to cadet record if not already resolved
-          if (authenticated && !cadetRecord) {
-            const { findCadetByIdentifier } = await import("@backend/lib/cadet-registry.server");
-            cadetRecord = await findCadetByIdentifier(identifier);
-            if (cadetRecord) {
-              cadetEnrollmentId = (cadetRecord["enrollment_id"] as string) || null;
-              userName = (cadetRecord["full_name"] as string) || userName;
-              userEmail = (cadetRecord["email"] as string) || userEmail;
-            }
+            // Unactivated account — require activation / password setup via OTP first.
+            const { logAuditEvent } = await import("@backend/lib/audit-log.server");
+            logAuditEvent({
+              actor: identifier,
+              action: "login_failure",
+              target: "cadet",
+              ip: clientIp,
+              metadata: { reason: "account_not_activated" },
+            });
+            return json(
+              {
+                success: false,
+                error:
+                  "Account not activated. Please use 'Forgot Password / Activate Account' to set up your password.",
+                code: "ACCOUNT_NOT_ACTIVATED",
+              },
+              401,
+            );
           }
         }
 

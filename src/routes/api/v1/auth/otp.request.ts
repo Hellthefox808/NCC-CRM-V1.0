@@ -1,31 +1,41 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { json } from "@backend/lib/ncc-db";
+import {
+  otpRequestSchema,
+  validateRequestBody,
+  extractClientIp,
+} from "@backend/lib/validation.schemas";
 
 /**
  * POST /api/v1/auth/otp/request
  * Issues a 6-digit one-time code for the "forgot password" flow.
- *
- * The response never reveals whether an account exists (no enumeration): an
- * unknown identifier gets the same generic acknowledgement.
+ * Enhanced with comprehensive input validation and security monitoring.
  */
 export const Route = createFileRoute("/api/v1/auth/otp/request")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
-        const identifier = String(body.identifier || "").trim();
-        const userType = body.userType === "admin" ? "admin" : "cadet";
+        // Validate request body with Zod schema
+        const rawBody = await request.json().catch(() => ({}));
+        const validation = validateRequestBody(otpRequestSchema, rawBody, "OTP request");
 
-        if (!identifier) {
+        if (!validation.success) {
           return json(
             {
               success: false,
-              error: "Enter your SBU Roll No, regimental number, email or mobile.",
+              error: validation.error,
               code: "OTP_VALIDATION_FAILED",
+              details: validation.issues.map((issue) => ({
+                field: issue.path.join("."),
+                message: issue.message,
+              })),
             },
             400,
           );
         }
+
+        const { identifier, userType } = validation.data;
+        const clientIp = extractClientIp(request);
 
         const { issueOtp, maskDestination, OTP_TTL_MINUTES } =
           await import("@backend/lib/auth-otp.server");
@@ -75,18 +85,25 @@ export const Route = createFileRoute("/api/v1/auth/otp/request")({
             );
           }
 
+          // Enqueue OTP email job asynchronously
+          if (destination.includes("@")) {
+            const { queueEmailJob } = await import("@backend/services/queue/queue.service");
+            await queueEmailJob("sendOtp", destination, {
+              recipientName: identifier,
+              otpCode: issued.code,
+              ttlMinutes: OTP_TTL_MINUTES,
+            });
+          }
+
           return json({
             success: true,
-            message: `Verification code issued for ${maskDestination(destination)}.`,
+            message: `Verification code issued for ${maskDestination(destination)}. Please check your email.`,
             data: {
               issued: true,
               destination: maskDestination(destination),
               expiresAt: issued.expiresAt,
               ttlMinutes: OTP_TTL_MINUTES,
-              // Email/SMS dispatch is not provisioned for this unit yet, so the
-              // code is returned to the requesting screen instead.
-              delivery: "onscreen",
-              code: issued.code,
+              delivery: destination.includes("@") ? "email" : "sms",
             },
           });
         } catch {

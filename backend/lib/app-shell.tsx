@@ -35,39 +35,30 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
   const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
   const [printableRecord, setPrintableRecord] = useState<CadetRecord | null>(null);
 
-  // Restore the session after hydration (sessionStorage is browser-only).
+  // Verify session via HttpOnly cookie upon mount.
   useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem(SESSION_KEY);
-      if (raw && EnterpriseDataPlatform.getAuthToken()) {
-        const parsed = JSON.parse(raw);
-        setCurrentUserType(parsed.userType);
-        setCurrentUser(parsed.user ?? null);
-      }
-    } catch {
-      /* ignore malformed session payloads */
-    }
+    fetch("/api/v1/auth/me")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((payload) => {
+        if (payload?.success && payload?.data) {
+          setCurrentUserType(payload.data.userType);
+          setCurrentUser(payload.data.user);
+        }
+      })
+      .catch(() => {
+        /* unauthenticated */
+      });
   }, []);
 
   const signIn = useCallback((type: UserType, user: any) => {
     setCurrentUserType(type);
     setCurrentUser(user ?? null);
-    try {
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify({ userType: type, user }));
-    } catch {
-      /* storage unavailable */
-    }
   }, []);
 
   const signOut = useCallback(async () => {
     await EnterpriseDataPlatform.logout();
     setCurrentUserType(null);
     setCurrentUser(null);
-    try {
-      sessionStorage.removeItem(SESSION_KEY);
-    } catch {
-      /* storage unavailable */
-    }
   }, []);
 
   const value = useMemo<AppShellValue>(

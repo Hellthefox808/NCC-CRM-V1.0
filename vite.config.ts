@@ -8,7 +8,7 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import path from "path";
 
 const rootDir =
-  typeof import.meta !== "undefined" && import.meta.dirname ? import.meta.dirname : __dirname;
+  typeof import.meta !== "undefined" && import.meta.dirname ? import.meta.dirname : process.cwd();
 
 export default defineConfig({
   tanstackStart: {
@@ -17,6 +17,9 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
+    ssr: {
+      noExternal: ["lucide-react"],
+    },
     resolve: {
       alias: {
         "@frontend": path.resolve(rootDir, "./frontend"),
