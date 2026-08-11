@@ -1,6 +1,6 @@
-import { getAdmin } from "@backend/lib/ncc-db";
-import { queueEmailJob } from "@backend/services/queue/queue.service";
-import { emitNotification, emitCalendarUpdate } from "@backend/services/socket/socket.server";
+import { getAdmin } from "../../lib/ncc-db.ts";
+import { queueEmailJob } from "../queue/queue.service.ts";
+import { emitNotification, emitCalendarUpdate } from "../socket/socket.server.ts";
 
 export interface ReminderDispatcherPayload {
   reminderId: string;

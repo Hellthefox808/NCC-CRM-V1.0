@@ -1,5 +1,5 @@
-import { getAdmin } from "@backend/lib/ncc-db";
-import { dispatchReminder } from "./reminder.dispatcher";
+import { getAdmin } from "../../lib/ncc-db.ts";
+import { dispatchReminder } from "./reminder.dispatcher.ts";
 
 let schedulerTimer: ReturnType<typeof setInterval> | null = null;
 

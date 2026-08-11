@@ -7,14 +7,14 @@
  */
 
 import crypto from "crypto";
-import { getAdmin } from "@backend/lib/ncc-db";
+import { getAdmin } from "../../lib/ncc-db.ts";
 import {
   generateStorageToken,
   hashStorageToken,
   generateOpaqueObjectId,
   ALLOWED_MIME_TYPES,
   validateMagicBytes,
-} from "./storage.tokens";
+} from "./storage.tokens.ts";
 
 export type ResourceType =
   "APPLICATION_DOCUMENT" | "CADET_PHOTO" | "ACTIVITY_MEDIA" | "CERTIFICATE";

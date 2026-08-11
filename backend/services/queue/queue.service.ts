@@ -1,5 +1,5 @@
-import { getAdmin } from "@backend/lib/ncc-db";
-import { mailer } from "@backend/services/mail/mailer";
+import { getAdmin } from "../../lib/ncc-db.ts";
+import { mailer } from "../mail/mailer.ts";
 
 export interface QueueJobPayload {
   jobType: string;
