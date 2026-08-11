@@ -1,5 +1,5 @@
 import { getAdmin } from "@backend/lib/ncc-db";
-import { DEFAULT_REMINDER_RULES, calculateScheduledTime } from "./reminder.rules";
+import { DEFAULT_REMINDER_RULES, calculateScheduledTime } from "./reminder.rules.ts";
 
 export class PrompterEngineService {
   /** Create default scheduled reminder entries for a newly created calendar event. */

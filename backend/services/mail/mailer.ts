@@ -19,7 +19,7 @@ import {
   SendImportantNoticePayload,
   SendAttendanceAlertPayload,
   SendPasswordResetPayload,
-} from "./types";
+} from "./types.ts";
 import {
   renderOtpEmail,
   renderWelcomeEmail,
@@ -37,7 +37,7 @@ import {
   renderImportantNoticeEmail,
   renderAttendanceAlertEmail,
   renderPasswordResetEmail,
-} from "./templates";
+} from "./templates.ts";
 
 class MailerService {
   private transporter: Transporter | null = null;

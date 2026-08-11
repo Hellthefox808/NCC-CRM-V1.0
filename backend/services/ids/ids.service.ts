@@ -6,7 +6,7 @@
  */
 
 import { getAdmin } from "@backend/lib/ncc-db";
-import { IDS_RULES, getAlertLevelForScore } from "./ids.rules";
+import { IDS_RULES, getAlertLevelForScore } from "./ids.rules.ts";
 
 export interface RecordSecurityEventParams {
   eventType: string;
