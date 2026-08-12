@@ -127,9 +127,8 @@ export const Route = createFileRoute("/api/v1/enrollments")({
           const mapped = mapToCadetRecord(inserted);
 
           // Multi-Channel Dispatch: Email + WhatsApp + SMS with 18-digit Application Number
-          const { sendMultiChannelApplicationConfirmation } = await import(
-            "@backend/services/messaging/multichannel.service"
-          );
+          const { sendMultiChannelApplicationConfirmation } =
+            await import("@backend/services/messaging/multichannel.service");
           const dispatchResult = await sendMultiChannelApplicationConfirmation({
             applicationId: mapped.id,
             fullName: mapped.fullName,

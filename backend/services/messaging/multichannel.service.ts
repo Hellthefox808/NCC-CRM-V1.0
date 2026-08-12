@@ -41,7 +41,11 @@ export async function sendMultiChannelApplicationConfirmation(
   const trackingUrl = `https://ncc.sbu.ac.in/?track=${payload.applicationId}`;
 
   // 1. Email Dispatch
-  let emailResult = { success: false, messageId: undefined as string | undefined, error: undefined as string | undefined };
+  let emailResult = {
+    success: false,
+    messageId: undefined as string | undefined,
+    error: undefined as string | undefined,
+  };
   try {
     const res = await mailer.sendApplicationAcknowledgement({
       recipient: payload.email,

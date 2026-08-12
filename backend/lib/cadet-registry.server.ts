@@ -160,6 +160,9 @@ export async function findCadetByIdentifier(identifier: string) {
 export interface CadetGate extends AdminGate {
   enrollmentId?: string | null;
   role?: string;
+  session?: {
+    cadetId?: string;
+  };
 }
 
 /** Validates the portal session token for a cadet (officers may also read a record). */
@@ -178,11 +181,16 @@ export async function requireCadetSession(request: Request): Promise<CadetGate> 
   if (Date.now() > new Date(session.expires_at).getTime()) {
     return { ok: false, status: 401, error: "Session expired." };
   }
+  const cadetEnrollmentId =
+    (session as unknown as Record<string, string | null>).cadet_enrollment_id ?? null;
   return {
     ok: true,
     status: 200,
     role: session.role,
-    enrollmentId: (session as any).cadet_enrollment_id ?? null,
+    enrollmentId: cadetEnrollmentId,
+    session: {
+      cadetId: cadetEnrollmentId ?? undefined,
+    },
   };
 }
 

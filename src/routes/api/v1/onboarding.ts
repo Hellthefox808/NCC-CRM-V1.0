@@ -2,6 +2,24 @@ import { createFileRoute } from "@tanstack/react-router";
 import { getAdmin, json } from "@backend/lib/ncc-db";
 import { requireCadetSession } from "@backend/lib/cadet-registry.server";
 
+interface CadetUserRecord {
+  id: string;
+  cadet_id: string;
+  email: string;
+  account_status: string;
+}
+
+interface OnboardingProgressRecord {
+  user_id: string;
+  profile_completed: boolean;
+  contact_verified: boolean;
+  documents_verified: boolean;
+  declaration_accepted: boolean;
+  orientation_completed: boolean;
+  onboarding_completed: boolean;
+  updated_at: string;
+}
+
 export const Route = createFileRoute("/api/v1/onboarding")({
   server: {
     handlers: {
@@ -11,9 +29,24 @@ export const Route = createFileRoute("/api/v1/onboarding")({
 
         try {
           const admin = await getAdmin();
+          const db = admin as unknown as {
+            from: (table: string) => {
+              select: (cols: string) => {
+                or: (clause: string) => {
+                  maybeSingle: () => Promise<{ data: CadetUserRecord | null }>;
+                };
+                eq: (
+                  col: string,
+                  val: string,
+                ) => {
+                  maybeSingle: () => Promise<{ data: OnboardingProgressRecord | null }>;
+                };
+              };
+            };
+          };
 
-          const cadetId = (gate as any).session?.cadetId || "";
-          const { data: user } = await (admin as any)
+          const cadetId = gate.session?.cadetId || gate.enrollmentId || "";
+          const { data: user } = await db
             .from("cadet_users")
             .select("id, cadet_id, email, account_status")
             .or(`cadet_id.eq.${cadetId},email.eq.${cadetId}`)
@@ -39,7 +72,7 @@ export const Route = createFileRoute("/api/v1/onboarding")({
             });
           }
 
-          const { data: progress } = await (admin as any)
+          const { data: progress } = await db
             .from("onboarding_progress")
             .select("*")
             .eq("user_id", userId)
@@ -70,12 +103,11 @@ export const Route = createFileRoute("/api/v1/onboarding")({
               },
             },
           });
-        } catch (err: any) {
+        } catch (err: unknown) {
+          const errorMessage =
+            err instanceof Error ? err.message : "Failed to fetch onboarding progress";
           console.error("[Get Onboarding Error]", err);
-          return json(
-            { success: false, error: err?.message || "Failed to fetch onboarding progress" },
-            500,
-          );
+          return json({ success: false, error: errorMessage }, 500);
         }
       },
     },

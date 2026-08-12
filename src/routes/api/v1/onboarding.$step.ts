@@ -10,6 +10,22 @@ const VALID_STEPS = [
   "orientation_completed",
 ];
 
+interface CadetUserRecord {
+  id: string;
+}
+
+interface OnboardingProgressRecord {
+  user_id: string;
+  profile_completed: boolean;
+  contact_verified: boolean;
+  documents_verified: boolean;
+  declaration_accepted: boolean;
+  orientation_completed: boolean;
+  onboarding_completed: boolean;
+  completed_at?: string | null;
+  updated_at: string;
+}
+
 export const Route = createFileRoute("/api/v1/onboarding/$step")({
   server: {
     handlers: {
@@ -36,8 +52,35 @@ export const Route = createFileRoute("/api/v1/onboarding/$step")({
 
         try {
           const admin = await getAdmin();
-          const cadetId = (gate as any).session?.cadetId || "";
-          const { data: user } = await (admin as any)
+          const db = admin as unknown as {
+            from: (table: string) => {
+              select: (cols: string) => {
+                or: (clause: string) => {
+                  maybeSingle: () => Promise<{ data: CadetUserRecord | null }>;
+                };
+                eq: (
+                  col: string,
+                  val: string,
+                ) => {
+                  maybeSingle: () => Promise<{ data: OnboardingProgressRecord | null }>;
+                };
+              };
+              upsert: (
+                record: Record<string, unknown>,
+                opts: { onConflict: string },
+              ) => {
+                select: (cols: string) => {
+                  single: () => Promise<{
+                    data: OnboardingProgressRecord | null;
+                    error: Error | null;
+                  }>;
+                };
+              };
+            };
+          };
+
+          const cadetId = gate.session?.cadetId || gate.enrollmentId || "";
+          const { data: user } = await db
             .from("cadet_users")
             .select("id")
             .or(`cadet_id.eq.${cadetId},email.eq.${cadetId}`)
@@ -49,13 +92,13 @@ export const Route = createFileRoute("/api/v1/onboarding/$step")({
           }
 
           // Fetch current onboarding record
-          const { data: current } = await (admin as any)
+          const { data: current } = await db
             .from("onboarding_progress")
             .select("*")
             .eq("user_id", userId)
             .maybeSingle();
 
-          const updatedState: Record<string, any> = {
+          const updatedState: Record<string, unknown> = {
             user_id: userId,
             profile_completed: current?.profile_completed ?? false,
             contact_verified: current?.contact_verified ?? true,
@@ -69,18 +112,18 @@ export const Route = createFileRoute("/api/v1/onboarding/$step")({
 
           // Check if all steps are completed
           const allDone =
-            updatedState.profile_completed &&
-            updatedState.contact_verified &&
-            updatedState.documents_verified &&
-            updatedState.declaration_accepted &&
-            updatedState.orientation_completed;
+            Boolean(updatedState.profile_completed) &&
+            Boolean(updatedState.contact_verified) &&
+            Boolean(updatedState.documents_verified) &&
+            Boolean(updatedState.declaration_accepted) &&
+            Boolean(updatedState.orientation_completed);
 
           if (allDone) {
             updatedState.onboarding_completed = true;
             updatedState.completed_at = new Date().toISOString();
           }
 
-          const { data: saved, error } = await (admin as any)
+          const { data: saved, error } = await db
             .from("onboarding_progress")
             .upsert(updatedState, { onConflict: "user_id" })
             .select("*")
@@ -89,11 +132,11 @@ export const Route = createFileRoute("/api/v1/onboarding/$step")({
           if (error) throw error;
 
           const items = [
-            saved.profile_completed,
-            saved.contact_verified,
-            saved.documents_verified,
-            saved.declaration_accepted,
-            saved.orientation_completed,
+            saved?.profile_completed,
+            saved?.contact_verified,
+            saved?.documents_verified,
+            saved?.declaration_accepted,
+            saved?.orientation_completed,
           ];
           const progressPercent = Math.round((items.filter(Boolean).length / items.length) * 100);
 
@@ -103,21 +146,20 @@ export const Route = createFileRoute("/api/v1/onboarding/$step")({
             data: {
               progressPercent,
               checklist: {
-                profileCompleted: saved.profile_completed,
-                contactVerified: saved.contact_verified,
-                documentsVerified: saved.documents_verified,
-                declarationAccepted: saved.declaration_accepted,
-                orientationCompleted: saved.orientation_completed,
-                onboardingCompleted: saved.onboarding_completed,
+                profileCompleted: saved?.profile_completed ?? false,
+                contactVerified: saved?.contact_verified ?? true,
+                documentsVerified: saved?.documents_verified ?? true,
+                declarationAccepted: saved?.declaration_accepted ?? false,
+                orientationCompleted: saved?.orientation_completed ?? false,
+                onboardingCompleted: saved?.onboarding_completed ?? false,
               },
             },
           });
-        } catch (err: any) {
+        } catch (err: unknown) {
+          const errorMessage =
+            err instanceof Error ? err.message : "Failed to update onboarding step";
           console.error("[Update Onboarding Step Error]", err);
-          return json(
-            { success: false, error: err?.message || "Failed to update onboarding step" },
-            500,
-          );
+          return json({ success: false, error: errorMessage }, 500);
         }
       },
     },
