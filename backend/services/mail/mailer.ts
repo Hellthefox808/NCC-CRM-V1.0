@@ -19,6 +19,8 @@ import {
   SendImportantNoticePayload,
   SendAttendanceAlertPayload,
   SendPasswordResetPayload,
+  SendAccountActivationEmailPayload,
+  SendPasswordChangedPayload,
 } from "./types.ts";
 import {
   renderOtpEmail,
@@ -37,6 +39,8 @@ import {
   renderImportantNoticeEmail,
   renderAttendanceAlertEmail,
   renderPasswordResetEmail,
+  renderAccountActivationEmail,
+  renderPasswordChangedNotificationEmail,
 } from "./templates.ts";
 
 class MailerService {
@@ -293,6 +297,30 @@ class MailerService {
     return this.sendMail({
       to: payload.recipient,
       subject: `[19 JHR BN NCC] Password Reset Request`,
+      html,
+      text,
+    });
+  }
+
+  // 17. Send Account Activation
+  public async sendAccountActivation(
+    payload: SendAccountActivationEmailPayload,
+  ): Promise<MailSendResult> {
+    const { html, text } = renderAccountActivationEmail(payload);
+    return this.sendMail({
+      to: payload.recipient,
+      subject: `Welcome to NCC — Your Account Is Ready`,
+      html,
+      text,
+    });
+  }
+
+  // 18. Send Password Changed Alert
+  public async sendPasswordChanged(payload: SendPasswordChangedPayload): Promise<MailSendResult> {
+    const { html, text } = renderPasswordChangedNotificationEmail(payload);
+    return this.sendMail({
+      to: payload.recipient,
+      subject: `[Security Notice] NCC Account Password Changed`,
       html,
       text,
     });

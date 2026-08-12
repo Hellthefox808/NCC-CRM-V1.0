@@ -142,6 +142,22 @@ export interface SendPasswordResetPayload {
   expiresInMinutes: number;
 }
 
+export interface SendAccountActivationEmailPayload {
+  recipient: string;
+  recipientName?: string;
+  username: string;
+  userType: "Applicant / Cadet" | "ANO Officer";
+  activationLink: string;
+  expiresInMinutes: number;
+}
+
+export interface SendPasswordChangedPayload {
+  recipient: string;
+  recipientName?: string;
+  username: string;
+  timestamp: string;
+}
+
 export interface MailSendResult {
   success: boolean;
   messageId?: string;

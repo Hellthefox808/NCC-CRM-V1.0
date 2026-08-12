@@ -42,135 +42,145 @@ export const Route = createFileRoute("/api/v1/auth/set-password")({
         try {
           const tokenHash = crypto.createHash("sha256").update(rawToken).digest("hex");
           const admin = await getAdmin();
+          const now = new Date().toISOString();
 
-          // 1. Fetch & validate token
-          const { data: tokRecord, error: tokErr } = await admin
+          // 1. Try account_activation_tokens table first
+          const { data: tokRecord } = await admin
             .from("account_activation_tokens")
             .select("*")
             .eq("token_hash", tokenHash)
-            .single();
+            .maybeSingle();
 
-          if (tokErr || !tokRecord) {
-            return json(
-              {
-                success: false,
-                error: "Invalid or expired activation link.",
-                code: "INVALID_TOKEN",
-              },
-              400,
-            );
+          let userIdentifier: string = "";
+          let userEmail: string = "";
+          let cadetUserId: string | null = null;
+
+          if (tokRecord) {
+            if (tokRecord.used_at) {
+              return json(
+                { success: false, error: "This activation link has already been used.", code: "TOKEN_ALREADY_USED" },
+                400,
+              );
+            }
+            if (new Date(tokRecord.expires_at) < new Date()) {
+              return json(
+                { success: false, error: "This activation link has expired.", code: "TOKEN_EXPIRED" },
+                400,
+              );
+            }
+
+            const { data: user } = await admin
+              .from("cadet_users")
+              .select("*")
+              .eq("id", tokRecord.user_id)
+              .maybeSingle();
+
+            if (user) {
+              cadetUserId = user.id;
+              userIdentifier = user.cadet_id || user.email;
+              userEmail = user.email;
+            }
+
+            // Mark token as used
+            await admin
+              .from("account_activation_tokens")
+              .update({ used_at: now })
+              .eq("id", tokRecord.id);
+          } else {
+            // 2. Fallback to auth_otp_codes tokens
+            const { consumeActivationToken } = await import("@backend/lib/auth-otp.server");
+            const consumeResult = await consumeActivationToken(rawToken);
+            if (!consumeResult.ok) {
+              return json(
+                {
+                  success: false,
+                  error: consumeResult.error || "Invalid or expired activation link.",
+                  code: consumeResult.code || "INVALID_TOKEN",
+                },
+                400,
+              );
+            }
+            userIdentifier = consumeResult.identifier || "";
           }
 
-          if (tokRecord.used_at) {
-            return json(
-              {
-                success: false,
-                error: "This activation link has already been used.",
-                code: "TOKEN_ALREADY_USED",
-              },
-              400,
-            );
+          if (!userIdentifier) {
+            return json({ success: false, error: "Target user account identifier not found." }, 404);
           }
 
-          if (new Date(tokRecord.expires_at) < new Date()) {
-            return json(
-              { success: false, error: "This activation link has expired.", code: "TOKEN_EXPIRED" },
-              400,
-            );
-          }
+          // Generate salted scrypt hash
+          const saltedHash = await hashPassword(password, userIdentifier);
 
-          // 2. Fetch cadet user
-          const { data: user } = await admin
-            .from("cadet_users")
-            .select("*")
-            .eq("id", tokRecord.user_id)
-            .single();
+          // Update app_credentials
+          const { data: cred } = await admin
+            .from("app_credentials")
+            .select("email, role")
+            .eq("identifier", userIdentifier)
+            .maybeSingle();
 
-          if (!user) {
-            return json({ success: false, error: "Cadet user record not found." }, 404);
-          }
+          userEmail = userEmail || cred?.email || (userIdentifier.includes("@") ? userIdentifier : "");
 
-          // 3. Generate salted scrypt hash
-          const saltedHash = await hashPassword(password, user.email);
-
-          const now = new Date().toISOString();
-
-          // 4. Update cadet_users status to ACTIVE
-          await admin
-            .from("cadet_users")
-            .update({
-              password_hash: saltedHash,
-              account_status: "ACTIVE",
-              activated_at: now,
-              updated_at: now,
-            })
-            .eq("id", user.id);
-
-          // 5. Store credential in app_credentials for standard auth login
           await admin.from("app_credentials").upsert(
             {
-              identifier: user.cadet_id,
-              email: user.email,
+              identifier: userIdentifier,
+              email: userEmail,
               password_hash: saltedHash,
-              role: "CADET",
+              role: cred?.role || "CADET",
               updated_at: now,
             },
             { onConflict: "identifier" },
           );
 
-          // 6. Mark token as used
-          await admin
-            .from("account_activation_tokens")
-            .update({ used_at: now })
-            .eq("id", tokRecord.id);
+          // If linked cadet_users row exists, activate account
+          if (cadetUserId) {
+            await admin
+              .from("cadet_users")
+              .update({
+                password_hash: saltedHash,
+                account_status: "ACTIVE",
+                activated_at: now,
+                updated_at: now,
+              })
+              .eq("id", cadetUserId);
 
-          // 7. Initialize onboarding_progress
-          await admin.from("onboarding_progress").upsert(
-            {
-              user_id: user.id,
-              profile_completed: false,
-              contact_verified: true,
-              documents_verified: true,
-              declaration_accepted: false,
-              orientation_completed: false,
-              onboarding_completed: false,
-              updated_at: now,
-            },
-            { onConflict: "user_id" },
-          );
+            await admin.from("onboarding_progress").upsert(
+              {
+                user_id: cadetUserId,
+                profile_completed: false,
+                contact_verified: true,
+                documents_verified: true,
+                declaration_accepted: false,
+                orientation_completed: false,
+                onboarding_completed: false,
+                updated_at: now,
+              },
+              { onConflict: "user_id" },
+            );
+          }
 
-          // 8. Fetch enrollment record details
-          const { data: app } = await admin
-            .from("cadet_enrollments")
-            .select("full_name")
-            .eq("id", user.application_id)
-            .maybeSingle();
+          // Send confirmation email
+          if (userEmail) {
+            const { mailer } = await import("@backend/services/mail/mailer");
+            await mailer.sendPasswordChanged({
+              recipient: userEmail,
+              username: userIdentifier.toUpperCase(),
+              timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+            });
+          }
 
-          const cadetName = app?.full_name || "Cadet";
-
-          // 9. Enqueue Onboarding Welcome Email
-          await queueEmailJob("sendOnboardingWelcome", user.email, {
-            recipient: user.email,
-            cadetName,
-            cadetId: user.cadet_id,
-            unitName: "19 JHR BN NCC",
-          });
-
-          // 10. Record Audit Log
+          // Audit log
           await admin.from("audit_logs").insert({
-            action: "ACTIVATE_CADET_ACCOUNT",
-            performed_by: user.email,
-            target_id: user.id,
-            details: { cadetId: user.cadet_id },
+            action: "SET_PORTAL_PASSWORD",
+            performed_by: userIdentifier,
+            target_id: userIdentifier,
+            details: { identifier: userIdentifier },
           });
 
           return json({
             success: true,
             message:
-              "Account activated successfully. Your password has been set. You can now log in to the portal.",
+              "Account activated / password set successfully. You can now sign in using your username and password.",
             data: {
-              cadetId: user.cadet_id,
-              email: user.email,
+              identifier: userIdentifier,
               accountStatus: "ACTIVE",
             },
           });

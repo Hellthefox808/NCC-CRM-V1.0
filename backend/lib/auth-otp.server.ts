@@ -204,3 +204,133 @@ export async function checkPortalPassword(
   if (!data) return null;
   return verifyPasswordHash(password, (data as any).password_hash, key);
 }
+
+export interface ActivationTokenResult {
+  rawToken: string;
+  expiresAt: string;
+}
+
+interface TokenRecord {
+  identifier: string;
+  purpose: string;
+  tokenHash: string;
+  destination: string;
+  expiresAt: Date;
+  consumedAt?: Date;
+}
+
+const memoryTokens: TokenRecord[] = [];
+
+/** Issues a high-entropy, single-use activation/reset token. Returns rawToken (only HASH stored). */
+export async function issueActivationToken(
+  identifier: string,
+  destination = "",
+  purpose = "ACCOUNT_ACTIVATION",
+  ttlMinutes = 30,
+): Promise<ActivationTokenResult> {
+  const key = identifier.trim().toLowerCase();
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const tokenHash = await sha256(rawToken);
+  const expiresAt = new Date(Date.now() + ttlMinutes * 60 * 1000);
+
+  try {
+    const admin = await getAdmin();
+    const { error } = await admin.from("auth_otp_codes").insert({
+      identifier: key,
+      purpose,
+      code_hash: tokenHash,
+      destination,
+      expires_at: expiresAt.toISOString(),
+    } as any);
+    if (error) throw error;
+  } catch {
+    // Fallback to in-memory store when Supabase environment is unconfigured
+    memoryTokens.push({
+      identifier: key,
+      purpose,
+      tokenHash,
+      destination,
+      expiresAt,
+    });
+  }
+
+  return { rawToken, expiresAt: expiresAt.toISOString() };
+}
+
+/** Verifies a raw token without consuming it (useful for activation page pre-check). */
+export async function verifyActivationToken(
+  rawToken: string,
+  purpose?: string,
+): Promise<{ ok: boolean; error?: string; identifier?: string; code?: string }> {
+  if (!rawToken || typeof rawToken !== "string") {
+    return { ok: false, error: "Missing or invalid activation token", code: "INVALID_TOKEN" };
+  }
+  const tokenHash = await sha256(rawToken.trim());
+
+  try {
+    const admin = await getAdmin();
+    let query = admin
+      .from("auth_otp_codes")
+      .select("id, identifier, purpose, expires_at, consumed_at")
+      .eq("code_hash", tokenHash)
+      .is("consumed_at", null);
+
+    if (purpose) {
+      query = query.eq("purpose", purpose);
+    }
+
+    const { data: rows, error } = await query.limit(1);
+    if (error) throw error;
+
+    const row = rows?.[0] as any;
+    if (row) {
+      if (new Date(row.expires_at).getTime() < Date.now()) {
+        return { ok: false, error: "This activation link has expired. Request a new link.", code: "TOKEN_EXPIRED" };
+      }
+      return { ok: true, identifier: row.identifier };
+    }
+  } catch {
+    // Fallthrough to memory store check
+  }
+
+  const memRec = memoryTokens.find(
+    (t) => t.tokenHash === tokenHash && (!purpose || t.purpose === purpose) && !t.consumedAt,
+  );
+
+  if (!memRec) {
+    return { ok: false, error: "Invalid or already used activation token.", code: "TOKEN_NOT_FOUND" };
+  }
+
+  if (memRec.expiresAt.getTime() < Date.now()) {
+    return { ok: false, error: "This activation link has expired. Request a new link.", code: "TOKEN_EXPIRED" };
+  }
+
+  return { ok: true, identifier: memRec.identifier };
+}
+
+/** Atomically verifies and consumes a raw activation token. */
+export async function consumeActivationToken(
+  rawToken: string,
+  purpose?: string,
+): Promise<{ ok: boolean; error?: string; identifier?: string; code?: string }> {
+  const check = await verifyActivationToken(rawToken, purpose);
+  if (!check.ok) return check;
+
+  const tokenHash = await sha256(rawToken.trim());
+
+  try {
+    const admin = await getAdmin();
+    await admin
+      .from("auth_otp_codes")
+      .update({ consumed_at: new Date().toISOString() } as any)
+      .eq("code_hash", tokenHash);
+  } catch {
+    const memRec = memoryTokens.find((t) => t.tokenHash === tokenHash);
+    if (memRec) {
+      memRec.consumedAt = new Date();
+    }
+  }
+
+  return { ok: true, identifier: check.identifier };
+}
+

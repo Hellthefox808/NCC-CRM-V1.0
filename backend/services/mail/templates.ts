@@ -15,6 +15,8 @@ import {
   SendImportantNoticePayload,
   SendAttendanceAlertPayload,
   SendPasswordResetPayload,
+  SendAccountActivationEmailPayload,
+  SendPasswordChangedPayload,
 } from "./types";
 
 const HEADER_HTML = `
@@ -357,14 +359,75 @@ export function renderPasswordResetEmail(payload: SendPasswordResetPayload) {
     ${HEADER_HTML}
     <span class="badge badge-gold">Account Security</span>
     <h2>Password Reset Request</h2>
-    <p>Jai Hind ${payload.recipientName},</p>
-    <p>We received a password reset request for your NCC Portal account. Click the button below or use the reset token to update your password:</p>
+    <p>Jai Hind ${payload.recipientName || "Cadet"},</p>
+    <p>We received a password reset request for your NCC Portal account. Click the button below to complete your password reset:</p>
     <div style="text-align: center; margin: 24px 0;">
-      <div class="otp-box" style="font-size: 20px; letter-spacing: 2px;">${payload.resetTokenOrLink}</div>
+      <a href="${payload.resetTokenOrLink}" class="btn" style="background: #0b192c; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 700; display: inline-block;">RESET PASSWORD</a>
     </div>
-    <p style="font-size: 13px; color: #64748b;">This reset token expires in ${payload.expiresInMinutes} minutes. If you did not request this, please notify your unit administrator immediately.</p>
+    <div class="detail-card">
+      <div class="detail-row"><strong>Security Notice:</strong></div>
+      <div class="detail-row">• This link expires in <strong>${payload.expiresInMinutes} minutes</strong>.</div>
+      <div class="detail-row">• The link can be used only once.</div>
+      <div class="detail-row">• Never share your password or reset link with anyone.</div>
+    </div>
+    <p style="font-size: 13px; color: #64748b;">If you did not request a password reset, you can safely ignore this email.</p>
     ${FOOTER_HTML}
   `;
-  const text = `Jai Hind ${payload.recipientName},\nYour password reset code is: ${payload.resetTokenOrLink}\nValid for ${payload.expiresInMinutes} minutes.`;
+  const text = `Jai Hind ${payload.recipientName || "Cadet"},\nUse the link below to reset your NCC password:\n${payload.resetTokenOrLink}\nValid for ${payload.expiresInMinutes} minutes.`;
   return { html, text };
 }
+
+export function renderAccountActivationEmail(payload: SendAccountActivationEmailPayload) {
+  const html = `
+    ${HEADER_HTML}
+    <span class="badge badge-gold">Account Provisioned</span>
+    <h2>Welcome to NCC — Your Account Is Ready</h2>
+    <p>Jai Hind ${payload.recipientName || "Cadet"},</p>
+    <p>Your NCC account has been successfully created and provisioned.</p>
+    <p>You can now complete your account setup and access the NCC Portal.</p>
+    
+    <div class="detail-card">
+      <div style="font-weight: 700; margin-bottom: 8px; color: #0b192c; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Account Details</div>
+      <div class="detail-row"><span class="detail-label">Username:</span> <strong>${payload.username}</strong></div>
+      <div class="detail-row"><span class="detail-label">Account Role:</span> <strong>${payload.userType}</strong></div>
+    </div>
+
+    <div style="text-align: center; margin: 28px 0;">
+      <a href="${payload.activationLink}" class="btn" style="background: #0b192c; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: 700; font-size: 15px; display: inline-block;">SET UP PASSWORD</a>
+    </div>
+
+    <div class="detail-card" style="background: #fff8e6; border-left-color: #d4af37;">
+      <div style="font-weight: 600; color: #856404; margin-bottom: 6px;">For your security:</div>
+      <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #555;">
+        <li>This link is temporary (expires in ${payload.expiresInMinutes} minutes).</li>
+        <li>The link can be used only once.</li>
+        <li>Never share your activation link or password.</li>
+        <li>NCC staff will never ask for your password.</li>
+      </ul>
+    </div>
+
+    <p style="font-size: 13px; color: #64748b; margin-top: 20px;">If you did not expect this email, please contact the NCC administration.</p>
+    <p style="font-size: 13px; color: #0b192c; font-weight: 600; margin-top: 16px;">Regards,<br>NCC Administration<br>19 Jharkhand Battalion NCC</p>
+    ${FOOTER_HTML}
+  `;
+  const text = `Jai Hind ${payload.recipientName || "Cadet"},\nYour NCC account (${payload.username}) has been created.\nSet up your password to activate access:\n${payload.activationLink}\nLink expires in ${payload.expiresInMinutes} minutes.`;
+  return { html, text };
+}
+
+export function renderPasswordChangedNotificationEmail(payload: SendPasswordChangedPayload) {
+  const html = `
+    ${HEADER_HTML}
+    <span class="badge badge-navy">Security Alert</span>
+    <h2>NCC Account Password Changed</h2>
+    <p>Jai Hind ${payload.recipientName || "Cadet"},</p>
+    <p>The password for your NCC Portal account (<strong>${payload.username}</strong>) was successfully updated on <strong>${payload.timestamp}</strong>.</p>
+    <p>All active sessions have been invalidated for security. You must sign in using your new password.</p>
+    <div class="detail-card" style="border-left-color: #991b1b;">
+      <p style="margin: 0; font-size: 13px; color: #991b1b; font-weight: 600;">If you did NOT perform this action, contact the 19 Jharkhand Battalion NCC ANO or Unit Admin immediately.</p>
+    </div>
+    ${FOOTER_HTML}
+  `;
+  const text = `Jai Hind ${payload.recipientName || "Cadet"},\nThe password for your NCC account (${payload.username}) was changed on ${payload.timestamp}. If you did not make this change, contact unit admin immediately.`;
+  return { html, text };
+}
+

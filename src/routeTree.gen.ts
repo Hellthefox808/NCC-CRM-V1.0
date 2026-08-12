@@ -10,10 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ActivateRouteImport } from './routes/activate'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CadetRouteImport } from './routes/cadet'
 import { Route as CadetDatabaseRouteImport } from './routes/cadet-database'
 import { Route as EnrollRouteImport } from './routes/enroll'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NoticesRouteImport } from './routes/notices'
 import { Route as ApiV1ActivitiesRouteImport } from './routes/api/v1/activities'
@@ -31,6 +33,7 @@ import { Route as ApiV1OnboardingRouteImport } from './routes/api/v1/onboarding'
 import { Route as ApiV1PhotosRouteImport } from './routes/api/v1/photos'
 import { Route as ApiV1StaffAttendanceRouteImport } from './routes/api/v1/staff-attendance'
 import { Route as ApiV1AuthActivateRouteImport } from './routes/api/v1/auth/activate'
+import { Route as ApiV1AuthForgotPasswordRouteImport } from './routes/api/v1/auth/forgot-password'
 import { Route as ApiV1AuthLoginRouteImport } from './routes/api/v1/auth/login'
 import { Route as ApiV1AuthLogoutRouteImport } from './routes/api/v1/auth/logout'
 import { Route as ApiV1AuthMeRouteImport } from './routes/api/v1/auth/me'
@@ -55,6 +58,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ActivateRoute = ActivateRouteImport.update({
+  id: '/activate',
+  path: '/activate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -73,6 +81,11 @@ const CadetDatabaseRoute = CadetDatabaseRouteImport.update({
 const EnrollRoute = EnrollRouteImport.update({
   id: '/enroll',
   path: '/enroll',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -158,6 +171,11 @@ const ApiV1StaffAttendanceRoute = ApiV1StaffAttendanceRouteImport.update({
 const ApiV1AuthActivateRoute = ApiV1AuthActivateRouteImport.update({
   id: '/api/v1/auth/activate',
   path: '/api/v1/auth/activate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1AuthForgotPasswordRoute = ApiV1AuthForgotPasswordRouteImport.update({
+  id: '/api/v1/auth/forgot-password',
+  path: '/api/v1/auth/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiV1AuthLoginRoute = ApiV1AuthLoginRouteImport.update({
@@ -259,10 +277,12 @@ const ApiV1AnoApplicationsIdRequestCorrectionRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activate': typeof ActivateRoute
   '/admin': typeof AdminRoute
   '/cadet': typeof CadetRoute
   '/cadet-database': typeof CadetDatabaseRoute
   '/enroll': typeof EnrollRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/notices': typeof NoticesRoute
   '/api/v1/activities': typeof ApiV1ActivitiesRoute
@@ -280,6 +300,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/photos': typeof ApiV1PhotosRoute
   '/api/v1/staff-attendance': typeof ApiV1StaffAttendanceRoute
   '/api/v1/auth/activate': typeof ApiV1AuthActivateRoute
+  '/api/v1/auth/forgot-password': typeof ApiV1AuthForgotPasswordRoute
   '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/logout': typeof ApiV1AuthLogoutRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
@@ -301,10 +322,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activate': typeof ActivateRoute
   '/admin': typeof AdminRoute
   '/cadet': typeof CadetRoute
   '/cadet-database': typeof CadetDatabaseRoute
   '/enroll': typeof EnrollRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/notices': typeof NoticesRoute
   '/api/v1/activities': typeof ApiV1ActivitiesRoute
@@ -322,6 +345,7 @@ export interface FileRoutesByTo {
   '/api/v1/photos': typeof ApiV1PhotosRoute
   '/api/v1/staff-attendance': typeof ApiV1StaffAttendanceRoute
   '/api/v1/auth/activate': typeof ApiV1AuthActivateRoute
+  '/api/v1/auth/forgot-password': typeof ApiV1AuthForgotPasswordRoute
   '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/logout': typeof ApiV1AuthLogoutRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
@@ -344,10 +368,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/activate': typeof ActivateRoute
   '/admin': typeof AdminRoute
   '/cadet': typeof CadetRoute
   '/cadet-database': typeof CadetDatabaseRoute
   '/enroll': typeof EnrollRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/notices': typeof NoticesRoute
   '/api/v1/activities': typeof ApiV1ActivitiesRoute
@@ -365,6 +391,7 @@ export interface FileRoutesById {
   '/api/v1/photos': typeof ApiV1PhotosRoute
   '/api/v1/staff-attendance': typeof ApiV1StaffAttendanceRoute
   '/api/v1/auth/activate': typeof ApiV1AuthActivateRoute
+  '/api/v1/auth/forgot-password': typeof ApiV1AuthForgotPasswordRoute
   '/api/v1/auth/login': typeof ApiV1AuthLoginRoute
   '/api/v1/auth/logout': typeof ApiV1AuthLogoutRoute
   '/api/v1/auth/me': typeof ApiV1AuthMeRoute
@@ -388,10 +415,12 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/activate'
     | '/admin'
     | '/cadet'
     | '/cadet-database'
     | '/enroll'
+    | '/forgot-password'
     | '/login'
     | '/notices'
     | '/api/v1/activities'
@@ -409,6 +438,7 @@ export interface FileRouteTypes {
     | '/api/v1/photos'
     | '/api/v1/staff-attendance'
     | '/api/v1/auth/activate'
+    | '/api/v1/auth/forgot-password'
     | '/api/v1/auth/login'
     | '/api/v1/auth/logout'
     | '/api/v1/auth/me'
@@ -430,10 +460,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/activate'
     | '/admin'
     | '/cadet'
     | '/cadet-database'
     | '/enroll'
+    | '/forgot-password'
     | '/login'
     | '/notices'
     | '/api/v1/activities'
@@ -451,6 +483,7 @@ export interface FileRouteTypes {
     | '/api/v1/photos'
     | '/api/v1/staff-attendance'
     | '/api/v1/auth/activate'
+    | '/api/v1/auth/forgot-password'
     | '/api/v1/auth/login'
     | '/api/v1/auth/logout'
     | '/api/v1/auth/me'
@@ -472,10 +505,12 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/activate'
     | '/admin'
     | '/cadet'
     | '/cadet-database'
     | '/enroll'
+    | '/forgot-password'
     | '/login'
     | '/notices'
     | '/api/v1/activities'
@@ -493,6 +528,7 @@ export interface FileRouteTypes {
     | '/api/v1/photos'
     | '/api/v1/staff-attendance'
     | '/api/v1/auth/activate'
+    | '/api/v1/auth/forgot-password'
     | '/api/v1/auth/login'
     | '/api/v1/auth/logout'
     | '/api/v1/auth/me'
@@ -515,10 +551,12 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActivateRoute: typeof ActivateRoute
   AdminRoute: typeof AdminRoute
   CadetRoute: typeof CadetRoute
   CadetDatabaseRoute: typeof CadetDatabaseRoute
   EnrollRoute: typeof EnrollRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   NoticesRoute: typeof NoticesRoute
   ApiV1ActivitiesRoute: typeof ApiV1ActivitiesRoute
@@ -536,6 +574,7 @@ export interface RootRouteChildren {
   ApiV1PhotosRoute: typeof ApiV1PhotosRoute
   ApiV1StaffAttendanceRoute: typeof ApiV1StaffAttendanceRoute
   ApiV1AuthActivateRoute: typeof ApiV1AuthActivateRoute
+  ApiV1AuthForgotPasswordRoute: typeof ApiV1AuthForgotPasswordRoute
   ApiV1AuthLoginRoute: typeof ApiV1AuthLoginRoute
   ApiV1AuthLogoutRoute: typeof ApiV1AuthLogoutRoute
   ApiV1AuthMeRoute: typeof ApiV1AuthMeRoute
@@ -554,6 +593,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activate': {
+      id: '/activate'
+      path: '/activate'
+      fullPath: '/activate'
+      preLoaderRoute: typeof ActivateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -582,6 +628,13 @@ declare module '@tanstack/react-router' {
       path: '/enroll'
       fullPath: '/enroll'
       preLoaderRoute: typeof EnrollRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -701,6 +754,13 @@ declare module '@tanstack/react-router' {
       path: '/api/v1/auth/activate'
       fullPath: '/api/v1/auth/activate'
       preLoaderRoute: typeof ApiV1AuthActivateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/auth/forgot-password': {
+      id: '/api/v1/auth/forgot-password'
+      path: '/api/v1/auth/forgot-password'
+      fullPath: '/api/v1/auth/forgot-password'
+      preLoaderRoute: typeof ApiV1AuthForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/auth/login': {
@@ -922,10 +982,12 @@ const ApiV1OnboardingRouteWithChildren = ApiV1OnboardingRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActivateRoute: ActivateRoute,
   AdminRoute: AdminRoute,
   CadetRoute: CadetRoute,
   CadetDatabaseRoute: CadetDatabaseRoute,
   EnrollRoute: EnrollRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   NoticesRoute: NoticesRoute,
   ApiV1ActivitiesRoute: ApiV1ActivitiesRoute,
@@ -943,6 +1005,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1PhotosRoute: ApiV1PhotosRoute,
   ApiV1StaffAttendanceRoute: ApiV1StaffAttendanceRoute,
   ApiV1AuthActivateRoute: ApiV1AuthActivateRoute,
+  ApiV1AuthForgotPasswordRoute: ApiV1AuthForgotPasswordRoute,
   ApiV1AuthLoginRoute: ApiV1AuthLoginRoute,
   ApiV1AuthLogoutRoute: ApiV1AuthLogoutRoute,
   ApiV1AuthMeRoute: ApiV1AuthMeRoute,

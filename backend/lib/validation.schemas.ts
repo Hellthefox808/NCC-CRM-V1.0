@@ -80,7 +80,10 @@ const baseLoginObject = z.object({
   }),
   username: z.string().optional(),
   email: emailSchema.optional(),
-  password: z.string().min(8, "Password must be at least 8 characters").max(128, "Password too long"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(128, "Password too long"),
 });
 
 const validateLoginIdentifiers = (
