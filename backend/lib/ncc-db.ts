@@ -67,9 +67,16 @@ export function mapToCadetRecord(row: CadetRow) {
   };
 }
 
+/** Generate 18-digit Application Number (19 Battalion + YYYYMMDD + 8 random digits) */
+export function generate18DigitApplicationNo(): string {
+  const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  const random8 = Math.floor(10000000 + Math.random() * 90000000).toString();
+  return `19${dateStr}${random8}`;
+}
+
 /** Incoming enrollment payload -> DB row. */
 export function buildEnrollmentRow(data: any) {
-  const id = `19JHR-SBU-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`;
+  const id = data.applicationNo || data.applicationId || generate18DigitApplicationNo();
   return {
     id,
     application_date: new Date().toISOString().slice(0, 10),

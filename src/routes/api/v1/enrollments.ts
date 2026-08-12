@@ -126,23 +126,29 @@ export const Route = createFileRoute("/api/v1/enrollments")({
 
           const mapped = mapToCadetRecord(inserted);
 
-          // Enqueue application acknowledgement email
-          const { queueEmailJob } = await import("@backend/services/queue/queue.service");
-          if (mapped.email) {
-            await queueEmailJob("sendApplicationAcknowledgement", mapped.email, {
-              recipient: mapped.email,
-              applicantName: mapped.fullName,
-              applicationId: mapped.id,
-              submissionDate: mapped.applicationDate || new Date().toISOString().split("T")[0],
-            });
-          }
+          // Multi-Channel Dispatch: Email + WhatsApp + SMS with 18-digit Application Number
+          const { sendMultiChannelApplicationConfirmation } = await import(
+            "@backend/services/messaging/multichannel.service"
+          );
+          const dispatchResult = await sendMultiChannelApplicationConfirmation({
+            applicationId: mapped.id,
+            fullName: mapped.fullName,
+            email: mapped.email,
+            mobile: mapped.mobile,
+            sbuCourse: mapped.sbuCourse,
+            submissionDate: mapped.applicationDate || new Date().toISOString().split("T")[0],
+          });
 
           return json(
             {
               success: true,
               message:
-                "NCC Enrollment Application submitted successfully to 19 Jharkhand Battalion, Ranchi.",
-              data: { enrollment: mapped },
+                "NCC Enrollment Application submitted successfully! 18-digit Application Number generated and sent via Email, WhatsApp, and SMS.",
+              data: {
+                enrollment: mapped,
+                applicationNo: mapped.id,
+                dispatches: dispatchResult,
+              },
             },
             201,
           );

@@ -18,7 +18,8 @@ export const Home: React.FC<HomeProps> = ({ openStatusModal, openAiAssistant }) 
     <>
       <HeroSection
         onStartEnrollment={() => navigate("/enroll")}
-        openStatusModal={openStatusModal}
+        openStatusModal={() => openStatusModal()}
+        openStatusModalWithQuery={(q) => openStatusModal(q)}
         onViewNotices={() => navigate("/notices")}
         onOpenOfficerPortal={() => navigate("/admin")}
         openAiAssistant={openAiAssistant}

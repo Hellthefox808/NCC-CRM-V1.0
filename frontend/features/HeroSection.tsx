@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion, type Variants } from "motion/react";
 import {
   Award,
@@ -10,17 +10,24 @@ import {
   Users,
   Star,
   CheckCircle2,
+  Search,
 } from "lucide-react";
 
 interface HeroSectionProps {
   onStartEnrollment: () => void;
   openStatusModal: () => void;
+  openStatusModalWithQuery?: (query: string) => void;
   onViewNotices?: () => void;
   onOpenOfficerPortal?: () => void;
   openAiAssistant?: () => void;
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ onStartEnrollment, openStatusModal }) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({
+  onStartEnrollment,
+  openStatusModal,
+  openStatusModalWithQuery,
+}) => {
+  const [heroAppNoQuery, setHeroAppNoQuery] = useState("");
   const containerVariants: Variants = {
     hidden: { opacity: 0, y: 25 },
     visible: {
@@ -185,12 +192,52 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartEnrollment, ope
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={openStatusModal}
-                className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-[#EFE5D8] hover:bg-[#E8DCCB] border border-[#D6C5B3] text-[#3B281C] font-black text-sm sm:text-base flex items-center justify-center space-x-2.5 backdrop-blur-md cursor-pointer transition-all uppercase tracking-wider shadow-sm"
+                className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-[#EFE5D8] hover:bg-[#E8DCCB] border border-[#D6C5B3] text-[#3B281C] font-black text-sm sm:text-base flex items-center justify-center space-x-2.5 backdrop-blur-md cursor-pointer transition-all uppercase tracking-wider shadow-xs"
                 id="hero-track-status-btn"
               >
                 <Users className="w-5 h-5 text-[#8C5E3C] shrink-0" />
                 <span>Track Application Status</span>
               </motion.button>
+            </motion.div>
+
+            {/* Quick 18-Digit Application Number Search Bar */}
+            <motion.div variants={itemVariants} className="pt-2 max-w-xl mx-auto w-full">
+              <div className="relative flex items-center bg-[#FAF5EF]/90 backdrop-blur-md rounded-2xl border border-[#D6C5B3] p-1.5 shadow-md">
+                <Search className="ml-3.5 w-4 h-4 text-[#8C5E3C] shrink-0" />
+                <input
+                  type="text"
+                  value={heroAppNoQuery}
+                  onChange={(e) => setHeroAppNoQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && heroAppNoQuery.trim()) {
+                      openStatusModalWithQuery
+                        ? openStatusModalWithQuery(heroAppNoQuery.trim())
+                        : openStatusModal();
+                    }
+                  }}
+                  placeholder="Enter 18-digit Application No. (e.g. 192026081298471625)..."
+                  className="w-full bg-transparent pl-3 pr-24 py-2 text-xs sm:text-sm font-bold text-[#3B281C] placeholder-[#8C5E3C]/60 focus:outline-hidden"
+                  id="hero-app-no-search-input"
+                />
+                <button
+                  onClick={() => {
+                    if (heroAppNoQuery.trim()) {
+                      openStatusModalWithQuery
+                        ? openStatusModalWithQuery(heroAppNoQuery.trim())
+                        : openStatusModal();
+                    } else {
+                      openStatusModal();
+                    }
+                  }}
+                  className="absolute right-2 px-4 py-2 rounded-xl bg-[#8C5E3C] hover:bg-[#734B2E] text-[#FAF5EF] text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-xs flex items-center gap-1.5"
+                  id="hero-app-no-search-btn"
+                >
+                  <span>Search</span>
+                </button>
+              </div>
+              <p className="text-[11px] font-bold text-[#8C5E3C] pt-1.5 text-center font-mono">
+                🔍 Track application status instantly using your 18-digit Application Number
+              </p>
             </motion.div>
           </div>
         </motion.div>

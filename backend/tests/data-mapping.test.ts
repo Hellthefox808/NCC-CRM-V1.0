@@ -73,7 +73,7 @@ describe("Data Mapping & Transformation Unit Tests", () => {
 
     const row = buildEnrollmentRow(payload);
 
-    assert.match(row.id, /^19JHR-SBU-\d{4}-\d{3}$/);
+    assert.match(row.id, /^19\d{16}$/);
     assert.equal(row.full_name, "Rohan Kumar");
     assert.equal(row.aadhaar_number, "998877665544");
     assert.equal(row.status, "PENDING_ANO_REVIEW");
