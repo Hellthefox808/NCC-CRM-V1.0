@@ -55,62 +55,65 @@ function maskTail(value: string | null | undefined) {
 }
 
 /** DB row -> API shape. Sensitive identifiers are masked by default. */
-export function mapCadet(row: Record<string, any>, revealSensitive = false) {
-  const address = [row.house_no, row.building, row.area, row.city, row.state, row.pin_code]
+export function mapCadet(row: Record<string, unknown>, revealSensitive = false) {
+  const r = row as Record<string, string | number | boolean | null | undefined>;
+  const address = [r.house_no, r.building, r.area, r.city, r.state, r.pin_code]
     .filter(Boolean)
     .join(", ");
 
   return {
-    id: row.id,
-    enrollmentId: row.enrollment_id,
-    batch: row.batch,
-    rank: row.rank,
-    fullName: row.full_name,
-    gender: row.gender,
-    wing: row.wing,
-    mobile: row.mobile,
-    email: row.email,
-    dob: row.dob,
-    fatherName: row.father_name,
-    motherName: row.mother_name,
-    nationality: row.nationality,
-    institute: row.institute,
-    anoName: row.ano_name,
-    wingType: row.wing_type,
-    groupHq: row.group_hq,
+    id: r.id,
+    enrollmentId: r.enrollment_id,
+    batch: r.batch,
+    rank: r.rank,
+    fullName: r.full_name,
+    gender: r.gender,
+    wing: r.wing,
+    mobile: r.mobile,
+    email: r.email,
+    dob: r.dob,
+    fatherName: r.father_name,
+    motherName: r.mother_name,
+    nationality: r.nationality,
+    institute: r.institute,
+    anoName: r.ano_name,
+    wingType: r.wing_type,
+    groupHq: r.group_hq,
     address: address || null,
-    city: row.city,
-    state: row.state,
-    pinCode: row.pin_code,
-    nearestRailwayStation: row.nearest_railway_station,
-    identificationMark: row.identification_mark,
-    bloodGroup: row.blood_group,
-    medicalComplaint: row.medical_complaint,
-    nokName: row.nok_name,
-    nokRelationship: row.nok_relationship,
-    nokContact: row.nok_contact,
-    nokAddress: row.nok_address,
-    sportsGames: row.sports_games,
-    coCurricular: row.co_curricular,
-    willingMilitaryTraining: row.willing_military_training,
-    willingServeNcc: row.willing_serve_ncc,
-    previouslyApplied: row.previously_applied,
-    sbuId: row.sbu_id,
-    course: row.course,
-    branch: row.branch,
-    semester: row.semester,
-    section: row.section,
-    ifscCode: row.ifsc_code,
-    accountHolderName: row.account_holder_name,
+    city: r.city,
+    state: r.state,
+    pinCode: r.pin_code,
+    nearestRailwayStation: r.nearest_railway_station,
+    identificationMark: r.identification_mark,
+    bloodGroup: r.blood_group,
+    medicalComplaint: r.medical_complaint,
+    nokName: r.nok_name,
+    nokRelationship: r.nok_relationship,
+    nokContact: r.nok_contact,
+    nokAddress: r.nok_address,
+    sportsGames: r.sports_games,
+    coCurricular: r.co_curricular,
+    willingMilitaryTraining: r.willing_military_training,
+    willingServeNcc: r.willing_serve_ncc,
+    previouslyApplied: r.previously_applied,
+    sbuId: r.sbu_id,
+    course: r.course,
+    branch: r.branch,
+    semester: r.semester,
+    section: r.section,
+    ifscCode: r.ifsc_code,
+    accountHolderName: r.account_holder_name,
     bankAccountNumber: revealSensitive
-      ? row.bank_account_number
-      : maskTail(row.bank_account_number),
-    aadhaarNumber: revealSensitive ? row.aadhaar_number : maskTail(row.aadhaar_number),
-    stipendReceived: row.stipend_received,
-    performance: row.performance,
-    behaviour: row.behaviour,
-    participation: row.participation,
-    distinction: row.distinction,
+      ? r.bank_account_number
+      : maskTail(r.bank_account_number as string | null | undefined),
+    aadhaarNumber: revealSensitive
+      ? r.aadhaar_number
+      : maskTail(r.aadhaar_number as string | null | undefined),
+    stipendReceived: r.stipend_received,
+    performance: r.performance,
+    behaviour: r.behaviour,
+    participation: r.participation,
+    distinction: r.distinction,
   };
 }
 
@@ -125,9 +128,12 @@ export function rosterRecords(): RosterRecord[] {
 export async function syncRoster() {
   const admin = await getAdmin();
   const records = rosterRecords();
-  const { error } = await admin
-    .from("cadets")
-    .upsert(records as any, { onConflict: "enrollment_id" });
+  const db = admin as unknown as {
+    from: (table: string) => {
+      upsert: (data: unknown, opts: { onConflict: string }) => Promise<{ error: Error | null }>;
+    };
+  };
+  const { error } = await db.from("cadets").upsert(records, { onConflict: "enrollment_id" });
   if (error) throw error;
   const { count } = await admin.from("cadets").select("id", { count: "exact", head: true });
   return { synced: records.length, total: count ?? records.length };
