@@ -6,9 +6,9 @@ This document tracks all unit, integration, security, and build verification tes
 
 ## 1. Test Suite Summary
 
-- **Total Test Suites**: 8
-- **Total Executed Tests**: 43
-- **Passing Tests**: 43 (100%)
+- **Total Test Suites**: 9
+- **Total Executed Tests**: 47
+- **Passing Tests**: 47 (100%)
 - **Failing / Skipped Tests**: 0
 - **Execution Command**: `npm run test`
 
@@ -66,6 +66,13 @@ This document tracks all unit, integration, security, and build verification tes
 - `maskPublicRecord()`: Verifies PII stripping for public tracking endpoints.
 - `sanitizePostgrestQuery()`: Verifies SQL/filter injection prevention.
 - `bucketTokenisation`: Verifies 256-bit storage tokens and MIME type magic byte checks.
+
+### Suite 9: Multi-Channel Dispatch & 18-Digit Application Number Unit Tests
+
+- `generate18DigitApplicationNo()`: Verifies generation of 18-digit numeric application numbers.
+- `buildEnrollmentRow()`: Verifies assignment of 18-digit application numbers starting with 19.
+- `formatApplicationNo()`: Verifies clean string formatting (`192026-0812-98471625`).
+- `sendMultiChannelApplicationConfirmation()`: Verifies Email, WhatsApp, and SMS dispatches.
 
 ---
 
