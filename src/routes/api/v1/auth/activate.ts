@@ -27,13 +27,21 @@ export const Route = createFileRoute("/api/v1/auth/activate")({
           if (tokRecord) {
             if (tokRecord.used_at) {
               return json(
-                { success: false, error: "This activation link has already been used.", code: "TOKEN_ALREADY_USED" },
+                {
+                  success: false,
+                  error: "This activation link has already been used.",
+                  code: "TOKEN_ALREADY_USED",
+                },
                 400,
               );
             }
             if (new Date(tokRecord.expires_at) < new Date()) {
               return json(
-                { success: false, error: "This activation link has expired.", code: "TOKEN_EXPIRED" },
+                {
+                  success: false,
+                  error: "This activation link has expired.",
+                  code: "TOKEN_EXPIRED",
+                },
                 400,
               );
             }
@@ -90,7 +98,8 @@ export const Route = createFileRoute("/api/v1/auth/activate")({
             .eq("identifier", identifier)
             .maybeSingle();
 
-          const userType = cred?.role === "ANO" || cred?.role === "ADMIN" ? "ANO Officer" : "Applicant / Cadet";
+          const userType =
+            cred?.role === "ANO" || cred?.role === "ADMIN" ? "ANO Officer" : "Applicant / Cadet";
 
           return json({
             success: true,

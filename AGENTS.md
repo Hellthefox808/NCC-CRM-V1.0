@@ -47,4 +47,3 @@ For every phase or feature iteration:
 - Never expose secrets.
 - Never state that something is working unless it was actually verified.
 - When blocked, record the blocker and continue with independent work rather than inventing results.
-

@@ -68,7 +68,10 @@ const formatAadhaar = (val: string) => {
 };
 
 const formatIFSC = (val: string) => {
-  return val.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 11);
+  return val
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "")
+    .slice(0, 11);
 };
 
 const getBankFromIFSC = (ifsc: string) => {
@@ -342,7 +345,10 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
           color: "text-emerald-800 bg-emerald-50 border-emerald-300",
         };
       if (height >= 168)
-        return { rating: "Eligible for Senior Division", color: "text-blue-800 bg-blue-50 border-blue-300" };
+        return {
+          rating: "Eligible for Senior Division",
+          color: "text-blue-800 bg-blue-50 border-blue-300",
+        };
       return {
         rating: "Height Relaxation Subject to State/Tribal Norms",
         color: "text-amber-800 bg-amber-50 border-amber-300",
@@ -391,8 +397,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
   const validateStep = (step: number, data: typeof formData): Record<string, string> => {
     const e: Record<string, string> = {};
     if (step === 1) {
-      if (!data.fullName.trim())
-        e.fullName = "Enter cadet's full name as on Aadhaar card.";
+      if (!data.fullName.trim()) e.fullName = "Enter cadet's full name as on Aadhaar card.";
       const aadhaar = data.aadhaarNumber.replace(/\s/g, "");
       if (!aadhaar) e.aadhaarNumber = "Aadhaar number is required for Form 1 verification.";
       else if (!/^\d{12}$/.test(aadhaar)) e.aadhaarNumber = "Aadhaar must be exactly 12 digits.";
@@ -400,15 +405,12 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
       if (!mobile) e.mobile = "A mobile number is required for official battalion alerts.";
       else if (!/^[6-9]\d{9}$/.test(mobile))
         e.mobile = "Enter a valid 10-digit Indian mobile number.";
-      if (!data.fatherName.trim())
-        e.fatherName = "Father's full name is required.";
+      if (!data.fatherName.trim()) e.fatherName = "Father's full name is required.";
       if (!data.dob) e.dob = "Date of birth is required.";
     }
     if (step === 2) {
-      if (!data.sbuCourse.trim())
-        e.sbuCourse = "Enter your SBU course / program name.";
-      if (!data.sbuRollNo.trim())
-        e.sbuRollNo = "Enter your SBU enrolment / roll number.";
+      if (!data.sbuCourse.trim()) e.sbuCourse = "Enter your SBU course / program name.";
+      if (!data.sbuRollNo.trim()) e.sbuRollNo = "Enter your SBU enrolment / roll number.";
       if (!data.marksPercentage10th)
         e.marksPercentage10th = "Matriculation (10th) percentage is required.";
       if (!data.marksPercentage12th)
@@ -425,8 +427,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
         e.weightKg = "Enter weight between 30 kg and 150 kg.";
     }
     if (step === 4) {
-      if (!data.bankName.trim())
-        e.bankName = "Bank name is required for camp allowance DBT.";
+      if (!data.bankName.trim()) e.bankName = "Bank name is required for camp allowance DBT.";
       const acct = data.accountNumber.replace(/\s/g, "");
       if (!acct) e.accountNumber = "Account number is required for DBT transfer.";
       else if (!/^\d{9,18}$/.test(acct)) e.accountNumber = "Account number must be 9–18 digits.";
@@ -745,7 +746,9 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                 {completionPct}%
               </span>
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Form Progress</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Form Progress
+                </p>
                 <div className="w-32 h-2 rounded-full bg-slate-100 overflow-hidden mt-0.5">
                   <div
                     className="h-full bg-emerald-500 transition-all duration-300 rounded-full"
@@ -805,9 +808,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                     <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">
                       SBU Roll Number
                     </p>
-                    <p className="text-sm font-bold text-slate-900">
-                      {submittedRecord.sbuRollNo}
-                    </p>
+                    <p className="text-sm font-bold text-slate-900">{submittedRecord.sbuRollNo}</p>
                   </div>
                   <div>
                     <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">
@@ -821,9 +822,9 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
 
                 <div className="p-4 bg-white border border-slate-200 rounded-2xl text-sm text-slate-700 leading-relaxed">
                   <strong className="text-slate-900 font-bold">Physical Test Instructions:</strong>{" "}
-                  Please print your Form 1 application slip below. Bring original 10th/12th marksheets,
-                  Aadhaar card, SBU Student ID card, Bank passbook photocopy, and medical fitness certificate
-                  to SBU Sports Ground on parade day at 06:00 AM.
+                  Please print your Form 1 application slip below. Bring original 10th/12th
+                  marksheets, Aadhaar card, SBU Student ID card, Bank passbook photocopy, and
+                  medical fitness certificate to SBU Sports Ground on parade day at 06:00 AM.
                 </div>
               </div>
 
@@ -913,7 +914,8 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                 >
                   <Info className="w-4 h-4 shrink-0 text-emerald-600" />
                   <span className="font-medium">
-                    Resumed your saved draft (Step {activeStep}). Aadhaar and bank details are not saved for security.
+                    Resumed your saved draft (Step {activeStep}). Aadhaar and bank details are not
+                    saved for security.
                   </span>
                   <button
                     type="button"
@@ -928,7 +930,8 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               {/* Step Header */}
               <header className="mb-2">
                 <span className="text-emerald-600 font-extrabold text-xs tracking-widest uppercase">
-                  Step {String(activeStep).padStart(2, "0")} of {String(steps.length).padStart(2, "0")}
+                  Step {String(activeStep).padStart(2, "0")} of{" "}
+                  {String(steps.length).padStart(2, "0")}
                 </span>
                 <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1">
                   {currentStep.title}
@@ -960,7 +963,11 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                         <div className="bg-slate-50 border-2 border-dashed border-slate-200 hover:border-emerald-500/50 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4 transition-all">
                           <div className="relative w-20 h-24 rounded-xl bg-slate-200 border-2 border-white shadow-md overflow-hidden flex items-center justify-center shrink-0">
                             {photoPreview ? (
-                              <img src={photoPreview} alt="Cadet preview" className="w-full h-full object-cover" />
+                              <img
+                                src={photoPreview}
+                                alt="Cadet preview"
+                                className="w-full h-full object-cover"
+                              />
                             ) : (
                               <Camera className="w-7 h-7 text-slate-400" />
                             )}
@@ -975,7 +982,12 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                             <label className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer shadow-xs transition-colors">
                               <Upload className="w-3.5 h-3.5" />
                               <span>{photoPreview ? "Change Photo" : "Upload Passport Photo"}</span>
-                              <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handlePhotoUpload}
+                                className="hidden"
+                              />
                             </label>
                           </div>
                         </div>
@@ -1059,7 +1071,10 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                               className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 aria-invalid:border-red-400 text-sm font-mono font-bold tracking-wider text-slate-900 focus:border-emerald-500 focus:ring-0 outline-none transition-all"
                               required
                             />
-                            <FieldError id="err-aadhaarNumber" message={visibleErrors.aadhaarNumber} />
+                            <FieldError
+                              id="err-aadhaarNumber"
+                              message={visibleErrors.aadhaarNumber}
+                            />
                           </div>
 
                           <div className="space-y-1.5">
@@ -1289,7 +1304,10 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                               className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 aria-invalid:border-red-400 text-sm font-medium text-slate-900 focus:border-emerald-500 focus:ring-0 outline-none transition-all"
                               required
                             />
-                            <FieldError id="err-marksPercentage10th" message={visibleErrors.marksPercentage10th} />
+                            <FieldError
+                              id="err-marksPercentage10th"
+                              message={visibleErrors.marksPercentage10th}
+                            />
                           </div>
 
                           <div className="space-y-1.5">
@@ -1308,7 +1326,10 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                               className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 aria-invalid:border-red-400 text-sm font-medium text-slate-900 focus:border-emerald-500 focus:ring-0 outline-none transition-all"
                               required
                             />
-                            <FieldError id="err-marksPercentage12th" message={visibleErrors.marksPercentage12th} />
+                            <FieldError
+                              id="err-marksPercentage12th"
+                              message={visibleErrors.marksPercentage12th}
+                            />
                           </div>
                         </div>
                       </div>
@@ -1484,8 +1505,9 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                     {activeStep === 4 && (
                       <div className="space-y-5">
                         <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 leading-relaxed font-medium">
-                          <strong>DBT Mandate:</strong> Bank account details are required by 19 Jharkhand Battalion
-                          for Direct Benefit Transfer (DBT) of camp allowances, mess stipends, and travel reimbursements.
+                          <strong>DBT Mandate:</strong> Bank account details are required by 19
+                          Jharkhand Battalion for Direct Benefit Transfer (DBT) of camp allowances,
+                          mess stipends, and travel reimbursements.
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -1550,7 +1572,10 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                               className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 aria-invalid:border-red-400 text-sm font-mono font-bold tracking-wider text-slate-900 focus:border-emerald-500 focus:ring-0 outline-none transition-all"
                               required
                             />
-                            <FieldError id="err-accountNumber" message={visibleErrors.accountNumber} />
+                            <FieldError
+                              id="err-accountNumber"
+                              message={visibleErrors.accountNumber}
+                            />
                           </div>
                         </div>
 
@@ -1573,7 +1598,10 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                                 required
                               />
                             </div>
-                            <FieldError id="err-presentAddress" message={visibleErrors.presentAddress} />
+                            <FieldError
+                              id="err-presentAddress"
+                              message={visibleErrors.presentAddress}
+                            />
                           </div>
 
                           <div className="space-y-1.5">
@@ -1619,9 +1647,18 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                                 <Edit2 className="w-3.5 h-3.5" />
                               </button>
                               <p className="text-slate-400 font-extrabold uppercase">1. Personal</p>
-                              <p className="font-bold text-slate-900 mt-1">{formData.fullName || "—"}</p>
-                              <p className="text-slate-500">Gender: {formData.gender} · DOB: {formData.dob || "—"}</p>
-                              <p className="text-slate-500">Aadhaar: {formData.aadhaarNumber ? `XXXX XXXX ${formData.aadhaarNumber.slice(-4)}` : "—"}</p>
+                              <p className="font-bold text-slate-900 mt-1">
+                                {formData.fullName || "—"}
+                              </p>
+                              <p className="text-slate-500">
+                                Gender: {formData.gender} · DOB: {formData.dob || "—"}
+                              </p>
+                              <p className="text-slate-500">
+                                Aadhaar:{" "}
+                                {formData.aadhaarNumber
+                                  ? `XXXX XXXX ${formData.aadhaarNumber.slice(-4)}`
+                                  : "—"}
+                              </p>
                               <p className="text-slate-500">Mobile: {formData.mobile || "—"}</p>
                             </div>
 
@@ -1635,9 +1672,14 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                                 <Edit2 className="w-3.5 h-3.5" />
                               </button>
                               <p className="text-slate-400 font-extrabold uppercase">2. Academic</p>
-                              <p className="font-bold text-slate-900 mt-1">{formData.sbuCourse || "—"}</p>
+                              <p className="font-bold text-slate-900 mt-1">
+                                {formData.sbuCourse || "—"}
+                              </p>
                               <p className="text-slate-500">Roll No: {formData.sbuRollNo || "—"}</p>
-                              <p className="text-slate-500">10th Marks: {formData.marksPercentage10th}% · 12th Marks: {formData.marksPercentage12th}%</p>
+                              <p className="text-slate-500">
+                                10th Marks: {formData.marksPercentage10th}% · 12th Marks:{" "}
+                                {formData.marksPercentage12th}%
+                              </p>
                             </div>
 
                             <div className="bg-white p-3.5 rounded-2xl border border-slate-200 relative">
@@ -1650,9 +1692,18 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                                 <Edit2 className="w-3.5 h-3.5" />
                               </button>
                               <p className="text-slate-400 font-extrabold uppercase">3. Physical</p>
-                              <p className="font-bold text-slate-900 mt-1">Height: {formData.heightCm} cm · Weight: {formData.weightKg} kg</p>
-                              <p className="text-slate-500">PET Grade: {getPhysicalRating().rating}</p>
-                              <p className="text-slate-500">Junior 'A' Cert: {formData.hasJuniorCertificate ? formData.juniorCertificateNo : "No"}</p>
+                              <p className="font-bold text-slate-900 mt-1">
+                                Height: {formData.heightCm} cm · Weight: {formData.weightKg} kg
+                              </p>
+                              <p className="text-slate-500">
+                                PET Grade: {getPhysicalRating().rating}
+                              </p>
+                              <p className="text-slate-500">
+                                Junior 'A' Cert:{" "}
+                                {formData.hasJuniorCertificate
+                                  ? formData.juniorCertificateNo
+                                  : "No"}
+                              </p>
                             </div>
 
                             <div className="bg-white p-3.5 rounded-2xl border border-slate-200 relative">
@@ -1664,9 +1715,18 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                               >
                                 <Edit2 className="w-3.5 h-3.5" />
                               </button>
-                              <p className="text-slate-400 font-extrabold uppercase">4. Bank & Address</p>
-                              <p className="font-bold text-slate-900 mt-1">{formData.bankName || "—"}</p>
-                              <p className="text-slate-500">Account: {formData.accountNumber ? `XXXX${formData.accountNumber.slice(-4)}` : "—"}</p>
+                              <p className="text-slate-400 font-extrabold uppercase">
+                                4. Bank & Address
+                              </p>
+                              <p className="font-bold text-slate-900 mt-1">
+                                {formData.bankName || "—"}
+                              </p>
+                              <p className="text-slate-500">
+                                Account:{" "}
+                                {formData.accountNumber
+                                  ? `XXXX${formData.accountNumber.slice(-4)}`
+                                  : "—"}
+                              </p>
                               <p className="text-slate-500">IFSC: {formData.ifscCode || "—"}</p>
                             </div>
                           </div>
@@ -1679,8 +1739,10 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                             <span>Declaration by Applicant Cadet:</span>
                           </h4>
                           <p className="text-xs text-slate-600">
-                            I hereby declare that all details provided above are true to the best of my knowledge.
-                            I promise that I will undergo National Cadet Corps training willingly, abide by the rules of 19 Jharkhand Battalion NCC Ranchi, and maintain high standards of discipline.
+                            I hereby declare that all details provided above are true to the best of
+                            my knowledge. I promise that I will undergo National Cadet Corps
+                            training willingly, abide by the rules of 19 Jharkhand Battalion NCC
+                            Ranchi, and maintain high standards of discipline.
                           </p>
 
                           <div className="flex items-start gap-3 pt-3 border-t border-slate-100">
@@ -1692,8 +1754,12 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                               onChange={handleChange}
                               className="w-4 h-4 mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
                             />
-                            <label htmlFor="decCheck" className="font-bold text-xs text-slate-900 cursor-pointer">
-                              I accept the Cadet Declaration and agree to undergo NCC parades & camps.
+                            <label
+                              htmlFor="decCheck"
+                              className="font-bold text-xs text-slate-900 cursor-pointer"
+                            >
+                              I accept the Cadet Declaration and agree to undergo NCC parades &
+                              camps.
                             </label>
                           </div>
                         </div>
@@ -1704,8 +1770,9 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                             <span>Parent / Guardian Consent:</span>
                           </h4>
                           <p className="text-xs text-slate-600">
-                            I permit my son/daughter/ward to join Senior Division/Wing NCC at Sarala Birla University
-                            under 19 Jharkhand Battalion. I understand training includes drill, physical exercise, rifle firing, and residential camps.
+                            I permit my son/daughter/ward to join Senior Division/Wing NCC at Sarala
+                            Birla University under 19 Jharkhand Battalion. I understand training
+                            includes drill, physical exercise, rifle firing, and residential camps.
                           </p>
 
                           <div className="flex items-start gap-3 pt-3 border-t border-slate-100">
@@ -1717,8 +1784,12 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                               onChange={handleChange}
                               className="w-4 h-4 mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
                             />
-                            <label htmlFor="parentCheck" className="font-bold text-xs text-slate-900 cursor-pointer">
-                              Parent / Guardian has consented to NCC enrollment & camp participation.
+                            <label
+                              htmlFor="parentCheck"
+                              className="font-bold text-xs text-slate-900 cursor-pointer"
+                            >
+                              Parent / Guardian has consented to NCC enrollment & camp
+                              participation.
                             </label>
                           </div>
                         </div>
@@ -1797,7 +1868,8 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               Clear saved draft?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-slate-600">
-              This will permanently delete your saved enrollment draft. You will start the form fresh.
+              This will permanently delete your saved enrollment draft. You will start the form
+              fresh.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

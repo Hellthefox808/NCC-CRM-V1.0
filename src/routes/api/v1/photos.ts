@@ -49,7 +49,7 @@ export const Route = createFileRoute("/api/v1/photos")({
           }
 
           const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-          if (body.file_size_bytes > MAX_FILE_SIZE) {
+          if ((body.file_size_bytes || 0) > MAX_FILE_SIZE) {
             return json(
               {
                 success: false,

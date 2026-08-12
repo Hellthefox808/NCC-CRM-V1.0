@@ -61,7 +61,8 @@ function ForgotPasswordRoute() {
           </div>
           <h1 className="text-xl font-bold text-white tracking-tight">Account Recovery</h1>
           <p className="text-xs text-slate-400">
-            Enter your registered username, SBU Roll No, or official email address to receive password reset instructions.
+            Enter your registered username, SBU Roll No, or official email address to receive
+            password reset instructions.
           </p>
         </div>
 
@@ -79,7 +80,8 @@ function ForgotPasswordRoute() {
                 </p>
               </div>
               <p className="text-[11px] text-slate-500">
-                For security reasons, this response is displayed regardless of whether the account is registered.
+                For security reasons, this response is displayed regardless of whether the account
+                is registered.
               </p>
               <a
                 href="/login"

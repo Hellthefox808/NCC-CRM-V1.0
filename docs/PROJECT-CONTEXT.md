@@ -3,7 +3,7 @@
 **System Name**: 19 Jharkhand Battalion NCC Portal (Sarala Birla University Sub-Unit)  
 **Corpus Name**: Hellthefox808/NCC-CRM-V1.0  
 **Branch**: `main`  
-**Last Updated**: 2026-08-12  
+**Last Updated**: 2026-08-12
 
 ---
 
@@ -56,7 +56,7 @@ The NCC Portal operates as an integrated, OWASP-compliant identity and managemen
    - Algorithm: Salted scrypt (`scrypt$N=16384,r=8,p=1$...`).
    - OWASP Password Policy: Minimum 8 characters, uppercase, lowercase, number, special character.
 3. **Anti-Enumeration Recovery**:
-   - Uniform response on password recovery: *"If an account matches the information provided, recovery instructions will be sent."*
+   - Uniform response on password recovery: _"If an account matches the information provided, recovery instructions will be sent."_
 4. **Role-Based Access Control (RBAC)**:
    - Server-enforced middleware (`requireOfficer` vs `requireCadetSession`).
    - Zero frontend-only privilege boundaries.

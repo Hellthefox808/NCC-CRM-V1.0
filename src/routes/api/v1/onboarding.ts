@@ -12,11 +12,11 @@ export const Route = createFileRoute("/api/v1/onboarding")({
         try {
           const admin = await getAdmin();
 
-          // Fetch user record
-          const { data: user } = await admin
+          const cadetId = (gate as any).session?.cadetId || "";
+          const { data: user } = await (admin as any)
             .from("cadet_users")
             .select("id, cadet_id, email, account_status")
-            .eq("email", gate.session?.cadetId || "")
+            .or(`cadet_id.eq.${cadetId},email.eq.${cadetId}`)
             .maybeSingle();
 
           const userId = user?.id;
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/api/v1/onboarding")({
             });
           }
 
-          const { data: progress } = await admin
+          const { data: progress } = await (admin as any)
             .from("onboarding_progress")
             .select("*")
             .eq("user_id", userId)

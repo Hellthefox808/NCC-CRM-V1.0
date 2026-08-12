@@ -7,12 +7,15 @@ export const Route = createFileRoute("/activate")({
       { title: "Account Activation & Password Setup — 19 JHR BN NCC" },
       {
         name: "description",
-        content: "Set your secure password and activate your 19 Jharkhand Battalion NCC portal account.",
+        content:
+          "Set your secure password and activate your 19 Jharkhand Battalion NCC portal account.",
       },
       { name: "robots", content: "noindex" },
     ],
   }),
-  validateSearch: (search: Record<string, unknown>): { token?: string; mode?: "activation" | "reset" } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { token?: string; mode?: "activation" | "reset" } => ({
     token: (search.token as string) || "",
     mode: (search.mode as "activation" | "reset") || "activation",
   }),

@@ -74,7 +74,8 @@ export function PasswordSetupPortal({ token, mode = "activation" }: PasswordSetu
 
   const getStrengthText = () => {
     if (passedChecksCount <= 2) return { label: "Weak", color: "bg-red-500", text: "text-red-600" };
-    if (passedChecksCount <= 4) return { label: "Medium", color: "bg-amber-500", text: "text-amber-600" };
+    if (passedChecksCount <= 4)
+      return { label: "Medium", color: "bg-amber-500", text: "text-amber-600" };
     return { label: "Strong", color: "bg-emerald-600", text: "text-emerald-600" };
   };
 
@@ -130,14 +131,16 @@ export function PasswordSetupPortal({ token, mode = "activation" }: PasswordSetu
           <div className="space-y-2">
             <h2 className="text-2xl font-extrabold text-white tracking-tight">Account Activated</h2>
             <p className="text-slate-400 text-sm">
-              Your NCC account has been successfully configured. You can now sign in using your NCC username and new password.
+              Your NCC account has been successfully configured. You can now sign in using your NCC
+              username and new password.
             </p>
           </div>
 
           <div className="bg-slate-950/80 border border-amber-500/20 rounded-lg p-4 text-xs text-amber-300/90 text-left space-y-1">
             <p className="font-semibold text-amber-400">OWASP Security Policy:</p>
             <p className="text-slate-400">
-              For your security, you were not automatically signed in. Please navigate to the portal login page to authenticate.
+              For your security, you were not automatically signed in. Please navigate to the portal
+              login page to authenticate.
             </p>
           </div>
 
@@ -243,7 +246,11 @@ export function PasswordSetupPortal({ token, mode = "activation" }: PasswordSetu
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-2.5 text-slate-500 hover:text-slate-300 focus:outline-none"
                 >
-                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
                 </button>
               </div>
               {confirmPassword.length > 0 && !passwordsMatch && (
@@ -255,7 +262,9 @@ export function PasswordSetupPortal({ token, mode = "activation" }: PasswordSetu
             <div className="space-y-2 pt-2 border-t border-slate-800/80">
               <div className="flex justify-between items-center text-xs">
                 <span className="text-slate-400 font-medium">Password strength</span>
-                <span className={`font-bold ${strength.text}`}>{password ? strength.label : "—"}</span>
+                <span className={`font-bold ${strength.text}`}>
+                  {password ? strength.label : "—"}
+                </span>
               </div>
               <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
                 <div
@@ -266,24 +275,36 @@ export function PasswordSetupPortal({ token, mode = "activation" }: PasswordSetu
 
               {/* Requirement checklist */}
               <div className="grid grid-cols-1 gap-1.5 pt-2 text-xs">
-                <div className={`flex items-center gap-2 ${hasMinLength ? "text-emerald-400 font-medium" : "text-slate-500"}`}>
+                <div
+                  className={`flex items-center gap-2 ${hasMinLength ? "text-emerald-400 font-medium" : "text-slate-500"}`}
+                >
                   <Check className={`w-3.5 h-3.5 ${hasMinLength ? "opacity-100" : "opacity-30"}`} />
                   <span>Minimum 8 characters long</span>
                 </div>
-                <div className={`flex items-center gap-2 ${hasUppercase ? "text-emerald-400 font-medium" : "text-slate-500"}`}>
+                <div
+                  className={`flex items-center gap-2 ${hasUppercase ? "text-emerald-400 font-medium" : "text-slate-500"}`}
+                >
                   <Check className={`w-3.5 h-3.5 ${hasUppercase ? "opacity-100" : "opacity-30"}`} />
                   <span>At least one uppercase character (A-Z)</span>
                 </div>
-                <div className={`flex items-center gap-2 ${hasLowercase ? "text-emerald-400 font-medium" : "text-slate-500"}`}>
+                <div
+                  className={`flex items-center gap-2 ${hasLowercase ? "text-emerald-400 font-medium" : "text-slate-500"}`}
+                >
                   <Check className={`w-3.5 h-3.5 ${hasLowercase ? "opacity-100" : "opacity-30"}`} />
                   <span>At least one lowercase character (a-z)</span>
                 </div>
-                <div className={`flex items-center gap-2 ${hasNumber ? "text-emerald-400 font-medium" : "text-slate-500"}`}>
+                <div
+                  className={`flex items-center gap-2 ${hasNumber ? "text-emerald-400 font-medium" : "text-slate-500"}`}
+                >
                   <Check className={`w-3.5 h-3.5 ${hasNumber ? "opacity-100" : "opacity-30"}`} />
                   <span>At least one number (0-9)</span>
                 </div>
-                <div className={`flex items-center gap-2 ${hasSpecialChar ? "text-emerald-400 font-medium" : "text-slate-500"}`}>
-                  <Check className={`w-3.5 h-3.5 ${hasSpecialChar ? "opacity-100" : "opacity-30"}`} />
+                <div
+                  className={`flex items-center gap-2 ${hasSpecialChar ? "text-emerald-400 font-medium" : "text-slate-500"}`}
+                >
+                  <Check
+                    className={`w-3.5 h-3.5 ${hasSpecialChar ? "opacity-100" : "opacity-30"}`}
+                  />
                   <span>At least one special character (!@#$%...)</span>
                 </div>
               </div>

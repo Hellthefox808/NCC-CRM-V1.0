@@ -2,6 +2,7 @@
 
 **Client Layer**: `redis.server.ts`  
 **Supported Modes**:
+
 1. Upstash Redis REST API (`UPSTASH_REDIS_REST_URL`)
 2. Container / Local TCP (`REDIS_URL`)
 3. Self-Pruning In-Memory Fallback (`Map<string, Item>`)
@@ -20,13 +21,13 @@ ncc:otp:{purpose}:{identifierHash}
 
 ## 2. Key Inventory & Expiration Rules
 
-| Key Pattern | Purpose | TTL | Owner Module |
-| :--- | :--- | :--- | :--- |
-| `ncc:otp:password_reset:{hash}` | Hashed OTP code for password reset | 10 minutes | `auth-otp.server.ts` |
-| `ncc:otp:account_activation:{hash}` | Hashed activation token | 30 minutes | `auth-otp.server.ts` |
-| `ratelimit:{key}` | Distributed rate limiter attempt counter | Sliding Window (60s - 300s) | `rate-limiter.server.ts` |
-| `forgot_pass:{ip}` | Recovery request throttle | 5 minutes (max 5 requests) | `forgot-password.ts` |
-| `login_fail:{identifier}` | Login attempt lockout counter | 15 minutes | `login.ts` |
+| Key Pattern                         | Purpose                                  | TTL                         | Owner Module             |
+| :---------------------------------- | :--------------------------------------- | :-------------------------- | :----------------------- |
+| `ncc:otp:password_reset:{hash}`     | Hashed OTP code for password reset       | 10 minutes                  | `auth-otp.server.ts`     |
+| `ncc:otp:account_activation:{hash}` | Hashed activation token                  | 30 minutes                  | `auth-otp.server.ts`     |
+| `ratelimit:{key}`                   | Distributed rate limiter attempt counter | Sliding Window (60s - 300s) | `rate-limiter.server.ts` |
+| `forgot_pass:{ip}`                  | Recovery request throttle                | 5 minutes (max 5 requests)  | `forgot-password.ts`     |
+| `login_fail:{identifier}`           | Login attempt lockout counter            | 15 minutes                  | `login.ts`               |
 
 ---
 

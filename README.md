@@ -54,21 +54,25 @@ graph TD
 ## 🔒 Security Hardening & Identity Architecture
 
 ### 1. Controlled Cadet Provisioning & Single-Use Activation
+
 - **ANO Approval Gate**: Privileged operations strictly enforce `requireOfficer(request)` server-side.
 - **Single-Use 256-Bit Cryptographic Secrets**: Activation links utilize 256-bit entropy raw tokens (`crypto.randomBytes(32)`). Raw tokens are sent via email; only `sha256(rawToken)` is stored in `account_activation_tokens`.
 - **Expiration & Anti-Replay**: Activation tokens enforce single-use (`used_at`) and 24-hour TTL (`expires_at`).
 - **Asynchronous Outbox Email Dispatch**: Email jobs are processed asynchronously via `queueEmailJob()`, preventing ANO approval database transactions from blocking on external SMTP latency.
 
 ### 2. Password Security & Anti-Enumeration
+
 - **Salted Scrypt Hashing**: Password hashes are derived using `scrypt` (`N=16384, r=8, p=1`) with unique per-user salts (`hashPassword`).
 - **Strict Password Length Floor**: Minimum 8-character (up to 128-character) floor enforced via Zod `strongPasswordSchema`.
 - **Anti-Enumeration Protection**: Forgotten password and OTP request endpoints return generic timing-consistent responses (`If this account exists...`) to prevent email/username harvesting.
 
 ### 3. HttpOnly Session Security
+
 - **Zero Client Token Storage**: Session tokens are stripped from `sessionStorage` and `localStorage` to prevent XSS credential theft.
 - **HttpOnly Cookie Handling**: `bearer()` extracts tokens from `Authorization: Bearer` headers or `HttpOnly; SameSite=Lax; Secure` `ncc_session` cookies.
 
 ### 4. Intrusion Detection System (IDS)
+
 - **Real-Time Event Correlation**: Normalizes security events (`AUTH_FAILURE`, `IDOR_ATTEMPT`, `UNAUTHORIZED_EXPORT`, `STORAGE_TOKEN_REPLAY`).
 - **Risk Score Accumulation & Automated Containment**: Triggers alerts (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`) and automated containment actions (`RATE_LIMIT_IP`, `REVOKE_SESSION`, `QUARANTINE_OBJECT`).
 
@@ -179,6 +183,7 @@ docker-compose logs -f
 ## 🔴 Redis Caching & Rate Limiting Architecture
 
 The platform features a resilient **Dual-Mode Redis Client** (`backend/lib/redis.server.ts`):
+
 1. **Cloud Serverless Mode**: Used when `UPSTASH_REDIS_REST_URL` & `UPSTASH_REDIS_REST_TOKEN` are set.
 2. **Container / Local Mode**: Used when `REDIS_URL` is configured.
 3. **Automatic In-Memory Fallback**: If Redis is not configured, rate limiting falls back to an in-memory sliding window algorithm.
@@ -187,21 +192,21 @@ The platform features a resilient **Dual-Mode Redis Client** (`backend/lib/redis
 
 ## 📋 Key API Endpoints Matrix
 
-| Category       | Endpoint                            | Method     | Access           | Description                           |
-| :------------- | :---------------------------------- | :--------- | :--------------- | :------------------------------------ |
-| **System**     | `/api/v1/health`                    | GET        | Public           | System health check & Redis status    |
-| **Auth**       | `/api/v1/auth/login`                | POST       | Public           | User authentication with rate limit   |
-| **Auth**       | `/api/v1/auth/me`                   | GET        | Session          | Retrieve active user session profile  |
-| **Auth**       | `/api/v1/auth/activate`             | POST       | Public           | Validate single-use activation token  |
-| **Auth**       | `/api/v1/auth/set-password`         | POST       | Public           | Set password & activate cadet account |
-| **Auth**       | `/api/v1/auth/otp/request`          | POST       | Public           | Request OTP for authentication/reset  |
-| **Enrollment** | `/api/v1/enrollments`               | POST / GET | Public / Officer | Submit application / list enrollments |
-| **Enrollment** | `/api/v1/enrollments/status/$query` | GET        | Public           | Track application status (PII masked) |
-| **ANO Review** | `/api/v1/ano/applications/$id/approve` | POST   | Officer          | Approve application & issue activation |
-| **Cadets**     | `/api/v1/cadets`                    | GET        | Officer          | Query unit nominal rolls & roster     |
-| **Export**     | `/api/v1/export-excel`              | GET        | Officer          | Export official nominal roll CSV/Excel|
-| **Operations** | `/api/v1/activities`                | GET / POST | Public / Officer | Manage battalion activities           |
-| **Operations** | `/api/v1/calendar`                  | GET / POST | Public / Officer | Manage parade & event calendar        |
+| Category       | Endpoint                               | Method     | Access           | Description                            |
+| :------------- | :------------------------------------- | :--------- | :--------------- | :------------------------------------- |
+| **System**     | `/api/v1/health`                       | GET        | Public           | System health check & Redis status     |
+| **Auth**       | `/api/v1/auth/login`                   | POST       | Public           | User authentication with rate limit    |
+| **Auth**       | `/api/v1/auth/me`                      | GET        | Session          | Retrieve active user session profile   |
+| **Auth**       | `/api/v1/auth/activate`                | POST       | Public           | Validate single-use activation token   |
+| **Auth**       | `/api/v1/auth/set-password`            | POST       | Public           | Set password & activate cadet account  |
+| **Auth**       | `/api/v1/auth/otp/request`             | POST       | Public           | Request OTP for authentication/reset   |
+| **Enrollment** | `/api/v1/enrollments`                  | POST / GET | Public / Officer | Submit application / list enrollments  |
+| **Enrollment** | `/api/v1/enrollments/status/$query`    | GET        | Public           | Track application status (PII masked)  |
+| **ANO Review** | `/api/v1/ano/applications/$id/approve` | POST       | Officer          | Approve application & issue activation |
+| **Cadets**     | `/api/v1/cadets`                       | GET        | Officer          | Query unit nominal rolls & roster      |
+| **Export**     | `/api/v1/export-excel`                 | GET        | Officer          | Export official nominal roll CSV/Excel |
+| **Operations** | `/api/v1/activities`                   | GET / POST | Public / Officer | Manage battalion activities            |
+| **Operations** | `/api/v1/calendar`                     | GET / POST | Public / Officer | Manage parade & event calendar         |
 
 ---
 

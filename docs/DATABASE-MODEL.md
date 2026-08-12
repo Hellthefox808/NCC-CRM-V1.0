@@ -1,7 +1,7 @@
 # NCC Platform — Database Schema & Data Model
 
 **Engine**: Supabase / PostgreSQL  
-**Data Access**: `getAdmin()` privileged server client  
+**Data Access**: `getAdmin()` privileged server client
 
 ---
 
@@ -35,7 +35,9 @@
 ## 2. Table Definitions
 
 ### `app_credentials`
+
 Stores primary portal authentication credentials for cadets and ANO officers.
+
 - `identifier` (TEXT, PK): Unique login ID (e.g. `NCC2401001` or email).
 - `email` (TEXT): Primary contact email.
 - `password_hash` (TEXT): Salted scrypt hash (`scrypt$N=16384,r=8,p=1$...`).
@@ -43,7 +45,9 @@ Stores primary portal authentication credentials for cadets and ANO officers.
 - `updated_at` (TIMESTAMPTZ): Modification timestamp.
 
 ### `auth_otp_codes`
+
 Stores temporary verification codes and cryptographic activation tokens.
+
 - `id` (UUID, PK): Auto-generated key.
 - `identifier` (TEXT): Target user identifier (lowercase).
 - `purpose` (TEXT): `PASSWORD_RESET`, `ACCOUNT_ACTIVATION`, `LOGIN_OTP`.
@@ -54,7 +58,9 @@ Stores temporary verification codes and cryptographic activation tokens.
 - `consumed_at` (TIMESTAMPTZ): Atomic single-use consumption timestamp.
 
 ### `audit_logs`
+
 Immutable audit trail of security-sensitive administrative actions.
+
 - `id` (UUID, PK): Event ID.
 - `action` (TEXT): Action type (e.g. `SET_PORTAL_PASSWORD`, `APPROVE_APPLICATION`).
 - `performed_by` (TEXT): Identifier of actor.

@@ -430,4 +430,3 @@ export function renderPasswordChangedNotificationEmail(payload: SendPasswordChan
   const text = `Jai Hind ${payload.recipientName || "Cadet"},\nThe password for your NCC account (${payload.username}) was changed on ${payload.timestamp}. If you did not make this change, contact unit admin immediately.`;
   return { html, text };
 }
-

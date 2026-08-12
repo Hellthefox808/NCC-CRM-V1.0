@@ -14,7 +14,7 @@ export const Route = createFileRoute("/api/v1/notifications/$id/read")({
           const admin = await getAdmin();
           await admin
             .from("notifications")
-            .update({ read: true, read_at: new Date().toISOString() })
+            .update({ read: true, read_at: new Date().toISOString() } as any)
             .eq("id", id);
 
           return json({

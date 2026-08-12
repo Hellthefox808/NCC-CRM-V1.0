@@ -63,10 +63,10 @@ Cadet / ANO Portal
 
 ## 4. Role-Based Access Control (RBAC) Matrix
 
-| Role | Permissions & Access Boundaries |
-| :--- | :--- |
-| **APPLICANT** | `application.read.own`, `status.track.own` |
-| **CADET** | `profile.read.own`, `profile.update.own`, `documents.read.own`, `attendance.read.own`, `notice.read` |
+| Role              | Permissions & Access Boundaries                                                                                                                                              |
+| :---------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **APPLICANT**     | `application.read.own`, `status.track.own`                                                                                                                                   |
+| **CADET**         | `profile.read.own`, `profile.update.own`, `documents.read.own`, `attendance.read.own`, `notice.read`                                                                         |
 | **ANO / OFFICER** | `applications.read`, `applications.review`, `applications.approve`, `applications.reject`, `cadets.read`, `cadets.manage`, `attendance.mark`, `notice.publish`, `audit.view` |
 
 > [!IMPORTANT]

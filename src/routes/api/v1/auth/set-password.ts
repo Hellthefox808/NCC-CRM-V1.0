@@ -58,13 +58,21 @@ export const Route = createFileRoute("/api/v1/auth/set-password")({
           if (tokRecord) {
             if (tokRecord.used_at) {
               return json(
-                { success: false, error: "This activation link has already been used.", code: "TOKEN_ALREADY_USED" },
+                {
+                  success: false,
+                  error: "This activation link has already been used.",
+                  code: "TOKEN_ALREADY_USED",
+                },
                 400,
               );
             }
             if (new Date(tokRecord.expires_at) < new Date()) {
               return json(
-                { success: false, error: "This activation link has expired.", code: "TOKEN_EXPIRED" },
+                {
+                  success: false,
+                  error: "This activation link has expired.",
+                  code: "TOKEN_EXPIRED",
+                },
                 400,
               );
             }
@@ -104,7 +112,10 @@ export const Route = createFileRoute("/api/v1/auth/set-password")({
           }
 
           if (!userIdentifier) {
-            return json({ success: false, error: "Target user account identifier not found." }, 404);
+            return json(
+              { success: false, error: "Target user account identifier not found." },
+              404,
+            );
           }
 
           // Generate salted scrypt hash
@@ -117,7 +128,8 @@ export const Route = createFileRoute("/api/v1/auth/set-password")({
             .eq("identifier", userIdentifier)
             .maybeSingle();
 
-          userEmail = userEmail || cred?.email || (userIdentifier.includes("@") ? userIdentifier : "");
+          userEmail =
+            userEmail || cred?.email || (userIdentifier.includes("@") ? userIdentifier : "");
 
           await admin.from("app_credentials").upsert(
             {

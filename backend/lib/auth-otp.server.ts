@@ -285,7 +285,11 @@ export async function verifyActivationToken(
     const row = rows?.[0] as any;
     if (row) {
       if (new Date(row.expires_at).getTime() < Date.now()) {
-        return { ok: false, error: "This activation link has expired. Request a new link.", code: "TOKEN_EXPIRED" };
+        return {
+          ok: false,
+          error: "This activation link has expired. Request a new link.",
+          code: "TOKEN_EXPIRED",
+        };
       }
       return { ok: true, identifier: row.identifier };
     }
@@ -298,11 +302,19 @@ export async function verifyActivationToken(
   );
 
   if (!memRec) {
-    return { ok: false, error: "Invalid or already used activation token.", code: "TOKEN_NOT_FOUND" };
+    return {
+      ok: false,
+      error: "Invalid or already used activation token.",
+      code: "TOKEN_NOT_FOUND",
+    };
   }
 
   if (memRec.expiresAt.getTime() < Date.now()) {
-    return { ok: false, error: "This activation link has expired. Request a new link.", code: "TOKEN_EXPIRED" };
+    return {
+      ok: false,
+      error: "This activation link has expired. Request a new link.",
+      code: "TOKEN_EXPIRED",
+    };
   }
 
   return { ok: true, identifier: memRec.identifier };
@@ -333,4 +345,3 @@ export async function consumeActivationToken(
 
   return { ok: true, identifier: check.identifier };
 }
-

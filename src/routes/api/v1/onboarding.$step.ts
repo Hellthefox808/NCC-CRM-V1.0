@@ -36,10 +36,11 @@ export const Route = createFileRoute("/api/v1/onboarding/$step")({
 
         try {
           const admin = await getAdmin();
-          const { data: user } = await admin
+          const cadetId = (gate as any).session?.cadetId || "";
+          const { data: user } = await (admin as any)
             .from("cadet_users")
             .select("id")
-            .eq("email", gate.session?.cadetId || "")
+            .or(`cadet_id.eq.${cadetId},email.eq.${cadetId}`)
             .maybeSingle();
 
           const userId = user?.id;
@@ -48,7 +49,7 @@ export const Route = createFileRoute("/api/v1/onboarding/$step")({
           }
 
           // Fetch current onboarding record
-          const { data: current } = await admin
+          const { data: current } = await (admin as any)
             .from("onboarding_progress")
             .select("*")
             .eq("user_id", userId)
@@ -79,7 +80,7 @@ export const Route = createFileRoute("/api/v1/onboarding/$step")({
             updatedState.completed_at = new Date().toISOString();
           }
 
-          const { data: saved, error } = await admin
+          const { data: saved, error } = await (admin as any)
             .from("onboarding_progress")
             .upsert(updatedState, { onConflict: "user_id" })
             .select("*")

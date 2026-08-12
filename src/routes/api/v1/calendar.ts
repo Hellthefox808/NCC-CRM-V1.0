@@ -72,8 +72,8 @@ export const Route = createFileRoute("/api/v1/calendar")({
               description: body.description || "",
               is_all_day: Boolean(body.isAllDay),
               status: body.status || "PUBLISHED",
-              created_by: gate.officerName || "Officer",
-              updated_by: gate.officerName || "Officer",
+              created_by: (gate as any).officerName || "Officer",
+              updated_by: (gate as any).officerName || "Officer",
             })
             .select("*")
             .single();
@@ -116,7 +116,7 @@ export const Route = createFileRoute("/api/v1/calendar")({
 
           // 4. Audit Log
           await recordAuditLog({
-            actorId: gate.officerName || "Officer",
+            actorId: (gate as any).officerName || "Officer",
             action: "CREATE_CALENDAR_EVENT",
             target: event.id,
             details: `Created calendar event '${event.title}'`,

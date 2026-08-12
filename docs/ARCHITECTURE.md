@@ -2,7 +2,7 @@
 
 **System Name**: 19 Jharkhand Battalion NCC Portal (Sarala Birla University Sub-Unit)  
 **Architecture Pattern**: Modular Full-Stack Monolith (React SSR + Thin Controllers + Domain Services)  
-**Last Updated**: 2026-08-12  
+**Last Updated**: 2026-08-12
 
 ---
 

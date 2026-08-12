@@ -74,8 +74,14 @@ test("Transactional Email Template Renderers", () => {
   });
 
   assert.ok(activation.html.includes("NCC2401001"), "Activation email must contain username");
-  assert.ok(activation.html.includes("https://ncc.sbu.ac.in/activate?token=abc123xyz"), "Email must contain activation CTA link");
-  assert.ok(!activation.html.includes("Password:"), "Activation email must NOT contain plain passwords");
+  assert.ok(
+    activation.html.includes("https://ncc.sbu.ac.in/activate?token=abc123xyz"),
+    "Email must contain activation CTA link",
+  );
+  assert.ok(
+    !activation.html.includes("Password:"),
+    "Activation email must NOT contain plain passwords",
+  );
 
   const pwdReset = renderPasswordResetEmail({
     recipient: "cadet@sbu.ac.in",
@@ -84,7 +90,10 @@ test("Transactional Email Template Renderers", () => {
     expiresInMinutes: 30,
   });
 
-  assert.ok(pwdReset.html.includes("RESET PASSWORD"), "Password reset email must render CTA button");
+  assert.ok(
+    pwdReset.html.includes("RESET PASSWORD"),
+    "Password reset email must render CTA button",
+  );
   assert.ok(pwdReset.html.includes("30 minutes"), "Password reset email must state link TTL");
 
   const pwdChanged = renderPasswordChangedNotificationEmail({
@@ -94,6 +103,9 @@ test("Transactional Email Template Renderers", () => {
     timestamp: "12/08/2026, 12:30:00 pm",
   });
 
-  assert.ok(pwdChanged.html.includes("NCC Account Password Changed"), "Password changed alert subject header must match");
+  assert.ok(
+    pwdChanged.html.includes("NCC Account Password Changed"),
+    "Password changed alert subject header must match",
+  );
   assert.ok(pwdChanged.html.includes("12/08/2026"), "Timestamp must be rendered in alert email");
 });
