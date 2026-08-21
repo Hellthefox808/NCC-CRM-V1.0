@@ -42,6 +42,7 @@ import {
   Edit2,
   CheckCheck,
   MapPin,
+  Copy,
 } from "lucide-react";
 import { CadetRecord } from "@/types";
 import { EnterpriseDataPlatform } from "@backend/services/dataPlatform";
@@ -102,6 +103,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [showAllErrors, setShowAllErrors] = useState<boolean>(false);
   const [submittedRecord, setSubmittedRecord] = useState<CadetRecord | null>(null);
+  const [copiedAppNo, setCopiedAppNo] = useState<boolean>(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
   // Form State
@@ -728,13 +730,40 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
 
               <div className="bg-slate-50 border border-emerald-500/20 rounded-3xl p-6 md:p-8 space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
-                  <div>
-                    <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">
-                      Tracking Application ID
+                  <div className="bg-white border border-emerald-500/30 rounded-2xl p-4 shadow-xs">
+                    <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1 flex items-center justify-between">
+                      <span>18-Digit Application Number</span>
+                      <span className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-bold">Official ID</span>
                     </p>
-                    <p className="text-xl font-black text-slate-900 tracking-wide font-mono">
-                      {submittedRecord.id}
-                    </p>
+                    <div className="flex items-center justify-between gap-2 mt-1">
+                      <p className="text-lg md:text-xl font-black text-slate-900 tracking-wider font-mono">
+                        {submittedRecord.id}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (navigator.clipboard) {
+                            await navigator.clipboard.writeText(submittedRecord.id);
+                            setCopiedAppNo(true);
+                            setTimeout(() => setCopiedAppNo(false), 2500);
+                          }
+                        }}
+                        className="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                        title="Copy Application Number"
+                      >
+                        {copiedAppNo ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <span className="text-emerald-700">Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5 text-slate-500" />
+                            <span>Copy</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
                   <div>
                     <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">

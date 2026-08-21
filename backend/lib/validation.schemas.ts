@@ -168,7 +168,7 @@ export const cadetEnrollmentSchema = z
       .max(100, "Full name too long")
       .regex(/^[a-zA-Z\s.]+$/, "Name can only contain letters, spaces, and dots"),
 
-    gender: z.enum(["Male", "Female", "Other"]),
+    gender: z.enum(["SD", "SW", "Male", "Female", "Other"]),
 
     dob: z
       .string()
@@ -177,34 +177,67 @@ export const cadetEnrollmentSchema = z
         const birthDate = new Date(date);
         const today = new Date();
         const age = today.getFullYear() - birthDate.getFullYear();
-        return age >= 16 && age <= 25;
-      }, "Age must be between 16-25 years"),
+        return age >= 15 && age <= 28;
+      }, "Age must be between 15-28 years"),
 
-    mobile: indianMobileSchema,
+    mobile: z
+      .string()
+      .transform((val) => {
+        const cleaned = val.replace(/\D/g, "");
+        return cleaned.length > 10 ? cleaned.slice(-10) : cleaned;
+      })
+      .refine((val) => /^[6-9]\d{9}$/.test(val), "Invalid 10-digit Indian mobile number"),
     email: emailSchema,
 
+    fatherName: z.string().optional(),
+    motherName: z.string().optional(),
+    bloodGroup: z.string().optional(),
+    identificationMark: z.string().optional(),
+
     // Academic Information
-    sbuRollNo: sbuRollSchema,
-    course: z.string().min(1, "Course is required").max(50, "Course name too long"),
-    branch: z.string().min(1, "Branch is required").max(50, "Branch name too long"),
-    semester: z.number().min(1).max(8),
+    sbuRollNo: z.string().min(1, "SBU Roll Number is required").max(50, "Roll number too long"),
+    sbuCourse: z.string().min(1, "Course is required").max(100, "Course name too long").optional(),
+    course: z.string().max(100).optional(),
+    sbuDepartment: z.string().max(100).optional(),
+    branch: z.string().max(100).optional(),
+    sbuYear: z.string().optional(),
+    sbuSemester: z.union([z.string(), z.number()]).optional(),
+    semester: z.number().min(1).max(8).optional(),
+    marksPercentage10th: z.union([z.number(), z.string()]).optional(),
+    marksPercentage12th: z.union([z.number(), z.string()]).optional(),
+
+    // Physical & Sports Details
+    heightCm: z.union([z.number(), z.string()]).optional(),
+    weightKg: z.union([z.number(), z.string()]).optional(),
+    run1600mTime: z.string().optional(),
+    pushupsCount: z.union([z.number(), z.string()]).optional(),
+    hasJuniorCertificate: z.boolean().optional(),
+    juniorCertificateNo: z.string().optional().nullable(),
+    sportsLevel: z.string().optional(),
+    sportsDetails: z.string().optional().nullable(),
+
+    // Bank & Residence
+    bankName: z.string().optional(),
+    accountNumber: z.string().optional(),
+    ifscCode: z.string().optional(),
+    presentAddress: z.string().optional(),
+    permanentAddress: z.string().optional(),
+    pinCode: z.string().optional(),
+    guardianName: z.string().optional(),
+    guardianRelation: z.string().optional(),
+    guardianMobile: z.string().optional(),
+    declarationAccepted: z.boolean().optional(),
+    parentConsentAccepted: z.boolean().optional(),
 
     // Identity Information
     aadhaarNumber: z
       .string()
-      .regex(/^\d{12}$/, "Aadhaar number must be 12 digits")
-      .refine((num) => {
-        // Basic Aadhaar validation algorithm
-        const digits = num.split("").map(Number);
-        const checksum = digits.reduce((sum, digit, index) => {
-          if (index < 11) {
-            const multiplier = [2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4][index];
-            return sum + digit * multiplier;
-          }
-          return sum;
-        }, 0);
-        return checksum % 11 === digits[11];
-      }, "Invalid Aadhaar number"),
+      .transform((val) => val.replace(/\D/g, ""))
+      .refine((val) => /^\d{12}$/.test(val), "Aadhaar number must be exactly 12 digits"),
+
+    // Optional application tracking number
+    applicationNo: z.string().optional(),
+    applicationId: z.string().optional(),
 
     // Optional password for new accounts
     password: strongPasswordSchema.optional(),
