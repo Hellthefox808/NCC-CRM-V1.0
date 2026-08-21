@@ -1,11 +1,12 @@
 -- ========================================================
--- 19 JHARKHAND BATTALION NCC — COMPLETE DATABASE SCHEMA
+-- 19 JHARKHAND BATTALION NCC — COMPLETE DATABASE SCHEMA (IDEMPOTENT)
 -- Project: qsrmzajadmmgqhfbxdwu
--- Generated on: 2026-08-21T17:38:18.362Z
+-- Generated on: 2026-08-21T17:49:20.089Z
+-- Safe for repeated executions with IF NOT EXISTS guards
 -- ========================================================
 
 -- >>> MIGRATION: 20260807173331_2255f582-0bbb-4b6f-8ef0-295e59bfe3e3.sql <<<
-CREATE TABLE public.cadet_enrollments (
+CREATE TABLE IF NOT EXISTS public.cadet_enrollments (
   id TEXT PRIMARY KEY,
   enrollment_no TEXT UNIQUE,
   application_date DATE NOT NULL DEFAULT CURRENT_DATE,
@@ -51,11 +52,11 @@ CREATE TABLE public.cadet_enrollments (
 GRANT ALL ON public.cadet_enrollments TO service_role;
 ALTER TABLE public.cadet_enrollments ENABLE ROW LEVEL SECURITY;
 
-CREATE INDEX idx_cadet_enrollments_status ON public.cadet_enrollments (status);
-CREATE INDEX idx_cadet_enrollments_gender ON public.cadet_enrollments (gender);
-CREATE INDEX idx_cadet_enrollments_roll ON public.cadet_enrollments (sbu_roll_no);
+CREATE INDEX IF NOT EXISTS idx_cadet_enrollments_status ON public.cadet_enrollments (status);
+CREATE INDEX IF NOT EXISTS idx_cadet_enrollments_gender ON public.cadet_enrollments (gender);
+CREATE INDEX IF NOT EXISTS idx_cadet_enrollments_roll ON public.cadet_enrollments (sbu_roll_no);
 
-CREATE TABLE public.notifications (
+CREATE TABLE IF NOT EXISTS public.notifications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   category TEXT NOT NULL DEFAULT 'Urgent Notice',
@@ -70,7 +71,7 @@ CREATE TABLE public.notifications (
 GRANT ALL ON public.notifications TO service_role;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
-CREATE TABLE public.app_sessions (
+CREATE TABLE IF NOT EXISTS public.app_sessions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   token TEXT NOT NULL UNIQUE,
   email TEXT NOT NULL,
@@ -91,10 +92,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SET search_path = public;
 
+DROP TRIGGER IF EXISTS update_cadet_enrollments_updated_at ON public.cadet_enrollments;
 CREATE TRIGGER update_cadet_enrollments_updated_at
 BEFORE UPDATE ON public.cadet_enrollments
 FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_notifications_updated_at ON public.notifications;
 CREATE TRIGGER update_notifications_updated_at
 BEFORE UPDATE ON public.notifications
 FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
@@ -107,7 +110,8 @@ VALUES
   ('19JHR-SBU-2026-103', NULL, '2026-01-19', 'Mohd Sameer Ansari', 'SD', '2005-12-11', '661903442718', '8987231145', 'sameer.ansari@sbu.ac.in', 'A+', 'Birthmark on neck', 'Medical Cleared', 'Medical board cleared. Selection list pending officer review.', NULL, 'B.Sc Agriculture', 'School of Agriculture', 'SBU/AGR/2026/077', '2nd Year', '4th Sem', 79.2, 82.4, 171, 63, '6:05', 35, false, NULL, 'College', 'Inter-college kabaddi', 'Doranda, Ranchi, Jharkhand', 'Doranda, Ranchi, Jharkhand', '834002', 'Punjab National Bank', '55120078441', 'PUNB0551200', 'Iqbal Ansari', 'Father', '9835221190'),
   ('19JHR-SBU-2026-104', NULL, '2026-01-22', 'Ankit Oraon', 'SD', '2007-02-27', '712045667290', '7712340098', 'ankit.oraon@sbu.ac.in', 'AB+', 'NIL', 'Physical Scheduled', 'Physical efficiency test scheduled at SBU parade ground.', NULL, 'B.Tech Mechanical', 'School of Engineering', 'SBU/ME/2026/108', '1st Year', '1st Sem', 74.8, 77.1, 168, 58, '6:30', 28, false, NULL, 'None', NULL, 'Kanke Road, Ranchi, Jharkhand', 'Gumla, Jharkhand', '835207', 'Canara Bank', '61220044190', 'CNRB0006122', 'Budhwa Oraon', 'Father', '9612337740'),
   ('19JHR-SBU-2026-105', NULL, '2026-01-25', 'Shreya Gupta', 'SW', '2006-07-08', '803312998145', '9304451122', 'shreya.gupta@sbu.ac.in', 'B-', 'Mole on forehead', 'Submitted', 'Online application submitted successfully.', NULL, 'B.Com Honours', 'School of Commerce', 'SBU/COM/2026/135', '1st Year', '2nd Sem', 85.6, 88.0, 159, 51, '7:15', 18, true, 'JD/A/2022/1157', 'College', 'College badminton team', 'Ashok Nagar, Ranchi, Jharkhand', 'Ashok Nagar, Ranchi, Jharkhand', '834002', 'HDFC Bank', '50100377211', 'HDFC0000412', 'Manoj Kumar Gupta', 'Father', '9431778812'),
-  ('19JHR-SBU-2026-106', NULL, '2026-01-28', 'Rahul Bhengra', 'SD', '2005-05-30', '904471223390', '8340012789', 'rahul.bhengra@sbu.ac.in', 'O-', 'Cut mark on left knee', 'Rejected', 'Did not meet minimum height standard for Senior Division.', NULL, 'BCA', 'School of Computer Applications', 'SBU/BCA/2026/090', '2nd Year', '3rd Sem', 68.4, 71.2, 158, 55, '7:48', 12, false, NULL, 'None', NULL, 'Khunti, Jharkhand', 'Khunti, Jharkhand', '835210', 'Union Bank of India', '39120066712', 'UBIN0539121', 'Somra Bhengra', 'Father', '9771120044');
+  ('19JHR-SBU-2026-106', NULL, '2026-01-28', 'Rahul Bhengra', 'SD', '2005-05-30', '904471223390', '8340012789', 'rahul.bhengra@sbu.ac.in', 'O-', 'Cut mark on left knee', 'Rejected', 'Did not meet minimum height standard for Senior Division.', NULL, 'BCA', 'School of Computer Applications', 'SBU/BCA/2026/090', '2nd Year', '3rd Sem', 68.4, 71.2, 158, 55, '7:48', 12, false, NULL, 'None', NULL, 'Khunti, Jharkhand', 'Khunti, Jharkhand', '835210', 'Union Bank of India', '39120066712', 'UBIN0539121', 'Somra Bhengra', 'Father', '9771120044')
+ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO public.notifications (title, category, priority, body, action_type, action_label)
 VALUES
@@ -186,7 +190,7 @@ CREATE INDEX IF NOT EXISTS idx_app_sessions_token ON public.app_sessions (token)
 CREATE INDEX IF NOT EXISTS idx_cadets_sbu_id ON public.cadets (sbu_id);
 
 -- >>> MIGRATION: 20260807202408_845b6f7a-3f4f-4e78-8f1b-6a7d00fe01e2.sql <<<
-CREATE TABLE public.auth_otp_codes (
+CREATE TABLE IF NOT EXISTS public.auth_otp_codes (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   identifier text NOT NULL,
   purpose text NOT NULL DEFAULT 'password_reset',
@@ -197,11 +201,11 @@ CREATE TABLE public.auth_otp_codes (
   expires_at timestamptz NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now()
 );
-CREATE INDEX auth_otp_codes_identifier_idx ON public.auth_otp_codes (lower(identifier), purpose, created_at DESC);
+CREATE INDEX IF NOT EXISTS auth_otp_codes_identifier_idx ON public.auth_otp_codes (lower(identifier), purpose, created_at DESC);
 GRANT ALL ON public.auth_otp_codes TO service_role;
 ALTER TABLE public.auth_otp_codes ENABLE ROW LEVEL SECURITY;
 
-CREATE TABLE public.app_credentials (
+CREATE TABLE IF NOT EXISTS public.app_credentials (
   identifier text PRIMARY KEY,
   password_hash text NOT NULL,
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -513,7 +517,7 @@ ALTER TABLE public.onboarding_progress ENABLE ROW LEVEL SECURITY;
 -- Storage Capability & Bucket Tokenisation Security Schema (OWASP ASVS 5.0 / API Security)
 
 -- 1. Create storage_upload_intents table
-CREATE TABLE storage_upload_intents (
+CREATE TABLE IF NOT EXISTS public.storage_upload_intents (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   opaque_intent_id text NOT NULL UNIQUE,
   user_id text NOT NULL,
@@ -532,17 +536,17 @@ CREATE TABLE storage_upload_intents (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE INDEX idx_storage_intents_user ON storage_upload_intents (user_id);
-CREATE INDEX idx_storage_intents_status_exp ON storage_upload_intents (status, expires_at);
-CREATE INDEX idx_storage_intents_token ON storage_upload_intents (token_hash);
-GRANT ALL ON storage_upload_intents TO service_role;
+CREATE INDEX IF NOT EXISTS idx_storage_intents_user ON public.storage_upload_intents (user_id);
+CREATE INDEX IF NOT EXISTS idx_storage_intents_status_exp ON public.storage_upload_intents (status, expires_at);
+CREATE INDEX IF NOT EXISTS idx_storage_intents_token ON public.storage_upload_intents (token_hash);
+GRANT ALL ON public.storage_upload_intents TO service_role;
 
 DO $$ BEGIN
-  EXECUTE 'ALTER TABLE storage_upload_intents ENABLE ROW LEVEL SECURITY';
+  EXECUTE 'ALTER TABLE public.storage_upload_intents ENABLE ROW LEVEL SECURITY';
 END $$;
 
 -- 2. Create storage_objects table
-CREATE TABLE storage_objects (
+CREATE TABLE IF NOT EXISTS public.storage_objects (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   opaque_object_id text NOT NULL UNIQUE,
   bucket text NOT NULL,
@@ -559,21 +563,21 @@ CREATE TABLE storage_objects (
   deleted_at timestamptz
 );
 
-CREATE INDEX idx_storage_objects_owner ON storage_objects (owner_id);
-CREATE INDEX idx_storage_objects_resource ON storage_objects (resource_type, resource_id);
-CREATE INDEX idx_storage_objects_key ON storage_objects (object_key);
-GRANT ALL ON storage_objects TO service_role;
+CREATE INDEX IF NOT EXISTS idx_storage_objects_owner ON public.storage_objects (owner_id);
+CREATE INDEX IF NOT EXISTS idx_storage_objects_resource ON public.storage_objects (resource_type, resource_id);
+CREATE INDEX IF NOT EXISTS idx_storage_objects_key ON public.storage_objects (object_key);
+GRANT ALL ON public.storage_objects TO service_role;
 
 DO $$ BEGIN
-  EXECUTE 'ALTER TABLE storage_objects ENABLE ROW LEVEL SECURITY';
+  EXECUTE 'ALTER TABLE public.storage_objects ENABLE ROW LEVEL SECURITY';
 END $$;
 
 -- 3. Create storage_access_grants table
-CREATE TABLE storage_access_grants (
+CREATE TABLE IF NOT EXISTS public.storage_access_grants (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   opaque_grant_id text NOT NULL UNIQUE,
   user_id text NOT NULL,
-  object_id uuid NOT NULL REFERENCES storage_objects(id) ON DELETE CASCADE,
+  object_id uuid NOT NULL REFERENCES public.storage_objects(id) ON DELETE CASCADE,
   operation text NOT NULL DEFAULT 'DOWNLOAD', -- 'DOWNLOAD', 'VIEW'
   grant_token_hash text NOT NULL UNIQUE,
   expires_at timestamptz NOT NULL,
@@ -583,13 +587,13 @@ CREATE TABLE storage_access_grants (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE INDEX idx_storage_grants_user ON storage_access_grants (user_id);
-CREATE INDEX idx_storage_grants_object ON storage_access_grants (object_id);
-CREATE INDEX idx_storage_grants_token ON storage_access_grants (grant_token_hash);
-GRANT ALL ON storage_access_grants TO service_role;
+CREATE INDEX IF NOT EXISTS idx_storage_grants_user ON public.storage_access_grants (user_id);
+CREATE INDEX IF NOT EXISTS idx_storage_grants_object ON public.storage_access_grants (object_id);
+CREATE INDEX IF NOT EXISTS idx_storage_grants_token ON public.storage_access_grants (grant_token_hash);
+GRANT ALL ON public.storage_access_grants TO service_role;
 
 DO $$ BEGIN
-  EXECUTE 'ALTER TABLE storage_access_grants ENABLE ROW LEVEL SECURITY';
+  EXECUTE 'ALTER TABLE public.storage_access_grants ENABLE ROW LEVEL SECURITY';
 END $$;
 
 
@@ -598,7 +602,7 @@ END $$;
 -- Intrusion Detection System (IDS), Security Alerting & Automated Containment Schema
 
 -- 1. Create ids_events table
-CREATE TABLE ids_events (
+CREATE TABLE IF NOT EXISTS public.ids_events (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   event_type text NOT NULL, -- 'AUTH_FAILURE', 'IDOR_ATTEMPT', 'STORAGE_TOKEN_REPLAY', 'RATE_LIMIT_TRIGGERED', 'UNAUTHORIZED_EXPORT', 'AI_ABUSE'
   actor_id text,
@@ -608,19 +612,19 @@ CREATE TABLE ids_events (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE INDEX idx_ids_events_actor ON ids_events (actor_id);
-CREATE INDEX idx_ids_events_ip ON ids_events (actor_ip);
-CREATE INDEX idx_ids_events_type_time ON ids_events (event_type, created_at);
-GRANT ALL ON ids_events TO service_role;
+CREATE INDEX IF NOT EXISTS idx_ids_events_actor ON public.ids_events (actor_id);
+CREATE INDEX IF NOT EXISTS idx_ids_events_ip ON public.ids_events (actor_ip);
+CREATE INDEX IF NOT EXISTS idx_ids_events_type_time ON public.ids_events (event_type, created_at);
+GRANT ALL ON public.ids_events TO service_role;
 
 DO $$ BEGIN
-  EXECUTE 'ALTER TABLE ids_events ENABLE ROW LEVEL SECURITY';
+  EXECUTE 'ALTER TABLE public.ids_events ENABLE ROW LEVEL SECURITY';
 END $$;
 
 -- 2. Create ids_alerts table
-CREATE TABLE ids_alerts (
+CREATE TABLE IF NOT EXISTS public.ids_alerts (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  event_id uuid REFERENCES ids_events(id) ON DELETE CASCADE,
+  event_id uuid REFERENCES public.ids_events(id) ON DELETE CASCADE,
   alert_level text NOT NULL, -- 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'
   title text NOT NULL,
   description text NOT NULL,
@@ -628,28 +632,28 @@ CREATE TABLE ids_alerts (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE INDEX idx_ids_alerts_level_status ON ids_alerts (alert_level, status);
-GRANT ALL ON ids_alerts TO service_role;
+CREATE INDEX IF NOT EXISTS idx_ids_alerts_level_status ON public.ids_alerts (alert_level, status);
+GRANT ALL ON public.ids_alerts TO service_role;
 
 DO $$ BEGIN
-  EXECUTE 'ALTER TABLE ids_alerts ENABLE ROW LEVEL SECURITY';
+  EXECUTE 'ALTER TABLE public.ids_alerts ENABLE ROW LEVEL SECURITY';
 END $$;
 
 -- 3. Create ids_actions table
-CREATE TABLE ids_actions (
+CREATE TABLE IF NOT EXISTS public.ids_actions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  alert_id uuid REFERENCES ids_alerts(id) ON DELETE CASCADE,
+  alert_id uuid REFERENCES public.ids_alerts(id) ON DELETE CASCADE,
   action_type text NOT NULL, -- 'LOG', 'ALERT_STAFF', 'RATE_LIMIT_IP', 'REVOKE_SESSION', 'QUARANTINE_OBJECT'
   target_resource text,
   executed_at timestamptz NOT NULL DEFAULT now(),
   status text NOT NULL DEFAULT 'EXECUTED'
 );
 
-CREATE INDEX idx_ids_actions_alert ON ids_actions (alert_id);
-GRANT ALL ON ids_actions TO service_role;
+CREATE INDEX IF NOT EXISTS idx_ids_actions_alert ON public.ids_actions (alert_id);
+GRANT ALL ON public.ids_actions TO service_role;
 
 DO $$ BEGIN
-  EXECUTE 'ALTER TABLE ids_actions ENABLE ROW LEVEL SECURITY';
+  EXECUTE 'ALTER TABLE public.ids_actions ENABLE ROW LEVEL SECURITY';
 END $$;
 
 
