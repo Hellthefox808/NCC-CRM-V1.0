@@ -7,8 +7,8 @@ This document tracks all unit, integration, security, and build verification tes
 ## 1. Test Suite Summary
 
 - **Total Test Suites**: 9
-- **Total Executed Tests**: 47
-- **Passing Tests**: 47 (100%)
+- **Total Executed Tests**: 49
+- **Passing Tests**: 49 (100%)
 - **Failing / Skipped Tests**: 0
 - **Execution Command**: `npm run test`
 
@@ -73,6 +73,8 @@ This document tracks all unit, integration, security, and build verification tes
 - `buildEnrollmentRow()`: Verifies assignment of 18-digit application numbers starting with 19.
 - `formatApplicationNo()`: Verifies clean string formatting (`192026-0812-98471625`).
 - `sendMultiChannelApplicationConfirmation()`: Verifies Email, WhatsApp, and SMS dispatches.
+- `cadetEnrollmentSchema (SD & SW)`: Verifies full Form 1 payload validation with academic, physical, and bank DBT details.
+- `cadetEnrollmentSchema (Rejections)`: Verifies rejection of malformed phone numbers, invalid names, and short identifiers.
 
 ---
 
