@@ -33,6 +33,7 @@ dist-ssr
 .next/
 .vercel/
 .cache/
+supabase/.temp/
 
 # Local Database & Backups
 *.sqlite
