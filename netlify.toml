@@ -1,10 +1,10 @@
 [build]
   command = "npm run build"
-  publish = ".output/public"
+  publish = "dist"
   functions = ".netlify/functions-internal"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "22"
   NITRO_PRESET = "netlify"
 
 [[redirects]]
@@ -28,4 +28,10 @@
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
