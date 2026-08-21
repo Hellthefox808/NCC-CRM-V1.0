@@ -66,6 +66,7 @@ The NCC Portal operates as an integrated, OWASP-compliant identity and managemen
 
 ## 4. Test Suite & Verification Metrics
 
-- **Backend Unit Tests**: **47 / 47 Pass (100%)** across 9 test suites.
+- **Backend Unit Tests**: **49 / 49 Pass (100%)** across 9 test suites.
 - **ESLint Static Code Analysis**: **0 Errors (100% clean type-safety)**.
+- **Form 1 Enrollment Validation**: Full coverage for SD/SW cadet registration, 18-digit Application Number generation, phone/Aadhaar normalization, and multi-channel dispatches (Email + WhatsApp + SMS).
 - **Production Build Status**: **Success (Vite + Nitro SSR Bundle)** with zero blocking warnings.
