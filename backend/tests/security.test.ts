@@ -61,7 +61,7 @@ describe("Security & Authorization Unit Tests", () => {
     };
 
     const mapped = mapToCadetRecord(dummyRow);
-    const masked = maskPublicRecord(mapped) as any;
+    const masked = maskPublicRecord(mapped) as Record<string, unknown>;
 
     assert.equal(masked.id, "19JHR-SBU-2026-101");
     assert.equal(masked.fullName, "Aditya Kumar Singh");

@@ -53,7 +53,7 @@ class MailerService {
     const host = process.env.SMTP_HOST || "smtp.gmail.com";
     const port = parseInt(process.env.SMTP_PORT || "587", 10);
     const user = process.env.SMTP_USER || "";
-    const pass = process.env.SMTP_PASSWORD || "";
+    const pass = process.env.SMTP_PASSWORD || process.env.SMTP_PASS || "";
 
     // 465 uses direct TLS; 587 uses STARTTLS
     const secure = port === 465;
@@ -105,11 +105,12 @@ class MailerService {
         success: true,
         messageId: info.messageId,
       };
-    } catch (err: any) {
-      console.error("[Mailer Error]", err?.message || err);
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to send email";
+      console.error("[Mailer Error]", errorMsg);
       return {
         success: false,
-        error: err?.message || "Failed to send email",
+        error: errorMsg,
       };
     }
   }

@@ -1,10 +1,28 @@
 import { getAdmin } from "../../lib/ncc-db.ts";
 import { mailer } from "../mail/mailer.ts";
+import type {
+  SendOtpPayload,
+  SendApplicationAcknowledgementPayload,
+  SendApplicationApprovedPayload,
+  SendApplicationRejectedPayload,
+  SendCorrectionRequiredPayload,
+  SendOnboardingWelcomePayload,
+  SendWelcomeEmailPayload,
+  SendEnrollmentStatusPayload,
+  SendCalendarInvitationPayload,
+  SendEventCreatedPayload,
+  SendEventUpdatedPayload,
+  SendEventCancelledPayload,
+  SendReminderPayload,
+  SendImportantNoticePayload,
+  SendAttendanceAlertPayload,
+  SendPasswordResetPayload,
+} from "../mail/types.ts";
 
 export interface QueueJobPayload {
   jobType: string;
   recipient: string;
-  payload: Record<string, any>;
+  payload: Record<string, unknown>;
   scheduledAt?: string;
 }
 
@@ -12,7 +30,7 @@ export interface QueueJobPayload {
 export async function queueEmailJob(
   jobType: string,
   recipient: string,
-  payload: Record<string, any>,
+  payload: Record<string, unknown>,
   scheduledAt?: string,
 ): Promise<{ success: boolean; jobId?: string; error?: string }> {
   try {
@@ -37,9 +55,10 @@ export async function queueEmailJob(
     }, 50);
 
     return { success: true, jobId: data.id };
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("[Queue Enqueue Error]", err);
-    return { success: false, error: err?.message || "Failed to enqueue email job" };
+    const errorMsg = err instanceof Error ? err.message : "Failed to enqueue email job";
+    return { success: false, error: errorMsg };
   }
 }
 
@@ -76,58 +95,87 @@ export async function processPendingEmailJobs(): Promise<number> {
       try {
         switch (job.job_type) {
           case "sendOtp":
-            sendResult = await mailer.sendOtp(job.payload as any);
+            sendResult = await mailer.sendOtp(job.payload as unknown as SendOtpPayload);
             break;
           case "sendApplicationAcknowledgement":
-            sendResult = await mailer.sendApplicationAcknowledgement(job.payload as any);
+            sendResult = await mailer.sendApplicationAcknowledgement(
+              job.payload as unknown as SendApplicationAcknowledgementPayload,
+            );
             break;
           case "sendApplicationApproved":
-            sendResult = await mailer.sendApplicationApproved(job.payload as any);
+            sendResult = await mailer.sendApplicationApproved(
+              job.payload as unknown as SendApplicationApprovedPayload,
+            );
             break;
           case "sendApplicationRejected":
-            sendResult = await mailer.sendApplicationRejected(job.payload as any);
+            sendResult = await mailer.sendApplicationRejected(
+              job.payload as unknown as SendApplicationRejectedPayload,
+            );
             break;
           case "sendCorrectionRequired":
-            sendResult = await mailer.sendCorrectionRequired(job.payload as any);
+            sendResult = await mailer.sendCorrectionRequired(
+              job.payload as unknown as SendCorrectionRequiredPayload,
+            );
             break;
           case "sendOnboardingWelcome":
-            sendResult = await mailer.sendOnboardingWelcome(job.payload as any);
+            sendResult = await mailer.sendOnboardingWelcome(
+              job.payload as unknown as SendOnboardingWelcomePayload,
+            );
             break;
           case "sendWelcomeEmail":
-            sendResult = await mailer.sendWelcomeEmail(job.payload as any);
+            sendResult = await mailer.sendWelcomeEmail(
+              job.payload as unknown as SendWelcomeEmailPayload,
+            );
             break;
           case "sendEnrollmentStatus":
-            sendResult = await mailer.sendEnrollmentStatus(job.payload as any);
+            sendResult = await mailer.sendEnrollmentStatus(
+              job.payload as unknown as SendEnrollmentStatusPayload,
+            );
             break;
           case "sendCalendarInvitation":
-            sendResult = await mailer.sendCalendarInvitation(job.payload as any);
+            sendResult = await mailer.sendCalendarInvitation(
+              job.payload as unknown as SendCalendarInvitationPayload,
+            );
             break;
           case "sendEventCreated":
-            sendResult = await mailer.sendEventCreated(job.payload as any);
+            sendResult = await mailer.sendEventCreated(
+              job.payload as unknown as SendEventCreatedPayload,
+            );
             break;
           case "sendEventUpdated":
-            sendResult = await mailer.sendEventUpdated(job.payload as any);
+            sendResult = await mailer.sendEventUpdated(
+              job.payload as unknown as SendEventUpdatedPayload,
+            );
             break;
           case "sendEventCancelled":
-            sendResult = await mailer.sendEventCancelled(job.payload as any);
+            sendResult = await mailer.sendEventCancelled(
+              job.payload as unknown as SendEventCancelledPayload,
+            );
             break;
           case "sendReminder":
-            sendResult = await mailer.sendReminder(job.payload as any);
+            sendResult = await mailer.sendReminder(job.payload as unknown as SendReminderPayload);
             break;
           case "sendImportantNotice":
-            sendResult = await mailer.sendImportantNotice(job.payload as any);
+            sendResult = await mailer.sendImportantNotice(
+              job.payload as unknown as SendImportantNoticePayload,
+            );
             break;
           case "sendAttendanceAlert":
-            sendResult = await mailer.sendAttendanceAlert(job.payload as any);
+            sendResult = await mailer.sendAttendanceAlert(
+              job.payload as unknown as SendAttendanceAlertPayload,
+            );
             break;
           case "sendPasswordReset":
-            sendResult = await mailer.sendPasswordReset(job.payload as any);
+            sendResult = await mailer.sendPasswordReset(
+              job.payload as unknown as SendPasswordResetPayload,
+            );
             break;
           default:
             sendResult = { success: false, error: `Unknown job type: ${job.job_type}` };
         }
-      } catch (err: any) {
-        sendResult = { success: false, error: err?.message || "Execution error" };
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : "Execution error";
+        sendResult = { success: false, error: errorMsg };
       }
 
       if (sendResult.success) {

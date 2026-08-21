@@ -64,12 +64,10 @@ export const Route = createFileRoute("/api/v1/ano/applications/$id/request-corre
             message: "Correction requested from applicant.",
             data: { applicationId: app.id, status: "CORRECTION_REQUIRED" },
           });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("[ANO Correction Error]", err);
-          return json(
-            { success: false, error: err?.message || "Failed to request correction" },
-            500,
-          );
+          const errorMsg = err instanceof Error ? err.message : "Failed to request correction";
+          return json({ success: false, error: errorMsg }, 500);
         }
       },
     },

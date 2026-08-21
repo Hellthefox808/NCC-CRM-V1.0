@@ -20,13 +20,33 @@ import {
   Clock3,
 } from "lucide-react";
 
+import { CadetProfile, AttendanceSummary } from "@/types";
+
+export interface CadetTaskItem {
+  id: string;
+  title: string;
+  category?: string;
+  completed: boolean;
+  dueDate?: string;
+  priority?: "High" | "Medium" | "Low";
+}
+
+export interface CadetNotificationItem {
+  id: string;
+  title: string;
+  message?: string;
+  time?: string;
+  unread?: boolean;
+  type?: string;
+}
+
 interface CadetDashboardOverviewProps {
-  cadetProfile: any;
-  attendanceSummary: any;
-  tasks: any[];
+  cadetProfile: CadetProfile;
+  attendanceSummary: AttendanceSummary;
+  tasks: CadetTaskItem[];
   toggleTask: (id: string) => void;
-  notifications: any[];
-  setActiveTab: (tab: any) => void;
+  notifications: CadetNotificationItem[];
+  setActiveTab: (tab: string) => void;
   setShowIdCardModal: (val: boolean) => void;
 }
 

@@ -56,7 +56,6 @@ export const Route = createFileRoute("/api/v1/auth/login")({
             ip: clientIp,
             metadata: {
               reason: "rate_limit_exceeded",
-              attempts: rl.remaining,
               retryAfter: Math.ceil(rl.retryAfterMs / 1000),
             },
           });
@@ -77,8 +76,8 @@ export const Route = createFileRoute("/api/v1/auth/login")({
         let userEmail: string = email || username || "";
         let role = "cadet";
 
-        const cadetEnrollmentId: string | null = null;
-        const cadetRecord: Record<string, unknown> | null = null;
+        let cadetEnrollmentId: string | null = null;
+        let cadetRecord: Record<string, unknown> | null = null;
 
         // All authentication flows through stored credentials only.
         // No hardcoded passwords — every account must set a portal password.
@@ -114,12 +113,20 @@ export const Route = createFileRoute("/api/v1/auth/login")({
           }
         } else if (userType === "cadet") {
           if (storedMatch === true) {
-            // Cadet with a verified stored password.
+            // Cadet with a verified stored password — look up their record to populate session.
             authenticated = true;
-            userName = username || email || "SBU Cadet";
             role = "cadet";
+            const { findCadetByIdentifier } = await import("@backend/lib/cadet-registry.server");
+            cadetRecord = await findCadetByIdentifier(identifier);
+            if (cadetRecord) {
+              cadetEnrollmentId = (cadetRecord["enrollment_id"] as string) ?? null;
+              userName = (cadetRecord["full_name"] as string) || username || email || "SBU Cadet";
+              userEmail = (cadetRecord["email"] as string) || userEmail;
+            } else {
+              userName = username || email || "SBU Cadet";
+            }
           } else if (storedMatch === null) {
-            // Unactivated account — require activation / password setup via OTP first.
+            // Unactivated account — require password setup via OTP first.
             const { logAuditEvent } = await import("@backend/lib/audit-log.server");
             logAuditEvent({
               actor: identifier,
@@ -132,7 +139,7 @@ export const Route = createFileRoute("/api/v1/auth/login")({
               {
                 success: false,
                 error:
-                  "Account not activated. Please use 'Forgot Password / Activate Account' to set up your password.",
+                  "Account not activated. Please use 'Forgot Password / Activate Account' to set up your portal password.",
                 code: "ACCOUNT_NOT_ACTIVATED",
               },
               401,

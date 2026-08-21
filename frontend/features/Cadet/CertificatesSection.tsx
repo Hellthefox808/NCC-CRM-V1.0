@@ -1,8 +1,16 @@
 import React from "react";
 import { Award, ShieldCheck, Download } from "lucide-react";
 
+export interface CertificateItem {
+  title: string;
+  certNo: string;
+  issueDate: string;
+  authority: string;
+  grade: string;
+}
+
 interface CertificatesSectionProps {
-  setSelectedCert: (cert: any) => void;
+  setSelectedCert: (cert: CertificateItem | null) => void;
   handleDownloadCertificate: (name: string) => void;
 }
 

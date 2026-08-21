@@ -5,9 +5,7 @@
  * frontend SDK (`/api/v1/...`) keeps working unchanged.
  */
 
-export interface CadetRow {
-  [key: string]: any;
-}
+export type CadetRow = Record<string, unknown>;
 
 /** Loads the privileged client lazily so it never enters a client bundle. */
 export async function getAdmin() {
@@ -20,50 +18,58 @@ export const CADET_COLUMNS = "*";
 /** DB row -> CadetRecord shape expected by the frontend. */
 export function mapToCadetRecord(row: CadetRow) {
   return {
-    id: row.id,
-    enrollmentNo: row.enrollment_no || undefined,
-    applicationDate: String(row.application_date),
-    fullName: row.full_name,
-    gender: row.gender,
-    dob: String(row.dob),
-    aadhaarNumber: row.aadhaar_number,
-    mobile: row.mobile,
-    email: row.email || "",
-    bloodGroup: row.blood_group,
-    identificationMark: row.identification_mark,
-    status: row.status,
-    officerRemarks: row.officer_remarks || undefined,
-    selectionRank: row.selection_rank ?? undefined,
+    id: (row.id as string) || "",
+    enrollmentNo: (row.enrollment_no as string) || undefined,
+    applicationDate: String(row.application_date || ""),
+    fullName: (row.full_name as string) || "",
+    gender: (row.gender as "SD" | "SW") || "SD",
+    dob: String(row.dob || ""),
+    aadhaarNumber: (row.aadhaar_number as string) || "",
+    mobile: (row.mobile as string) || "",
+    email: (row.email as string) || "",
+    bloodGroup: (row.blood_group as string) || "",
+    identificationMark: (row.identification_mark as string) || "",
+    status:
+      (row.status as
+        | "Submitted"
+        | "Physical Scheduled"
+        | "Medical Cleared"
+        | "Selected"
+        | "Enrolled"
+        | "Rejected") || "Submitted",
+    officerRemarks: (row.officer_remarks as string) || undefined,
+    selectionRank: (row.selection_rank as number) ?? undefined,
 
-    sbuCourse: row.sbu_course || "",
-    sbuDepartment: row.sbu_department || "",
-    sbuRollNo: row.sbu_roll_no || "",
-    sbuYear: row.sbu_year || "",
-    sbuSemester: row.sbu_semester || "",
+    sbuCourse: (row.sbu_course as string) || "",
+    sbuDepartment: (row.sbu_department as string) || "",
+    sbuRollNo: (row.sbu_roll_no as string) || "",
+    sbuYear: (row.sbu_year as string) || "",
+    sbuSemester: (row.sbu_semester as string) || "",
     marksPercentage10th: Number(row.marks_percentage_10th) || 0,
     marksPercentage12th: Number(row.marks_percentage_12th) || 0,
 
     heightCm: Number(row.height_cm) || 0,
     weightKg: Number(row.weight_kg) || 0,
-    run1600mTime: row.run_1600m_time || "",
+    run1600mTime: (row.run_1600m_time as string) || "",
     pushupsCount: Number(row.pushups_count) || 0,
     hasJuniorCertificate: Boolean(row.has_junior_certificate),
-    juniorCertificateNo: row.junior_certificate_no || undefined,
-    sportsLevel: row.sports_level || "None",
-    sportsDetails: row.sports_details || undefined,
+    juniorCertificateNo: (row.junior_certificate_no as string) || undefined,
+    sportsLevel:
+      (row.sports_level as "None" | "College" | "District" | "State" | "National") || "None",
+    sportsDetails: (row.sports_details as string) || undefined,
 
-    presentAddress: row.present_address || "",
-    permanentAddress: row.permanent_address || "",
-    pinCode: row.pin_code || "",
-    bankName: row.bank_name || "",
-    accountNumber: row.account_number || "",
-    ifscCode: row.ifsc_code || "",
-    guardianName: row.guardian_name || "",
-    guardianRelation: row.guardian_relation || "",
-    guardianMobile: row.guardian_mobile || "",
+    presentAddress: (row.present_address as string) || "",
+    permanentAddress: (row.permanent_address as string) || "",
+    pinCode: (row.pin_code as string) || "",
+    bankName: (row.bank_name as string) || "",
+    accountNumber: (row.account_number as string) || "",
+    ifscCode: (row.ifsc_code as string) || "",
+    guardianName: (row.guardian_name as string) || "",
+    guardianRelation: (row.guardian_relation as string) || "",
+    guardianMobile: (row.guardian_mobile as string) || "",
 
-    fatherName: row.guardian_relation === "Father" ? row.guardian_name : "",
-    motherName: row.guardian_relation === "Mother" ? row.guardian_name : "",
+    fatherName: row.guardian_relation === "Father" ? (row.guardian_name as string) : "",
+    motherName: row.guardian_relation === "Mother" ? (row.guardian_name as string) : "",
   };
 }
 
@@ -75,45 +81,49 @@ export function generate18DigitApplicationNo(): string {
 }
 
 /** Incoming enrollment payload -> DB row. */
-export function buildEnrollmentRow(data: any) {
-  const id = data.applicationNo || data.applicationId || generate18DigitApplicationNo();
+export function buildEnrollmentRow(data: Record<string, unknown>) {
+  const id =
+    (data.applicationNo as string) ||
+    (data.applicationId as string) ||
+    generate18DigitApplicationNo();
   return {
     id,
     application_date: new Date().toISOString().slice(0, 10),
-    full_name: data.fullName,
-    gender: data.gender || "SD",
-    dob: data.dob || "2000-01-01",
-    aadhaar_number: data.aadhaarNumber,
-    mobile: data.mobile,
-    email: data.email || `${data.aadhaarNumber}@sbu.ac.in`,
-    blood_group: data.bloodGroup || "O+",
-    identification_mark: data.identificationMark || "NIL",
+    full_name: (data.fullName as string) || "",
+    gender: (data.gender as string) || "SD",
+    dob: (data.dob as string) || "2000-01-01",
+    aadhaar_number: (data.aadhaarNumber as string) || "",
+    mobile: (data.mobile as string) || "",
+    email: (data.email as string) || `${data.aadhaarNumber || "cadet"}@sbu.ac.in`,
+    blood_group: (data.bloodGroup as string) || "O+",
+    identification_mark: (data.identificationMark as string) || "NIL",
     status: "PENDING_ANO_REVIEW",
     officer_remarks: "Application received and pending ANO review.",
-    sbu_course: data.sbuCourse || "Unknown",
-    sbu_department: data.sbuDepartment || "Sarala Birla University",
-    sbu_roll_no: data.sbuRollNo,
-    sbu_year: data.sbuYear || "1st Year",
-    sbu_semester: data.sbuSemester || "1st Sem",
+    sbu_course: (data.sbuCourse as string) || "Unknown",
+    sbu_department: (data.sbuDepartment as string) || "Sarala Birla University",
+    sbu_roll_no: (data.sbuRollNo as string) || "",
+    sbu_year: (data.sbuYear as string) || "1st Year",
+    sbu_semester: (data.sbuSemester as string) || "1st Sem",
     marks_percentage_10th: Number(data.marksPercentage10th) || 0,
     marks_percentage_12th: Number(data.marksPercentage12th) || 0,
     height_cm: Number(data.heightCm) || 170,
     weight_kg: Number(data.weightKg) || 60,
-    run_1600m_time: data.run1600mTime || "N/A",
+    run_1600m_time: (data.run1600mTime as string) || "N/A",
     pushups_count: Number(data.pushupsCount) || 0,
     has_junior_certificate: Boolean(data.hasJuniorCertificate),
-    junior_certificate_no: data.juniorCertificateNo || null,
-    sports_level: data.sportsLevel || "None",
-    sports_details: data.sportsDetails || null,
-    present_address: data.presentAddress || "N/A",
-    permanent_address: data.permanentAddress || data.presentAddress || "N/A",
-    pin_code: data.pinCode || "834010",
-    bank_name: data.bankName || "N/A",
-    account_number: data.accountNumber || "N/A",
-    ifsc_code: data.ifscCode || "N/A",
-    guardian_name: data.guardianName || data.fatherName || "N/A",
-    guardian_relation: data.guardianRelation || "Father",
-    guardian_mobile: data.guardianMobile || data.mobile || "N/A",
+    junior_certificate_no: (data.juniorCertificateNo as string) || null,
+    sports_level: (data.sportsLevel as string) || "None",
+    sports_details: (data.sportsDetails as string) || null,
+    present_address: (data.presentAddress as string) || "N/A",
+    permanent_address:
+      (data.permanentAddress as string) || (data.presentAddress as string) || "N/A",
+    pin_code: (data.pinCode as string) || "834010",
+    bank_name: (data.bankName as string) || "N/A",
+    account_number: (data.accountNumber as string) || "N/A",
+    ifsc_code: (data.ifscCode as string) || "N/A",
+    guardian_name: (data.guardianName as string) || (data.fatherName as string) || "N/A",
+    guardian_relation: (data.guardianRelation as string) || "Father",
+    guardian_mobile: (data.guardianMobile as string) || (data.mobile as string) || "N/A",
   };
 }
 

@@ -54,9 +54,10 @@ export async function sendMultiChannelApplicationConfirmation(
       submissionDate: dateStr,
     });
     emailResult = { success: res.success, messageId: res.messageId, error: res.error };
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("[MultiChannel] Email Dispatch Error:", err);
-    emailResult = { success: false, error: err?.message || "Email dispatch failed" };
+    const errorMsg = err instanceof Error ? err.message : "Email dispatch failed";
+    emailResult = { success: false, error: errorMsg };
   }
 
   // 2. WhatsApp Dispatch (Simulated / WhatsApp Cloud API Integration)

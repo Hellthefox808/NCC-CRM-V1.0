@@ -56,7 +56,7 @@ export const Route = createFileRoute("/api/v1/calendar/$id")({
         if (!gate.ok) return json({ success: false, error: gate.error }, gate.status);
 
         const { id } = params;
-        const body = (await request.json().catch(() => ({}))) as Record<string, any>;
+        const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
 
         try {
           const admin = await getAdmin();
@@ -72,7 +72,7 @@ export const Route = createFileRoute("/api/v1/calendar/$id")({
             return json({ success: false, error: "Calendar event not found" }, 404);
           }
 
-          const updatePayload: Record<string, any> = {
+          const updatePayload: Record<string, unknown> = {
             updated_at: new Date().toISOString(),
             updated_by: gate.officerName || "Officer",
           };
@@ -97,7 +97,7 @@ export const Route = createFileRoute("/api/v1/calendar/$id")({
 
           // If start time changed, recalculate prompter reminders
           if (body.startTime && body.startTime !== existing.start_time) {
-            await prompterEngine.updateEventReminders(id, body.startTime);
+            await prompterEngine.updateEventReminders(id, body.startTime as string);
           }
 
           // Socket.IO Broadcast
@@ -105,7 +105,9 @@ export const Route = createFileRoute("/api/v1/calendar/$id")({
 
           // Non-blocking Async Update Email Job
           const { data: cadets } = await admin.from("cadet_enrollments").select("email");
-          const recipients = (cadets ?? []).map((c: any) => c.email).filter(Boolean);
+          const recipients = (cadets ?? [])
+            .map((c: Record<string, unknown>) => c.email as string)
+            .filter(Boolean);
           const emailTargets = recipients.length > 0 ? recipients : ["cadet@sbu.ac.in"];
 
           for (const email of emailTargets) {
@@ -115,7 +117,8 @@ export const Route = createFileRoute("/api/v1/calendar/$id")({
               newStartTime: updated.start_time,
               newEndTime: updated.end_time,
               newLocation: updated.location,
-              changeSummary: body.changeSummary || "Schedule updated by battalion officer.",
+              changeSummary:
+                (body.changeSummary as string) || "Schedule updated by battalion officer.",
               eventId: updated.id,
             });
           }
@@ -129,7 +132,7 @@ export const Route = createFileRoute("/api/v1/calendar/$id")({
           });
 
           return json({ success: true, data: { event: updated } });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("[Calendar Update Error]", err);
           return json({ success: false, error: "Failed to update calendar event" }, 500);
         }
@@ -163,7 +166,7 @@ export const Route = createFileRoute("/api/v1/calendar/$id")({
           });
 
           return json({ success: true, message: "Calendar event deleted successfully" });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("[Calendar Delete Error]", err);
           return json({ success: false, error: "Failed to delete calendar event" }, 500);
         }

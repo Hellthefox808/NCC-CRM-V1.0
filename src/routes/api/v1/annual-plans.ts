@@ -32,8 +32,10 @@ export const Route = createFileRoute("/api/v1/annual-plans")({
         const gate = await requireOfficer(request);
         if (!gate.ok) return json({ success: false, error: gate.error }, gate.status);
 
-        const body = (await request.json().catch(() => ({}))) as Record<string, any>;
-        if (!body.title || !body.targetMonth) {
+        const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+        const title = typeof body.title === "string" ? body.title : "";
+        const targetMonth = typeof body.targetMonth === "string" ? body.targetMonth : "";
+        if (!title || !targetMonth) {
           return json({ success: false, error: "Title and targetMonth are required." }, 400);
         }
 
@@ -43,11 +45,11 @@ export const Route = createFileRoute("/api/v1/annual-plans")({
             .from("annual_plans")
             .insert({
               plan_year: Number(body.planYear) || 2026,
-              title: body.title,
-              category: body.category || "Training",
-              target_month: body.targetMonth,
-              status: body.status || "PLANNED",
-              remarks: body.remarks || "",
+              title,
+              category: (body.category as string) || "Training",
+              target_month: targetMonth,
+              status: (body.status as string) || "PLANNED",
+              remarks: (body.remarks as string) || "",
             })
             .select("*")
             .single();

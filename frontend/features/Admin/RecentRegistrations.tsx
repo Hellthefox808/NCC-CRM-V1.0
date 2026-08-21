@@ -4,7 +4,7 @@ import { CadetRecord } from "@/types";
 
 interface RecentRegistrationsProps {
   enrollments: CadetRecord[];
-  setActiveTab: (tab: any) => void;
+  setActiveTab: (tab: string) => void;
   setSelectedRecord: (record: CadetRecord) => void;
   setEditingStatus: (status: string) => void;
   setEditingRemarks: (remarks: string) => void;

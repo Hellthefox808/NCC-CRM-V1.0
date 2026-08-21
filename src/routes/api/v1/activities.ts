@@ -36,8 +36,10 @@ export const Route = createFileRoute("/api/v1/activities")({
         const gate = await requireOfficer(request);
         if (!gate.ok) return json({ success: false, error: gate.error }, gate.status);
 
-        const body = (await request.json().catch(() => ({}))) as Record<string, any>;
-        if (!body.title || !body.startTime) {
+        const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+        const title = typeof body.title === "string" ? body.title : "";
+        const startTime = typeof body.startTime === "string" ? body.startTime : "";
+        if (!title || !startTime) {
           return json({ success: false, error: "Title and startTime are required." }, 400);
         }
 
@@ -46,15 +48,15 @@ export const Route = createFileRoute("/api/v1/activities")({
           const { data, error } = await admin
             .from("activities")
             .insert({
-              title: body.title,
-              category: body.category || "Institutional",
-              description: body.description || "",
-              image_url: body.imageUrl || "",
-              location: body.location || "SBU Parade Ground",
-              start_time: body.startTime,
-              end_time: body.endTime || null,
-              status: body.status || "PLANNED",
-              organizer: body.organizer || "19 JHR BN NCC",
+              title,
+              category: (body.category as string) || "Institutional",
+              description: (body.description as string) || "",
+              image_url: (body.imageUrl as string) || "",
+              location: (body.location as string) || "SBU Parade Ground",
+              start_time: startTime,
+              end_time: (body.endTime as string) || null,
+              status: (body.status as string) || "PLANNED",
+              organizer: (body.organizer as string) || "19 JHR BN NCC",
             })
             .select("*")
             .single();

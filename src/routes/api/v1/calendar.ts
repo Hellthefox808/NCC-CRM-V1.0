@@ -50,8 +50,11 @@ export const Route = createFileRoute("/api/v1/calendar")({
         const gate = await requireOfficer(request);
         if (!gate.ok) return json({ success: false, error: gate.error }, gate.status);
 
-        const body = (await request.json().catch(() => ({}))) as Record<string, any>;
-        if (!body.title || !body.startTime || !body.endTime) {
+        const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+        const title = typeof body.title === "string" ? body.title : "";
+        const startTime = typeof body.startTime === "string" ? body.startTime : "";
+        const endTime = typeof body.endTime === "string" ? body.endTime : "";
+        if (!title || !startTime || !endTime) {
           return json(
             { success: false, error: "Title, startTime, and endTime are required." },
             400,
@@ -63,17 +66,17 @@ export const Route = createFileRoute("/api/v1/calendar")({
           const { data: event, error } = await admin
             .from("calendar_events")
             .insert({
-              title: body.title,
-              event_type: body.eventType || "Parade",
-              start_time: body.startTime,
-              end_time: body.endTime,
-              timezone: body.timezone || "Asia/Kolkata",
-              location: body.location || "SBU Campus",
-              description: body.description || "",
+              title,
+              event_type: (body.eventType as string) || "Parade",
+              start_time: startTime,
+              end_time: endTime,
+              timezone: (body.timezone as string) || "Asia/Kolkata",
+              location: (body.location as string) || "SBU Campus",
+              description: (body.description as string) || "",
               is_all_day: Boolean(body.isAllDay),
-              status: body.status || "PUBLISHED",
-              created_by: (gate as any).officerName || "Officer",
-              updated_by: (gate as any).officerName || "Officer",
+              status: (body.status as string) || "PUBLISHED",
+              created_by: "Officer",
+              updated_by: "Officer",
             })
             .select("*")
             .single();
@@ -99,7 +102,9 @@ export const Route = createFileRoute("/api/v1/calendar")({
 
           // 3. Non-blocking Async Email Notification Queue
           const { data: cadets } = await admin.from("cadet_enrollments").select("email");
-          const recipients = (cadets ?? []).map((c: any) => c.email).filter(Boolean);
+          const recipients = (cadets ?? [])
+            .map((c: Record<string, unknown>) => c.email as string)
+            .filter(Boolean);
           const emailTargets = recipients.length > 0 ? recipients : ["cadet@sbu.ac.in"];
 
           for (const email of emailTargets) {
@@ -116,14 +121,14 @@ export const Route = createFileRoute("/api/v1/calendar")({
 
           // 4. Audit Log
           await recordAuditLog({
-            actorId: (gate as any).officerName || "Officer",
+            actorId: "Officer",
             action: "CREATE_CALENDAR_EVENT",
             target: event.id,
             details: `Created calendar event '${event.title}'`,
           });
 
           return json({ success: true, data: { event } }, 201);
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("[Calendar Event Create Error]", err);
           return json({ success: false, error: "Failed to create calendar event" }, 500);
         }

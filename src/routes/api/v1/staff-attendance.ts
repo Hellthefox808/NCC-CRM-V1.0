@@ -36,8 +36,13 @@ export const Route = createFileRoute("/api/v1/staff-attendance")({
         const gate = await requireOfficer(request);
         if (!gate.ok) return json({ success: false, error: gate.error }, gate.status);
 
-        const body = (await request.json().catch(() => ({}))) as Record<string, any>;
-        const { staffName, staffRole, action, dutyLocation, remarks } = body;
+        const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+        const staffName = typeof body.staffName === "string" ? body.staffName : "";
+        const staffRole = typeof body.staffRole === "string" ? body.staffRole : "PI Staff";
+        const action = typeof body.action === "string" ? body.action : "";
+        const dutyLocation =
+          typeof body.dutyLocation === "string" ? body.dutyLocation : "SBU Parade Ground";
+        const remarks = typeof body.remarks === "string" ? body.remarks : "";
 
         if (!staffName || !action) {
           return json(

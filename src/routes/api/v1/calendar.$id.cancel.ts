@@ -14,8 +14,8 @@ export const Route = createFileRoute("/api/v1/calendar/$id/cancel")({
         if (!gate.ok) return json({ success: false, error: gate.error }, gate.status);
 
         const { id } = params;
-        const body = (await request.json().catch(() => ({}))) as Record<string, any>;
-        const reason = body.reason || "Cancelled by battalion officer";
+        const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+        const reason = (body.reason as string) || "Cancelled by battalion officer";
 
         try {
           const admin = await getAdmin();
@@ -46,7 +46,9 @@ export const Route = createFileRoute("/api/v1/calendar/$id/cancel")({
 
           // 3. Non-blocking Async Cancellation Email Job
           const { data: cadets } = await admin.from("cadet_enrollments").select("email");
-          const recipients = (cadets ?? []).map((c: any) => c.email).filter(Boolean);
+          const recipients = (cadets ?? [])
+            .map((c: Record<string, unknown>) => c.email as string)
+            .filter(Boolean);
           const emailTargets = recipients.length > 0 ? recipients : ["cadet@sbu.ac.in"];
 
           for (const email of emailTargets) {
@@ -67,7 +69,7 @@ export const Route = createFileRoute("/api/v1/calendar/$id/cancel")({
           });
 
           return json({ success: true, data: { event } });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("[Calendar Cancel Error]", err);
           return json({ success: false, error: "Failed to cancel calendar event" }, 500);
         }

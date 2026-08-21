@@ -58,7 +58,7 @@ export async function recordSecurityEvent(
 
   try {
     const admin = await getAdmin();
-    const { data: dbEvent } = await (admin as any)
+    const { data: dbEvent } = await admin
       .from("ids_events")
       .insert({
         event_type: eventType,
@@ -86,7 +86,7 @@ export async function recordSecurityEvent(
 
     try {
       const admin = await getAdmin();
-      const { data: dbAlert } = await (admin as any)
+      const { data: dbAlert } = await admin
         .from("ids_alerts")
         .insert({
           event_id: eventId.startsWith("evt_") ? null : eventId,
@@ -101,7 +101,7 @@ export async function recordSecurityEvent(
         .single();
 
       if (dbAlert?.id) {
-        await (admin as any).from("ids_actions").insert({
+        await admin.from("ids_actions").insert({
           alert_id: dbAlert.id,
           action_type: containmentAction,
           target_resource: actorId || actorIp,

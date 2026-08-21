@@ -41,7 +41,6 @@ import {
   Activity,
   Edit2,
   CheckCheck,
-  Zap,
   MapPin,
 } from "lucide-react";
 import { CadetRecord } from "@/types";
@@ -265,55 +264,6 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  // Quick Sample Demo Autofill
-  const handleFillDemoData = () => {
-    setFormData({
-      fullName: "RAHUL KUMAR SHARMA",
-      gender: "SD",
-      dob: "2005-04-14",
-      aadhaarNumber: "8492 1049 3921",
-      mobile: "9835123456",
-      email: "rahul.sharma@sbu.ac.in",
-      fatherName: "SURESH PRASAD SHARMA",
-      motherName: "SUNITA SHARMA",
-      bloodGroup: "B+",
-      heightCm: "174",
-      weightKg: "68",
-      identificationMark: "Small scar on forehead",
-
-      sbuDepartment: "Department of Computer Applications",
-      sbuCourse: "BCA (Bachelor of Computer Applications)",
-      sbuRollNo: "JH24SDA104901",
-      sbuYear: "1st Year",
-      sbuSemester: "1st Sem",
-      marksPercentage10th: "88.4",
-      marksPercentage12th: "85.2",
-
-      run1600mTime: "5 min 30 sec",
-      pushupsCount: "35",
-      hasJuniorCertificate: true,
-      juniorCertificateNo: "JHR/JD/22/40192",
-      sportsLevel: "District",
-      sportsDetails: "District Level Athletics 400m Runner Up",
-
-      presentAddress: "Room 204, SBU Hostel B, Namkum Campus, Ranchi",
-      permanentAddress: "Main Road, Near Town Hall, Hazaribagh, Jharkhand",
-      pinCode: "834010",
-      bankName: "State Bank of India",
-      accountNumber: "38921049281",
-      ifscCode: "SBIN0001234",
-
-      guardianName: "SURESH PRASAD SHARMA",
-      guardianRelation: "Father",
-      guardianMobile: "9431109876",
-
-      declarationAccepted: true,
-      parentConsentAccepted: true,
-    });
-    setTouched({});
-    setErrorMessage("");
   };
 
   // Instant Physical & BMI Calculation
@@ -757,16 +707,6 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                 </div>
               </div>
             </div>
-
-            <button
-              type="button"
-              onClick={handleFillDemoData}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-700 hover:bg-amber-500/20 text-xs font-bold border border-amber-300/40 transition-all cursor-pointer shadow-xs"
-              title="Autofill valid sample data for quick previewing"
-            >
-              <Zap className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-              <span>Autofill Sample Data</span>
-            </button>
           </div>
 
           {submittedRecord ? (

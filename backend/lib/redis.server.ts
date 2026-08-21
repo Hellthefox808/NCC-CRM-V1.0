@@ -25,9 +25,24 @@ function pruneMemoryStore() {
   }
 }
 
+interface RedisLike {
+  get(key: string): Promise<unknown>;
+  set(
+    key: string,
+    value: string,
+    opts?: { ex?: number } | string,
+    ...args: unknown[]
+  ): Promise<unknown>;
+  incr(key: string): Promise<number | unknown>;
+  expire(key: string, seconds: number): Promise<boolean | number | unknown>;
+  del(key: string): Promise<unknown>;
+  status?: string;
+  connect?: () => Promise<void>;
+}
+
 // Dynamic client instances
-let ioredisInstance: any = null;
-let upstashInstance: any = null;
+let ioredisInstance: RedisLike | null = null;
+let upstashInstance: RedisLike | null = null;
 
 async function getUpstashClient() {
   const url = process.env.UPSTASH_REDIS_REST_URL;
@@ -118,8 +133,9 @@ export async function getRedisStatus(): Promise<RedisStatus> {
       if (client && client.status === "ready") {
         return { mode: "ioredis", connected: true };
       }
-    } catch (err: any) {
-      return { mode: "memory", connected: false, error: err?.message };
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Redis connection error";
+      return { mode: "memory", connected: false, error: errorMsg };
     }
   }
 

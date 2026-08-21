@@ -103,7 +103,7 @@ export async function issueOtp(
     code_hash: await hashCode(code, key),
     destination,
     expires_at: expiresAt.toISOString(),
-  } as any);
+  } as Record<string, unknown>);
   if (error) throw error;
 
   return { code, destination, expiresAt: expiresAt.toISOString() };
@@ -134,7 +134,15 @@ export async function verifyOtp(
     .limit(1);
   if (error) throw error;
 
-  const row = rows?.[0] as any;
+  const row = rows?.[0] as
+    | {
+        id: string;
+        code_hash: string;
+        attempts: number;
+        consumed_at: string | null;
+        expires_at: string;
+      }
+    | undefined;
   if (!row)
     return {
       ok: false,
@@ -154,7 +162,7 @@ export async function verifyOtp(
   if (submitted !== row.code_hash) {
     await admin
       .from("auth_otp_codes")
-      .update({ attempts: row.attempts + 1 } as any)
+      .update({ attempts: row.attempts + 1 } as Record<string, unknown>)
       .eq("id", row.id);
     const left = MAX_ATTEMPTS - (row.attempts + 1);
     return {
@@ -166,7 +174,7 @@ export async function verifyOtp(
 
   await admin
     .from("auth_otp_codes")
-    .update({ consumed_at: new Date().toISOString() } as any)
+    .update({ consumed_at: new Date().toISOString() } as Record<string, unknown>)
     .eq("id", row.id);
   return { ok: true };
 }
@@ -180,7 +188,7 @@ export async function setPortalPassword(identifier: string, password: string) {
       identifier: key,
       password_hash: await hashPassword(password, key),
       updated_at: new Date().toISOString(),
-    } as any,
+    } as Record<string, unknown>,
     { onConflict: "identifier" },
   );
   if (error) throw error;
@@ -202,7 +210,7 @@ export async function checkPortalPassword(
     .eq("identifier", key)
     .maybeSingle();
   if (!data) return null;
-  return verifyPasswordHash(password, (data as any).password_hash, key);
+  return verifyPasswordHash(password, (data as { password_hash: string }).password_hash, key);
 }
 
 export interface ActivationTokenResult {
@@ -241,7 +249,7 @@ export async function issueActivationToken(
       code_hash: tokenHash,
       destination,
       expires_at: expiresAt.toISOString(),
-    } as any);
+    } as Record<string, unknown>);
     if (error) throw error;
   } catch {
     // Fallback to in-memory store when Supabase environment is unconfigured
@@ -282,7 +290,15 @@ export async function verifyActivationToken(
     const { data: rows, error } = await query.limit(1);
     if (error) throw error;
 
-    const row = rows?.[0] as any;
+    const row = rows?.[0] as
+      | {
+          id: string;
+          identifier: string;
+          purpose: string;
+          expires_at: string;
+          consumed_at: string | null;
+        }
+      | undefined;
     if (row) {
       if (new Date(row.expires_at).getTime() < Date.now()) {
         return {
@@ -334,7 +350,7 @@ export async function consumeActivationToken(
     const admin = await getAdmin();
     await admin
       .from("auth_otp_codes")
-      .update({ consumed_at: new Date().toISOString() } as any)
+      .update({ consumed_at: new Date().toISOString() } as Record<string, unknown>)
       .eq("code_hash", tokenHash);
   } catch {
     const memRec = memoryTokens.find((t) => t.tokenHash === tokenHash);

@@ -92,7 +92,7 @@ export const Route = createFileRoute("/api/v1/auth/forgot-password")({
           }
 
           return json({ success: true, message: genericSuccessMessage });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("[Forgot Password Handler Error]", err);
           return json({ success: true, message: genericSuccessMessage });
         }

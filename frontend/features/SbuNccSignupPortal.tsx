@@ -55,8 +55,6 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
   // Loading state: which portal panel is swapping, and which sign-in is authenticating.
   const [isSwitchingPortal, setIsSwitchingPortal] = useState(false);
   const [authPending, setAuthPending] = useState<"cadet" | "admin" | null>(null);
-  // Temporary Portal Lock Flag (locks portal login for maintenance/verification)
-  const [isPortalLocked] = useState<boolean>(true);
   const [retryAction, setRetryAction] = useState<{ label: string; run: () => void } | null>(null);
 
   // Cadet Login State
@@ -151,6 +149,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
           type: "success",
           text: "Cadet authentication successful! Welcome to SBU NCC Portal.",
         });
+        setAuthPending(null);
         setTimeout(() => {
           onLoginSuccess("cadet", {
             fullName: res.data!.user.name || cadetForm.fullName || cadetIdentifier,
@@ -160,11 +159,24 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
         }, 500);
       } else {
         setAuthPending(null);
-        setNoticeMessage({
-          type: "error",
-          text: res.error || "Invalid email, username, or password.",
-        });
-        setRetryAction({ label: "Retry sign in", run: () => void submitCadetLogin() });
+        // Surface a clear, actionable message when the account exists but hasn't
+        // been activated yet — guide the cadet straight to the recovery flow.
+        if ((res as { code?: string }).code === "ACCOUNT_NOT_ACTIVATED") {
+          setNoticeMessage({
+            type: "error",
+            text: "Your account hasn't been activated yet. Use 'Forgot password?' below to set your portal password.",
+          });
+          setRetryAction({
+            label: "Activate account",
+            run: () => openRecovery("cadet"),
+          });
+        } else {
+          setNoticeMessage({
+            type: "error",
+            text: res.error || "Invalid enrollment number or password.",
+          });
+          setRetryAction({ label: "Retry sign in", run: () => void submitCadetLogin() });
+        }
       }
     } catch (err: unknown) {
       setAuthPending(null);
@@ -233,16 +245,28 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
           type: "success",
           text: "Officer Credentials Verified! Welcome Associate NCC Officer.",
         });
+        setAuthPending(null);
         setTimeout(() => {
           onLoginSuccess("admin", res.data!.user);
         }, 500);
       } else {
         setAuthPending(null);
-        setNoticeMessage({
-          type: "error",
-          text: res.error || "Invalid email, username, or password.",
-        });
-        setRetryAction({ label: "Retry sign in", run: () => void submitAdminLogin() });
+        if ((res as { code?: string }).code === "ACCOUNT_NOT_ACTIVATED") {
+          setNoticeMessage({
+            type: "error",
+            text: "Officer account not activated. Use 'Forgot command key?' below to set your password.",
+          });
+          setRetryAction({
+            label: "Activate officer account",
+            run: () => openRecovery("admin"),
+          });
+        } else {
+          setNoticeMessage({
+            type: "error",
+            text: res.error || "Invalid email, username, or password.",
+          });
+          setRetryAction({ label: "Retry sign in", run: () => void submitAdminLogin() });
+        }
       }
     } catch (err: unknown) {
       setAuthPending(null);

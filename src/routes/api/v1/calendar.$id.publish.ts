@@ -61,7 +61,7 @@ export const Route = createFileRoute("/api/v1/calendar/$id/publish")({
           });
 
           return json({ success: true, data: { event } });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("[Calendar Publish Error]", err);
           return json({ success: false, error: "Failed to publish calendar event" }, 500);
         }

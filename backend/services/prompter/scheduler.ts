@@ -20,8 +20,12 @@ export async function checkAndDispatchDueReminders(): Promise<number> {
     let dispatchedCount = 0;
 
     for (const item of pendingReminders) {
-      const event = item.calendar_events as any;
-      if (!event) continue;
+      const event = item.calendar_events as {
+        title?: string;
+        start_time?: string;
+        location?: string;
+      } | null;
+      if (!event || !event.title || !event.start_time) continue;
 
       const success = await dispatchReminder({
         reminderId: item.id,

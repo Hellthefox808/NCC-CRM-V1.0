@@ -25,8 +25,8 @@ export function useNotificationsRealtime(options?: NotificationsRealtimeOptions)
   useEffect(() => {
     if (!socket) return;
 
-    function handleNotificationBroadcast(msg: any) {
-      const item: NotificationItem = msg?.payload || msg;
+    function handleNotificationBroadcast(msg: Record<string, unknown>) {
+      const item = (msg?.payload || msg) as NotificationItem;
       setNotifications((prev) => [item, ...prev]);
       setUnreadCount((prev) => prev + 1);
       options?.onNotificationReceived?.(item);

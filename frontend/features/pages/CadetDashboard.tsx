@@ -72,21 +72,22 @@ interface CadetDashboardProps {
   onLogout?: () => void;
 }
 
+export type CadetTab =
+  | "dashboard"
+  | "profile"
+  | "attendance"
+  | "activities"
+  | "training"
+  | "certificates"
+  | "achievements"
+  | "materials"
+  | "notifications"
+  | "leave"
+  | "settings";
+
 export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
   // Navigation active tab
-  const [activeTab, setActiveTab] = useState<
-    | "dashboard"
-    | "profile"
-    | "attendance"
-    | "activities"
-    | "training"
-    | "certificates"
-    | "achievements"
-    | "materials"
-    | "notifications"
-    | "leave"
-    | "settings"
-  >("dashboard");
+  const [activeTab, setActiveTab] = useState<CadetTab>("dashboard");
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
@@ -195,9 +196,9 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
           emergencyContactName: c.nokName
             ? `${c.nokName}${c.nokRelationship ? ` (${c.nokRelationship})` : ""}`
             : prev.emergencyContactName,
-          emergencyContactPhone: c.nokContact || prev.emergencyContactPhone,
-          identificationMark: (c as any).identificationMark || (prev as any).identificationMark,
-          accountNo: c.bankAccountNumber || prev.accountNo,
+          identificationMark:
+            ("identificationMark" in c ? (c.identificationMark as string) : undefined) ||
+            ("identificationMark" in prev ? (prev.identificationMark as string) : undefined),
           ifscCode: c.ifscCode || prev.ifscCode,
           dbtStatus:
             c.stipendReceived && /yes/i.test(c.stipendReceived)
@@ -777,7 +778,7 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
               return (
                 <button
                   key={item.id}
-                  onClick={() => setActiveTab(item.id as any)}
+                  onClick={() => setActiveTab(item.id as CadetTab)}
                   aria-current={isActive ? "page" : undefined}
                   className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-[13px] font-medium transition-colors cursor-pointer ${
                     isActive
@@ -845,7 +846,7 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
                       <button
                         key={item.id}
                         onClick={() => {
-                          setActiveTab(item.id as any);
+                          setActiveTab(item.id as CadetTab);
                           setMobileSidebarOpen(false);
                         }}
                         aria-current={isActive ? "page" : undefined}

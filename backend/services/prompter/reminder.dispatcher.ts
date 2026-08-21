@@ -76,7 +76,9 @@ export async function dispatchReminder(payload: ReminderDispatcherPayload): Prom
           .from("cadet_enrollments")
           .select("email")
           .not("email", "is", null);
-        recipients = (cadets ?? []).map((c: any) => c.email).filter(Boolean);
+        recipients = (cadets ?? [])
+          .map((c: Record<string, unknown>) => c.email as string)
+          .filter(Boolean);
       }
 
       // Default fallback recipient if list is empty

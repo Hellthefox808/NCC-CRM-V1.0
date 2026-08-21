@@ -8,8 +8,8 @@ interface AppShellValue {
   /* auth */
   isLoggedIn: boolean;
   currentUserType: UserType | null;
-  currentUser: any | null;
-  signIn: (type: UserType, user: any) => void;
+  currentUser: Record<string, unknown> | null;
+  signIn: (type: UserType, user: Record<string, unknown> | null) => void;
   signOut: () => Promise<void>;
   /* shell surfaces */
   statusModalOpen: boolean;
@@ -25,11 +25,9 @@ interface AppShellValue {
 
 const AppShellContext = createContext<AppShellValue | null>(null);
 
-const SESSION_KEY = "ncc_session_user";
-
 export function AppShellProvider({ children }: { children: React.ReactNode }) {
   const [currentUserType, setCurrentUserType] = useState<UserType | null>(null);
-  const [currentUser, setCurrentUser] = useState<any | null>(null);
+  const [currentUser, setCurrentUser] = useState<Record<string, unknown> | null>(null);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [statusQuery, setStatusQuery] = useState("");
   const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
@@ -50,7 +48,7 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
       });
   }, []);
 
-  const signIn = useCallback((type: UserType, user: any) => {
+  const signIn = useCallback((type: UserType, user: Record<string, unknown> | null) => {
     setCurrentUserType(type);
     setCurrentUser(user ?? null);
   }, []);

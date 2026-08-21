@@ -12,7 +12,7 @@ import { CadetRecord } from "@/types";
 
 interface StatsOverviewProps {
   enrollments: CadetRecord[];
-  setActiveTab: (tab: any) => void;
+  setActiveTab: (tab: string) => void;
 }
 
 export const StatsOverview: React.FC<StatsOverviewProps> = ({ enrollments, setActiveTab }) => {

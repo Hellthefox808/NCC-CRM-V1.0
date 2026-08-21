@@ -12,7 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
-export const leadershipData = [
+const leadershipData = [
   {
     id: 1,
     name: "Prof. Gopal Pathak",

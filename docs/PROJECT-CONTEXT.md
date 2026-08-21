@@ -3,7 +3,7 @@
 **System Name**: 19 Jharkhand Battalion NCC Portal (Sarala Birla University Sub-Unit)  
 **Corpus Name**: Hellthefox808/NCC-CRM-V1.0  
 **Branch**: `main`  
-**Last Updated**: 2026-08-12
+**Last Updated**: 2026-08-21
 
 ---
 
@@ -45,6 +45,7 @@ The NCC Portal operates as an integrated, OWASP-compliant identity and managemen
 - **Caching & Rate Limiting**: Redis / Hybrid Memory Store (`ncc:otp:{purpose}:{identifierHash}`)
 - **Transactional Mailer**: Nodemailer (Dev simulated dispatch + SMTP pool)
 - **Bundler & Build Tool**: Vite 8.2 + Nitro 3.0
+- **Deployment Pipelines**: Netlify (`netlify.toml` -> `.output/public`), Vercel (`vercel.json` -> `.output/public`)
 
 ---
 
@@ -65,5 +66,6 @@ The NCC Portal operates as an integrated, OWASP-compliant identity and managemen
 
 ## 4. Test Suite & Verification Metrics
 
-- **Backend Unit Tests**: **43 / 43 Pass (100%)** across 8 test suites.
-- **Production Build Status**: **Success (Vite + Nitro SSR Bundle)** with zero warnings.
+- **Backend Unit Tests**: **47 / 47 Pass (100%)** across 9 test suites.
+- **ESLint Static Code Analysis**: **0 Errors (100% clean type-safety)**.
+- **Production Build Status**: **Success (Vite + Nitro SSR Bundle)** with zero blocking warnings.

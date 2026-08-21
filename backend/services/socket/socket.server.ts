@@ -93,7 +93,7 @@ export function getSocketServer(): SocketIOServer | null {
 }
 
 /** Emit a new calendar event creation broadcast */
-export function emitCalendarEventCreated(eventData: any) {
+export function emitCalendarEventCreated(eventData: Record<string, unknown>) {
   if (!ioInstance) return;
   ioInstance.to("calendar").emit("CALENDAR_EVENT_CREATED", {
     event: "CALENDAR_EVENT_CREATED",
@@ -104,7 +104,7 @@ export function emitCalendarEventCreated(eventData: any) {
 }
 
 /** Emit a calendar event update broadcast */
-export function emitCalendarEventUpdated(eventData: any) {
+export function emitCalendarEventUpdated(eventData: Record<string, unknown>) {
   if (!ioInstance) return;
   ioInstance.to("calendar").emit("CALENDAR_EVENT_UPDATED", {
     event: "CALENDAR_EVENT_UPDATED",
@@ -112,12 +112,14 @@ export function emitCalendarEventUpdated(eventData: any) {
     payload: eventData,
     timestamp: new Date().toISOString(),
   });
-  ioInstance.to(`calendar:event:${eventData.id}`).emit("CALENDAR_EVENT_UPDATED", {
-    event: "CALENDAR_EVENT_UPDATED",
-    channel: `calendar:event:${eventData.id}`,
-    payload: eventData,
-    timestamp: new Date().toISOString(),
-  });
+  if (eventData.id) {
+    ioInstance.to(`calendar:event:${String(eventData.id)}`).emit("CALENDAR_EVENT_UPDATED", {
+      event: "CALENDAR_EVENT_UPDATED",
+      channel: `calendar:event:${String(eventData.id)}`,
+      payload: eventData,
+      timestamp: new Date().toISOString(),
+    });
+  }
 }
 
 /** Emit a calendar event cancellation broadcast */
@@ -139,7 +141,7 @@ export function emitCalendarEventCancelled(eventId: string, reason?: string) {
 }
 
 /** Emit general calendar update event */
-export function emitCalendarUpdate(payload: any) {
+export function emitCalendarUpdate(payload: Record<string, unknown>) {
   if (!ioInstance) return;
   ioInstance.to("calendar").emit("CALENDAR_UPDATE", {
     event: "CALENDAR_UPDATE",
@@ -150,7 +152,7 @@ export function emitCalendarUpdate(payload: any) {
 }
 
 /** Emit real-time notification to global or targeted user room */
-export function emitNotification(notification: any, targetUserId?: string) {
+export function emitNotification(notification: Record<string, unknown>, targetUserId?: string) {
   if (!ioInstance) return;
   const targetRoom = targetUserId ? `notification:user:${targetUserId}` : "notification:global";
   ioInstance.to(targetRoom).emit("NOTIFICATION_BROADCAST", {

@@ -99,17 +99,16 @@ const validateLoginIdentifiers = (
     });
   }
 
-  // Validate identifier format based on userType
+  // Validate identifier format based on userType — accept any reasonable non-empty string;
+  // the server resolves the identifier against the cadets table. A strict regex here
+  // would false-reject valid NCC enrollment IDs with varying wing/battalion codes.
   if (data.userType === "cadet" && data.username) {
-    const identifier = data.username.toLowerCase();
-    const isSbuRoll = /^sbu\d{7}$/i.test(identifier);
-    const isEnrollmentId = /^[A-Z]{2}\d{2}[A-Z]{2}\d{4,6}$/i.test(identifier);
-    const isMobile = /^[6-9]\d{9}$/.test(identifier.replace(/\s+/g, ""));
-
-    if (!isSbuRoll && !isEnrollmentId && !isMobile && !data.email) {
+    const identifier = data.username.trim();
+    // Block obviously malformed values (empty after trim, or containing injection chars)
+    if (!identifier || /[<>'";&|`]/.test(identifier)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Invalid cadet identifier format",
+        message: "Identifier contains invalid characters",
         path: ["username"],
       });
     }

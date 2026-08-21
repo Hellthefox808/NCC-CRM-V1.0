@@ -196,12 +196,14 @@ export const Route = createFileRoute("/api/v1/auth/set-password")({
               accountStatus: "ACTIVE",
             },
           });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("[Set Password Error]", err);
+          const errorMsg =
+            err instanceof Error ? err.message : "Failed to set password and activate account";
           return json(
             {
               success: false,
-              error: err?.message || "Failed to set password and activate account",
+              error: errorMsg,
             },
             500,
           );

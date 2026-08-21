@@ -64,12 +64,10 @@ export const Route = createFileRoute("/api/v1/ano/applications/$id/reject")({
             message: "Application rejected.",
             data: { applicationId: app.id, status: "REJECTED" },
           });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("[ANO Reject Error]", err);
-          return json(
-            { success: false, error: err?.message || "Failed to reject application" },
-            500,
-          );
+          const errorMsg = err instanceof Error ? err.message : "Failed to reject application";
+          return json({ success: false, error: errorMsg }, 500);
         }
       },
     },

@@ -11,7 +11,7 @@ export const Route = createFileRoute("/api/v1/calendar/$id/reminders")({
         if (!gate.ok) return json({ success: false, error: gate.error }, gate.status);
 
         const { id } = params;
-        const body = (await request.json().catch(() => ({}))) as Record<string, any>;
+        const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
 
         if (body.offsetMinutes === undefined) {
           return json({ success: false, error: "offsetMinutes is required" }, 400);
@@ -32,9 +32,10 @@ export const Route = createFileRoute("/api/v1/calendar/$id/reminders")({
           const reminderId = await prompterEngine.addCustomReminder(
             id,
             Number(body.offsetMinutes),
-            body.channel || "BOTH",
+            (body.channel as "EMAIL" | "SOCKET" | "BOTH") || "BOTH",
             event.start_time,
-            body.recipientScope || "ALL_CADETS",
+            (body.recipientScope as "ALL_CADETS" | "SD_ONLY" | "SW_ONLY" | "OFFICERS_ONLY") ||
+              "ALL_CADETS",
           );
 
           return json(
@@ -45,7 +46,7 @@ export const Route = createFileRoute("/api/v1/calendar/$id/reminders")({
             },
             201,
           );
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("[Custom Reminder Create Error]", err);
           return json({ success: false, error: "Failed to schedule custom reminder" }, 500);
         }

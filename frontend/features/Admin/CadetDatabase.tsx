@@ -77,8 +77,9 @@ export function CadetDatabase() {
       setCadets(res.data?.cadets ?? []);
       setTotal(res.data?.total ?? 0);
       setTotalPages(res.data?.totalPages ?? 1);
-    } catch (err: any) {
-      setError(err?.message || "Unable to load the cadet register.");
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Unable to load the cadet register.";
+      setError(errorMsg);
       setCadets([]);
     } finally {
       setLoading(false);
@@ -96,8 +97,9 @@ export function CadetDatabase() {
       await EnterpriseDataPlatform.syncCadetRegister();
       setPage(1);
       await load();
-    } catch (err: any) {
-      setError(err?.message || "Roster sync failed.");
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Roster sync failed.";
+      setError(errorMsg);
     } finally {
       setSyncing(false);
     }

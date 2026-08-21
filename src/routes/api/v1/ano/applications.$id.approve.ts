@@ -117,12 +117,10 @@ export const Route = createFileRoute("/api/v1/ano/applications/$id/approve")({
               accountStatus: "ACTIVATION_PENDING",
             },
           });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("[ANO Approve Error]", err);
-          return json(
-            { success: false, error: err?.message || "Failed to approve application" },
-            500,
-          );
+          const errorMsg = err instanceof Error ? err.message : "Failed to approve application";
+          return json({ success: false, error: errorMsg }, 500);
         }
       },
     },

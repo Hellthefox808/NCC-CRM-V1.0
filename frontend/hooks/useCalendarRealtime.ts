@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import { useSocket } from "./useSocket";
 
 export interface CalendarRealtimeOptions {
-  onEventCreated?: (event: any) => void;
-  onEventUpdated?: (event: any) => void;
+  onEventCreated?: (event: Record<string, unknown>) => void;
+  onEventUpdated?: (event: Record<string, unknown>) => void;
   onEventCancelled?: (payload: { id: string; reason?: string }) => void;
-  onCalendarUpdate?: (payload: any) => void;
+  onCalendarUpdate?: (payload: Record<string, unknown>) => void;
 }
 
 export function useCalendarRealtime(options?: CalendarRealtimeOptions) {
@@ -14,20 +14,24 @@ export function useCalendarRealtime(options?: CalendarRealtimeOptions) {
   useEffect(() => {
     if (!socket) return;
 
-    function handleEventCreated(msg: any) {
-      options?.onEventCreated?.(msg?.payload || msg);
+    function handleEventCreated(msg: Record<string, unknown>) {
+      const payload = (msg?.payload || msg) as Record<string, unknown>;
+      options?.onEventCreated?.(payload);
     }
 
-    function handleEventUpdated(msg: any) {
-      options?.onEventUpdated?.(msg?.payload || msg);
+    function handleEventUpdated(msg: Record<string, unknown>) {
+      const payload = (msg?.payload || msg) as Record<string, unknown>;
+      options?.onEventUpdated?.(payload);
     }
 
-    function handleEventCancelled(msg: any) {
-      options?.onEventCancelled?.(msg?.payload || msg);
+    function handleEventCancelled(msg: Record<string, unknown>) {
+      const payload = (msg?.payload || msg) as { id: string; reason?: string };
+      options?.onEventCancelled?.(payload);
     }
 
-    function handleCalendarUpdate(msg: any) {
-      options?.onCalendarUpdate?.(msg?.payload || msg);
+    function handleCalendarUpdate(msg: Record<string, unknown>) {
+      const payload = (msg?.payload || msg) as Record<string, unknown>;
+      options?.onCalendarUpdate?.(payload);
     }
 
     socket.on("CALENDAR_EVENT_CREATED", handleEventCreated);

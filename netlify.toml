@@ -1,3 +1,31 @@
 [build]
-  command = "bun run build"
-  publish = "dist"
+  command = "npm run build"
+  publish = ".output/public"
+  functions = ".netlify/functions-internal"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NITRO_PRESET = "netlify"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/server"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://19th-jh-ncc-crm-v1-0.vercel.app"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD"
+    Access-Control-Allow-Headers = "Content-Type, Authorization, X-Requested-With, X-CSRF-Token, X-Request-ID, X-Client-Version"
+    Access-Control-Allow-Credentials = "true"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+

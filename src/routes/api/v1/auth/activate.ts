@@ -111,12 +111,10 @@ export const Route = createFileRoute("/api/v1/auth/activate")({
               fullName: identifier.toUpperCase(),
             },
           });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("[Activation Verification Error]", err);
-          return json(
-            { success: false, error: err?.message || "Failed to verify activation token" },
-            500,
-          );
+          const errorMsg = err instanceof Error ? err.message : "Failed to verify activation token";
+          return json({ success: false, error: errorMsg }, 500);
         }
       },
     },

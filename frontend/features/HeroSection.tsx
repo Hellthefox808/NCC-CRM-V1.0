@@ -210,9 +210,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onChange={(e) => setHeroAppNoQuery(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && heroAppNoQuery.trim()) {
-                      openStatusModalWithQuery
-                        ? openStatusModalWithQuery(heroAppNoQuery.trim())
-                        : openStatusModal();
+                      if (openStatusModalWithQuery) {
+                        openStatusModalWithQuery(heroAppNoQuery.trim());
+                      } else {
+                        openStatusModal();
+                      }
                     }
                   }}
                   placeholder="Enter 18-digit Application No. (e.g. 192026081298471625)..."
@@ -222,9 +224,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <button
                   onClick={() => {
                     if (heroAppNoQuery.trim()) {
-                      openStatusModalWithQuery
-                        ? openStatusModalWithQuery(heroAppNoQuery.trim())
-                        : openStatusModal();
+                      if (openStatusModalWithQuery) {
+                        openStatusModalWithQuery(heroAppNoQuery.trim());
+                      } else {
+                        openStatusModal();
+                      }
                     } else {
                       openStatusModal();
                     }

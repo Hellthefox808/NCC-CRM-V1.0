@@ -3,7 +3,7 @@ import { CadetRecord } from "@/types";
 import { NotificationItem } from "@frontend/features/NotificationsFeed";
 import { useSocket } from "./useSocket";
 
-export interface WebSocketEvent<T = any> {
+export interface WebSocketEvent<T = unknown> {
   event: string;
   channel: string;
   payload: T;
@@ -25,7 +25,7 @@ export interface RealtimeOptions {
   onNotificationBroadcast?: (notification: NotificationItem) => void;
   onStatusUpdated?: (record: CadetRecord) => void;
   onEnrollmentSubmitted?: (record: CadetRecord) => void;
-  onMetricsUpdate?: (metrics: any) => void;
+  onMetricsUpdate?: (metrics: Record<string, unknown>) => void;
 }
 
 /**
@@ -49,20 +49,23 @@ export function useRealtimeData(options?: RealtimeOptions) {
   useEffect(() => {
     if (!socket) return;
 
-    function handleEvent(eventName: string, data: any) {
+    function handleEvent(eventName: string, data: Record<string, unknown>) {
       const payload = data?.payload !== undefined ? data.payload : data;
       const handlers = optionsRef.current;
 
-      if (eventName === "NOTIFICATION_BROADCAST") handlers?.onNotificationBroadcast?.(payload);
-      if (eventName === "STATUS_UPDATED") handlers?.onStatusUpdated?.(payload);
-      if (eventName === "ENROLLMENT_SUBMITTED") handlers?.onEnrollmentSubmitted?.(payload);
-      if (eventName === "METRICS_TICK") handlers?.onMetricsUpdate?.(payload);
+      if (eventName === "NOTIFICATION_BROADCAST")
+        handlers?.onNotificationBroadcast?.(payload as NotificationItem);
+      if (eventName === "STATUS_UPDATED") handlers?.onStatusUpdated?.(payload as CadetRecord);
+      if (eventName === "ENROLLMENT_SUBMITTED")
+        handlers?.onEnrollmentSubmitted?.(payload as CadetRecord);
+      if (eventName === "METRICS_TICK")
+        handlers?.onMetricsUpdate?.(payload as Record<string, unknown>);
 
       setLastEvent({
         event: eventName,
-        channel: data?.channel || "global",
+        channel: (data?.channel as string) || "global",
         payload,
-        timestamp: data?.timestamp || new Date().toISOString(),
+        timestamp: (data?.timestamp as string) || new Date().toISOString(),
       });
     }
 
@@ -77,7 +80,7 @@ export function useRealtimeData(options?: RealtimeOptions) {
     ];
 
     eventsToListen.forEach((evt) => {
-      socket.on(evt, (data: any) => handleEvent(evt, data));
+      socket.on(evt, (data: Record<string, unknown>) => handleEvent(evt, data));
     });
 
     return () => {
@@ -88,7 +91,7 @@ export function useRealtimeData(options?: RealtimeOptions) {
   }, [socket]);
 
   const sendEvent = useCallback(
-    (action: string, payload: any) => {
+    (action: string, payload: unknown) => {
       if (socket && isConnected) {
         socket.emit(action, {
           action,
