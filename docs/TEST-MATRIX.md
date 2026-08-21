@@ -6,9 +6,9 @@ This document tracks all unit, integration, security, and build verification tes
 
 ## 1. Test Suite Summary
 
-- **Total Test Suites**: 9
-- **Total Executed Tests**: 49
-- **Passing Tests**: 49 (100%)
+- **Total Test Suites**: 10
+- **Total Executed Tests**: 53
+- **Passing Tests**: 53 (100%)
 - **Failing / Skipped Tests**: 0
 - **Execution Command**: `npm run test`
 
@@ -75,6 +75,13 @@ This document tracks all unit, integration, security, and build verification tes
 - `sendMultiChannelApplicationConfirmation()`: Verifies Email, WhatsApp, and SMS dispatches.
 - `cadetEnrollmentSchema (SD & SW)`: Verifies full Form 1 payload validation with academic, physical, and bank DBT details.
 - `cadetEnrollmentSchema (Rejections)`: Verifies rejection of malformed phone numbers, invalid names, and short identifiers.
+
+### Suite 10: E2E Pipeline & Data Connection Integration Tests
+
+- `Complete Enrollment Form 1 -> 18-Digit App ID -> DB Row Pipeline`: Tests full payload ingestion, row conversion, and public status PII stripping.
+- `RFC 4180 CSV Export generation with UTF-8 BOM`: Tests character escaping and native Excel compatibility.
+- `Sanitizes PostgREST query inputs preventing filter injection`: Verifies special filter character stripping.
+- `Rate Limiter sliding window handles burst requests`: Verifies sliding-window boundary enforcement under burst traffic.
 
 ---
 

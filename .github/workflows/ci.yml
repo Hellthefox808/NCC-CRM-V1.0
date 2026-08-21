@@ -1,42 +1,48 @@
-name: Enterprise CI Pipeline
+﻿name: NCC CI/CD Quality Pipeline
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
-permissions:
-  contents: read
-
-env:
-  NODE_ENV: test
-  VITE_SUPABASE_URL: https://placeholder-ci.supabase.co
-  VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
-  SUPABASE_SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder_service_role
-  JWT_SECRET: ci-test-jwt-secret-minimum-32-characters-long
-  SESSION_SECRET: ci-test-session-secret-minimum-32-characters-long
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  audit-and-test:
-    name: Security Scan, Unit Tests & SSR Production Build
+  validate-and-test:
+    name: Lint, Test & Build Validation
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
 
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js Environment
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: npm
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Run Unit Tests
-        run: npm test
+      - name: Run ESLint Static Analysis
+        run: npm run lint
 
-      - name: Run Nitro SSR Production Build
+      - name: Run Automated Test Suite
+        run: npm run test
+        env:
+          NODE_ENV: test
+          JWT_SECRET: ci-test-jwt-secret-key-32-chars-long
+          SESSION_SECRET: ci-test-session-secret-key-32-bytes
+
+      - name: Compile Production Bundle
         run: npm run build
+        env:
+          NODE_ENV: production

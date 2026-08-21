@@ -3,7 +3,8 @@
 > Enterprise Digital Management, Cadet Enrollment & Institutional Identity Subsystem for **19 Jharkhand Battalion NCC, Sarala Birla University (SBU), Ranchi**.
 
 [![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
-[![Unit Tests](https://img.shields.io/badge/tests-49%2F49%20passing-brightgreen.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
+[![Unit Tests](https://img.shields.io/badge/tests-53%2F53%20passing-brightgreen.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0/actions)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
 [![TypeScript](https://img.shields.io/badge/typescript-strict%205.8-blue.svg)](https://www.typescriptlang.org/)
 [![Database](https://img.shields.io/badge/database-Supabase%20PostgreSQL%2015-3ECF8E.svg)](https://supabase.com)
