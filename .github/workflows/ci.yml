@@ -1,4 +1,4 @@
-﻿name: NCC CI/CD Quality Pipeline
+name: NCC CI/CD Quality Pipeline
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
           cache: "npm"
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run ESLint Static Analysis
         run: npm run lint
@@ -41,8 +41,16 @@ jobs:
           NODE_ENV: test
           JWT_SECRET: ci-test-jwt-secret-key-32-chars-long
           SESSION_SECRET: ci-test-session-secret-key-32-bytes
+          VITE_SUPABASE_URL: https://qsrmzajadmmgqhfbxdwu.supabase.co
+          VITE_SUPABASE_ANON_KEY: sb_publishable_ru09YlOy1LNorCk6y-SD2w_daWCqr6U
+          SUPABASE_URL: https://qsrmzajadmmgqhfbxdwu.supabase.co
+          SUPABASE_ANON_KEY: sb_publishable_ru09YlOy1LNorCk6y-SD2w_daWCqr6U
 
       - name: Compile Production Bundle
         run: npm run build
         env:
           NODE_ENV: production
+          VITE_SUPABASE_URL: https://qsrmzajadmmgqhfbxdwu.supabase.co
+          VITE_SUPABASE_ANON_KEY: sb_publishable_ru09YlOy1LNorCk6y-SD2w_daWCqr6U
+          SUPABASE_URL: https://qsrmzajadmmgqhfbxdwu.supabase.co
+          SUPABASE_ANON_KEY: sb_publishable_ru09YlOy1LNorCk6y-SD2w_daWCqr6U

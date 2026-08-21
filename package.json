@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "test": "node --import tsx --test \"backend/tests/**/*.test.ts\""
+    "test": "node --import tsx --test backend/tests/*.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
