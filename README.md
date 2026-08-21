@@ -20,7 +20,7 @@
 | :--- | :--- | :--- | :--- |
 | **Frontend Client** | **Vercel** | [19th-jh-ncc-crm-v1-0.vercel.app](https://19th-jh-ncc-crm-v1-0.vercel.app/) | React 19 Client SPA + TanStack Router |
 | **Backend & SSR** | **Netlify** | [agent-6a88700c8504a--spectacular-entremet-464b43.netlify.app](https://agent-6a88700c8504a--spectacular-entremet-464b43.netlify.app/) | Nitro 3.0 Serverless Edge API & SSR Engine |
-| **Database** | **Supabase** | `uqixmqsdzyghwdksfdsk.supabase.co` | PostgreSQL 15 with Row-Level Security (RLS) |
+| **Database** | **Supabase** | `qsrmzajadmmgqhfbxdwu.supabase.co` | PostgreSQL 15 with Row-Level Security (RLS) |
 
 ---
 
@@ -159,7 +159,7 @@ Application will be accessible at `http://localhost:3000`.
 ### 3. Run Automated Tests
 
 ```bash
-# Execute full test suite (49 tests across 9 suites)
+# Execute full test suite (53 tests across 10 suites)
 npm run test
 ```
 
@@ -177,7 +177,7 @@ npm run build
 | :--- | :---: | :--- | :--- |
 | `NODE_ENV` | Yes | `development` / `production` | Application execution environment |
 | `PORT` | No | `3000` | HTTP server listening port |
-| `VITE_SUPABASE_URL` | Yes | `https://uqixmqsdzyghwdksfdsk.supabase.co` | Public Supabase API Endpoint |
+| `VITE_SUPABASE_URL` | Yes | `https://qsrmzajadmmgqhfbxdwu.supabase.co` | Public Supabase API Endpoint |
 | `VITE_SUPABASE_ANON_KEY` | Yes | `eyJhbGciOi...` | Supabase Anonymous Client Key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Yes | `eyJhbGciOi...` | Supabase Service Role Key (Backend Server Only) |
 | `REDIS_URL` | Optional | `redis://localhost:6379` | Connection URL for Local / Docker TCP Redis |
