@@ -40,7 +40,7 @@ function LoginRoute() {
   return (
     <SbuNccSignupPortal
       defaultSection="cadets"
-      onLoginSuccess={(type, user) => shell.signIn(type, user)}
+      onLoginSuccess={(type, user) => shell.signIn(type, (user as Record<string, unknown>) ?? null)}
       onOpenEnrollmentForm={() => goTo("/enroll")}
     />
   );

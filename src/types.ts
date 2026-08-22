@@ -146,4 +146,9 @@ export interface CadetProfile {
   indemnityBondStatus?: string;
   accountNo?: string;
   ifscCode?: string;
+  aadhaarVerified?: boolean;
+  bankPassbookVerified?: boolean;
+  collegeIdVerified?: boolean;
+  medicalCertVerified?: boolean;
+  parentConsentVerified?: boolean;
 }

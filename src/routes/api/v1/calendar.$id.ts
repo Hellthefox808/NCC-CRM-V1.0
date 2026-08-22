@@ -72,18 +72,30 @@ export const Route = createFileRoute("/api/v1/calendar/$id")({
             return json({ success: false, error: "Calendar event not found" }, 404);
           }
 
-          const updatePayload: Record<string, unknown> = {
+          const updatePayload: {
+            updated_at: string;
+            updated_by: string;
+            title?: string;
+            description?: string | null;
+            event_type?: string;
+            start_time?: string;
+            end_time?: string;
+            location?: string | null;
+            status?: string;
+            is_all_day?: boolean;
+          } = {
             updated_at: new Date().toISOString(),
             updated_by: gate.officerName || "Officer",
           };
 
-          if (body.title) updatePayload.title = body.title;
-          if (body.description !== undefined) updatePayload.description = body.description;
-          if (body.eventType) updatePayload.event_type = body.eventType;
-          if (body.startTime) updatePayload.start_time = body.startTime;
-          if (body.endTime) updatePayload.end_time = body.endTime;
-          if (body.location) updatePayload.location = body.location;
-          if (body.status) updatePayload.status = body.status;
+          if (typeof body.title === "string") updatePayload.title = body.title;
+          if (body.description !== undefined)
+            updatePayload.description = body.description as string | null;
+          if (typeof body.eventType === "string") updatePayload.event_type = body.eventType;
+          if (typeof body.startTime === "string") updatePayload.start_time = body.startTime;
+          if (typeof body.endTime === "string") updatePayload.end_time = body.endTime;
+          if (typeof body.location === "string") updatePayload.location = body.location;
+          if (typeof body.status === "string") updatePayload.status = body.status;
           if (body.isAllDay !== undefined) updatePayload.is_all_day = Boolean(body.isAllDay);
 
           const { data: updated, error: updateErr } = await admin

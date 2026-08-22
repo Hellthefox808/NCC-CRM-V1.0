@@ -51,9 +51,8 @@ describe("Multi-Channel Dispatch & 18-Digit Application Number Unit Tests", () =
   });
 
   it("cadetEnrollmentSchema validates real Form 1 submissions for SD and SW cadets", async () => {
-    const { cadetEnrollmentSchema, validateRequestBody } = await import(
-      "../lib/validation.schemas.ts"
-    );
+    const { cadetEnrollmentSchema, validateRequestBody } =
+      await import("../lib/validation.schemas.ts");
 
     const sdSubmission = {
       fullName: "Aditya Kumar Singh",
@@ -106,9 +105,8 @@ describe("Multi-Channel Dispatch & 18-Digit Application Number Unit Tests", () =
   });
 
   it("cadetEnrollmentSchema rejects malformed phone and short names", async () => {
-    const { cadetEnrollmentSchema, validateRequestBody } = await import(
-      "../lib/validation.schemas.ts"
-    );
+    const { cadetEnrollmentSchema, validateRequestBody } =
+      await import("../lib/validation.schemas.ts");
 
     const invalidSubmission = {
       fullName: "A",
@@ -127,4 +125,3 @@ describe("Multi-Channel Dispatch & 18-Digit Application Number Unit Tests", () =
     }
   });
 });
-

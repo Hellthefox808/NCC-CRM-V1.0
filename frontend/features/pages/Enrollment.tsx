@@ -733,7 +733,9 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                   <div className="bg-white border border-emerald-500/30 rounded-2xl p-4 shadow-xs">
                     <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1 flex items-center justify-between">
                       <span>18-Digit Application Number</span>
-                      <span className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-bold">Official ID</span>
+                      <span className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-bold">
+                        Official ID
+                      </span>
                     </p>
                     <div className="flex items-center justify-between gap-2 mt-1">
                       <p className="text-lg md:text-xl font-black text-slate-900 tracking-wider font-mono">

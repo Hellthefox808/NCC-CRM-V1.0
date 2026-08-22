@@ -25,6 +25,9 @@ export const Route = createFileRoute("/")({
 function HomeRoute() {
   const shell = useAppShell();
   return (
-    <Home openStatusModal={() => shell.openStatusModal()} openAiAssistant={shell.openAiAssistant} />
+    <Home
+      openStatusModal={(q) => shell.openStatusModal(q)}
+      openAiAssistant={shell.openAiAssistant}
+    />
   );
 }

@@ -27,6 +27,10 @@ export const Route = createFileRoute("/api/v1/auth/logout")({
 
             await admin.from("app_sessions").delete().eq("token", token);
 
+            // Invalidate session cache immediately across all cache tiers
+            const { invalidateSessionCache } = await import("@backend/lib/cadet-registry.server");
+            await invalidateSessionCache(token);
+
             if (session) {
               const { logAuditEvent } = await import("@backend/lib/audit-log.server");
               const clientIp =

@@ -7,7 +7,7 @@ import { RanksSyllabusSection } from "@frontend/features/RanksSyllabusSection";
 import { FaqSection } from "@frontend/features/FaqSection";
 
 interface HomeProps {
-  openStatusModal: () => void;
+  openStatusModal: (prefill?: string) => void;
   openAiAssistant?: () => void;
 }
 

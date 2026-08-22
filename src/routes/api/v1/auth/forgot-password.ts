@@ -13,8 +13,11 @@ export const Route = createFileRoute("/api/v1/auth/forgot-password")({
 
         // Rate limit check
         const ip = request.headers.get("x-forwarded-for") || "unknown";
-        const isAllowed = await checkRateLimitAsync(`forgot_pass:${ip}`, 5, 300);
-        if (!isAllowed) {
+        const rateLimitResult = await checkRateLimitAsync(`forgot_pass:${ip}`, {
+          maxAttempts: 5,
+          windowMs: 300 * 1000,
+        });
+        if (!rateLimitResult.allowed) {
           return json(
             {
               success: false,
@@ -42,12 +45,12 @@ export const Route = createFileRoute("/api/v1/auth/forgot-password")({
 
           const { data: cred } = await admin
             .from("app_credentials")
-            .select("identifier, email")
-            .or(`identifier.eq.${rawIdentifier},email.eq.${rawIdentifier}`)
+            .select("identifier")
+            .eq("identifier", rawIdentifier)
             .maybeSingle();
 
           if (cred) {
-            targetEmail = cred.email || (cred.identifier.includes("@") ? cred.identifier : null);
+            targetEmail = cred.identifier.includes("@") ? cred.identifier : null;
             accountIdentifier = cred.identifier;
           }
 

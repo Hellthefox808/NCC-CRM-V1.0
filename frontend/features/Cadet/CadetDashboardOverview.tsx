@@ -38,6 +38,9 @@ export interface CadetNotificationItem {
   time?: string;
   unread?: boolean;
   type?: string;
+  priority?: string;
+  body?: string;
+  date?: string;
 }
 
 interface CadetDashboardOverviewProps {

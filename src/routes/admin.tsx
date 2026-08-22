@@ -36,7 +36,7 @@ function AdminRoute() {
   return (
     <SbuNccSignupPortal
       defaultSection="admin"
-      onLoginSuccess={(type, user) => shell.signIn(type, user)}
+      onLoginSuccess={(type, user) => shell.signIn(type, (user as Record<string, unknown>) ?? null)}
       onOpenEnrollmentForm={() => navigate("/enroll")}
     />
   );

@@ -62,6 +62,45 @@ export async function queueEmailJob(
   }
 }
 
+/** Enqueues multiple email jobs into the database queue in a single atomic batch insert. */
+export async function queueEmailJobsBatch(
+  jobs: Array<{
+    jobType: string;
+    recipient: string;
+    payload: Record<string, unknown>;
+    scheduledAt?: string;
+  }>,
+): Promise<{ success: boolean; enqueuedCount: number; error?: string }> {
+  if (!jobs || jobs.length === 0) {
+    return { success: true, enqueuedCount: 0 };
+  }
+
+  try {
+    const admin = await getAdmin();
+    const rows = jobs.map((job) => ({
+      job_type: job.jobType,
+      recipient: job.recipient,
+      payload: job.payload,
+      status: "PENDING",
+      scheduled_at: job.scheduledAt || new Date().toISOString(),
+    }));
+
+    const { error } = await admin.from("email_jobs").insert(rows);
+    if (error) throw error;
+
+    // Trigger async non-blocking execution cycle
+    setTimeout(() => {
+      processPendingEmailJobs().catch((err) => console.error("[Background Job Queue Error]", err));
+    }, 50);
+
+    return { success: true, enqueuedCount: jobs.length };
+  } catch (err: unknown) {
+    console.error("[Queue Batch Enqueue Error]", err);
+    const errorMsg = err instanceof Error ? err.message : "Failed to batch enqueue email jobs";
+    return { success: false, enqueuedCount: 0, error: errorMsg };
+  }
+}
+
 /** Processes pending email jobs from the database queue. */
 export async function processPendingEmailJobs(): Promise<number> {
   try {
@@ -191,7 +230,10 @@ export async function processPendingEmailJobs(): Promise<number> {
         await admin.from("email_delivery_logs").insert({
           email_job_id: job.id,
           recipient: job.recipient,
-          subject: job.payload?.subject || job.job_type,
+          subject:
+            typeof job.payload === "object" && job.payload && "subject" in job.payload
+              ? String((job.payload as Record<string, unknown>).subject)
+              : job.job_type,
           status: "SENT",
           smtp_message_id: sendResult.messageId || null,
         });
@@ -210,7 +252,10 @@ export async function processPendingEmailJobs(): Promise<number> {
         await admin.from("email_delivery_logs").insert({
           email_job_id: job.id,
           recipient: job.recipient,
-          subject: job.payload?.subject || job.job_type,
+          subject:
+            typeof job.payload === "object" && job.payload && "subject" in job.payload
+              ? String((job.payload as Record<string, unknown>).subject)
+              : job.job_type,
           status: "FAILED",
           error_details: sendResult.error,
         });

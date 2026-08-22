@@ -13,13 +13,25 @@ interface RedisStatus {
   error?: string;
 }
 
-// In-memory fallback cache
+// In-memory fallback cache with strict LRU capacity bounds
+const MAX_MEMORY_ITEMS = 5000;
 const memoryStore = new Map<string, { value: string; expiresAt?: number }>();
 
 function pruneMemoryStore() {
   const now = Date.now();
   for (const [key, item] of memoryStore.entries()) {
     if (item.expiresAt && item.expiresAt <= now) {
+      memoryStore.delete(key);
+    }
+  }
+
+  // Enforce memory bounds to prevent memory leaks under burst load
+  if (memoryStore.size > MAX_MEMORY_ITEMS) {
+    const keysToEvict = Array.from(memoryStore.keys()).slice(
+      0,
+      memoryStore.size - MAX_MEMORY_ITEMS,
+    );
+    for (const key of keysToEvict) {
       memoryStore.delete(key);
     }
   }
@@ -51,8 +63,10 @@ async function getUpstashClient() {
 
   if (!upstashInstance) {
     try {
-      const { Redis } = await import("@upstash/redis");
-      upstashInstance = new Redis({ url, token });
+      const upstashMod = (await import("@upstash/redis" as string)) as {
+        Redis: new (opts: { url: string; token: string }) => RedisLike;
+      };
+      upstashInstance = new upstashMod.Redis({ url, token });
     } catch {
       // Fallback HTTP handler if package is not bundled
       upstashInstance = {
@@ -107,13 +121,18 @@ async function getIoRedisClient() {
 
   if (!ioredisInstance) {
     try {
-      const { default: Redis } = await import("ioredis");
-      ioredisInstance = new Redis(redisUrl, {
+      const ioredisMod = (await import("ioredis" as string)) as {
+        default: new (url: string, opts: Record<string, unknown>) => RedisLike;
+      };
+      const client = new ioredisMod.default(redisUrl, {
         maxRetriesPerRequest: 2,
         connectTimeout: 3000,
         lazyConnect: true,
       });
-      await ioredisInstance.connect().catch(() => {});
+      if (client.connect) {
+        await client.connect().catch(() => {});
+      }
+      ioredisInstance = client;
     } catch {
       return null;
     }
@@ -153,7 +172,8 @@ export async function redisGet(key: string): Promise<string | null> {
 
     const ioClient = await getIoRedisClient();
     if (ioClient && ioClient.status === "ready") {
-      return await ioClient.get(key);
+      const val = await ioClient.get(key);
+      return val !== null && val !== undefined ? String(val) : null;
     }
   } catch (err) {
     console.warn("[Redis Get Warning] Falling back to memory store:", err);
@@ -257,6 +277,35 @@ export async function redisDel(key: string): Promise<boolean> {
   }
 
   memoryStore.delete(key);
+  return true;
+}
+
+/** Deletes all keys matching a prefix from Redis (or memory fallback). */
+export async function redisDelPrefix(prefix: string): Promise<boolean> {
+  try {
+    const ioClient = await getIoRedisClient();
+    if (ioClient && ioClient.status === "ready") {
+      const rawClient = ioClient as unknown as {
+        keys?: (pattern: string) => Promise<string[]>;
+        del: (...keys: string[]) => Promise<unknown>;
+      };
+      if (typeof rawClient.keys === "function") {
+        const matchingKeys = await rawClient.keys(`${prefix}*`);
+        if (matchingKeys && matchingKeys.length > 0) {
+          await rawClient.del(...matchingKeys);
+        }
+      }
+    }
+  } catch (err) {
+    console.warn("[Redis DelPrefix Warning] Falling back to memory store:", err);
+  }
+
+  // Memory fallback prefix deletion
+  for (const k of Array.from(memoryStore.keys())) {
+    if (k.startsWith(prefix)) {
+      memoryStore.delete(k);
+    }
+  }
   return true;
 }
 

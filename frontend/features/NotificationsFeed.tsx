@@ -143,7 +143,7 @@ export const NotificationsFeed: React.FC<NotificationsFeedProps> = ({
 
   // Handle incoming real-time broadcast via WebSocket
   const handleRealtimeNotice = useCallback(
-    (newNotice: Record<string, unknown>) => {
+    (newNotice: NotificationItem) => {
       const categoryStr = (newNotice.category as string) || "Parade Order";
       const validCategory: NotificationCategory = [
         "Training Update",
@@ -156,19 +156,19 @@ export const NotificationsFeed: React.FC<NotificationsFeedProps> = ({
         : "Parade Order";
 
       const formattedNotice: NotificationItem = {
-        id: (newNotice.id as string) || `N_${Date.now()}`,
-        title: (newNotice.title as string) || "Unit Broadcast",
-        body: (newNotice.body as string) || "",
-        date: (newNotice.date as string) || "Just now",
+        id: newNotice.id || `N_${Date.now()}`,
+        title: newNotice.title || "Unit Broadcast",
+        body: newNotice.body || "",
+        date: newNotice.date || "Just now",
         read: false,
         priority:
-          newNotice.priority === "CRITICAL"
+          newNotice.priority === "Urgent" || (newNotice.priority as string) === "CRITICAL"
             ? "Urgent"
-            : newNotice.priority === "HIGH"
+            : newNotice.priority === "High" || (newNotice.priority as string) === "HIGH"
               ? "High"
               : "Normal",
         category: validCategory,
-        actionLabel: (newNotice.actionLabel as string) || "View Details",
+        actionLabel: newNotice.actionLabel || "View Details",
         actionType: (newNotice.actionType as NotificationItem["actionType"]) || "general",
       };
 
@@ -190,33 +190,36 @@ export const NotificationsFeed: React.FC<NotificationsFeedProps> = ({
     EnterpriseDataPlatform.getNotifications()
       .then((res) => {
         if (res.success && res.data?.notifications?.length) {
-          const apiItems: NotificationItem[] = res.data.notifications.map(
-            (n: Record<string, unknown>) => {
-              const catStr = (n.category as string) || "Parade Order";
-              const cat: NotificationCategory = [
-                "Training Update",
-                "Assignment Reminder",
-                "Parade Order",
-                "Camp Notice",
-                "System Alert",
-              ].includes(catStr)
-                ? (catStr as NotificationCategory)
-                : "Parade Order";
+          const rawNotifs = res.data.notifications as unknown as NotificationItem[];
+          const apiItems: NotificationItem[] = rawNotifs.map((n) => {
+            const catStr = (n.category as string) || "Parade Order";
+            const cat: NotificationCategory = [
+              "Training Update",
+              "Assignment Reminder",
+              "Parade Order",
+              "Camp Notice",
+              "System Alert",
+            ].includes(catStr)
+              ? (catStr as NotificationCategory)
+              : "Parade Order";
 
-              return {
-                id: (n.id as string) || `N_${Date.now()}`,
-                title: (n.title as string) || "Notification",
-                body: (n.body as string) || "",
-                date: (n.date as string) || "",
-                read: Boolean(n.read),
-                priority:
-                  n.priority === "CRITICAL" ? "Urgent" : n.priority === "HIGH" ? "High" : "Normal",
-                category: cat,
-                actionLabel: (n.actionLabel as string) || "View Details",
-                actionType: (n.actionType as NotificationItem["actionType"]) || "general",
-              };
-            },
-          );
+            return {
+              id: n.id || `N_${Date.now()}`,
+              title: n.title || "Notification",
+              body: n.body || "",
+              date: n.date || "",
+              read: Boolean(n.read),
+              priority:
+                n.priority === "Urgent" || (n.priority as string) === "CRITICAL"
+                  ? "Urgent"
+                  : n.priority === "High" || (n.priority as string) === "HIGH"
+                    ? "High"
+                    : "Normal",
+              category: cat,
+              actionLabel: n.actionLabel || "View Details",
+              actionType: (n.actionType as NotificationItem["actionType"]) || "general",
+            };
+          });
           setNotifications((prev) => {
             const existingIds = new Set(prev.map((p) => p.id));
             const fresh = apiItems.filter((a) => !existingIds.has(a.id));

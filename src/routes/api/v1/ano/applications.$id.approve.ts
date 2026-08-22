@@ -102,9 +102,10 @@ export const Route = createFileRoute("/api/v1/ano/applications/$id/approve")({
           // 7. Audit log event
           await admin.from("audit_logs").insert({
             action: "APPROVE_CADET_APPLICATION",
-            performed_by: gate.officer?.email || "ANO",
-            target_id: applicationId,
-            details: { cadetId, email: cadetEmail },
+            actor: gate.officerName || "ANO",
+            target: applicationId,
+            ip: request.headers.get("x-forwarded-for") || "unknown",
+            metadata: { cadetId, email: cadetEmail },
           });
 
           return json({

@@ -1,0 +1,41 @@
+# Git & CI/CD
+.git
+.github
+.gitignore
+
+# Dependencies & Build Artefacts
+node_modules
+.output
+dist
+.tanstack
+.wrangler
+.netlify
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# IDEs & Tooling
+.vscode
+.idea
+.cursor
+.claude
+.agents
+.gemini
+.jolli
+.lovable
+.nex
+
+# Logs & Temp
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Artifacts
+.DS_Store
+Thumbs.db

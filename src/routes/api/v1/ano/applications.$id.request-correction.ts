@@ -54,9 +54,10 @@ export const Route = createFileRoute("/api/v1/ano/applications/$id/request-corre
           // Audit log event
           await admin.from("audit_logs").insert({
             action: "REQUEST_APPLICATION_CORRECTION",
-            performed_by: gate.officer?.email || "ANO",
-            target_id: applicationId,
-            details: { remarks },
+            actor: gate.officerName || "ANO",
+            target: applicationId,
+            ip: request.headers.get("x-forwarded-for") || "unknown",
+            metadata: { remarks },
           });
 
           return json({

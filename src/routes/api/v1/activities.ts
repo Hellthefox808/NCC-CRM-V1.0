@@ -1,31 +1,40 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getAdmin, json } from "@backend/lib/ncc-db";
+import { getOrSetCache, invalidateCachePrefix } from "@backend/lib/cache.server";
 
 export const Route = createFileRoute("/api/v1/activities")({
   server: {
     handlers: {
       GET: async ({ request }) => {
         const url = new URL(request.url);
-        const category = url.searchParams.get("category");
-        const status = url.searchParams.get("status");
+        const category = url.searchParams.get("category") || "all";
+        const status = url.searchParams.get("status") || "all";
+        const cacheKey = `ncc:activities:${category}:${status}`;
 
         try {
-          const admin = await getAdmin();
-          let query = admin
-            .from("activities")
-            .select("*")
-            .order("start_time", { ascending: false });
+          const activities = await getOrSetCache(cacheKey, 60, async () => {
+            const admin = await getAdmin();
+            let query = admin
+              .from("activities")
+              .select("*")
+              .order("start_time", { ascending: false });
 
-          if (category) query = query.eq("category", category);
-          if (status) query = query.eq("status", status);
+            if (category !== "all") query = query.eq("category", category);
+            if (status !== "all") query = query.eq("status", status);
 
-          const { data, error } = await query;
-          if (error) throw error;
-
-          return json({
-            success: true,
-            data: { activities: data ?? [] },
+            const { data, error } = await query;
+            if (error) throw error;
+            return data ?? [];
           });
+
+          return json(
+            {
+              success: true,
+              data: { activities },
+            },
+            200,
+            { "Cache-Control": "public, max-age=60, stale-while-revalidate=180" },
+          );
         } catch {
           return json({ success: false, error: "Failed to fetch activities" }, 500);
         }
@@ -62,6 +71,9 @@ export const Route = createFileRoute("/api/v1/activities")({
             .single();
 
           if (error) throw error;
+
+          // Invalidate cached activities list
+          await invalidateCachePrefix("ncc:activities");
 
           const { logAuditEvent } = await import("@backend/lib/audit-log.server");
           logAuditEvent({

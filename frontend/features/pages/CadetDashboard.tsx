@@ -896,7 +896,7 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
               tasks={tasks}
               toggleTask={toggleTask}
               notifications={notifications}
-              setActiveTab={setActiveTab}
+              setActiveTab={(tab) => setActiveTab(tab as CadetTab)}
               setShowIdCardModal={setShowIdCardModal}
             />
           )}

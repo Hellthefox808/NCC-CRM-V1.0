@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getAdmin, json } from "@backend/lib/ncc-db";
+import { getOrSetCache, invalidateCachePrefix } from "@backend/lib/cache.server";
 
 export const Route = createFileRoute("/api/v1/annual-plans")({
   server: {
@@ -7,21 +8,29 @@ export const Route = createFileRoute("/api/v1/annual-plans")({
       GET: async ({ request }) => {
         const url = new URL(request.url);
         const year = url.searchParams.get("year") || "2026";
+        const cacheKey = `ncc:annual_plans:${year}`;
 
         try {
-          const admin = await getAdmin();
-          const { data, error } = await admin
-            .from("annual_plans")
-            .select("*")
-            .eq("plan_year", parseInt(year, 10))
-            .order("created_at", { ascending: true });
+          const plans = await getOrSetCache(cacheKey, 120, async () => {
+            const admin = await getAdmin();
+            const { data, error } = await admin
+              .from("annual_plans")
+              .select("*")
+              .eq("plan_year", parseInt(year, 10))
+              .order("created_at", { ascending: true });
 
-          if (error) throw error;
-
-          return json({
-            success: true,
-            data: { plans: data ?? [] },
+            if (error) throw error;
+            return data ?? [];
           });
+
+          return json(
+            {
+              success: true,
+              data: { plans },
+            },
+            200,
+            { "Cache-Control": "public, max-age=120, stale-while-revalidate=300" },
+          );
         } catch {
           return json({ success: false, error: "Failed to fetch annual plans" }, 500);
         }
@@ -55,6 +64,9 @@ export const Route = createFileRoute("/api/v1/annual-plans")({
             .single();
 
           if (error) throw error;
+
+          // Invalidate cached annual plans
+          await invalidateCachePrefix("ncc:annual_plans");
 
           return json({ success: true, data: { plan: data } }, 201);
         } catch {

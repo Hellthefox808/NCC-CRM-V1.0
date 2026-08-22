@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getAdmin, json } from "@backend/lib/ncc-db";
 import { prompterEngine } from "@backend/services/prompter/prompter.service";
-import { queueEmailJob } from "@backend/services/queue/queue.service";
+import { queueEmailJobsBatch } from "@backend/services/queue/queue.service";
 import { emitCalendarEventCreated, emitNotification } from "@backend/services/socket/socket.server";
 import { recordAuditLog } from "@backend/lib/audit-log.server";
+import { getOrSetCache, invalidateCachePrefix } from "@backend/lib/cache.server";
 
 export const Route = createFileRoute("/api/v1/calendar")({
   server: {
@@ -11,35 +12,43 @@ export const Route = createFileRoute("/api/v1/calendar")({
       GET: async ({ request }) => {
         try {
           const url = new URL(request.url);
-          const statusFilter = url.searchParams.get("status");
-          const typeFilter = url.searchParams.get("eventType");
-          const startDate = url.searchParams.get("start");
-          const endDate = url.searchParams.get("end");
+          const statusFilter = url.searchParams.get("status") || "all";
+          const typeFilter = url.searchParams.get("eventType") || "all";
+          const startDate = url.searchParams.get("start") || "none";
+          const endDate = url.searchParams.get("end") || "none";
 
-          const admin = await getAdmin();
-          let query = admin.from("calendar_events").select("*");
+          const cacheKey = `ncc:calendar:${statusFilter}:${typeFilter}:${startDate}:${endDate}`;
 
-          if (statusFilter) {
-            query = query.eq("status", statusFilter);
-          }
-          if (typeFilter) {
-            query = query.eq("event_type", typeFilter);
-          }
-          if (startDate) {
-            query = query.gte("start_time", startDate);
-          }
-          if (endDate) {
-            query = query.lte("end_time", endDate);
-          }
+          const events = await getOrSetCache(cacheKey, 60, async () => {
+            const admin = await getAdmin();
+            let query = admin.from("calendar_events").select("*");
 
-          const { data, error } = await query.order("start_time", { ascending: true });
+            if (statusFilter !== "all") {
+              query = query.eq("status", statusFilter);
+            }
+            if (typeFilter !== "all") {
+              query = query.eq("event_type", typeFilter);
+            }
+            if (startDate !== "none") {
+              query = query.gte("start_time", startDate);
+            }
+            if (endDate !== "none") {
+              query = query.lte("end_time", endDate);
+            }
 
-          if (error) throw error;
-
-          return json({
-            success: true,
-            data: { events: data ?? [] },
+            const { data, error } = await query.order("start_time", { ascending: true });
+            if (error) throw error;
+            return data ?? [];
           });
+
+          return json(
+            {
+              success: true,
+              data: { events },
+            },
+            200,
+            { "Cache-Control": "public, max-age=60, stale-while-revalidate=120" },
+          );
         } catch {
           return json({ success: false, error: "Failed to fetch calendar events" }, 500);
         }
@@ -83,6 +92,9 @@ export const Route = createFileRoute("/api/v1/calendar")({
 
           if (error) throw error;
 
+          // Invalidate cached calendar lists across all nodes
+          await invalidateCachePrefix("ncc:calendar");
+
           // 1. Prompter Engine: Setup automated 24h, 2h, 30m, start reminders
           await prompterEngine.setupEventReminders(event.id, event.start_time);
 
@@ -100,15 +112,17 @@ export const Route = createFileRoute("/api/v1/calendar")({
             actionLabel: "View Details",
           });
 
-          // 3. Non-blocking Async Email Notification Queue
+          // 3. Non-blocking Bulk Email Queue Dispatch
           const { data: cadets } = await admin.from("cadet_enrollments").select("email");
           const recipients = (cadets ?? [])
             .map((c: Record<string, unknown>) => c.email as string)
             .filter(Boolean);
           const emailTargets = recipients.length > 0 ? recipients : ["cadet@sbu.ac.in"];
 
-          for (const email of emailTargets) {
-            await queueEmailJob("sendEventCreated", email, {
+          const emailJobs = emailTargets.map((email) => ({
+            jobType: "sendEventCreated",
+            recipient: email,
+            payload: {
               eventTitle: event.title,
               eventType: event.event_type,
               startTime: event.start_time,
@@ -116,8 +130,10 @@ export const Route = createFileRoute("/api/v1/calendar")({
               location: event.location,
               description: event.description,
               eventId: event.id,
-            });
-          }
+            },
+          }));
+
+          await queueEmailJobsBatch(emailJobs);
 
           // 4. Audit Log
           await recordAuditLog({

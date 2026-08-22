@@ -46,9 +46,7 @@ function createSupabaseAdminClient() {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
     const missing = [
       ...(!SUPABASE_URL ? ["SUPABASE_URL / NEXT_PUBLIC_SUPABASE_URL"] : []),
-      ...(!SUPABASE_SERVICE_ROLE_KEY
-        ? ["SUPABASE_SERVICE_ROLE_KEY / SUPABASE_SECRET_KEY"]
-        : []),
+      ...(!SUPABASE_SERVICE_ROLE_KEY ? ["SUPABASE_SERVICE_ROLE_KEY / SUPABASE_SECRET_KEY"] : []),
     ];
     const message = `Missing Supabase environment variable(s): ${missing.join(", ")}.`;
     console.error(`[Supabase] ${message}`);

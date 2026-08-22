@@ -133,7 +133,9 @@ export function mapNotification(row: CadetRow) {
     title: row.title,
     category: row.category,
     priority: row.priority,
-    date: new Date(row.created_at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+    date: new Date(String(row.created_at || "")).toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+    }),
     body: row.body,
     read: false,
     actionType: row.action_type || "general",
@@ -189,3 +191,5 @@ export function isRoleAuthorized(userRole: string | undefined, allowedRoles: Use
   if (userRole === "SUPER_ADMIN" || userRole === "ADMIN" || userRole === "officer") return true;
   return allowedRoles.includes(userRole as UserRole);
 }
+
+export { mapCadet } from "./cadet-registry.server.ts";

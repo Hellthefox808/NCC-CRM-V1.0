@@ -73,6 +73,9 @@ function applyCorsHeaders(response: Response, origin: string | null): Response {
     "Content-Type, Authorization, X-Requested-With, X-CSRF-Token, X-Request-ID, X-Client-Version",
   );
   newHeaders.set("Access-Control-Allow-Credentials", "true");
+  newHeaders.set("X-Content-Type-Options", "nosniff");
+  newHeaders.set("X-Frame-Options", "SAMEORIGIN");
+  newHeaders.set("Vary", "Accept-Encoding, Origin");
 
   return new Response(response.body, {
     status: response.status,

@@ -1,4 +1,5 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export type Json = string | number | boolean | null | { [key: string]: any } | any[];
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
@@ -175,37 +176,58 @@ export type Database = {
       };
       calendar_events: {
         Row: {
+          cancelled_at: string | null;
           created_at: string;
+          created_by: string | null;
           description: string | null;
           end_time: string;
           event_type: string;
           id: string;
           is_all_day: boolean | null;
           location: string | null;
+          published_at: string | null;
           start_time: string;
+          status: string;
+          timezone: string;
           title: string;
+          updated_at: string;
+          updated_by: string | null;
         };
         Insert: {
+          cancelled_at?: string | null;
           created_at?: string;
+          created_by?: string | null;
           description?: string | null;
           end_time: string;
           event_type?: string;
           id?: string;
           is_all_day?: boolean | null;
           location?: string | null;
+          published_at?: string | null;
           start_time: string;
+          status?: string;
+          timezone?: string;
           title: string;
+          updated_at?: string;
+          updated_by?: string | null;
         };
         Update: {
+          cancelled_at?: string | null;
           created_at?: string;
+          created_by?: string | null;
           description?: string | null;
           end_time?: string;
           event_type?: string;
           id?: string;
           is_all_day?: boolean | null;
           location?: string | null;
+          published_at?: string | null;
           start_time?: string;
+          status?: string;
+          timezone?: string;
           title?: string;
+          updated_at?: string;
+          updated_by?: string | null;
         };
         Relationships: [];
       };
@@ -641,8 +663,10 @@ export type Database = {
           created_at: string;
           id: string;
           priority: string;
+          read: boolean;
           title: string;
           updated_at: string;
+          user_id: string | null;
         };
         Insert: {
           action_label?: string | null;
@@ -652,8 +676,10 @@ export type Database = {
           created_at?: string;
           id?: string;
           priority?: string;
+          read?: boolean;
           title: string;
           updated_at?: string;
+          user_id?: string | null;
         };
         Update: {
           action_label?: string | null;
@@ -663,8 +689,526 @@ export type Database = {
           created_at?: string;
           id?: string;
           priority?: string;
+          read?: boolean;
           title?: string;
           updated_at?: string;
+          user_id?: string | null;
+        };
+        Relationships: [];
+      };
+      calendar_event_attendees: {
+        Row: {
+          cadet_enrollment_id: string;
+          event_id: string;
+          id: string;
+          invited_at: string;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          cadet_enrollment_id: string;
+          event_id: string;
+          id?: string;
+          invited_at?: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          cadet_enrollment_id?: string;
+          event_id?: string;
+          id?: string;
+          invited_at?: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      calendar_event_reminders: {
+        Row: {
+          channel: string;
+          created_at: string;
+          event_id: string;
+          id: string;
+          offset_minutes: number;
+          recipient_scope: string;
+          scheduled_for: string;
+          sent_at: string | null;
+          status: string;
+        };
+        Insert: {
+          channel?: string;
+          created_at?: string;
+          event_id: string;
+          id?: string;
+          offset_minutes: number;
+          recipient_scope?: string;
+          scheduled_for: string;
+          sent_at?: string | null;
+          status?: string;
+        };
+        Update: {
+          channel?: string;
+          created_at?: string;
+          event_id?: string;
+          id?: string;
+          offset_minutes?: number;
+          recipient_scope?: string;
+          scheduled_for?: string;
+          sent_at?: string | null;
+          status?: string;
+        };
+        Relationships: [];
+      };
+      notification_deliveries: {
+        Row: {
+          attempt_count: number;
+          channel: string;
+          created_at: string;
+          error_code: string | null;
+          failed_at: string | null;
+          id: string;
+          notification_id: string;
+          recipient_id: string;
+          sent_at: string | null;
+          status: string;
+        };
+        Insert: {
+          attempt_count?: number;
+          channel?: string;
+          created_at?: string;
+          error_code?: string | null;
+          failed_at?: string | null;
+          id?: string;
+          notification_id: string;
+          recipient_id: string;
+          sent_at?: string | null;
+          status?: string;
+        };
+        Update: {
+          attempt_count?: number;
+          channel?: string;
+          created_at?: string;
+          error_code?: string | null;
+          failed_at?: string | null;
+          id?: string;
+          notification_id?: string;
+          recipient_id?: string;
+          sent_at?: string | null;
+          status?: string;
+        };
+        Relationships: [];
+      };
+      email_jobs: {
+        Row: {
+          attempts: number;
+          created_at: string;
+          error_message: string | null;
+          id: string;
+          job_type: string;
+          payload: Json;
+          processed_at: string | null;
+          recipient: string;
+          scheduled_at: string;
+          status: string;
+        };
+        Insert: {
+          attempts?: number;
+          created_at?: string;
+          error_message?: string | null;
+          id?: string;
+          job_type: string;
+          payload?: Json;
+          processed_at?: string | null;
+          recipient: string;
+          scheduled_at?: string;
+          status?: string;
+        };
+        Update: {
+          attempts?: number;
+          created_at?: string;
+          error_message?: string | null;
+          id?: string;
+          job_type?: string;
+          payload?: Json;
+          processed_at?: string | null;
+          recipient?: string;
+          scheduled_at?: string;
+          status?: string;
+        };
+        Relationships: [];
+      };
+      email_delivery_logs: {
+        Row: {
+          email_job_id: string | null;
+          error_details: string | null;
+          id: string;
+          recipient: string;
+          sent_at: string;
+          smtp_message_id: string | null;
+          status: string;
+          subject: string;
+        };
+        Insert: {
+          email_job_id?: string | null;
+          error_details?: string | null;
+          id?: string;
+          recipient: string;
+          sent_at?: string;
+          smtp_message_id?: string | null;
+          status?: string;
+          subject: string;
+        };
+        Update: {
+          email_job_id?: string | null;
+          error_details?: string | null;
+          id?: string;
+          recipient?: string;
+          sent_at?: string;
+          smtp_message_id?: string | null;
+          status?: string;
+          subject?: string;
+        };
+        Relationships: [];
+      };
+      cadet_users: {
+        Row: {
+          account_status: string;
+          activated_at: string | null;
+          application_id: string;
+          cadet_id: string;
+          created_at: string;
+          email: string;
+          id: string;
+          last_login_at: string | null;
+          password_hash: string | null;
+          role: string;
+          updated_at: string;
+        };
+        Insert: {
+          account_status?: string;
+          activated_at?: string | null;
+          application_id: string;
+          cadet_id: string;
+          created_at?: string;
+          email: string;
+          id?: string;
+          last_login_at?: string | null;
+          password_hash?: string | null;
+          role?: string;
+          updated_at?: string;
+        };
+        Update: {
+          account_status?: string;
+          activated_at?: string | null;
+          application_id?: string;
+          cadet_id?: string;
+          created_at?: string;
+          email?: string;
+          id?: string;
+          last_login_at?: string | null;
+          password_hash?: string | null;
+          role?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      account_activation_tokens: {
+        Row: {
+          created_at: string;
+          expires_at: string;
+          id: string;
+          token_hash: string;
+          used_at: string | null;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          expires_at: string;
+          id?: string;
+          token_hash: string;
+          used_at?: string | null;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          expires_at?: string;
+          id?: string;
+          token_hash?: string;
+          used_at?: string | null;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      onboarding_progress: {
+        Row: {
+          completed_at: string | null;
+          contact_verified: boolean;
+          declaration_accepted: boolean;
+          documents_verified: boolean;
+          onboarding_completed: boolean;
+          orientation_completed: boolean;
+          profile_completed: boolean;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          completed_at?: string | null;
+          contact_verified?: boolean;
+          declaration_accepted?: boolean;
+          documents_verified?: boolean;
+          onboarding_completed?: boolean;
+          orientation_completed?: boolean;
+          profile_completed?: boolean;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          completed_at?: string | null;
+          contact_verified?: boolean;
+          declaration_accepted?: boolean;
+          documents_verified?: boolean;
+          onboarding_completed?: boolean;
+          orientation_completed?: boolean;
+          profile_completed?: boolean;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      storage_upload_intents: {
+        Row: {
+          allowed_mime: string;
+          bucket: string;
+          checksum: string | null;
+          created_at: string;
+          expires_at: string;
+          id: string;
+          max_size_bytes: number;
+          object_key: string;
+          opaque_intent_id: string;
+          operation: string;
+          resource_id: string;
+          resource_type: string;
+          status: string;
+          token_hash: string;
+          used_at: string | null;
+          user_id: string;
+        };
+        Insert: {
+          allowed_mime: string;
+          bucket: string;
+          checksum?: string | null;
+          created_at?: string;
+          expires_at: string;
+          id?: string;
+          max_size_bytes: number;
+          object_key: string;
+          opaque_intent_id: string;
+          operation?: string;
+          resource_id: string;
+          resource_type: string;
+          status?: string;
+          token_hash: string;
+          used_at?: string | null;
+          user_id: string;
+        };
+        Update: {
+          allowed_mime?: string;
+          bucket?: string;
+          checksum?: string | null;
+          created_at?: string;
+          expires_at?: string;
+          id?: string;
+          max_size_bytes?: number;
+          object_key?: string;
+          opaque_intent_id?: string;
+          operation?: string;
+          resource_id?: string;
+          resource_type?: string;
+          status?: string;
+          token_hash?: string;
+          used_at?: string | null;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      storage_objects: {
+        Row: {
+          bucket: string;
+          checksum: string | null;
+          created_at: string;
+          deleted_at: string | null;
+          id: string;
+          mime_type: string;
+          object_key: string;
+          opaque_object_id: string;
+          owner_id: string;
+          resource_id: string;
+          resource_type: string;
+          size_bytes: number;
+          status: string;
+          verified_at: string | null;
+        };
+        Insert: {
+          bucket: string;
+          checksum?: string | null;
+          created_at?: string;
+          deleted_at?: string | null;
+          id?: string;
+          mime_type: string;
+          object_key: string;
+          opaque_object_id: string;
+          owner_id: string;
+          resource_id: string;
+          resource_type: string;
+          size_bytes: number;
+          status?: string;
+          verified_at?: string | null;
+        };
+        Update: {
+          bucket?: string;
+          checksum?: string | null;
+          created_at?: string;
+          deleted_at?: string | null;
+          id?: string;
+          mime_type?: string;
+          object_key?: string;
+          opaque_object_id?: string;
+          owner_id?: string;
+          resource_id?: string;
+          resource_type?: string;
+          size_bytes?: number;
+          status?: string;
+          verified_at?: string | null;
+        };
+        Relationships: [];
+      };
+      storage_access_grants: {
+        Row: {
+          created_at: string;
+          expires_at: string;
+          grant_token_hash: string;
+          id: string;
+          object_id: string;
+          opaque_grant_id: string;
+          operation: string;
+          revoked_at: string | null;
+          status: string;
+          used_at: string | null;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          expires_at: string;
+          grant_token_hash: string;
+          id?: string;
+          object_id: string;
+          opaque_grant_id: string;
+          operation?: string;
+          revoked_at?: string | null;
+          status?: string;
+          used_at?: string | null;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          expires_at?: string;
+          grant_token_hash?: string;
+          id?: string;
+          object_id?: string;
+          opaque_grant_id?: string;
+          operation?: string;
+          revoked_at?: string | null;
+          status?: string;
+          used_at?: string | null;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      ids_events: {
+        Row: {
+          actor_id: string | null;
+          actor_ip: string;
+          created_at: string;
+          details: Json;
+          event_type: string;
+          id: string;
+          risk_score: number;
+        };
+        Insert: {
+          actor_id?: string | null;
+          actor_ip: string;
+          created_at?: string;
+          details?: Json;
+          event_type: string;
+          id?: string;
+          risk_score?: number;
+        };
+        Update: {
+          actor_id?: string | null;
+          actor_ip?: string;
+          created_at?: string;
+          details?: Json;
+          event_type?: string;
+          id?: string;
+          risk_score?: number;
+        };
+        Relationships: [];
+      };
+      ids_alerts: {
+        Row: {
+          alert_level: string;
+          created_at: string;
+          description: string;
+          event_id: string | null;
+          id: string;
+          status: string;
+          title: string;
+        };
+        Insert: {
+          alert_level: string;
+          created_at?: string;
+          description: string;
+          event_id?: string | null;
+          id?: string;
+          status?: string;
+          title: string;
+        };
+        Update: {
+          alert_level?: string;
+          created_at?: string;
+          description?: string;
+          event_id?: string | null;
+          id?: string;
+          status?: string;
+          title?: string;
+        };
+        Relationships: [];
+      };
+      ids_actions: {
+        Row: {
+          action_type: string;
+          alert_id: string | null;
+          executed_at: string;
+          id: string;
+          status: string;
+          target_resource: string | null;
+        };
+        Insert: {
+          action_type: string;
+          alert_id?: string | null;
+          executed_at?: string;
+          id?: string;
+          status?: string;
+          target_resource?: string | null;
+        };
+        Update: {
+          action_type?: string;
+          alert_id?: string | null;
+          executed_at?: string;
+          id?: string;
+          status?: string;
+          target_resource?: string | null;
         };
         Relationships: [];
       };

@@ -690,7 +690,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
           {/* TAB 1: OVERVIEW DASHBOARD */}
           {activeTab === "dashboard" && (
             <div className="space-y-6">
-              <StatsOverview enrollments={enrollments} setActiveTab={setActiveTab} />
+              <StatsOverview
+                enrollments={enrollments}
+                setActiveTab={(tab) => setActiveTab(tab as typeof activeTab)}
+              />
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="space-y-6">

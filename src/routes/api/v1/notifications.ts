@@ -1,24 +1,31 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getAdmin, json, mapNotification } from "@backend/lib/ncc-db";
+import { getOrSetCache, invalidateCache } from "@backend/lib/cache.server";
 
 export const Route = createFileRoute("/api/v1/notifications")({
   server: {
     handlers: {
       GET: async () => {
         try {
-          const admin = await getAdmin();
-          const { data, error } = await admin
-            .from("notifications")
-            .select("*")
-            .order("created_at", { ascending: false });
+          const notifications = await getOrSetCache("ncc:notifications:feed", 30, async () => {
+            const admin = await getAdmin();
+            const { data, error } = await admin
+              .from("notifications")
+              .select("*")
+              .order("created_at", { ascending: false });
 
-          if (error) throw error;
-          const notifications = (data ?? []).map(mapNotification);
-
-          return json({
-            success: true,
-            data: { notifications, unreadCount: notifications.length },
+            if (error) throw error;
+            return (data ?? []).map(mapNotification);
           });
+
+          return json(
+            {
+              success: true,
+              data: { notifications, unreadCount: notifications.length },
+            },
+            200,
+            { "Cache-Control": "public, max-age=30, stale-while-revalidate=60" },
+          );
         } catch {
           return json({ success: false, error: "Database error fetching notifications" }, 500);
         }
@@ -53,6 +60,9 @@ export const Route = createFileRoute("/api/v1/notifications")({
             .single();
 
           if (error) throw error;
+
+          // Invalidate notifications cache
+          await invalidateCache("ncc:notifications:feed");
 
           return json({ success: true, data: { notification: mapNotification(data) } }, 201);
         } catch {

@@ -54,9 +54,10 @@ export const Route = createFileRoute("/api/v1/ano/applications/$id/reject")({
           // Audit log event
           await admin.from("audit_logs").insert({
             action: "REJECT_CADET_APPLICATION",
-            performed_by: gate.officer?.email || "ANO",
-            target_id: applicationId,
-            details: { reason },
+            actor: gate.officerName || "ANO",
+            target: applicationId,
+            ip: request.headers.get("x-forwarded-for") || "unknown",
+            metadata: { reason },
           });
 
           return json({

@@ -46,7 +46,7 @@ export function useSocket(token?: string) {
       // Setup 15s ping timer for latency check
       if (pingTimerRef.current) clearInterval(pingTimerRef.current);
       pingTimerRef.current = setInterval(() => {
-        if (socket.connected) {
+        if (socket && socket.connected) {
           pingStartRef.current = Date.now();
           socket.emit("ping");
         }

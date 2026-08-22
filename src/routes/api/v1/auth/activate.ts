@@ -92,21 +92,21 @@ export const Route = createFileRoute("/api/v1/auth/activate")({
           const identifier = verifyResult.identifier || "";
 
           // Resolve cadet or admin details
-          const { data: cred } = await admin
-            .from("app_credentials")
-            .select("identifier, email, role")
-            .eq("identifier", identifier)
+          const { data: user } = await admin
+            .from("cadet_users")
+            .select("cadet_id, email, role")
+            .eq("cadet_id", identifier)
             .maybeSingle();
 
           const userType =
-            cred?.role === "ANO" || cred?.role === "ADMIN" ? "ANO Officer" : "Applicant / Cadet";
+            user?.role === "ANO" || user?.role === "ADMIN" ? "ANO Officer" : "Applicant / Cadet";
 
           return json({
             success: true,
             valid: true,
             data: {
               username: identifier.toUpperCase(),
-              email: cred?.email || identifier,
+              email: user?.email || identifier,
               userType,
               fullName: identifier.toUpperCase(),
             },

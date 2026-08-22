@@ -1,6 +1,28 @@
 version: "3.8"
 
 services:
+  # Nginx Reverse Proxy & Load Balancer
+  nginx:
+    image: nginx:alpine
+    container_name: ncc_load_balancer
+    ports:
+      - "80:80"
+      - "3000:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      ncc-app-1:
+        condition: service_healthy
+      ncc-app-2:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:80/api/v1/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
   # Redis caching & distributed rate-limiting service
   redis:
     image: redis:7-alpine
@@ -17,14 +39,12 @@ services:
       timeout: 5s
       retries: 5
 
-  # NCC Command Centre Web Application (TanStack Start / Nitro SSR)
-  ncc-app:
+  # NCC Web Application Node 1 (TanStack Start / Nitro SSR)
+  ncc-app-1:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ncc_command_centre
-    ports:
-      - "3000:3000"
+    container_name: ncc_app_node_1
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -43,9 +63,40 @@ services:
           "--no-verbose",
           "--tries=1",
           "--spider",
-          "http://localhost:3000/api/v1/health",
+          "http://localhost:3000/api/v1/health?type=liveness",
         ]
-      interval: 30s
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # NCC Web Application Node 2 (TanStack Start / Nitro SSR)
+  ncc-app-2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ncc_app_node_2
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - REDIS_URL=redis://redis:6379
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3000/api/v1/health?type=liveness",
+        ]
+      interval: 15s
       timeout: 5s
       retries: 3
       start_period: 10s

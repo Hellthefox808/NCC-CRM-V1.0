@@ -11,7 +11,10 @@ import {
 import { cadetEnrollmentSchema, validateRequestBody } from "../lib/validation.schemas.ts";
 import { checkRateLimitAsync } from "../lib/rate-limiter.server.ts";
 import { getRedisStatus, redisGet, redisIncr, redisSet } from "../lib/redis.server.ts";
-import { formatApplicationNo, sendMultiChannelApplicationConfirmation } from "../services/messaging/multichannel.service.ts";
+import {
+  formatApplicationNo,
+  sendMultiChannelApplicationConfirmation,
+} from "../services/messaging/multichannel.service.ts";
 
 describe("E2E Pipeline & Data Connection Integration Tests", () => {
   it("Complete Enrollment Form 1 -> 18-Digit App ID -> DB Row Pipeline", () => {
@@ -48,7 +51,11 @@ describe("E2E Pipeline & Data Connection Integration Tests", () => {
     };
 
     // 1. Validate against schema
-    const validation = validateRequestBody(cadetEnrollmentSchema, rawSubmission, "Form 1 Submission");
+    const validation = validateRequestBody(
+      cadetEnrollmentSchema,
+      rawSubmission,
+      "Form 1 Submission",
+    );
     assert.equal(validation.success, true);
     if (!validation.success) return;
 
@@ -96,21 +103,21 @@ describe("E2E Pipeline & Data Connection Integration Tests", () => {
         "Application ID": "192026082199881122",
         "Cadet Full Name": "Rahul Kumar, Singh",
         "SBU Course": "B.Tech CSE",
-        "Status": "Enrolled",
+        Status: "Enrolled",
       },
       {
         "S.No": 2,
         "Application ID": "192026082199881123",
         "Cadet Full Name": 'Priya "Ananya" Kumari',
         "SBU Course": "BCA",
-        "Status": "PENDING_ANO_REVIEW",
+        Status: "PENDING_ANO_REVIEW",
       },
     ];
 
     const headers = Object.keys(testCadets[0]);
     const headerRow = headers.map(escapeCsvField).join(",");
     const dataRows = testCadets.map((row) =>
-      headers.map((h) => escapeCsvField((row as Record<string, unknown>)[h])).join(",")
+      headers.map((h) => escapeCsvField((row as Record<string, unknown>)[h])).join(","),
     );
     const csvContent = "\uFEFF" + [headerRow, ...dataRows].join("\r\n");
 

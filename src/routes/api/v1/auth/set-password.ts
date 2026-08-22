@@ -122,21 +122,12 @@ export const Route = createFileRoute("/api/v1/auth/set-password")({
           const saltedHash = await hashPassword(password, userIdentifier);
 
           // Update app_credentials
-          const { data: cred } = await admin
-            .from("app_credentials")
-            .select("email, role")
-            .eq("identifier", userIdentifier)
-            .maybeSingle();
-
-          userEmail =
-            userEmail || cred?.email || (userIdentifier.includes("@") ? userIdentifier : "");
+          userEmail = userEmail || (userIdentifier.includes("@") ? userIdentifier : "");
 
           await admin.from("app_credentials").upsert(
             {
               identifier: userIdentifier,
-              email: userEmail,
               password_hash: saltedHash,
-              role: cred?.role || "CADET",
               updated_at: now,
             },
             { onConflict: "identifier" },
@@ -182,9 +173,10 @@ export const Route = createFileRoute("/api/v1/auth/set-password")({
           // Audit log
           await admin.from("audit_logs").insert({
             action: "SET_PORTAL_PASSWORD",
-            performed_by: userIdentifier,
-            target_id: userIdentifier,
-            details: { identifier: userIdentifier },
+            actor: userIdentifier,
+            target: userIdentifier,
+            ip: request.headers.get("x-forwarded-for") || "unknown",
+            metadata: { identifier: userIdentifier },
           });
 
           return json({

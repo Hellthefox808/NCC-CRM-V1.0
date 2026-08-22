@@ -103,7 +103,7 @@ export async function issueOtp(
     code_hash: await hashCode(code, key),
     destination,
     expires_at: expiresAt.toISOString(),
-  } as Record<string, unknown>);
+  });
   if (error) throw error;
 
   return { code, destination, expiresAt: expiresAt.toISOString() };
@@ -162,7 +162,7 @@ export async function verifyOtp(
   if (submitted !== row.code_hash) {
     await admin
       .from("auth_otp_codes")
-      .update({ attempts: row.attempts + 1 } as Record<string, unknown>)
+      .update({ attempts: row.attempts + 1 })
       .eq("id", row.id);
     const left = MAX_ATTEMPTS - (row.attempts + 1);
     return {
@@ -174,7 +174,7 @@ export async function verifyOtp(
 
   await admin
     .from("auth_otp_codes")
-    .update({ consumed_at: new Date().toISOString() } as Record<string, unknown>)
+    .update({ consumed_at: new Date().toISOString() })
     .eq("id", row.id);
   return { ok: true };
 }
@@ -188,7 +188,7 @@ export async function setPortalPassword(identifier: string, password: string) {
       identifier: key,
       password_hash: await hashPassword(password, key),
       updated_at: new Date().toISOString(),
-    } as Record<string, unknown>,
+    },
     { onConflict: "identifier" },
   );
   if (error) throw error;
@@ -249,7 +249,7 @@ export async function issueActivationToken(
       code_hash: tokenHash,
       destination,
       expires_at: expiresAt.toISOString(),
-    } as Record<string, unknown>);
+    });
     if (error) throw error;
   } catch {
     // Fallback to in-memory store when Supabase environment is unconfigured
@@ -350,7 +350,7 @@ export async function consumeActivationToken(
     const admin = await getAdmin();
     await admin
       .from("auth_otp_codes")
-      .update({ consumed_at: new Date().toISOString() } as Record<string, unknown>)
+      .update({ consumed_at: new Date().toISOString() })
       .eq("code_hash", tokenHash);
   } catch {
     const memRec = memoryTokens.find((t) => t.tokenHash === tokenHash);

@@ -110,4 +110,3 @@ All migrations are located in `supabase/migrations/` and execute sequentially an
 1. **Atomic Token Consumption**: Verification and activation tokens are consumed via single-operation conditional queries (`UPDATE auth_otp_codes SET consumed_at = NOW() WHERE code_hash = $1 AND consumed_at IS NULL AND expires_at > NOW()`).
 2. **Brute-Force Rate Limiting**: OTP codes are protected by atomic attempt counter increments (`UPDATE auth_otp_codes SET attempts = attempts + 1 WHERE id = $1`). When `attempts >= 5`, the token is invalidated.
 3. **Public Data Masking**: The public `/api/v1/enrollments/status` endpoint strictly calls `maskPublicRecord()`, zeroing out Aadhaar, full bank accounts, and contact telephone numbers to prevent PII harvesting.
-

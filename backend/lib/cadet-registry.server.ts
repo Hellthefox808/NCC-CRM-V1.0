@@ -11,6 +11,7 @@ export interface AdminGate {
   ok: boolean;
   status: number;
   error?: string;
+  officerName?: string;
 }
 
 export function bearer(request: Request): string | null {
@@ -23,17 +24,27 @@ export function bearer(request: Request): string | null {
   return match ? match[1] : null;
 }
 
+/** Invalidates cached session state across memory and Redis. */
+export async function invalidateSessionCache(token: string): Promise<void> {
+  const { invalidateCache } = await import("./cache.server.ts");
+  await invalidateCache(`ncc:session:${token}`);
+}
+
 /** Validates the portal session token and requires the officer (admin) role. */
 export async function requireOfficer(request: Request): Promise<AdminGate> {
   const token = bearer(request);
   if (!token) return { ok: false, status: 401, error: "Officer sign-in required." };
 
-  const admin = await getAdmin();
-  const { data: session } = await admin
-    .from("app_sessions")
-    .select("id, role, expires_at")
-    .eq("token", token)
-    .maybeSingle();
+  const { getOrSetCache } = await import("./cache.server.ts");
+  const session = await getOrSetCache(`ncc:session:${token}`, 300, async () => {
+    const admin = await getAdmin();
+    const { data } = await admin
+      .from("app_sessions")
+      .select("id, role, expires_at, display_name")
+      .eq("token", token)
+      .maybeSingle();
+    return data ?? null;
+  });
 
   if (!session) return { ok: false, status: 401, error: "Session not found." };
   if (Date.now() > new Date(session.expires_at).getTime()) {
@@ -42,7 +53,7 @@ export async function requireOfficer(request: Request): Promise<AdminGate> {
   if (session.role !== "admin") {
     return { ok: false, status: 403, error: "Officer privileges required." };
   }
-  return { ok: true, status: 200 };
+  return { ok: true, status: 200, officerName: session.display_name || "Officer" };
 }
 
 const MASK_KEEP = 4;
@@ -176,12 +187,16 @@ export async function requireCadetSession(request: Request): Promise<CadetGate> 
   const token = bearer(request);
   if (!token) return { ok: false, status: 401, error: "Cadet sign-in required." };
 
-  const admin = await getAdmin();
-  const { data: session } = await admin
-    .from("app_sessions")
-    .select("id, role, expires_at, cadet_enrollment_id")
-    .eq("token", token)
-    .maybeSingle();
+  const { getOrSetCache } = await import("./cache.server.ts");
+  const session = await getOrSetCache(`ncc:session:${token}`, 300, async () => {
+    const admin = await getAdmin();
+    const { data } = await admin
+      .from("app_sessions")
+      .select("id, role, expires_at, cadet_enrollment_id")
+      .eq("token", token)
+      .maybeSingle();
+    return data ?? null;
+  });
 
   if (!session) return { ok: false, status: 401, error: "Session not found." };
   if (Date.now() > new Date(session.expires_at).getTime()) {

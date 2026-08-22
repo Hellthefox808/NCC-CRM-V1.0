@@ -32,10 +32,9 @@ export const Route = createFileRoute("/api/v1/calendar/$id/reminders")({
           const reminderId = await prompterEngine.addCustomReminder(
             id,
             Number(body.offsetMinutes),
-            (body.channel as "EMAIL" | "SOCKET" | "BOTH") || "BOTH",
+            (body.channel as "EMAIL" | "SOCKET_IO" | "IN_APP" | "BOTH") || "BOTH",
             event.start_time,
-            (body.recipientScope as "ALL_CADETS" | "SD_ONLY" | "SW_ONLY" | "OFFICERS_ONLY") ||
-              "ALL_CADETS",
+            (body.recipientScope as "ALL_CADETS" | "PI_STAFF" | "OFFICERS") || "ALL_CADETS",
           );
 
           return json(
