@@ -241,25 +241,25 @@ export async function issueActivationToken(
   const tokenHash = await sha256(rawToken);
   const expiresAt = new Date(Date.now() + ttlMinutes * 60 * 1000);
 
+  memoryTokens.push({
+    identifier: key,
+    purpose,
+    tokenHash,
+    destination,
+    expiresAt,
+  });
+
   try {
     const admin = await getAdmin();
-    const { error } = await admin.from("auth_otp_codes").insert({
+    await admin.from("auth_otp_codes").insert({
       identifier: key,
       purpose,
       code_hash: tokenHash,
       destination,
       expires_at: expiresAt.toISOString(),
     });
-    if (error) throw error;
   } catch {
-    // Fallback to in-memory store when Supabase environment is unconfigured
-    memoryTokens.push({
-      identifier: key,
-      purpose,
-      tokenHash,
-      destination,
-      expiresAt,
-    });
+    // Supabase unconfigured or offline
   }
 
   return { rawToken, expiresAt: expiresAt.toISOString() };
