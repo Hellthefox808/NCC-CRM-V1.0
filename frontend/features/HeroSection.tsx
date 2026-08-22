@@ -202,25 +202,27 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             {/* Quick 18-Digit Application Number Search Bar */}
             <motion.div variants={itemVariants} className="pt-2 max-w-xl mx-auto w-full">
-              <div className="relative flex items-center bg-[#FAF5EF]/90 backdrop-blur-md rounded-2xl border border-[#D6C5B3] p-1.5 shadow-md">
-                <Search className="ml-3.5 w-4 h-4 text-[#8C5E3C] shrink-0" />
-                <input
-                  type="text"
-                  value={heroAppNoQuery}
-                  onChange={(e) => setHeroAppNoQuery(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && heroAppNoQuery.trim()) {
-                      if (openStatusModalWithQuery) {
-                        openStatusModalWithQuery(heroAppNoQuery.trim());
-                      } else {
-                        openStatusModal();
+              <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-[#FAF5EF]/90 backdrop-blur-md rounded-2xl border border-[#D6C5B3] p-1.5 shadow-md gap-1.5 sm:gap-0">
+                <div className="flex items-center flex-1 min-w-0">
+                  <Search className="ml-3 w-4 h-4 text-[#8C5E3C] shrink-0" />
+                  <input
+                    type="text"
+                    value={heroAppNoQuery}
+                    onChange={(e) => setHeroAppNoQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && heroAppNoQuery.trim()) {
+                        if (openStatusModalWithQuery) {
+                          openStatusModalWithQuery(heroAppNoQuery.trim());
+                        } else {
+                          openStatusModal();
+                        }
                       }
-                    }
-                  }}
-                  placeholder="Enter 18-digit Application No. (e.g. 192026081298471625)..."
-                  className="w-full bg-transparent pl-3 pr-24 py-2 text-xs sm:text-sm font-bold text-[#3B281C] placeholder-[#8C5E3C]/60 focus:outline-hidden"
-                  id="hero-app-no-search-input"
-                />
+                    }}
+                    placeholder="Enter 18-digit Application No. (e.g. 192026081298471625)..."
+                    className="w-full bg-transparent pl-2.5 pr-2 py-2 text-xs sm:text-sm font-bold text-[#3B281C] placeholder-[#8C5E3C]/60 focus:outline-hidden"
+                    id="hero-app-no-search-input"
+                  />
+                </div>
                 <button
                   onClick={() => {
                     if (heroAppNoQuery.trim()) {
@@ -233,7 +235,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       openStatusModal();
                     }
                   }}
-                  className="absolute right-2 px-4 py-2 rounded-xl bg-[#8C5E3C] hover:bg-[#734B2E] text-[#FAF5EF] text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-xs flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-xl bg-[#8C5E3C] hover:bg-[#734B2E] text-[#FAF5EF] text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-xs flex items-center justify-center gap-1.5 shrink-0"
                   id="hero-app-no-search-btn"
                 >
                   <span>Search</span>

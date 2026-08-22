@@ -576,3 +576,17 @@
 .portal-pill-snap {
   transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+/* Smooth slow spin for radar scanning elements */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}

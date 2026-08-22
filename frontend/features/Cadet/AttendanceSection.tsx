@@ -281,8 +281,8 @@ export const AttendanceSection: React.FC<AttendanceSectionProps> = ({
               {rows.length} of {attendanceLog.length} records
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="relative">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2">
+            <div className="relative flex-1 sm:flex-none">
               <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input
                 value={query}
@@ -292,10 +292,10 @@ export const AttendanceSection: React.FC<AttendanceSectionProps> = ({
                 }}
                 placeholder="Search topic, PI staff or remarks"
                 aria-label="Search attendance records"
-                className="h-9 w-64 rounded-xl border border-border bg-background pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground"
+                className="h-9 w-full sm:w-64 rounded-xl border border-border bg-background pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground"
               />
             </div>
-            <div className="flex items-center gap-1 rounded-xl border border-border p-1">
+            <div className="flex flex-wrap items-center gap-1 rounded-xl border border-border p-1">
               {statuses.map((s) => (
                 <button
                   key={s}
@@ -303,7 +303,7 @@ export const AttendanceSection: React.FC<AttendanceSectionProps> = ({
                     setStatusFilter(s);
                     setPage(1);
                   }}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold cursor-pointer transition-colors ${
                     statusFilter === s
                       ? "bg-foreground text-background"
                       : "text-muted-foreground hover:text-foreground"

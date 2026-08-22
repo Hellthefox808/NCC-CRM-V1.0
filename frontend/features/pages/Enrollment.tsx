@@ -1770,12 +1770,12 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                 </AnimatePresence>
 
                 {/* Stepper Navigation Buttons */}
-                <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-6 border-t border-slate-100">
                   {activeStep > 1 ? (
                     <button
                       type="button"
                       onClick={handlePrevStep}
-                      className="px-5 py-3 bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-colors"
+                      className="px-4 sm:px-5 py-3 bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
                     >
                       <ChevronLeft className="w-4 h-4" />
                       <span>Previous Step</span>
@@ -1789,7 +1789,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                       type="button"
                       onClick={handleNextStep}
                       disabled={!isStepValid}
-                      className="px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-emerald-600/20 cursor-pointer transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="px-6 sm:px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-emerald-600/20 cursor-pointer transition-colors disabled:opacity-40 disabled:cursor-not-allowed ml-auto"
                     >
                       <span>Next Step</span>
                       <ChevronRight className="w-4.5 h-4.5" />
@@ -1798,7 +1798,7 @@ export const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-extrabold text-xs sm:text-sm flex items-center gap-2.5 shadow-xl shadow-emerald-600/30 cursor-pointer disabled:opacity-50 uppercase tracking-wider transition-colors"
+                      className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-600/30 cursor-pointer disabled:opacity-50 uppercase tracking-wider transition-colors ml-auto sm:ml-0"
                       id="submit-enrollment-form-btn"
                     >
                       {isSubmitting ? (

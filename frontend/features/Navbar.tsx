@@ -366,24 +366,30 @@ export const Navbar: React.FC<NavbarProps> = ({
                   setMobileMenuOpen(false);
                   openAiAssistant();
                 }}
-                className="py-2.5 bg-accent-brand/10 text-accent-brand text-xs font-semibold rounded-xl flex items-center justify-center gap-1 cursor-pointer"
+                className="py-2.5 px-2 bg-accent-brand/10 hover:bg-accent-brand/15 text-accent-brand text-[11px] sm:text-xs font-semibold rounded-xl flex items-center justify-center gap-1 cursor-pointer transition-colors"
+                id="mobile-nav-ai-btn"
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>AI Asst</span>
+                <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">AI Asst</span>
               </button>
               <button
-                onClick={openStatusModal}
-                className="py-2.5 bg-secondary text-foreground text-xs font-semibold rounded-xl border border-border flex items-center justify-center gap-1"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openStatusModal();
+                }}
+                className="py-2.5 px-2 bg-secondary hover:bg-secondary/80 text-foreground text-[11px] sm:text-xs font-semibold rounded-xl border border-border flex items-center justify-center gap-1 cursor-pointer transition-colors"
+                id="mobile-nav-status-btn"
               >
-                <Search className="w-3.5 h-3.5" />
-                <span>Status</span>
+                <Search className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">Status</span>
               </button>
               <button
                 onClick={() => handleNavClick("signup")}
-                className="py-2.5 bg-primary text-primary-foreground text-xs font-semibold rounded-xl flex items-center justify-center gap-1"
+                className="py-2.5 px-2 bg-primary hover:bg-primary/90 text-primary-foreground text-[11px] sm:text-xs font-semibold rounded-xl flex items-center justify-center gap-1 cursor-pointer transition-colors shadow-xs"
+                id="mobile-nav-portal-btn"
               >
-                <User className="w-3.5 h-3.5" />
-                <span>Portal</span>
+                <User className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">Portal</span>
               </button>
             </div>
           </motion.div>
