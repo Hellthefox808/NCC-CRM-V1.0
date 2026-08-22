@@ -4,6 +4,7 @@
 **Status**: IN_PROGRESS
 
 ## Tasks
+
 - [x] Initialized DISPATCH.md and BRIEFING.md
 - [ ] Read ORIGINAL_REQUEST.md and PROJECT.md
 - [ ] Inspect eslint.config.js and test execution time with npx eslint

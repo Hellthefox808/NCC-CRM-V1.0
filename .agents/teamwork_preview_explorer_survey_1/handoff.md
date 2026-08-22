@@ -4,7 +4,7 @@
 **Working Directory**: `c:\Users\ravir\Desktop\PROJECT\Project\NCC\.agents\teamwork_preview_explorer_survey_1`  
 **Target Milestone**: Phase 0 — Architecture & Security Survey  
 **Date**: August 21, 2026  
-**Type**: Hard Handoff (Investigation & Survey Complete)  
+**Type**: Hard Handoff (Investigation & Survey Complete)
 
 ---
 
@@ -13,6 +13,7 @@
 Direct code inspections, schema audits, and test executions confirmed the following state across the codebase:
 
 ### 1.1 Test Execution Baseline
+
 - **Command**: `npm test` (`node --import tsx --test backend/tests/*.test.ts`)
 - **Observed Result**:
   ```text
@@ -27,6 +28,7 @@ Direct code inspections, schema audits, and test executions confirmed the follow
   ```
 
 ### 1.2 Authentication & Identity Subsystem Observations
+
 - **Password Hashing**: `backend/lib/auth-otp.server.ts` (lines 20–24):
   ```typescript
   export async function hashPassword(password: string, _identifier?: string): Promise<string> {
@@ -55,6 +57,7 @@ Direct code inspections, schema audits, and test executions confirmed the follow
   - `requireOfficer(request)` and `requireCadetSession(request)` validate token from Authorization header or cookie, query `app_sessions`, check expiration, and enforce role.
 
 ### 1.3 Cadet Enrollment & Verification Observations
+
 - **Form 1 Validation**: `backend/lib/validation.schemas.ts` (lines 162–254):
   - `cadetEnrollmentSchema` validates full personal, academic, physical, and banking details.
   - Enforces age between 15 and 28 years (`refine((date) => age >= 15 && age <= 28)`).
@@ -97,9 +100,10 @@ Direct code inspections, schema audits, and test executions confirmed the follow
 
 ## 4. Conclusion
 
-The 19 Jharkhand Battalion NCC platform exhibits a solid, OWASP-compliant architecture across its Authentication & Identity and Cadet Enrollment subsystems. 
+The 19 Jharkhand Battalion NCC platform exhibits a solid, OWASP-compliant architecture across its Authentication & Identity and Cadet Enrollment subsystems.
 
 Key actionable items for subsequent phases:
+
 1. Replace custom weighted mod-11 Aadhaar validation with the official **Verhoeff algorithm** in `backend/lib/sanitization.ts` and add dedicated test coverage.
 2. Expand automated test suites covering edge cases: simultaneous token consumption race conditions, OTP expiration boundaries (exact TTL boundaries), and session invalidation across concurrent requests.
 
@@ -110,10 +114,12 @@ Key actionable items for subsequent phases:
 To independently verify these findings:
 
 1. **Execute All Test Suites**:
+
    ```powershell
    npm run test
    ```
-   *Expected Result*: 60 tests pass across 11 test suites in < 1 second.
+
+   _Expected Result_: 60 tests pass across 11 test suites in < 1 second.
 
 2. **Inspect Survey Report**:
    Read `.agents/teamwork_preview_explorer_survey_1/survey_auth_cadet.md` for full breakdown and tables.

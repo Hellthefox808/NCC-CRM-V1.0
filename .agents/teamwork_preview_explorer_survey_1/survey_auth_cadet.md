@@ -4,13 +4,14 @@
 **Phase**: Phase 0 — Comprehensive Architecture & Security Survey  
 **Investigator**: Explorer 1  
 **Date**: August 21, 2026  
-**Target Repository**: `c:\Users\ravir\Desktop\PROJECT\Project\NCC`  
+**Target Repository**: `c:\Users\ravir\Desktop\PROJECT\Project\NCC`
 
 ---
 
 ## Executive Summary
 
 This report delivers an in-depth architectural and code-level survey of two foundational subsystems of the 19 Jharkhand Battalion NCC platform:
+
 1. **Authentication & Identity Pipeline**: Salted scrypt key derivation, OTP issuance/validation/lockout, single-use activation tokens, session management, multi-tier caching, and Role-Based Access Control (RBAC).
 2. **Cadet Enrollment & Verification**: Form 1 validation schema, 18-digit unique Application Number generation, Regimental Cadet ID assignment, multi-channel dispatch (Email, WhatsApp, SMS), Aadhaar checksum evaluation, and PII masking / data sanitization.
 
@@ -23,6 +24,7 @@ All existing automated backend test suites (60 tests across 11 suites) currently
 ### 1.1 Password Hashing & Key Derivation (scrypt)
 
 #### Implementation Details
+
 - **Primary Source File**: `backend/lib/auth-otp.server.ts` (Lines 20–49)
 - **Algorithm**: Salted `scrypt` using Node.js native crypto (`crypto.scryptSync`).
 - **Cryptographic Parameters**:
@@ -41,6 +43,7 @@ All existing automated backend test suites (60 tests across 11 suites) currently
   For backward compatibility with legacy accounts, `verifyPasswordHash()` falls back to checking `sha256("ncc-portal:<identifier>:<password>")` if the stored hash does not start with `scrypt$`.
 
 #### Password Policy Enforcement
+
 - **Source File**: `backend/lib/validation.schemas.ts` (Lines 29–38, 122–126)
 - **Schema**: `strongPasswordSchema` enforces:
   - Minimum 8 characters, maximum 128 characters.
@@ -56,6 +59,7 @@ All existing automated backend test suites (60 tests across 11 suites) currently
 ### 1.2 OTP Lifecycle, Throttling & Brute-Force Lockout
 
 #### Implementation Details
+
 - **Primary Source File**: `backend/lib/auth-otp.server.ts` (Lines 4–180)
 - **Generation**:
   `generateOtp()` uses `crypto.getRandomValues(new Uint32Array(1))[0] % 1_000_000`, producing an unbiased 6-digit numeric string formatted with `.padStart(6, "0")`.
@@ -79,6 +83,7 @@ All existing automated backend test suites (60 tests across 11 suites) currently
 ### 1.3 Single-Use Cryptographic Activation & Reset Tokens
 
 #### Implementation Details
+
 - **Primary Source Files**:
   - `backend/lib/auth-otp.server.ts` (Lines 216–364)
   - `src/routes/api/v1/auth/activate.ts` (Lines 1–123)
@@ -100,6 +105,7 @@ All existing automated backend test suites (60 tests across 11 suites) currently
 ### 1.4 Session Management, Cookies & Caching
 
 #### Implementation Details
+
 - **Primary Source Files**:
   - `src/routes/api/v1/auth/login.ts` (Lines 169–232)
   - `src/routes/api/v1/auth/logout.ts` (Lines 1–59)
@@ -132,6 +138,7 @@ All existing automated backend test suites (60 tests across 11 suites) currently
 ### 1.5 Role-Based Access Control (RBAC) & Middleware Gates
 
 #### Implementation Details
+
 - **Primary Source Files**:
   - `backend/lib/cadet-registry.server.ts` (Lines 33–56, 185–215)
   - `backend/lib/ncc-db.ts` (Lines 184–192)
@@ -153,6 +160,7 @@ All existing automated backend test suites (60 tests across 11 suites) currently
 ### 2.1 Form 1 Validation Schema
 
 #### Implementation Details
+
 - **Primary Source File**: `backend/lib/validation.schemas.ts` (Lines 161–255)
 - **Schema Name**: `cadetEnrollmentSchema` (Zod object validation).
 - **Field Validations & Boundaries**:
@@ -188,6 +196,7 @@ All existing automated backend test suites (60 tests across 11 suites) currently
 ### 2.2 18-Digit Cadet Application Number & Regimental ID Rules
 
 #### Generation & Structure
+
 - **Primary Source Files**:
   - `backend/lib/ncc-db.ts` (Lines 76–82)
   - `backend/services/messaging/multichannel.service.ts` (Lines 24–32)
@@ -213,6 +222,7 @@ All existing automated backend test suites (60 tests across 11 suites) currently
 ### 2.3 Multi-Channel Dispatch Integration
 
 #### Implementation Details
+
 - **Primary Source File**: `backend/services/messaging/multichannel.service.ts` (Lines 34–102)
 - Upon Form 1 submission via `POST /api/v1/enrollments`, the server automatically initiates a multi-channel broadcast:
   1. **Email Confirmation**: Branded HTML acknowledgement email via Nodemailer (`sendApplicationAcknowledgement`).
@@ -224,6 +234,7 @@ All existing automated backend test suites (60 tests across 11 suites) currently
 ### 2.4 Aadhaar Checksum Algorithms Analysis (Verhoeff vs. Weighted Mod-11)
 
 #### Current Implementations in Codebase
+
 1. **Schema Check (`validation.schemas.ts:233`)**:
    Checks length (12 digits) and numeric format only (`/^\d{12}$/`).
 2. **Sanitizer Check (`sanitization.ts:112-134`)**:
@@ -235,7 +246,9 @@ All existing automated backend test suites (60 tests across 11 suites) currently
      // Custom weighted mod-11 checksum calculation
      const digits = cleaned.split("").map(Number);
      const multipliers = [2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4];
-     const sum = digits.slice(0, 11).reduce((acc, digit, index) => acc + digit * multipliers[index], 0);
+     const sum = digits
+       .slice(0, 11)
+       .reduce((acc, digit, index) => acc + digit * multipliers[index], 0);
      const checksum = sum % 11;
      const expectedCheckDigit = checksum < 2 ? checksum : 11 - checksum;
      if (digits[11] !== expectedCheckDigit) throw new Error("Invalid Aadhaar number checksum");
@@ -244,6 +257,7 @@ All existing automated backend test suites (60 tests across 11 suites) currently
    ```
 
 #### Critical Gap & UIDAI Alignment Finding
+
 - **UIDAI Specification**: Real Indian Aadhaar numbers use the **Verhoeff algorithm** based on the dihedral group $D_5$ (a non-commutative group of order 10 using multiplication table $d$, permutation table $p$, and inverse table $inv$).
 - **Discrepancy**: The custom weighted mod-11 algorithm in `sanitizeAadhaar` does not match the official UIDAI Verhoeff check and may reject valid Aadhaar numbers or accept invalid ones.
 - **Actionable Recommendation**:
@@ -254,6 +268,7 @@ All existing automated backend test suites (60 tests across 11 suites) currently
 ### 2.5 PII Masking & Data Sanitization
 
 #### Implementation Details
+
 - **Primary Source Files**:
   - `backend/lib/ncc-db.ts` (Lines 164–177)
   - `backend/lib/cadet-registry.server.ts` (Lines 58–128)
@@ -276,20 +291,20 @@ All existing automated backend test suites (60 tests across 11 suites) currently
 
 ## Part 3: Architecture & Security Evaluation Matrix
 
-| Subsystem Component | Specification / Standard | Current Implementation Status | Risk Level |
-| :--- | :--- | :--- | :--- |
-| **Password Hashing** | OWASP Password Storage (scrypt) | Salted scrypt ($N=16384, r=8, p=1, 64B$, 16B salt) + `timingSafeEqual` | 🟢 LOW / COMPLIANT |
-| **Password Policy** | OWASP ASVS 2.1 | Minimum 8 chars, mixed case, digit, special, repeat filter | 🟢 LOW / COMPLIANT |
-| **OTP Issuance & Validation** | 6-digit numeric, SHA-256 hashed | 10m TTL, 45s cooldown, 5-attempt brute-force lockout, single-use | 🟢 LOW / COMPLIANT |
-| **Activation Tokens** | Single-use 256-bit token | `crypto.randomBytes(32)`, SHA-256 stored, 30m/24h TTL, atomic consume | 🟢 LOW / COMPLIANT |
-| **Session Security** | 256-bit token, HttpOnly cookie | `sess_<64hex>`, 8h expiry, SameSite=Lax, Secure, instant multi-tier invalidation | 🟢 LOW / COMPLIANT |
-| **Session Cache Tier** | L1 LRU + L2 Redis | 300s TTL, 2000 max items bounded LRU, Redis failover | 🟢 LOW / COMPLIANT |
-| **RBAC Boundaries** | Server-side gate middleware | `requireOfficer`, `requireCadetSession` on all restricted API routes | 🟢 LOW / COMPLIANT |
-| **Form 1 Enrollment** | Zod Schema Validation | Full coverage for SD/SW, academic, DBT bank, physical metrics | 🟢 LOW / COMPLIANT |
-| **Cadet App Number** | 18-digit unique ID | `19` + `YYYYMMDD` + 8 random digits | 🟢 LOW / COMPLIANT |
-| **Multi-Channel Dispatch** | Email + WhatsApp + SMS | Unified dispatch on Form 1 submission | 🟢 LOW / COMPLIANT |
-| **Aadhaar Validation** | Verhoeff $D_5$ algorithm | 12-digit regex in schema; custom mod-11 in sanitizer (Verhoeff needed) | 🟡 MEDIUM / ACTION REQUIRED |
-| **PII Data Protection** | NIST SP 800-122 / OWASP | `maskPublicRecord`, `mapCadet` masking, `sanitizePostgrestQuery` | 🟢 LOW / COMPLIANT |
+| Subsystem Component           | Specification / Standard        | Current Implementation Status                                                    | Risk Level                  |
+| :---------------------------- | :------------------------------ | :------------------------------------------------------------------------------- | :-------------------------- |
+| **Password Hashing**          | OWASP Password Storage (scrypt) | Salted scrypt ($N=16384, r=8, p=1, 64B$, 16B salt) + `timingSafeEqual`           | 🟢 LOW / COMPLIANT          |
+| **Password Policy**           | OWASP ASVS 2.1                  | Minimum 8 chars, mixed case, digit, special, repeat filter                       | 🟢 LOW / COMPLIANT          |
+| **OTP Issuance & Validation** | 6-digit numeric, SHA-256 hashed | 10m TTL, 45s cooldown, 5-attempt brute-force lockout, single-use                 | 🟢 LOW / COMPLIANT          |
+| **Activation Tokens**         | Single-use 256-bit token        | `crypto.randomBytes(32)`, SHA-256 stored, 30m/24h TTL, atomic consume            | 🟢 LOW / COMPLIANT          |
+| **Session Security**          | 256-bit token, HttpOnly cookie  | `sess_<64hex>`, 8h expiry, SameSite=Lax, Secure, instant multi-tier invalidation | 🟢 LOW / COMPLIANT          |
+| **Session Cache Tier**        | L1 LRU + L2 Redis               | 300s TTL, 2000 max items bounded LRU, Redis failover                             | 🟢 LOW / COMPLIANT          |
+| **RBAC Boundaries**           | Server-side gate middleware     | `requireOfficer`, `requireCadetSession` on all restricted API routes             | 🟢 LOW / COMPLIANT          |
+| **Form 1 Enrollment**         | Zod Schema Validation           | Full coverage for SD/SW, academic, DBT bank, physical metrics                    | 🟢 LOW / COMPLIANT          |
+| **Cadet App Number**          | 18-digit unique ID              | `19` + `YYYYMMDD` + 8 random digits                                              | 🟢 LOW / COMPLIANT          |
+| **Multi-Channel Dispatch**    | Email + WhatsApp + SMS          | Unified dispatch on Form 1 submission                                            | 🟢 LOW / COMPLIANT          |
+| **Aadhaar Validation**        | Verhoeff $D_5$ algorithm        | 12-digit regex in schema; custom mod-11 in sanitizer (Verhoeff needed)           | 🟡 MEDIUM / ACTION REQUIRED |
+| **PII Data Protection**       | NIST SP 800-122 / OWASP         | `maskPublicRecord`, `mapCadet` masking, `sanitizePostgrestQuery`                 | 🟢 LOW / COMPLIANT          |
 
 ---
 

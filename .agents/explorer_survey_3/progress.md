@@ -3,6 +3,7 @@
 Last visited: 2026-08-21T18:38:04Z
 
 ## Tasks
+
 - [x] Record DISPATCH.md and initialize BRIEFING.md & progress.md
 - [ ] Mandatory First Step: Read `.agents/ORIGINAL_REQUEST.md`
 - [ ] Investigate Server-side RBAC enforcement, safe error responses, IDS rules

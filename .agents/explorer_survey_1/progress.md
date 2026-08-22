@@ -3,9 +3,11 @@
 Last visited: 2026-08-21T18:38:30Z
 
 ## Status
+
 Starting technical investigation.
 
 ## Checklist
+
 - [x] Initialized DISPATCH.md and BRIEFING.md
 - [ ] Read ORIGINAL_REQUEST.md
 - [ ] Investigate 1. Form 1 cadet enrollment validation, schema mappings, and UI state flows

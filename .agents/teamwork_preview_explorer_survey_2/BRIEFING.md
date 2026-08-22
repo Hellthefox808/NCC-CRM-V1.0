@@ -1,9 +1,11 @@
 # BRIEFING — 2026-08-21T18:34:00Z
 
 ## Mission
+
 Survey NCC Command Centre codebase covering Multi-Tier Caching & Invalidation, High-Throughput Batch Queueing, Real-time Sockets & Prompter Engine, and Infrastructure (Nginx, Docker, Failover).
 
 ## 🔒 My Identity
+
 - Archetype: explorer
 - Roles: investigation, synthesis
 - Working directory: c:\Users\ravir\Desktop\PROJECT\Project\NCC\.agents\teamwork_preview_explorer_survey_2
@@ -11,6 +13,7 @@ Survey NCC Command Centre codebase covering Multi-Tier Caching & Invalidation, H
 - Milestone: Phase 0 Survey (Cache, Sockets, Prompter, Queues, Infra)
 
 ## 🔒 Key Constraints
+
 - Read-only investigation — do NOT implement
 - Investigate Multi-Tier Caching & Invalidation (L1 LRU, MAX_MEMORY_ITEMS, L2 Redis failover, metrics, prefix invalidation)
 - Investigate High-Throughput Batch Queueing (queueEmailJobsBatch, concurrency, batch size, error handling, memory bounds)
@@ -18,10 +21,12 @@ Survey NCC Command Centre codebase covering Multi-Tier Caching & Invalidation, H
 - Investigate Infrastructure (Nginx configs, worker failover, Docker / deployment)
 
 ## Current Parent
+
 - Conversation ID: c7e39334-555f-4f2a-83ae-915c7b6caab9
 - Updated: not yet
 
 ## Investigation State
+
 - **Explored paths**:
   - `backend/lib/cache.server.ts`, `backend/lib/redis.server.ts`, `backend/lib/rate-limiter.server.ts`
   - `backend/services/queue/queue.service.ts`, `backend/services/mail/mailer.ts`, `backend/services/mail/templates.ts`
@@ -38,11 +43,13 @@ Survey NCC Command Centre codebase covering Multi-Tier Caching & Invalidation, H
 - **Unexplored areas**: None within Explorer 2 Phase 0 scope.
 
 ## Key Decisions Made
+
 - Completed deep dive across all 4 technical domains.
 - Authored detailed survey report `survey_cache_sockets_infra.md`.
 - Authored 5-component hard handoff report `handoff.md`.
 
 ## Artifact Index
+
 - `DISPATCH.md` — Initial dispatch log
 - `progress.md` — Heartbeat and progress tracking
 - `survey_cache_sockets_infra.md` — Comprehensive Phase 0 survey report

@@ -4,6 +4,7 @@
 **Current Step**: Survey complete. Reports authored and ready for parent handoff.
 
 ## Milestones
+
 - [x] Workspace & Briefing Initialization
 - [x] Read foundational docs (`ORIGINAL_REQUEST.md`, `AGENTS.md`, `docs/*`)
 - [x] Area 1: Multi-Tier Caching & Invalidation investigation
