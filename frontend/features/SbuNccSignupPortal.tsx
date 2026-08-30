@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import campusFront from "@/assets/sbu-campus-front.jpg.asset.json";
 import {
   Award,
   CheckCircle2,
@@ -8,19 +7,13 @@ import {
   EyeOff,
   GraduationCap,
   Lock,
+  Mail,
+  RefreshCw,
   ShieldCheck,
   User,
   UserCheck,
-  UserPlus,
-  FileText,
   AlertCircle,
-  Building,
-  Mail,
-  Phone,
-  BookOpen,
-  RefreshCw,
 } from "lucide-react";
-import { BATTALION_DETAILS } from "@/data/nccData";
 import { EnterpriseDataPlatform, type UserSessionProfile } from "@backend/services/dataPlatform";
 
 interface SbuNccSignupPortalProps {
@@ -28,23 +21,16 @@ interface SbuNccSignupPortalProps {
     userType: "cadet" | "admin",
     userData?: UserSessionProfile | Record<string, unknown>,
   ) => void;
-  onOpenEnrollmentForm: () => void;
+  onOpenEnrollmentForm?: () => void;
   defaultSection?: "cadets" | "admin";
 }
 
 export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
   onLoginSuccess,
-  onOpenEnrollmentForm,
   defaultSection = "cadets",
 }) => {
   // Main Section Toggle: 'cadets' vs 'admin'
   const [activeSection, setActiveSection] = useState<"cadets" | "admin">(defaultSection);
-
-  // Sub-mode for Cadets: 'login' vs 'signup'
-  const [cadetMode, setCadetMode] = useState<"login" | "signup">("login");
-
-  // Sub-mode for Admin: 'login' vs 'signup'
-  const [adminMode, setAdminMode] = useState<"login" | "signup">("login");
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [noticeMessage, setNoticeMessage] = useState<{
@@ -61,34 +47,9 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
   const [cadetIdentifier, setCadetIdentifier] = useState("");
   const [cadetPassword, setCadetPassword] = useState("");
 
-  // Cadet Signup State
-  const [cadetForm, setCadetForm] = useState({
-    sbuRollNo: "",
-    fullName: "",
-    email: "",
-    mobile: "",
-    gender: "SD",
-    sbuCourse: "",
-    sbuYear: "1st Year",
-    password: "",
-    confirmPassword: "",
-    termsAgreed: true,
-  });
-
   // Admin Login State
   const [adminUsername, setAdminUsername] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
-
-  // Admin Signup State
-  const [adminForm, setAdminForm] = useState({
-    fullName: "",
-    designation: "Associate NCC Officer (ANO)",
-    employeeId: "",
-    email: "",
-    mobile: "",
-    accessKey: "",
-    password: "",
-  });
 
   // Motion variants — shared across portal panels for a cohesive, premium feel.
   const cardVariants = {
@@ -152,9 +113,8 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
         setAuthPending(null);
         setTimeout(() => {
           onLoginSuccess("cadet", {
-            fullName: res.data!.user.name || cadetForm.fullName || cadetIdentifier,
+            fullName: res.data!.user.name || cadetIdentifier,
             sbuRollNo: cadetIdentifier,
-            gender: cadetForm.gender,
           });
         }, 500);
       } else {
@@ -193,32 +153,6 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
   const handleCadetLogin = (e: React.FormEvent) => {
     e.preventDefault();
     void submitCadetLogin();
-  };
-
-  // Handle Cadet New Registration (Sign Up)
-  const handleCadetSignup = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!cadetForm.sbuRollNo || !cadetForm.fullName || !cadetForm.mobile || !cadetForm.email) {
-      setNoticeMessage({
-        type: "error",
-        text: "Please fill in all mandatory SBU student details.",
-      });
-      return;
-    }
-    if (cadetForm.password && cadetForm.password !== cadetForm.confirmPassword) {
-      setNoticeMessage({ type: "error", text: "Passwords do not match. Please re-check." });
-      return;
-    }
-
-    setNoticeMessage({
-      type: "success",
-      text: `Account created for ${cadetForm.fullName} (${cadetForm.sbuRollNo}). Proceeding to Enrollment!`,
-    });
-
-    setTimeout(() => {
-      onLoginSuccess("cadet", cadetForm);
-      onOpenEnrollmentForm();
-    }, 800);
   };
 
   // Handle Admin Sign In
@@ -279,25 +213,6 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
   const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
     void submitAdminLogin();
-  };
-
-  // Handle Admin Authorization Signup Request
-  const handleAdminSignup = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!adminForm.fullName || !adminForm.employeeId || !adminForm.email) {
-      setNoticeMessage({
-        type: "error",
-        text: "Please provide all required officer registration details.",
-      });
-      return;
-    }
-    setNoticeMessage({
-      type: "success",
-      text: "Officer authorization request submitted to 19 JHR BN HQ. Access granted for demo session.",
-    });
-    setTimeout(() => {
-      onLoginSuccess("admin");
-    }, 800);
   };
 
   // ── Password recovery (forgot password + OTP) ─────────────────────────────
@@ -485,12 +400,6 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
     "mb-1.5 block text-[10px] font-black uppercase tracking-[0.16em] text-[#8C5E3C] label-lift";
   const submitClass =
     "w-full rounded-[14px] bg-[#1E3A8A] py-3.5 text-sm font-bold text-white shadow-lg shadow-[#1E3A8A]/25 transition-all duration-200 hover:bg-[#152A64] hover:shadow-xl active:scale-[0.985] cursor-pointer flex items-center justify-center gap-2 btn-shine";
-  const subTabClass = (active: boolean) =>
-    `pb-3 text-[13px] font-bold transition-colors cursor-pointer border-b-2 ${
-      active
-        ? "text-[#1E3A8A] border-[#1E3A8A]"
-        : "text-[#8C5E3C]/70 border-transparent hover:text-[#3B281C]"
-    }`;
 
   // Portal switch shows a skeleton for one animation beat so the panel swap reads
   // as a deliberate transition instead of a jarring layout jump. If the swap
@@ -524,25 +433,14 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
   );
 
   // Skeleton mirrors the real form geometry (2 fields + primary action) so nothing shifts.
-  const AuthFormSkeleton: React.FC<{ label: string; showTabs?: boolean }> = ({
-    label,
-    showTabs,
-  }) => (
+  const AuthFormSkeleton: React.FC<{ label: string }> = ({ label }) => (
     <div className="flex-1" aria-busy="true" aria-live="polite">
       <span className="sr-only">{label}</span>
-      <div className="animate-pulse">
-        {showTabs && (
-          <div className="mb-8 flex gap-6 border-b border-border pb-3">
-            <div className="h-2.5 w-14 rounded-full bg-muted" />
-            <div className="h-2.5 w-16 rounded-full bg-muted" />
-          </div>
-        )}
-        <div className="space-y-6">
-          <SkeletonField />
-          <SkeletonField />
-          <div className="h-[50px] w-full rounded-[14px] bg-muted" />
-          <div className="mx-auto h-2.5 w-48 rounded-full bg-muted" />
-        </div>
+      <div className="animate-pulse space-y-6">
+        <SkeletonField />
+        <SkeletonField />
+        <div className="h-[50px] w-full rounded-[14px] bg-muted" />
+        <div className="mx-auto h-2.5 w-48 rounded-full bg-muted" />
       </div>
     </div>
   );
@@ -987,7 +885,7 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
 
           {/* SECTION 1: CADETS */}
           {/* Portal swap skeleton — holds the panel geometry while sections switch */}
-          {isSwitchingPortal && <AuthFormSkeleton label="Loading portal" showTabs />}
+          {isSwitchingPortal && <AuthFormSkeleton label="Loading portal" />}
 
           {/* Password recovery takes over the panel while active */}
           {recovery.open && !isSwitchingPortal && renderRecoveryPanel()}
@@ -1006,29 +904,10 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
                 aria-labelledby="sbu-portal-cadets-tab"
                 tabIndex={0}
               >
-                <div className="mb-8 flex gap-6 border-b border-border">
-                  <button
-                    type="button"
-                    onClick={() => setCadetMode("login")}
-                    className={subTabClass(cadetMode === "login")}
-                  >
-                    Sign In
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCadetMode("signup")}
-                    className={subTabClass(cadetMode === "signup")}
-                  >
-                    Register
-                  </button>
-                </div>
-
                 {/* CADET MODE: SIGN IN */}
-                {cadetMode === "login" && authPending === "cadet" && (
+                {authPending === "cadet" ? (
                   <AuthFormSkeleton label="Verifying cadet credentials" />
-                )}
-
-                {cadetMode === "login" && authPending !== "cadet" && (
+                ) : (
                   <form onSubmit={handleCadetLogin} className="space-y-6">
                     <div className="label-lift-parent">
                       <label className={labelClass} htmlFor="cadet-identifier">
@@ -1091,115 +970,6 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
                     >
                       Forgot password?
                     </button>
-
-                    <p className="text-center text-[13px] text-muted-foreground">
-                      New to the unit?{" "}
-                      <button
-                        type="button"
-                        onClick={() => setCadetMode("signup")}
-                        className="font-semibold text-primary hover:underline cursor-pointer"
-                      >
-                        Register as cadet
-                      </button>
-                    </p>
-                  </form>
-                )}
-
-                {/* CADET MODE: REGISTRATION */}
-                {cadetMode === "signup" && (
-                  <form onSubmit={handleCadetSignup} className="space-y-5">
-                    <div>
-                      <label className={labelClass}>NCC Enrolment No*</label>
-                      <input
-                        type="text"
-                        required
-                        value={cadetForm.sbuRollNo}
-                        onChange={(e) => setCadetForm({ ...cadetForm, sbuRollNo: e.target.value })}
-                        placeholder="JH24SDA104201"
-                        className={fieldClass}
-                      />
-                    </div>
-
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <label className={labelClass}>Full Name*</label>
-                        <input
-                          type="text"
-                          required
-                          value={cadetForm.fullName}
-                          onChange={(e) => setCadetForm({ ...cadetForm, fullName: e.target.value })}
-                          placeholder="Aman Sharma"
-                          className={fieldClass}
-                        />
-                      </div>
-                      <div>
-                        <label className={labelClass}>Division / Wing*</label>
-                        <select
-                          value={cadetForm.gender}
-                          onChange={(e) => setCadetForm({ ...cadetForm, gender: e.target.value })}
-                          className={fieldClass}
-                        >
-                          <option value="SD">Senior Division (SD)</option>
-                          <option value="SW">Senior Wing (SW)</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <label className={labelClass}>Mobile No*</label>
-                        <input
-                          type="tel"
-                          required
-                          value={cadetForm.mobile}
-                          onChange={(e) => setCadetForm({ ...cadetForm, mobile: e.target.value })}
-                          placeholder="9431100223"
-                          className={fieldClass}
-                        />
-                      </div>
-                      <div>
-                        <label className={labelClass}>Official Email*</label>
-                        <input
-                          type="email"
-                          required
-                          value={cadetForm.email}
-                          onChange={(e) => setCadetForm({ ...cadetForm, email: e.target.value })}
-                          placeholder="aman@sbu.ac.in"
-                          className={fieldClass}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <label className={labelClass}>Password*</label>
-                        <input
-                          type="password"
-                          required
-                          value={cadetForm.password}
-                          onChange={(e) => setCadetForm({ ...cadetForm, password: e.target.value })}
-                          placeholder="Create password"
-                          className={fieldClass}
-                        />
-                      </div>
-                      <div>
-                        <label className={labelClass}>Confirm Password*</label>
-                        <input
-                          type="password"
-                          required
-                          value={cadetForm.confirmPassword}
-                          onChange={(e) =>
-                            setCadetForm({ ...cadetForm, confirmPassword: e.target.value })
-                          }
-                          placeholder="Repeat password"
-                          className={fieldClass}
-                        />
-                      </div>
-                    </div>
-
-                    <button type="submit" className={submitClass} id="cadet-signup-submit-btn">
-                      <span>Complete registration &amp; apply</span>
-                    </button>
                   </form>
                 )}
               </motion.div>
@@ -1218,28 +988,10 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
                 aria-labelledby="sbu-portal-admin-tab"
                 tabIndex={0}
               >
-                <div className="mb-8 flex gap-6 border-b border-border">
-                  <button
-                    type="button"
-                    onClick={() => setAdminMode("login")}
-                    className={subTabClass(adminMode === "login")}
-                  >
-                    Sign In
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setAdminMode("signup")}
-                    className={subTabClass(adminMode === "signup")}
-                  >
-                    Request Access
-                  </button>
-                </div>
-
-                {adminMode === "login" && authPending === "admin" && (
+                {/* ADMIN MODE: SIGN IN */}
+                {authPending === "admin" ? (
                   <AuthFormSkeleton label="Verifying officer command credentials" />
-                )}
-
-                {adminMode === "login" && authPending !== "admin" && (
+                ) : (
                   <form onSubmit={handleAdminLogin} className="space-y-6">
                     <div>
                       <label className={labelClass} htmlFor="officer-identifier">
@@ -1301,53 +1053,6 @@ export const SbuNccSignupPortal: React.FC<SbuNccSignupPortalProps> = ({
                       id="admin-forgot-password-btn"
                     >
                       Forgot command key?
-                    </button>
-                  </form>
-                )}
-
-                {adminMode === "signup" && (
-                  <form onSubmit={handleAdminSignup} className="space-y-5">
-                    <div>
-                      <label className={labelClass}>Officer Name &amp; Rank*</label>
-                      <input
-                        type="text"
-                        required
-                        value={adminForm.fullName}
-                        onChange={(e) => setAdminForm({ ...adminForm, fullName: e.target.value })}
-                        placeholder="Lt. / Capt. Officer Name"
-                        className={fieldClass}
-                      />
-                    </div>
-
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <label className={labelClass}>Employee ID*</label>
-                        <input
-                          type="text"
-                          required
-                          value={adminForm.employeeId}
-                          onChange={(e) =>
-                            setAdminForm({ ...adminForm, employeeId: e.target.value })
-                          }
-                          placeholder="SBU-EMP-042"
-                          className={fieldClass}
-                        />
-                      </div>
-                      <div>
-                        <label className={labelClass}>Official Email*</label>
-                        <input
-                          type="email"
-                          required
-                          value={adminForm.email}
-                          onChange={(e) => setAdminForm({ ...adminForm, email: e.target.value })}
-                          placeholder="ano@sbu.ac.in"
-                          className={fieldClass}
-                        />
-                      </div>
-                    </div>
-
-                    <button type="submit" className={submitClass} id="admin-signup-submit-btn">
-                      <span>Submit authorization request</span>
                     </button>
                   </form>
                 )}

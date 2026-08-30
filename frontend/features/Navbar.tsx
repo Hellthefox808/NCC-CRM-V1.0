@@ -289,7 +289,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <div>
                           <span className="block font-semibold text-foreground">Cadet Portal</span>
                           <span className="text-[10px] text-muted-foreground">
-                            Student &amp; Cadet Login / Signup
+                            Student &amp; Cadet Login
                           </span>
                         </div>
                       </button>
