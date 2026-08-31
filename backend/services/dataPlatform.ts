@@ -560,6 +560,101 @@ export class EnterpriseDataPlatform {
     if (action) params.set("action", action);
     return this.request(`/audit?${params.toString()}`);
   }
+
+  /**
+   * Fetch Cadet Leave Applications
+   */
+  static async getLeaves(
+    cadetId?: string,
+  ): Promise<ApiResponse<{ leaves: LeaveRecordItem[]; count: number }>> {
+    const qs = cadetId ? `?cadetId=${encodeURIComponent(cadetId)}` : "";
+    return this.request(`/leaves${qs}`);
+  }
+
+  /**
+   * Submit New Cadet Leave Application
+   */
+  static async applyLeave(payload: {
+    cadetId: string;
+    cadetName?: string;
+    category: string;
+    startDate: string;
+    endDate: string;
+    reason: string;
+  }): Promise<ApiResponse<{ leave: LeaveRecordItem }>> {
+    return this.request("/leaves", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Update Leave Application Status (Officer-only)
+   */
+  static async updateLeaveStatus(payload: {
+    id: string;
+    status: "Approved" | "Rejected";
+    remarks?: string;
+    officerName?: string;
+  }): Promise<ApiResponse<{ leave: LeaveRecordItem }>> {
+    return this.request("/leaves", {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Fetch Cadet Discipline & Commendation Records
+   */
+  static async getDisciplineRecords(
+    cadetId?: string,
+  ): Promise<ApiResponse<{ records: DisciplineRecordItem[]; count: number }>> {
+    const qs = cadetId ? `?cadetId=${encodeURIComponent(cadetId)}` : "";
+    return this.request(`/discipline${qs}`);
+  }
+
+  /**
+   * Add Discipline / Award Record (Officer-only)
+   */
+  static async addDisciplineRecord(payload: {
+    cadetId: string;
+    cadetName: string;
+    type: "Appreciation" | "Reward" | "Warning" | "Punishment";
+    title: string;
+    date?: string;
+    remarks: string;
+    officerName?: string;
+  }): Promise<ApiResponse<{ record: DisciplineRecordItem }>> {
+    return this.request("/discipline", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+}
+
+export interface LeaveRecordItem {
+  id: string;
+  cadetId: string;
+  cadetName: string;
+  category: string;
+  startDate: string;
+  endDate: string;
+  reason: string;
+  status: "Pending" | "Approved" | "Rejected";
+  appliedOn: string;
+  officerRemarks?: string;
+  officerName?: string;
+}
+
+export interface DisciplineRecordItem {
+  id: string;
+  cadetId: string;
+  cadetName: string;
+  type: "Appreciation" | "Reward" | "Warning" | "Punishment";
+  title: string;
+  date: string;
+  remarks: string;
+  officerName: string;
 }
 
 export interface UserSessionProfile {

@@ -59,6 +59,11 @@ desktop.ini
 .jolli/
 .nex/
 .lovable/
+.cursor/
+.claude/
+.vibecheck/
+.windsurfrules
 
 # CodeLens Graph local index
 .codelens/
+

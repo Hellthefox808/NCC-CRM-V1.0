@@ -1,5 +1,5 @@
 import React from "react";
-import { Megaphone, MessageSquare } from "lucide-react";
+import { Megaphone, MessageSquare, Send } from "lucide-react";
 
 interface NotificationBroadcasterProps {
   broadcastSubject: string;
@@ -19,22 +19,20 @@ export const NotificationBroadcaster: React.FC<NotificationBroadcasterProps> = (
   setBroadcastSubject,
   broadcastBody,
   setBroadcastBody,
-  broadcastTarget,
-  setBroadcastTarget,
   broadcastChannels,
   setBroadcastChannels,
   handleSendBroadcast,
   setActiveTab,
 }) => {
   return (
-    <div className="bg-white rounded-2xl border border-zinc-200 shadow-xs p-6 space-y-4">
-      <div className="flex items-center space-x-2 border-b border-zinc-100 pb-3">
-        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-          <Megaphone className="w-4 h-4 text-blue-700" />
+    <div className="glass-panel rounded-2xl p-6 space-y-4 shadow-xl border border-white/10">
+      <div className="flex items-center space-x-3 border-b border-white/10 pb-4">
+        <div className="w-9 h-9 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+          <Megaphone className="w-4 h-4" />
         </div>
         <div>
-          <h3 className="font-black text-zinc-900">Quick Broadcast</h3>
-          <p className="text-[10px] text-zinc-500">Send instant alerts to cadets</p>
+          <h3 className="font-black text-white text-base tracking-tight">Quick Broadcast</h3>
+          <p className="text-[11px] text-zinc-400">Send instant alerts to battalion cadets</p>
         </div>
       </div>
 
@@ -42,19 +40,19 @@ export const NotificationBroadcaster: React.FC<NotificationBroadcasterProps> = (
         <div>
           <input
             type="text"
-            placeholder="Notice Subject (e.g. Uniform Alert)"
+            placeholder="Notice Subject (e.g. Uniform & Drill Alert)"
             value={broadcastSubject}
             onChange={(e) => setBroadcastSubject(e.target.value)}
-            className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs font-bold focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            className="w-full glass-input rounded-xl px-3.5 py-2.5 text-xs font-semibold placeholder:text-zinc-500"
             required
           />
         </div>
         <div>
           <textarea
-            placeholder="Type your message here..."
+            placeholder="Type official notification message..."
             value={broadcastBody}
             onChange={(e) => setBroadcastBody(e.target.value)}
-            className="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs font-medium focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 min-h-[80px]"
+            className="w-full glass-input rounded-xl px-3.5 py-2.5 text-xs font-medium placeholder:text-zinc-500 min-h-[90px] resize-y"
             required
           />
         </div>
@@ -65,41 +63,41 @@ export const NotificationBroadcaster: React.FC<NotificationBroadcasterProps> = (
             onClick={() =>
               setBroadcastChannels({ ...broadcastChannels, app: !broadcastChannels.app })
             }
-            className={`flex-1 py-1.5 rounded text-[10px] font-bold border transition-colors cursor-pointer ${
+            className={`flex-1 py-2 rounded-xl text-[11px] font-bold border transition-all cursor-pointer ${
               broadcastChannels.app
-                ? "bg-blue-50 text-blue-700 border-blue-200"
-                : "bg-zinc-50 text-zinc-500 border-zinc-200 hover:bg-zinc-100"
+                ? "bg-blue-600/30 text-blue-300 border-blue-500/50 shadow-sm"
+                : "glass-pill text-zinc-400 border-white/10 hover:text-white"
             }`}
           >
-            In-App
+            In-App Notice
           </button>
           <button
             type="button"
             onClick={() =>
               setBroadcastChannels({ ...broadcastChannels, email: !broadcastChannels.email })
             }
-            className={`flex-1 py-1.5 rounded text-[10px] font-bold border transition-colors cursor-pointer ${
+            className={`flex-1 py-2 rounded-xl text-[11px] font-bold border transition-all cursor-pointer ${
               broadcastChannels.email
-                ? "bg-blue-50 text-blue-700 border-blue-200"
-                : "bg-zinc-50 text-zinc-500 border-zinc-200 hover:bg-zinc-100"
+                ? "bg-blue-600/30 text-blue-300 border-blue-500/50 shadow-sm"
+                : "glass-pill text-zinc-400 border-white/10 hover:text-white"
             }`}
           >
-            Email
+            Email Alert
           </button>
         </div>
 
         <button
           type="submit"
-          className="w-full bg-[#18181B] hover:bg-[#09090B] text-white font-black py-2.5 rounded-lg text-xs transition-colors flex items-center justify-center space-x-2 cursor-pointer shadow-md"
+          className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-lg shadow-blue-600/25 hover:scale-[1.02]"
         >
-          <MessageSquare className="w-4 h-4 text-blue-500" />
+          <Send className="w-3.5 h-3.5" />
           <span>Dispatch Now</span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab("broadcast")}
-          className="w-full text-center text-[10px] font-bold text-zinc-500 hover:text-blue-600 mt-2 cursor-pointer"
+          className="w-full text-center text-[11px] font-semibold text-zinc-400 hover:text-blue-400 pt-1 cursor-pointer transition-colors"
         >
           Open Advanced Broadcast Studio & History →
         </button>

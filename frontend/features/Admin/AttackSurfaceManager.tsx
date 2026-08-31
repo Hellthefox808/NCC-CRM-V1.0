@@ -217,14 +217,14 @@ export function AttackSurfaceManager() {
                   onClick={() => setActiveStage(stage.id)}
                   className={`w-full flex items-center justify-between p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
                     isSelected
-                      ? "bg-[#09090B] border-blue-500 shadow-md text-white"
-                      : "bg-white border-zinc-200 text-zinc-700 hover:border-zinc-300"
+                      ? "glass-panel-elevated border-blue-500/60 shadow-lg text-white"
+                      : "glass-panel text-zinc-300 hover:border-white/20 hover:text-white"
                   }`}
                 >
                   <div className="flex items-center space-x-3">
                     <span className="text-xs font-black text-zinc-400 w-5">{stage.number}</span>
                     <div
-                      className={`p-2 rounded-lg ${isSelected ? "bg-blue-500/10 text-blue-400" : "bg-zinc-100 text-zinc-600"}`}
+                      className={`p-2 rounded-lg ${isSelected ? "bg-blue-500/20 text-blue-400 border border-blue-500/30" : "bg-white/5 text-zinc-400 border border-white/10"}`}
                     >
                       <Icon className="w-4 h-4" />
                     </div>
@@ -236,7 +236,7 @@ export function AttackSurfaceManager() {
                     </div>
                   </div>
                   <ChevronRight
-                    className={`w-4 h-4 transition-transform ${isSelected ? "text-blue-500 rotate-90" : "text-zinc-400"}`}
+                    className={`w-4 h-4 transition-transform ${isSelected ? "text-blue-400 rotate-90" : "text-zinc-400"}`}
                   />
                 </button>
               );
@@ -251,7 +251,7 @@ export function AttackSurfaceManager() {
             const Icon = current.icon;
 
             return (
-              <div className="bg-[#09090B] border border-blue-600/30 rounded-2xl p-6 text-white space-y-6 shadow-xl h-full flex flex-col justify-between">
+              <div className="glass-panel rounded-2xl p-6 text-white space-y-6 shadow-xl h-full flex flex-col justify-between border border-white/10">
                 <div>
                   <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
                     <div className="flex items-center space-x-3">

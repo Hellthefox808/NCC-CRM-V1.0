@@ -192,4 +192,95 @@ export function isRoleAuthorized(userRole: string | undefined, allowedRoles: Use
   return allowedRoles.includes(userRole as UserRole);
 }
 
+// ── In-Memory and DB Synchronized Models for Leaves & Discipline ─────────────────────
+
+export interface LeaveRecord {
+  id: string;
+  cadetId: string;
+  cadetName: string;
+  category: string;
+  startDate: string;
+  endDate: string;
+  reason: string;
+  status: "Pending" | "Approved" | "Rejected";
+  appliedOn: string;
+  officerRemarks?: string;
+  officerName?: string;
+}
+
+export interface DisciplineRecord {
+  id: string;
+  cadetId: string;
+  cadetName: string;
+  type: "Appreciation" | "Reward" | "Warning" | "Punishment";
+  title: string;
+  date: string;
+  remarks: string;
+  officerName: string;
+}
+
+const memoryLeaves: LeaveRecord[] = [];
+const memoryDiscipline: DisciplineRecord[] = [];
+
+export function getMemoryLeaves(cadetId?: string): LeaveRecord[] {
+  if (cadetId) return memoryLeaves.filter((l) => l.cadetId === cadetId);
+  return [...memoryLeaves];
+}
+
+export function addMemoryLeave(
+  leave: Omit<LeaveRecord, "id" | "appliedOn" | "status"> & Partial<LeaveRecord>,
+): LeaveRecord {
+  const newLeave: LeaveRecord = {
+    id: leave.id || `LV-${Date.now()}-${Math.floor(100 + Math.random() * 900)}`,
+    cadetId: leave.cadetId,
+    cadetName: leave.cadetName || "NCC Cadet",
+    category: leave.category || "General",
+    startDate: leave.startDate,
+    endDate: leave.endDate,
+    reason: leave.reason || "",
+    status: leave.status || "Pending",
+    appliedOn: leave.appliedOn || new Date().toISOString().split("T")[0],
+    officerRemarks: leave.officerRemarks || "Under review by ANO Office SBU Company",
+    officerName: leave.officerName || "Pending Verification",
+  };
+  memoryLeaves.unshift(newLeave);
+  return newLeave;
+}
+
+export function updateMemoryLeave(
+  id: string,
+  status: "Approved" | "Rejected",
+  remarks: string,
+  officerName: string,
+): LeaveRecord | null {
+  const target = memoryLeaves.find((l) => l.id === id);
+  if (!target) return null;
+  target.status = status;
+  target.officerRemarks = remarks;
+  target.officerName = officerName;
+  return { ...target };
+}
+
+export function getMemoryDiscipline(cadetId?: string): DisciplineRecord[] {
+  if (cadetId) return memoryDiscipline.filter((d) => d.cadetId === cadetId);
+  return [...memoryDiscipline];
+}
+
+export function addMemoryDiscipline(
+  entry: Omit<DisciplineRecord, "id"> & Partial<DisciplineRecord>,
+): DisciplineRecord {
+  const newEntry: DisciplineRecord = {
+    id: entry.id || `DISC-${Date.now()}-${Math.floor(100 + Math.random() * 900)}`,
+    cadetId: entry.cadetId,
+    cadetName: entry.cadetName || "Cadet",
+    type: entry.type || "Appreciation",
+    title: entry.title,
+    date: entry.date || new Date().toISOString().split("T")[0],
+    remarks: entry.remarks || "",
+    officerName: entry.officerName || "Capt. Dr. Animesh Roy (ANO)",
+  };
+  memoryDiscipline.unshift(newEntry);
+  return newEntry;
+}
+
 export { mapCadet } from "./cadet-registry.server.ts";

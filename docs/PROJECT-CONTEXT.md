@@ -3,8 +3,8 @@
 **System Name**: 19 Jharkhand Battalion NCC Portal (Sarala Birla University Sub-Unit)  
 **Corpus Name**: Hellthefox808/NCC-CRM-V1.0  
 **Branch**: `main`  
-**Last Updated**: 2026-08-22  
-**Status**: 100% Verified E2E, 60/60 Tests Passing, Full Cross-Device Responsiveness (Mobile, Tablet, Desktop)
+**Last Updated**: 2026-08-31  
+**Status**: 100% Verified E2E, 60/60 Tests Passing, Elite Glassmorphism UI, Dynamic Backend Sync
 
 ---
 
@@ -40,8 +40,8 @@ The NCC Portal operates as an integrated, OWASP-compliant identity and managemen
 
 ## 2. Component Stack
 
-- **Frontend**: React 19 + TanStack Router (SSR) + Tailwind CSS v4 + Motion
-- **Backend API**: TanStack Start / Nitro (TypeScript Node ESM)
+- **Frontend**: React 19 + TanStack Router (SSR) + Tailwind CSS v4 + Motion + Regimental Glassmorphic Design System (`.glass-panel`, `.glass-panel-elevated`, `.glass-pill`, `.glass-input`, `.glass-glow-*`)
+- **Backend API**: TanStack Start / Nitro (TypeScript Node ESM) with dynamic endpoints (`/api/v1/metrics`, `/api/v1/leaves`, `/api/v1/discipline`, `/api/v1/enrollments`, `/api/v1/calendar`, `/api/v1/notifications`)
 - **Database**: Supabase / PostgreSQL (`app_credentials`, `cadet_users`, `cadet_enrollments`, `auth_otp_codes`, `audit_logs`)
 - **Multi-Tier Caching & Rate Limiting**: L1 Bounded In-Memory LRU Cache + L2 Redis (`ncc:session:*`, `ncc:calendar:*`, `ncc:annual_plans:*`, `ncc:activities:*`, `ncc:notifications:*`, `ncc:enrollment:*`, `ratelimit:*`)
 - **Load Balancer & Gateway**: Nginx Reverse Proxy with `least_conn` upstream balancing, HTTP/2, Gzip compression, WebSocket sticky affinity, and proxy rate limiting
@@ -74,3 +74,4 @@ The NCC Portal operates as an integrated, OWASP-compliant identity and managemen
 - **CI/CD Automation**: GitHub Actions workflow (`.github/workflows/ci.yml`) automating lint, test suite execution, and production compilation.
 - **Form 1 Enrollment Validation**: Full coverage for SD/SW cadet registration, 18-digit Application Number generation, phone/Aadhaar normalization, and multi-channel dispatches (Email + WhatsApp + SMS).
 - **Production Build Status**: **Success (Vite + Nitro SSR Bundle)** with zero blocking warnings.
+

@@ -590,3 +590,77 @@
 .animate-spin-slow {
   animation: spin-slow 8s linear infinite;
 }
+
+/* ==========================================================================
+   ELITE REGIMENTAL GLASSMORPHISM SYSTEM
+   ========================================================================== */
+
+.glass-panel {
+  background: rgba(10, 15, 29, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+}
+
+.glass-panel-elevated {
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 30px -6px rgba(0, 0, 0, 0.07), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+}
+
+.glass-panel-interactive {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-interactive:hover {
+  background: rgba(18, 28, 52, 0.85);
+  border-color: rgba(96, 165, 250, 0.35);
+  box-shadow: 0 18px 45px -10px rgba(37, 99, 235, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-input {
+  background: rgba(8, 12, 22, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.glass-input:focus {
+  background: rgba(12, 18, 34, 0.85);
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2), 0 0 20px -3px rgba(59, 130, 246, 0.3);
+}
+
+.glass-glow-blue {
+  box-shadow: 0 0 30px -4px rgba(37, 99, 235, 0.28);
+}
+
+.glass-glow-gold {
+  box-shadow: 0 0 30px -4px rgba(245, 158, 11, 0.28);
+}
+
+.glass-glow-emerald {
+  box-shadow: 0 0 30px -4px rgba(16, 185, 129, 0.28);
+}
+

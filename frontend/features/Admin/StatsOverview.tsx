@@ -6,16 +6,26 @@ import {
   AlertCircle,
   Megaphone,
   UserPlus,
-  ChevronRight,
+  Activity,
+  Sparkles,
 } from "lucide-react";
 import { CadetRecord } from "@/types";
 
 interface StatsOverviewProps {
   enrollments: CadetRecord[];
   setActiveTab: (tab: string) => void;
+  metricsData?: {
+    activeEventsCount?: number;
+    notificationsCount?: number;
+    uptimeSeconds?: number;
+  };
 }
 
-export const StatsOverview: React.FC<StatsOverviewProps> = ({ enrollments, setActiveTab }) => {
+export const StatsOverview: React.FC<StatsOverviewProps> = ({
+  enrollments,
+  setActiveTab,
+  metricsData,
+}) => {
   const totalApps = enrollments.length;
   const sdCount = enrollments.filter((e) => e.gender === "SD").length;
   const swCount = enrollments.filter((e) => e.gender === "SW").length;
@@ -25,103 +35,134 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ enrollments, setAc
   const pendingCount = enrollments.filter(
     (e) => e.status === "Submitted" || e.status === "Physical Scheduled",
   ).length;
+  const verifiedRate = totalApps > 0 ? Math.round((enrolledCount / totalApps) * 100) : 0;
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-[#18181B] via-[#09090B] to-[#09090B] text-white rounded-2xl p-6 border border-blue-600/40 shadow-xl relative overflow-hidden">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="inline-flex items-center space-x-2 bg-blue-500/20 text-blue-300 border border-blue-500/40 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-              <ShieldCheck className="w-3.5 h-3.5 text-blue-500" />
-              <span>19 Jharkhand Battalion NCC • SBU Coy</span>
+      {/* Elite Regimental Glass Command Banner */}
+      <div className="relative overflow-hidden rounded-3xl border border-white/10 glass-panel shadow-2xl p-6 sm:p-8">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <div className="inline-flex items-center space-x-2 glass-pill px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-blue-300 border border-blue-400/20">
+              <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+              <span>19 Jharkhand Battalion NCC • SBU Sub-Unit</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white">
-              Officer Command & Cadre Overview
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+              Officer Command & Nominal Roll
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-300">
-              Real-time Nominal Roll, Parade Attendance, DBT Allowances & Discipline Control.
+            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+              Real-time nominal roll, drill attendance, cadet lifecycle, and weapon training
+              telemetry synchronized with HQ.
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <button
               onClick={() => setActiveTab("broadcast")}
-              className="bg-blue-500 hover:bg-blue-300 text-zinc-950 font-black px-4 py-2.5 rounded-xl text-xs flex items-center space-x-1.5 shadow-md cursor-pointer"
+              className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-blue-600/25 transition-all hover:scale-105 cursor-pointer"
             >
-              <Megaphone className="w-4 h-4 text-zinc-950" />
+              <Megaphone className="w-4 h-4" />
               <span>New Broadcast</span>
             </button>
             <button
               onClick={() => setActiveTab("attendance")}
-              className="bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2.5 rounded-xl text-xs border border-white/20 flex items-center space-x-1.5 cursor-pointer"
+              className="glass-pill hover:bg-white/15 text-zinc-100 font-semibold px-4 py-2.5 rounded-xl text-xs flex items-center space-x-2 transition-all hover:scale-105 cursor-pointer"
             >
-              <UserCheck className="w-4 h-4 text-blue-500" />
+              <UserCheck className="w-4 h-4 text-emerald-400" />
               <span>Take Attendance</span>
             </button>
             <button
               onClick={() => setActiveTab("cadets")}
-              className="bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2.5 rounded-xl text-xs border border-white/20 flex items-center space-x-1.5 cursor-pointer"
+              className="glass-pill hover:bg-white/15 text-zinc-100 font-semibold px-4 py-2.5 rounded-xl text-xs flex items-center space-x-2 transition-all hover:scale-105 cursor-pointer"
             >
-              <UserPlus className="w-4 h-4 text-blue-500" />
-              <span>View All Cadets</span>
+              <UserPlus className="w-4 h-4 text-amber-400" />
+              <span>Cadet Database</span>
             </button>
           </div>
         </div>
       </div>
 
+      {/* Glassmorphic Metrics Tiles */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-xs space-y-2 hover:border-blue-500 transition-all">
-          <div className="flex items-center justify-between text-zinc-500 text-xs font-bold uppercase tracking-wider">
+        <div className="glass-panel glass-panel-interactive rounded-2xl p-5 space-y-3">
+          <div className="flex items-center justify-between text-zinc-400 text-xs font-bold uppercase tracking-wider">
             <span>Total Applications</span>
-            <Users className="w-5 h-5 text-[#18181B]" />
+            <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
+              <Users className="w-4 h-4" />
+            </div>
           </div>
           <div className="flex items-baseline space-x-2">
-            <span className="text-3xl font-black text-zinc-900">{totalApps}</span>
-            <span className="text-xs text-emerald-600 font-extrabold">Live SBU Database</span>
+            <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+              {totalApps}
+            </span>
+            <span className="text-[11px] text-emerald-400 font-extrabold flex items-center gap-1">
+              <Sparkles className="w-3 h-3" /> Live
+            </span>
           </div>
-          <p className="text-[11px] text-zinc-500 font-medium">
-            SD (Male): {sdCount} • SW (Female): {swCount}
+          <p className="text-[11px] text-zinc-400 font-medium">
+            SD (Senior Div): <span className="text-zinc-200 font-bold">{sdCount}</span> • SW (Senior
+            Wing): <span className="text-zinc-200 font-bold">{swCount}</span>
           </p>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-xs space-y-2 hover:border-blue-500 transition-all">
-          <div className="flex items-center justify-between text-zinc-500 text-xs font-bold uppercase tracking-wider">
+        <div className="glass-panel glass-panel-interactive rounded-2xl p-5 space-y-3">
+          <div className="flex items-center justify-between text-zinc-400 text-xs font-bold uppercase tracking-wider">
             <span>Enrolled Cadets</span>
-            <ShieldCheck className="w-5 h-5 text-emerald-600" />
+            <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+              <ShieldCheck className="w-4 h-4" />
+            </div>
           </div>
           <div className="flex items-baseline space-x-2">
-            <span className="text-3xl font-black text-emerald-700">{enrolledCount}</span>
-            <span className="text-xs text-zinc-500 font-semibold">Active Ranks</span>
+            <span className="text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight">
+              {enrolledCount}
+            </span>
+            <span className="text-[11px] text-zinc-400 font-medium">Active Ranks</span>
           </div>
-          <p className="text-[11px] text-zinc-500 font-medium">Allocated Regimental Numbers</p>
+          <p className="text-[11px] text-zinc-400 font-medium">
+            Selection Yield:{" "}
+            <span className="text-emerald-300 font-bold">{verifiedRate}% Verified</span>
+          </p>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-xs space-y-2 hover:border-blue-500 transition-all">
-          <div className="flex items-center justify-between text-zinc-500 text-xs font-bold uppercase tracking-wider">
-            <span>Present Today</span>
-            <UserCheck className="w-5 h-5 text-blue-600" />
+        <div className="glass-panel glass-panel-interactive rounded-2xl p-5 space-y-3">
+          <div className="flex items-center justify-between text-zinc-400 text-xs font-bold uppercase tracking-wider">
+            <span>Unit Activity</span>
+            <div className="p-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
+              <Activity className="w-4 h-4" />
+            </div>
           </div>
           <div className="flex items-baseline space-x-2">
-            <span className="text-3xl font-black text-zinc-900">92%</span>
-            <span className="text-xs text-blue-600 font-extrabold">Parade Ground</span>
+            <span className="text-3xl sm:text-4xl font-black text-purple-300 tracking-tight">
+              {metricsData?.activeEventsCount ?? (enrolledCount > 0 ? enrolledCount : 0)}
+            </span>
+            <span className="text-[11px] text-purple-400 font-extrabold">Active Events</span>
           </div>
-          <p className="text-[11px] text-zinc-500 font-medium">46 Cadets Attended Morning Drill</p>
+          <p className="text-[11px] text-zinc-400 font-medium">Scheduled Parades, Drills & Camps</p>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-xs space-y-2 hover:border-blue-500 transition-all">
-          <div className="flex items-center justify-between text-zinc-500 text-xs font-bold uppercase tracking-wider">
+        <div className="glass-panel glass-panel-interactive rounded-2xl p-5 space-y-3">
+          <div className="flex items-center justify-between text-zinc-400 text-xs font-bold uppercase tracking-wider">
             <span>Pending Processing</span>
-            <AlertCircle className="w-5 h-5 text-blue-600" />
+            <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+              <AlertCircle className="w-4 h-4" />
+            </div>
           </div>
           <div className="flex items-baseline space-x-2">
-            <span className="text-3xl font-black text-blue-700">{pendingCount}</span>
-            <span className="text-xs text-blue-700 font-extrabold">Requires Review</span>
+            <span className="text-3xl sm:text-4xl font-black text-amber-400 tracking-tight">
+              {pendingCount}
+            </span>
+            <span className="text-[11px] text-amber-400/90 font-extrabold">Awaiting Review</span>
           </div>
-          <p className="text-[11px] text-zinc-500 font-medium">
-            Physical Test & Document Verification
+          <p className="text-[11px] text-zinc-400 font-medium">
+            Physical PET & Document Verification
           </p>
         </div>
       </div>
     </div>
   );
 };
+

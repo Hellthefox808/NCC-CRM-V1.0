@@ -24,9 +24,11 @@ import { Route as ApiV1AnnualPlansRouteImport } from './routes/api/v1/annual-pla
 import { Route as ApiV1AuditRouteImport } from './routes/api/v1/audit'
 import { Route as ApiV1CadetsRouteImport } from './routes/api/v1/cadets'
 import { Route as ApiV1CalendarRouteImport } from './routes/api/v1/calendar'
+import { Route as ApiV1DisciplineRouteImport } from './routes/api/v1/discipline'
 import { Route as ApiV1EnrollmentsRouteImport } from './routes/api/v1/enrollments'
 import { Route as ApiV1ExportExcelRouteImport } from './routes/api/v1/export-excel'
 import { Route as ApiV1HealthRouteImport } from './routes/api/v1/health'
+import { Route as ApiV1LeavesRouteImport } from './routes/api/v1/leaves'
 import { Route as ApiV1MetricsRouteImport } from './routes/api/v1/metrics'
 import { Route as ApiV1NotificationsRouteImport } from './routes/api/v1/notifications'
 import { Route as ApiV1OnboardingRouteImport } from './routes/api/v1/onboarding'
@@ -128,6 +130,11 @@ const ApiV1CalendarRoute = ApiV1CalendarRouteImport.update({
   path: '/api/v1/calendar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1DisciplineRoute = ApiV1DisciplineRouteImport.update({
+  id: '/api/v1/discipline',
+  path: '/api/v1/discipline',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1EnrollmentsRoute = ApiV1EnrollmentsRouteImport.update({
   id: '/api/v1/enrollments',
   path: '/api/v1/enrollments',
@@ -141,6 +148,11 @@ const ApiV1ExportExcelRoute = ApiV1ExportExcelRouteImport.update({
 const ApiV1HealthRoute = ApiV1HealthRouteImport.update({
   id: '/api/v1/health',
   path: '/api/v1/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1LeavesRoute = ApiV1LeavesRouteImport.update({
+  id: '/api/v1/leaves',
+  path: '/api/v1/leaves',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiV1MetricsRoute = ApiV1MetricsRouteImport.update({
@@ -291,9 +303,11 @@ export interface FileRoutesByFullPath {
   '/api/v1/audit': typeof ApiV1AuditRoute
   '/api/v1/cadets': typeof ApiV1CadetsRouteWithChildren
   '/api/v1/calendar': typeof ApiV1CalendarRouteWithChildren
+  '/api/v1/discipline': typeof ApiV1DisciplineRoute
   '/api/v1/enrollments': typeof ApiV1EnrollmentsRouteWithChildren
   '/api/v1/export-excel': typeof ApiV1ExportExcelRoute
   '/api/v1/health': typeof ApiV1HealthRoute
+  '/api/v1/leaves': typeof ApiV1LeavesRoute
   '/api/v1/metrics': typeof ApiV1MetricsRoute
   '/api/v1/notifications': typeof ApiV1NotificationsRouteWithChildren
   '/api/v1/onboarding': typeof ApiV1OnboardingRouteWithChildren
@@ -336,9 +350,11 @@ export interface FileRoutesByTo {
   '/api/v1/audit': typeof ApiV1AuditRoute
   '/api/v1/cadets': typeof ApiV1CadetsRouteWithChildren
   '/api/v1/calendar': typeof ApiV1CalendarRouteWithChildren
+  '/api/v1/discipline': typeof ApiV1DisciplineRoute
   '/api/v1/enrollments': typeof ApiV1EnrollmentsRouteWithChildren
   '/api/v1/export-excel': typeof ApiV1ExportExcelRoute
   '/api/v1/health': typeof ApiV1HealthRoute
+  '/api/v1/leaves': typeof ApiV1LeavesRoute
   '/api/v1/metrics': typeof ApiV1MetricsRoute
   '/api/v1/notifications': typeof ApiV1NotificationsRouteWithChildren
   '/api/v1/onboarding': typeof ApiV1OnboardingRouteWithChildren
@@ -382,9 +398,11 @@ export interface FileRoutesById {
   '/api/v1/audit': typeof ApiV1AuditRoute
   '/api/v1/cadets': typeof ApiV1CadetsRouteWithChildren
   '/api/v1/calendar': typeof ApiV1CalendarRouteWithChildren
+  '/api/v1/discipline': typeof ApiV1DisciplineRoute
   '/api/v1/enrollments': typeof ApiV1EnrollmentsRouteWithChildren
   '/api/v1/export-excel': typeof ApiV1ExportExcelRoute
   '/api/v1/health': typeof ApiV1HealthRoute
+  '/api/v1/leaves': typeof ApiV1LeavesRoute
   '/api/v1/metrics': typeof ApiV1MetricsRoute
   '/api/v1/notifications': typeof ApiV1NotificationsRouteWithChildren
   '/api/v1/onboarding': typeof ApiV1OnboardingRouteWithChildren
@@ -429,9 +447,11 @@ export interface FileRouteTypes {
     | '/api/v1/audit'
     | '/api/v1/cadets'
     | '/api/v1/calendar'
+    | '/api/v1/discipline'
     | '/api/v1/enrollments'
     | '/api/v1/export-excel'
     | '/api/v1/health'
+    | '/api/v1/leaves'
     | '/api/v1/metrics'
     | '/api/v1/notifications'
     | '/api/v1/onboarding'
@@ -474,9 +494,11 @@ export interface FileRouteTypes {
     | '/api/v1/audit'
     | '/api/v1/cadets'
     | '/api/v1/calendar'
+    | '/api/v1/discipline'
     | '/api/v1/enrollments'
     | '/api/v1/export-excel'
     | '/api/v1/health'
+    | '/api/v1/leaves'
     | '/api/v1/metrics'
     | '/api/v1/notifications'
     | '/api/v1/onboarding'
@@ -519,9 +541,11 @@ export interface FileRouteTypes {
     | '/api/v1/audit'
     | '/api/v1/cadets'
     | '/api/v1/calendar'
+    | '/api/v1/discipline'
     | '/api/v1/enrollments'
     | '/api/v1/export-excel'
     | '/api/v1/health'
+    | '/api/v1/leaves'
     | '/api/v1/metrics'
     | '/api/v1/notifications'
     | '/api/v1/onboarding'
@@ -565,9 +589,11 @@ export interface RootRouteChildren {
   ApiV1AuditRoute: typeof ApiV1AuditRoute
   ApiV1CadetsRoute: typeof ApiV1CadetsRouteWithChildren
   ApiV1CalendarRoute: typeof ApiV1CalendarRouteWithChildren
+  ApiV1DisciplineRoute: typeof ApiV1DisciplineRoute
   ApiV1EnrollmentsRoute: typeof ApiV1EnrollmentsRouteWithChildren
   ApiV1ExportExcelRoute: typeof ApiV1ExportExcelRoute
   ApiV1HealthRoute: typeof ApiV1HealthRoute
+  ApiV1LeavesRoute: typeof ApiV1LeavesRoute
   ApiV1MetricsRoute: typeof ApiV1MetricsRoute
   ApiV1NotificationsRoute: typeof ApiV1NotificationsRouteWithChildren
   ApiV1OnboardingRoute: typeof ApiV1OnboardingRouteWithChildren
@@ -693,6 +719,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1CalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/discipline': {
+      id: '/api/v1/discipline'
+      path: '/api/v1/discipline'
+      fullPath: '/api/v1/discipline'
+      preLoaderRoute: typeof ApiV1DisciplineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/enrollments': {
       id: '/api/v1/enrollments'
       path: '/api/v1/enrollments'
@@ -712,6 +745,13 @@ declare module '@tanstack/react-router' {
       path: '/api/v1/health'
       fullPath: '/api/v1/health'
       preLoaderRoute: typeof ApiV1HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/leaves': {
+      id: '/api/v1/leaves'
+      path: '/api/v1/leaves'
+      fullPath: '/api/v1/leaves'
+      preLoaderRoute: typeof ApiV1LeavesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/metrics': {
@@ -996,9 +1036,11 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1AuditRoute: ApiV1AuditRoute,
   ApiV1CadetsRoute: ApiV1CadetsRouteWithChildren,
   ApiV1CalendarRoute: ApiV1CalendarRouteWithChildren,
+  ApiV1DisciplineRoute: ApiV1DisciplineRoute,
   ApiV1EnrollmentsRoute: ApiV1EnrollmentsRouteWithChildren,
   ApiV1ExportExcelRoute: ApiV1ExportExcelRoute,
   ApiV1HealthRoute: ApiV1HealthRoute,
+  ApiV1LeavesRoute: ApiV1LeavesRoute,
   ApiV1MetricsRoute: ApiV1MetricsRoute,
   ApiV1NotificationsRoute: ApiV1NotificationsRouteWithChildren,
   ApiV1OnboardingRoute: ApiV1OnboardingRouteWithChildren,
