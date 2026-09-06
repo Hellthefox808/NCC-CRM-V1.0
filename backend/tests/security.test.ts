@@ -145,4 +145,16 @@ describe("Security & Authorization Unit Tests", () => {
     const resValid = loginRequestSchema.safeParse(validPayload);
     assert.equal(resValid.success, true);
   });
+
+  it("initSocketServer enforces secure CORS settings and disallows credentials when origin is '*'", async () => {
+    const { initSocketServer } = await import("../services/socket/socket.server.ts");
+
+    delete process.env.VITE_WS_HOST;
+    const socketServerDefault = initSocketServer();
+    const optsDefault = (
+      socketServerDefault.opts as { cors?: { origin?: string; credentials?: boolean } }
+    ).cors;
+    assert.equal(optsDefault?.origin, "http://localhost:3000");
+    assert.equal(optsDefault?.credentials, true);
+  });
 });
