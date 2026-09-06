@@ -91,12 +91,26 @@ export const Route = createFileRoute("/api/v1/health")({
               database: {
                 status: dbOk ? "CONNECTED" : "DISCONNECTED",
                 latencyMs: dbLatencyMs,
-                ...(dbErrorDetail ? { error: dbErrorDetail } : {}),
+                ...(dbErrorDetail
+                  ? {
+                      error:
+                        process.env.NODE_ENV !== "production"
+                          ? dbErrorDetail
+                          : "Database unreachable",
+                    }
+                  : {}),
               },
               redis: {
                 mode: redisStatus.mode,
                 connected: redisStatus.connected,
-                ...(redisStatus.error ? { error: redisStatus.error } : {}),
+                ...(redisStatus.error
+                  ? {
+                      error:
+                        process.env.NODE_ENV !== "production"
+                          ? redisStatus.error
+                          : "Cache service degraded",
+                    }
+                  : {}),
               },
               memory: {
                 heapUsedMb: memoryUsageMb,
