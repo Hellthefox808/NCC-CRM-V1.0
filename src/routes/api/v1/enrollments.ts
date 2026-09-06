@@ -88,8 +88,28 @@ export const Route = createFileRoute("/api/v1/enrollments")({
       },
 
       POST: async ({ request }) => {
-        const { cadetEnrollmentSchema, validateRequestBody } =
+        const { cadetEnrollmentSchema, validateRequestBody, extractClientIp } =
           await import("@backend/lib/validation.schemas");
+
+        // Rate limiting: Max 5 submissions per 15 minutes per IP
+        const clientIp = extractClientIp(request);
+        const { checkRateLimitAsync } = await import("@backend/lib/rate-limiter.server");
+        const rateLimit = await checkRateLimitAsync(`enrollment_submit:${clientIp}`, {
+          maxAttempts: 5,
+          windowMs: 15 * 60 * 1000,
+        });
+        if (!rateLimit.allowed) {
+          return json(
+            {
+              success: false,
+              error: "Too many enrollment submissions from this network. Please try again later.",
+              code: "RATE_LIMIT_EXCEEDED",
+              retryAfter: Math.ceil(rateLimit.retryAfterMs / 1000),
+            },
+            429,
+          );
+        }
+
         const rawBody = await request.json().catch(() => ({}));
         const validation = validateRequestBody(
           cadetEnrollmentSchema,

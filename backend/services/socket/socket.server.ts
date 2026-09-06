@@ -16,14 +16,23 @@ let activeConnectionCount = 0;
 export function initSocketServer(httpServer?: HTTPServer): SocketIOServer {
   if (ioInstance) return ioInstance;
 
-  const corsOrigin = process.env.VITE_WS_HOST || "*";
+  const rawOrigin = process.env.VITE_WS_HOST;
+  let corsOrigin: string | string[];
+  if (!rawOrigin) {
+    corsOrigin = "http://localhost:3000";
+  } else if (rawOrigin.includes(",")) {
+    corsOrigin = rawOrigin.split(",").map((s) => s.trim());
+  } else {
+    corsOrigin = rawOrigin;
+  }
+  const allowCredentials = corsOrigin !== "*";
 
   ioInstance = new SocketIOServer(httpServer, {
     path: "/socket.io/",
     cors: {
       origin: corsOrigin,
       methods: ["GET", "POST"],
-      credentials: true,
+      credentials: allowCredentials,
     },
     pingInterval: 15000,
     pingTimeout: 10000,

@@ -238,8 +238,17 @@ export interface DisciplineRecord {
   officerName: string;
 }
 
+const MAX_MEMORY_RECORDS = 2000;
 const memoryLeaves: LeaveRecord[] = [];
 const memoryDiscipline: DisciplineRecord[] = [];
+
+export function clearMemoryLeaves(): void {
+  memoryLeaves.length = 0;
+}
+
+export function clearMemoryDiscipline(): void {
+  memoryDiscipline.length = 0;
+}
 
 export function getMemoryLeaves(cadetId?: string): LeaveRecord[] {
   if (cadetId) return memoryLeaves.filter((l) => l.cadetId === cadetId);
@@ -263,6 +272,9 @@ export function addMemoryLeave(
     officerName: leave.officerName || "Pending Verification",
   };
   memoryLeaves.unshift(newLeave);
+  if (memoryLeaves.length > MAX_MEMORY_RECORDS) {
+    memoryLeaves.length = MAX_MEMORY_RECORDS;
+  }
   return newLeave;
 }
 
@@ -299,6 +311,9 @@ export function addMemoryDiscipline(
     officerName: entry.officerName || "Capt. Dr. Animesh Roy (ANO)",
   };
   memoryDiscipline.unshift(newEntry);
+  if (memoryDiscipline.length > MAX_MEMORY_RECORDS) {
+    memoryDiscipline.length = MAX_MEMORY_RECORDS;
+  }
   return newEntry;
 }
 
