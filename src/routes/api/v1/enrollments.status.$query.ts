@@ -11,28 +11,7 @@ import { getOrSetCache } from "@backend/lib/cache.server";
 export const Route = createFileRoute("/api/v1/enrollments/status/$query")({
   server: {
     handlers: {
-      GET: async ({ request, params }) => {
-        // Anti-enumeration Rate Limiting: Max 20 queries per minute per IP
-        const { extractClientIp } = await import("@backend/lib/validation.schemas");
-        const clientIp = extractClientIp(request);
-        const { checkRateLimitAsync } = await import("@backend/lib/rate-limiter.server");
-        const rateLimit = await checkRateLimitAsync(`status_query:${clientIp}`, {
-          maxAttempts: 20,
-          windowMs: 60 * 1000,
-        });
-
-        if (!rateLimit.allowed) {
-          return json(
-            {
-              success: false,
-              error: "Too many tracking lookups. Please wait a moment before trying again.",
-              code: "RATE_LIMIT_EXCEEDED",
-              retryAfter: Math.ceil(rateLimit.retryAfterMs / 1000),
-            },
-            429,
-          );
-        }
-
+      GET: async ({ params }) => {
         const rawQuery = decodeURIComponent(params.query || "").trim();
         const query = sanitizePostgrestQuery(rawQuery);
         if (!query) {

@@ -37,7 +37,7 @@ export const Route = createFileRoute("/api/v1/ano/applications/$id/approve")({
           // 2. Generate unique Cadet Regimental ID if not present
           const cadetId =
             app.enrollment_no ||
-            `JH/${new Date().getFullYear().toString().slice(-2)}/${app.gender || "SD"}/${crypto.randomInt(100000, 1000000)}`;
+            `JH/${new Date().getFullYear().toString().slice(-2)}/${app.gender || "SD"}/${Math.floor(100000 + Math.random() * 900000)}`;
 
           // 3. Create cadet_users record with status ACTIVATION_PENDING
           const cadetEmail = app.email || `${app.aadhaar_number}@sbu.ac.in`;

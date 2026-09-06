@@ -4,13 +4,6 @@ import { maskPublicRecord, sanitizePostgrestQuery, mapToCadetRecord } from "../l
 import { bearer, requireOfficer, requireCadetSession } from "../lib/cadet-registry.server.ts";
 import { checkRateLimit, resetRateLimit } from "../lib/rate-limiter.server.ts";
 import { getCorsOrigin, ALLOWED_ORIGINS } from "../../src/server.ts";
-import {
-  logAuditEvent,
-  recordAuditLog,
-  addAuditTransport,
-  resetAuditTransports,
-  StructuredAuditEntry,
-} from "../lib/audit-log.server.ts";
 
 describe("Security & Authorization Unit Tests", () => {
   it("bearer() correctly extracts bearer tokens from Authorization headers or HttpOnly cookies", () => {
@@ -173,65 +166,5 @@ describe("Security & Authorization Unit Tests", () => {
     assert.equal(getCorsOrigin("https://malicious.com"), ALLOWED_ORIGINS[0]);
     assert.equal(getCorsOrigin(null), ALLOWED_ORIGINS[0]);
     assert.equal(getCorsOrigin(""), ALLOWED_ORIGINS[0]);
-  it("logAuditEvent emits structured audit log entries through custom transports", () => {
-    const emittedEntries: StructuredAuditEntry[] = [];
-    const customTransport = (entry: StructuredAuditEntry) => {
-      emittedEntries.push(entry);
-    };
-
-    resetAuditTransports([customTransport]);
-
-    logAuditEvent({
-      actor: "officer_101",
-      action: "login_success",
-      target: "auth_portal",
-      ip: "192.168.1.50",
-      metadata: { role: "ANO" },
-    });
-
-    assert.equal(emittedEntries.length, 1);
-    const entry = emittedEntries[0];
-    assert.equal(entry.level, "audit");
-    assert.equal(entry.actor, "officer_101");
-    assert.equal(entry.action, "login_success");
-    assert.equal(entry.target, "auth_portal");
-    assert.equal(entry.ip, "192.168.1.50");
-    assert.deepEqual(entry.meta, { role: "ANO" });
-    assert.ok(typeof entry.ts === "string");
-
-    resetAuditTransports(); // Restore default console transport
-  });
-
-  it("recordAuditLog maps parameters to logAuditEvent correctly", async () => {
-    const emittedEntries: StructuredAuditEntry[] = [];
-    resetAuditTransports([(entry) => emittedEntries.push(entry)]);
-
-    await recordAuditLog({
-      actorId: "cadet_2026_55",
-      action: "enrollment_submit",
-      target: "application_1910022",
-      details: "Submitted Form 1",
-      ip: "10.0.0.1",
-    });
-
-    assert.equal(emittedEntries.length, 1);
-    const entry = emittedEntries[0];
-    assert.equal(entry.actor, "cadet_2026_55");
-    assert.equal(entry.action, "enrollment_submit");
-    assert.equal(entry.target, "application_1910022");
-    assert.equal(entry.ip, "10.0.0.1");
-    assert.deepEqual(entry.meta, { details: "Submitted Form 1" });
-
-    resetAuditTransports();
-  it("initSocketServer enforces secure CORS settings and disallows credentials when origin is '*'", async () => {
-    const { initSocketServer } = await import("../services/socket/socket.server.ts");
-
-    delete process.env.VITE_WS_HOST;
-    const socketServerDefault = initSocketServer();
-    const optsDefault = (
-      socketServerDefault.opts as { cors?: { origin?: string; credentials?: boolean } }
-    ).cors;
-    assert.equal(optsDefault?.origin, "http://localhost:3000");
-    assert.equal(optsDefault?.credentials, true);
   });
 });

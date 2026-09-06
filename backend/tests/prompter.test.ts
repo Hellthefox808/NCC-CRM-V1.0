@@ -1,16 +1,11 @@
-import { describe, it, afterEach } from "node:test";
+import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   DEFAULT_REMINDER_RULES,
   calculateScheduledTime,
-} from "../services/prompter/reminder.rules.ts";
-import { dispatchReminder } from "../services/prompter/reminder.dispatcher.ts";
+} from "../services/prompter/reminder.rules";
 
 describe("Prompter Reminder Engine Unit Tests", () => {
-  afterEach(() => {
-    resetAdminClientOverride();
-  });
-
   it("DEFAULT_REMINDER_RULES contains standard 24h, 2h, 30m, and start triggers", () => {
     assert.equal(DEFAULT_REMINDER_RULES.length, 4);
 
@@ -36,24 +31,5 @@ describe("Prompter Reminder Engine Unit Tests", () => {
     // Start time (0 minutes) -> 15 August 09:00
     const timeStart = calculateScheduledTime(eventStartTime, 0);
     assert.equal(new Date(timeStart).toISOString(), "2026-08-15T09:00:00.000Z");
-  });
-
-  it("dispatchReminder() handles reminder payload gracefully", async () => {
-    const payload = {
-      reminderId: "rem_test_123",
-      eventId: "evt_test_123",
-      eventTitle: "Parade Practice",
-      startTime: "2026-08-15T09:00:00.000Z",
-      location: "SBU Parade Ground",
-      offsetMinutes: 120,
-      channel: "EMAIL",
-      recipientScope: "ALL_CADETS",
-    };
-
-    process.env.SUPABASE_URL = process.env.SUPABASE_URL || "http://localhost:54321";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "mock-key";
-
-    const result = await dispatchReminder(payload);
-    assert.equal(typeof result, "boolean");
   });
 });

@@ -2,8 +2,7 @@
  * Structured security audit logging for the NCC portal.
  *
  * Records security-sensitive events (login, logout, password changes, etc.)
- * through configured audit log transports (e.g. JSON stdout, external log management)
- * and the `audit_logs` database table.
+ * to both console (structured JSON) and the `audit_logs` database table.
  *
  * RULES:
  *   - NEVER log passwords, OTP codes, or raw session tokens.
@@ -37,83 +36,24 @@ export interface AuditEvent {
   metadata?: Record<string, unknown>;
 }
 
-export interface StructuredAuditEntry {
-  level: "audit";
-  ts: string;
-  actor: string;
-  action: AuditAction;
-  target: string;
-  ip: string;
-  meta?: Record<string, unknown>;
-}
-
-export type AuditLogTransport = (entry: StructuredAuditEntry) => void | Promise<void>;
-
-/**
- * Default stdout transport that outputs formatted structured JSON.
- */
-const defaultConsoleTransport: AuditLogTransport = (entry: StructuredAuditEntry) => {
-  const formatted = JSON.stringify(entry) + "\n";
-  if (typeof process !== "undefined" && process.stdout?.write) {
-    process.stdout.write(formatted);
-  } else {
-    console.log(JSON.stringify(entry));
-  }
-};
-
-let activeTransports: AuditLogTransport[] = [defaultConsoleTransport];
-
-/**
- * Registers an additional audit log transport (e.g., Datadog, CloudWatch, Sentry, SIEM).
- */
-export function addAuditTransport(transport: AuditLogTransport): void {
-  activeTransports.push(transport);
-}
-
-/**
- * Resets active transports to default (or a custom list), useful for tests or environment configuration.
- */
-export function resetAuditTransports(customTransports?: AuditLogTransport[]): void {
-  activeTransports = customTransports ? [...customTransports] : [defaultConsoleTransport];
-}
-
-/**
- * Emits a structured audit log entry across all active transports.
- * Transport execution errors are safely caught so audit logging never interrupts application flow.
- */
-export function emitAuditLog(entry: StructuredAuditEntry): void {
-  for (const transport of activeTransports) {
-    try {
-      const res = transport(entry);
-      if (res && typeof (res as Promise<void>).catch === "function") {
-        (res as Promise<void>).catch((err) => {
-          console.error("[audit-log] Async transport error:", err);
-        });
-      }
-    } catch (err) {
-      console.error("[audit-log] Sync transport error:", err);
-    }
-  }
-}
-
 /**
  * Logs an audit event. This is fire-and-forget — it never throws or blocks
- * the calling request handler. Database write failures are logged safely.
+ * the calling request handler. Database write failures are logged to console.
  */
 export function logAuditEvent(event: AuditEvent): void {
   const timestamp = new Date().toISOString();
 
-  const logEntry: StructuredAuditEntry = {
+  // Structured console log (always succeeds)
+  const logEntry = {
     level: "audit",
     ts: timestamp,
     actor: event.actor,
     action: event.action,
     target: event.target,
     ip: event.ip || "unknown",
-    ...(event.metadata && Object.keys(event.metadata).length > 0 ? { meta: event.metadata } : {}),
+    ...(event.metadata ? { meta: event.metadata } : {}),
   };
-
-  emitAuditLog(logEntry);
+  console.log(JSON.stringify(logEntry));
 
   // Async database persistence — fire-and-forget
   persistAuditEvent(event, timestamp).catch((err) => {
@@ -155,6 +95,6 @@ async function persistAuditEvent(event: AuditEvent, timestamp: string): Promise<
     });
   } catch {
     // Silently fail — audit logging must never break the application.
-    // The structured log transport above ensures the event is always recorded.
+    // The structured console log above ensures the event is always recorded somewhere.
   }
 }

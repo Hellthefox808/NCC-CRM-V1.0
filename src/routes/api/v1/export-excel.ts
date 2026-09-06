@@ -3,12 +3,7 @@ import { getAdmin, json, mapToCadetRecord } from "@backend/lib/ncc-db";
 
 function escapeCsvField(val: unknown): string {
   if (val === null || val === undefined) return '""';
-  let str = String(val);
-  // Neutralize CSV Formula Injection (CWE-1236 / OWASP Spreadsheet Formula Injection)
-  // If field starts with =, @, \t, \r, or [+-] followed by non-numeric characters, prefix with single quote
-  if (/^[=@\t\r]/.test(str) || (/^[+-]/.test(str) && !/^[-+]?\d+(\.\d+)?$/.test(str.trim()))) {
-    str = `'${str}`;
-  }
+  const str = String(val);
   if (/[",\n\r]/.test(str)) {
     return `"${str.replace(/"/g, '""')}"`;
   }

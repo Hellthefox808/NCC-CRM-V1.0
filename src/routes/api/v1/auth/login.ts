@@ -39,63 +39,33 @@ export const Route = createFileRoute("/api/v1/auth/login")({
         // Extract and validate client IP for rate limiting and audit logging
         const clientIp = extractClientIp(request);
 
-        // ── Dual-Layer Rate Limiting (OWASP Credential Stuffing & Brute Force Defense) ──
+        // ── Rate Limiting ──────────────────────────────────────────────
         const { checkRateLimit } = await import("@backend/lib/rate-limiter.server");
-        const { logAuditEvent } = await import("@backend/lib/audit-log.server");
-
-        // Layer 1: Network-wide IP ceiling to prevent password spraying across many accounts
-        const ipLimit = checkRateLimit(`login_ip:${clientIp}`, {
-          maxAttempts: 25,
-          windowMs: 15 * 60 * 1000,
-        });
-
-        if (!ipLimit.allowed) {
-          logAuditEvent({
-            actor: identifier || "anonymous",
-            action: "login_failure",
-            target: userType,
-            ip: clientIp,
-            metadata: {
-              reason: "ip_rate_limit_exceeded",
-              retryAfter: Math.ceil(ipLimit.retryAfterMs / 1000),
-            },
-          });
-
-          return json(
-            {
-              success: false,
-              error: "Too many login attempts from this network. Please try again later.",
-              code: "RATE_LIMIT_EXCEEDED",
-              retryAfter: Math.ceil(ipLimit.retryAfterMs / 1000),
-            },
-            429,
-          );
-        }
-
-        // Layer 2: Targeted account ceiling to prevent brute-forcing a specific officer or cadet
-        const accountLimit = checkRateLimit(`login_account:${identifier}`, {
+        const rl = checkRateLimit(`login:${clientIp}:${identifier}`, {
           maxAttempts: 5,
-          windowMs: 15 * 60 * 1000,
+          windowMs: 15 * 60 * 1000, // 15 minutes
         });
 
-        if (!accountLimit.allowed) {
+        if (!rl.allowed) {
+          // Log rate limit violation for security monitoring
+          const { logAuditEvent } = await import("@backend/lib/audit-log.server");
           logAuditEvent({
             actor: identifier,
             action: "login_failure",
             target: userType,
             ip: clientIp,
             metadata: {
-              reason: "account_rate_limit_exceeded",
-              retryAfter: Math.ceil(accountLimit.retryAfterMs / 1000),
+              reason: "rate_limit_exceeded",
+              retryAfter: Math.ceil(rl.retryAfterMs / 1000),
             },
           });
 
           return json(
             {
               success: false,
-              error: "Too many login attempts for this account. Please try again later.",
+              error: "Too many login attempts. Please try again later.",
               code: "RATE_LIMIT_EXCEEDED",
-              retryAfter: Math.ceil(accountLimit.retryAfterMs / 1000),
+              retryAfter: Math.ceil(rl.retryAfterMs / 1000),
             },
             429,
           );

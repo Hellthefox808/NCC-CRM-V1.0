@@ -37,25 +37,6 @@ export const Route = createFileRoute("/api/v1/auth/otp/request")({
         const { identifier, userType } = validation.data;
         const clientIp = extractClientIp(request);
 
-        // IP-Level Rate Limiting: Max 5 OTP requests per 10 minutes per IP
-        const { checkRateLimitAsync } = await import("@backend/lib/rate-limiter.server");
-        const ipLimit = await checkRateLimitAsync(`otp_request_ip:${clientIp}`, {
-          maxAttempts: 5,
-          windowMs: 10 * 60 * 1000,
-        });
-        if (!ipLimit.allowed) {
-          return json(
-            {
-              success: false,
-              error:
-                "Too many OTP requests from this network. Please wait a few minutes before trying again.",
-              code: "OTP_RATE_LIMIT_EXCEEDED",
-              retryAfter: Math.ceil(ipLimit.retryAfterMs / 1000),
-            },
-            429,
-          );
-        }
-
         const { issueOtp, maskDestination, OTP_TTL_MINUTES } =
           await import("@backend/lib/auth-otp.server");
 
