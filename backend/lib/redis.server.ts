@@ -301,7 +301,7 @@ export async function redisDelPrefix(prefix: string): Promise<boolean> {
   }
 
   // Memory fallback prefix deletion
-  for (const k of Array.from(memoryStore.keys())) {
+  for (const k of memoryStore.keys()) {
     if (k.startsWith(prefix)) {
       memoryStore.delete(k);
     }
