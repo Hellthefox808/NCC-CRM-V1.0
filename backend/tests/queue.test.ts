@@ -32,7 +32,9 @@ describe("Queue Service Job Execution & Error Handling Unit Tests", () => {
       if (urlStr.includes("/rest/v1/email_jobs")) {
         if (method === "GET") {
           if (mockAdminError) {
-            return new Response(JSON.stringify({ message: mockAdminError.message }), { status: 500 });
+            return new Response(JSON.stringify({ message: mockAdminError.message }), {
+              status: 500,
+            });
           }
           const pending = mockJobs.filter((j) => j.status === "PENDING");
           return new Response(JSON.stringify(pending), {
@@ -43,7 +45,9 @@ describe("Queue Service Job Execution & Error Handling Unit Tests", () => {
 
         if (method === "POST") {
           if (mockAdminError) {
-            return new Response(JSON.stringify({ message: mockAdminError.message }), { status: 400 });
+            return new Response(JSON.stringify({ message: mockAdminError.message }), {
+              status: 400,
+            });
           }
           const body = JSON.parse((init?.body as string) || "[]");
           const rowArray = Array.isArray(body) ? body : [body];
@@ -149,10 +153,7 @@ describe("Queue Service Job Execution & Error Handling Unit Tests", () => {
       assert.equal(processedCount, 0);
 
       const failedUpdate = updatedJobs.find((u) => u.status === "FAILED");
-      assert.ok(
-        failedUpdate,
-        "Job should be marked as FAILED when max attempts (3) is reached",
-      );
+      assert.ok(failedUpdate, "Job should be marked as FAILED when max attempts (3) is reached");
       assert.equal(failedUpdate.error_message, "Permanent mail server rejection");
 
       assert.equal(deliveryLogs.length, 1);
