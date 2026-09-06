@@ -608,7 +608,8 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
             <span className="flex items-center space-x-2">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
               <span>
-                Verified against 19 JHR BN NCC Nominal Roll (Batch: {registerRecord?.batch || "Active"})
+                Verified against 19 JHR BN NCC Nominal Roll (Batch:{" "}
+                {registerRecord?.batch || "Active"})
               </span>
             </span>
           ) : (
@@ -646,7 +647,9 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
                   title={item.label}
                 >
                   <div className="flex items-center space-x-3 min-w-0">
-                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-zinc-400"}`} />
+                    <Icon
+                      className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-zinc-400"}`}
+                    />
                     {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
                   </div>
                   {!sidebarCollapsed && item.badge && item.badge > 0 ? (
@@ -689,7 +692,10 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
                     <Shield className="w-4.5 h-4.5 text-blue-400" />
                     <span className="font-bold text-white text-sm">Cadet Navigation</span>
                   </div>
-                  <button onClick={() => setMobileSidebarOpen(false)} className="p-1 glass-pill rounded-lg">
+                  <button
+                    onClick={() => setMobileSidebarOpen(false)}
+                    className="p-1 glass-pill rounded-lg"
+                  >
                     <X className="w-5 h-5 text-zinc-300" />
                   </button>
                 </div>
@@ -712,7 +718,9 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
                         }`}
                       >
                         <div className="flex items-center space-x-3">
-                          <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-blue-400"}`} />
+                          <Icon
+                            className={`w-4 h-4 ${isActive ? "text-white" : "text-blue-400"}`}
+                          />
                           <span>{item.label}</span>
                         </div>
                         {item.badge && item.badge > 0 ? (
@@ -863,7 +871,10 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
                   <Edit3 className="w-5 h-5 text-blue-400" />
                   <span>Edit Contact & Uniform Specs</span>
                 </h3>
-                <button onClick={() => setIsEditingProfile(false)} className="p-1 glass-pill rounded-lg">
+                <button
+                  onClick={() => setIsEditingProfile(false)}
+                  className="p-1 glass-pill rounded-lg"
+                >
                   <X className="w-5 h-5 text-zinc-300" />
                 </button>
               </div>
@@ -998,7 +1009,10 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
                     Official Cadet Identity Card
                   </span>
                 </div>
-                <button onClick={() => setShowIdCardModal(false)} className="p-1 glass-pill rounded-lg">
+                <button
+                  onClick={() => setShowIdCardModal(false)}
+                  className="p-1 glass-pill rounded-lg"
+                >
                   <X className="w-5 h-5 text-zinc-300" />
                 </button>
               </div>
@@ -1097,8 +1111,9 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
                   This is to certify that{" "}
                   <strong className="text-white font-black">{cadetProfile.fullName}</strong> (
                   {cadetProfile.rank}), Regimental No.{" "}
-                  <strong className="font-mono text-blue-300">{cadetProfile.regNo}</strong> of 19 Jharkhand
-                  Battalion NCC, Sarala Birla University Sub-Unit, has successfully achieved{" "}
+                  <strong className="font-mono text-blue-300">{cadetProfile.regNo}</strong> of 19
+                  Jharkhand Battalion NCC, Sarala Birla University Sub-Unit, has successfully
+                  achieved{" "}
                   <strong className="text-emerald-400 font-extrabold">{selectedCert.grade}</strong>.
                 </p>
 
