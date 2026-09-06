@@ -79,9 +79,7 @@ export const Route = createFileRoute("/api/v1/onboarding/$step")({
             };
           };
 
-          const rawCadetId = gate.session?.cadetId || gate.enrollmentId || "";
-          const { sanitizePostgrestQuery } = await import("@backend/lib/ncc-db");
-          const cadetId = sanitizePostgrestQuery(rawCadetId);
+          const cadetId = gate.session?.cadetId || gate.enrollmentId || "";
           const { data: user } = await db
             .from("cadet_users")
             .select("id")

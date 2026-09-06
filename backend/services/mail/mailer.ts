@@ -22,7 +22,6 @@ import {
   SendAccountActivationEmailPayload,
   SendPasswordChangedPayload,
 } from "./types.ts";
-import { logger } from "../../lib/logger.ts";
 import {
   renderOtpEmail,
   renderWelcomeEmail,
@@ -82,7 +81,7 @@ class MailerService {
       const replyTo = options.replyTo || process.env.SMTP_REPLY_TO || "support@ncc-sbu.in";
 
       if (!process.env.SMTP_USER && process.env.NODE_ENV !== "production") {
-        logger.info(
+        console.log(
           `[Dev Mailer Suppressed Dispatch] To: ${options.to} | Subject: ${options.subject}`,
         );
         return {
@@ -108,7 +107,7 @@ class MailerService {
       };
     } catch (err: unknown) {
       const errorMsg = err instanceof Error ? err.message : "Failed to send email";
-      logger.error("[Mailer Error]", errorMsg);
+      console.error("[Mailer Error]", errorMsg);
       return {
         success: false,
         error: errorMsg,
