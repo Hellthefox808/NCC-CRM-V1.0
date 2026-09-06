@@ -7,8 +7,27 @@
 
 export type CadetRow = Record<string, unknown>;
 
+let adminClientOverride: unknown = null;
+
+export function setAdminClientOverride(override: unknown) {
+  adminClientOverride = override;
+}
+
+export function resetAdminClientOverride() {
+  adminClientOverride = null;
+}
+
 /** Loads the privileged client lazily so it never enters a client bundle. */
 export async function getAdmin() {
+  if (adminClientOverride !== null) {
+    if (typeof adminClientOverride === "function") {
+      return (adminClientOverride as () => unknown)();
+    }
+    if (adminClientOverride instanceof Error) {
+      throw adminClientOverride;
+    }
+    return adminClientOverride;
+  }
   const { supabaseAdmin } = await import("@backend/integrations/supabase/client.server");
   return supabaseAdmin;
 }

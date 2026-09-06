@@ -1,13 +1,17 @@
-import { describe, it } from "node:test";
+import { describe, it, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import {
   DEFAULT_REMINDER_RULES,
   calculateScheduledTime,
-} from "../services/prompter/reminder.rules";
-import { checkAndDispatchDueReminders } from "../services/prompter/scheduler.ts";
-import { getAdmin } from "../lib/ncc-db.ts";
+} from "../services/prompter/reminder.rules.ts";
+import { dispatchReminder } from "../services/prompter/reminder.dispatcher.ts";
+import { setAdminClientOverride, resetAdminClientOverride } from "../lib/ncc-db.ts";
 
 describe("Prompter Reminder Engine Unit Tests", () => {
+  afterEach(() => {
+    resetAdminClientOverride();
+  });
+
   it("DEFAULT_REMINDER_RULES contains standard 24h, 2h, 30m, and start triggers", () => {
     assert.equal(DEFAULT_REMINDER_RULES.length, 4);
 
@@ -35,67 +39,131 @@ describe("Prompter Reminder Engine Unit Tests", () => {
     assert.equal(new Date(timeStart).toISOString(), "2026-08-15T09:00:00.000Z");
   });
 
-  it("checkAndDispatchDueReminders() handles query result error gracefully and returns 0", async () => {
-    process.env.SUPABASE_URL = "https://example.supabase.co";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = "test-service-key";
+  it("dispatchReminder() returns false when getAdmin() throws an error", async () => {
+    setAdminClientOverride(new Error("Database connection or authentication error"));
 
-    const admin = await getAdmin();
-    const originalFrom = admin.from;
+    const samplePayload = {
+      reminderId: "rem_123",
+      eventId: "evt_456",
+      eventTitle: "Annual Training Camp",
+      startTime: "2026-09-01T08:00:00.000Z",
+      location: "SBU Parade Ground",
+      offsetMinutes: 120,
+      channel: "BOTH",
+      recipientScope: "ALL_CADETS",
+    };
 
-    Object.defineProperty(admin, "from", {
-      value: () =>
-        ({
-          select: () => ({
-            eq: () => ({
-              lte: () => ({
-                limit: async () => ({
-                  data: null,
-                  error: { message: "Database query error", code: "PGRST500" },
-                }),
-              }),
-            }),
-          }),
-        }) as any,
-      writable: true,
-      configurable: true,
-    });
-
-    try {
-      const dispatchedCount = await checkAndDispatchDueReminders();
-      assert.equal(dispatchedCount, 0);
-    } finally {
-      Object.defineProperty(admin, "from", {
-        value: originalFrom,
-        writable: true,
-        configurable: true,
-      });
-    }
+    const result = await dispatchReminder(samplePayload);
+    assert.equal(result, false, "dispatchReminder should handle getAdmin failure and return false");
   });
 
-  it("checkAndDispatchDueReminders() handles getAdmin or database exception gracefully and returns 0", async () => {
-    process.env.SUPABASE_URL = "https://example.supabase.co";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = "test-service-key";
+  it("dispatchReminder() updates reminder status to FAILED and returns false when database operations fail", async () => {
+    let failedStatusUpdated = false;
 
-    const admin = await getAdmin();
-    const originalFrom = admin.from;
-
-    Object.defineProperty(admin, "from", {
-      value: () => {
-        throw new Error("Simulated DB Connection Error");
+    const mockAdmin = {
+      from: (table: string) => {
+        if (table === "notifications") {
+          return {
+            insert: () => {
+              throw new Error("DB Error inserting notification");
+            },
+          };
+        }
+        if (table === "calendar_event_reminders") {
+          return {
+            update: (payload: { status: string }) => {
+              if (payload.status === "FAILED") {
+                failedStatusUpdated = true;
+              }
+              return {
+                eq: () => Promise.resolve({ error: null }),
+              };
+            },
+          };
+        }
+        return {};
       },
-      writable: true,
-      configurable: true,
-    });
+    };
 
-    try {
-      const dispatchedCount = await checkAndDispatchDueReminders();
-      assert.equal(dispatchedCount, 0);
-    } finally {
-      Object.defineProperty(admin, "from", {
-        value: originalFrom,
-        writable: true,
-        configurable: true,
-      });
-    }
+    setAdminClientOverride(mockAdmin);
+
+    const samplePayload = {
+      reminderId: "rem_789",
+      eventId: "evt_456",
+      eventTitle: "Firing Practice",
+      startTime: "2026-09-05T06:00:00.000Z",
+      location: "Range",
+      offsetMinutes: 30,
+      channel: "IN_APP",
+      recipientScope: "ALL_CADETS",
+    };
+
+    const result = await dispatchReminder(samplePayload);
+    assert.equal(result, false);
+    assert.equal(failedStatusUpdated, true, "Status should be updated to FAILED on DB error");
+  });
+
+  it("dispatchReminder() returns true when dispatch flow succeeds", async () => {
+    let sentStatusUpdated = false;
+
+    const mockAdmin = {
+      from: (table: string) => {
+        if (table === "notifications") {
+          return {
+            insert: () => ({
+              select: () => ({
+                single: () => Promise.resolve({ data: { id: "notif_123" } }),
+              }),
+            }),
+          };
+        }
+        if (table === "cadet_enrollments") {
+          return {
+            select: () => ({
+              not: () => Promise.resolve({ data: [{ email: "cadet1@sbu.ac.in" }] }),
+            }),
+          };
+        }
+        if (table === "email_jobs") {
+          return {
+            insert: () => ({
+              select: () => ({
+                single: () => Promise.resolve({ data: { id: "job_123" } }),
+              }),
+            }),
+          };
+        }
+        if (table === "calendar_event_reminders") {
+          return {
+            update: (payload: { status: string }) => {
+              if (payload.status === "SENT") {
+                sentStatusUpdated = true;
+              }
+              return {
+                eq: () => Promise.resolve({ error: null }),
+              };
+            },
+          };
+        }
+        return {};
+      },
+    };
+
+    setAdminClientOverride(mockAdmin);
+
+    const samplePayload = {
+      reminderId: "rem_999",
+      eventId: "evt_100",
+      eventTitle: "Republic Day Parade Drill",
+      startTime: "2027-01-26T06:00:00.000Z",
+      location: "Main Ground",
+      offsetMinutes: 1440,
+      channel: "BOTH",
+      recipientScope: "ALL_CADETS",
+    };
+
+    const result = await dispatchReminder(samplePayload);
+    assert.equal(result, true);
+    assert.equal(sentStatusUpdated, true, "Status should be updated to SENT on success");
   });
 });
