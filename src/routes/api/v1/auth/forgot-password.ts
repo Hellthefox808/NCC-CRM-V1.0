@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getAdmin, json } from "@backend/lib/ncc-db";
+import { getAdmin, json, sanitizePostgrestQuery } from "@backend/lib/ncc-db";
 import { issueActivationToken } from "@backend/lib/auth-otp.server";
 import { mailer } from "@backend/services/mail/mailer";
 import { checkRateLimitAsync } from "@backend/lib/rate-limiter.server";
@@ -31,7 +31,8 @@ export const Route = createFileRoute("/api/v1/auth/forgot-password")({
         const genericSuccessMessage =
           "If an account matches the information provided, password recovery instructions will be sent to your registered email address.";
 
-        if (!rawIdentifier) {
+        const cleanIdentifier = sanitizePostgrestQuery(rawIdentifier);
+        if (!cleanIdentifier) {
           return json({ success: true, message: genericSuccessMessage });
         }
 
@@ -41,12 +42,12 @@ export const Route = createFileRoute("/api/v1/auth/forgot-password")({
           // Search in app_credentials, cadet_users, or cadet_enrollments
           let targetEmail: string | null = null;
           let targetName: string = "Cadet";
-          let accountIdentifier: string = rawIdentifier;
+          let accountIdentifier: string = cleanIdentifier;
 
           const { data: cred } = await admin
             .from("app_credentials")
             .select("identifier")
-            .eq("identifier", rawIdentifier)
+            .eq("identifier", cleanIdentifier)
             .maybeSingle();
 
           if (cred) {
@@ -58,7 +59,7 @@ export const Route = createFileRoute("/api/v1/auth/forgot-password")({
             const { data: user } = await admin
               .from("cadet_users")
               .select("cadet_id, email, application_id")
-              .or(`cadet_id.eq.${rawIdentifier.toUpperCase()},email.eq.${rawIdentifier}`)
+              .or(`cadet_id.eq.${cleanIdentifier.toUpperCase()},email.eq.${cleanIdentifier}`)
               .maybeSingle();
 
             if (user) {

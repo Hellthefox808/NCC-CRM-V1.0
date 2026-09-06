@@ -8,7 +8,12 @@ export const Route = createFileRoute("/api/v1/annual-plans")({
       GET: async ({ request }) => {
         const url = new URL(request.url);
         const year = url.searchParams.get("year") || "2026";
-        const cacheKey = `ncc:annual_plans:${year}`;
+        const parsedYear = parseInt(year, 10);
+        if (isNaN(parsedYear) || parsedYear < 2000 || parsedYear > 2100) {
+          return json({ success: false, error: "Invalid plan year parameter." }, 400);
+        }
+
+        const cacheKey = `ncc:annual_plans:${parsedYear}`;
 
         try {
           const plans = await getOrSetCache(cacheKey, 120, async () => {
@@ -16,7 +21,7 @@ export const Route = createFileRoute("/api/v1/annual-plans")({
             const { data, error } = await admin
               .from("annual_plans")
               .select("*")
-              .eq("plan_year", parseInt(year, 10))
+              .eq("plan_year", parsedYear)
               .order("created_at", { ascending: true });
 
             if (error) throw error;

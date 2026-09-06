@@ -7,13 +7,16 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   validate-and-test:
-    name: Lint, Test & Build Validation
+    name: Lint, Typecheck, Test & Build Validation
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -30,10 +33,16 @@ jobs:
           cache: "npm"
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Validate Prisma Schema
+        run: npx prisma validate
 
       - name: Run ESLint Static Analysis
         run: npm run lint
+
+      - name: Run Typecheck Analysis
+        run: npm run typecheck
 
       - name: Run Automated Test Suite
         run: npm run test
@@ -54,3 +63,10 @@ jobs:
           VITE_SUPABASE_ANON_KEY: sb_publishable_ru09YlOy1LNorCk6y-SD2w_daWCqr6U
           SUPABASE_URL: https://qsrmzajadmmgqhfbxdwu.supabase.co
           SUPABASE_ANON_KEY: sb_publishable_ru09YlOy1LNorCk6y-SD2w_daWCqr6U
+
+      - name: Security Vulnerability Audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Validate Docker Image Build
+        run: docker build -t ncc-crm:ci .
