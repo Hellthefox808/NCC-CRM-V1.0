@@ -5,46 +5,36 @@ import { StatsOverview } from "@frontend/features/Admin/StatsOverview";
 import { RecentRegistrations } from "@frontend/features/Admin/RecentRegistrations";
 import { NotificationBroadcaster } from "@frontend/features/Admin/NotificationBroadcaster";
 import { AttackSurfaceManager } from "@frontend/features/Admin/AttackSurfaceManager";
-import { EnterpriseDataPlatform, LeaveRecordItem } from "@backend/services/dataPlatform";
+import { EnterpriseDataPlatform } from "@backend/services/dataPlatform";
 import { useRealtimeData } from "@frontend/hooks/useRealtimeData";
 import {
-  AlertTriangle,
-  ArrowUpRight,
   Award,
   BarChart3,
   Bell,
   BookOpen,
   Calendar,
-  CalendarDays,
-  Check,
-  CheckCircle2,
   ChevronRight,
-  Clock,
   Download,
   Edit3,
   Eye,
   FileSpreadsheet,
-  FileText,
   GraduationCap,
-  Info,
   Layers,
   LogOut,
   Megaphone,
   Menu,
   Plus,
   Printer,
-  Radio,
   RefreshCw,
   Search,
   Send,
   Settings,
   Shield,
   ShieldCheck,
-  Sparkles,
   UserCheck,
   Users,
   X,
-  XCircle,
+  Radio,
 } from "lucide-react";
 import { CadetRecord } from "@/types";
 
@@ -101,7 +91,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
     | "reports"
     | "security"
     | "settings"
-    | "leaves"
   >("dashboard");
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
@@ -115,12 +104,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [batchFilter, setBatchFilter] = useState<string>("All");
 
-  // Leaves CRM State
-  const [leaves, setLeaves] = useState<LeaveRecordItem[]>([]);
-  const [leaveFilter, setLeaveFilter] = useState<"All" | "Pending" | "Approved" | "Rejected">(
-    "All",
-  );
-
   // Selected Cadet for Modals
   const [selectedRecord, setSelectedRecord] = useState<CadetRecord | null>(null);
   const [viewingProfileModal, setViewingProfileModal] = useState<CadetRecord | null>(null);
@@ -128,34 +111,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
     "personal" | "academic" | "physical" | "bank" | "attendance"
   >("personal");
 
-  // Status Edit State & Guided Follow-up Fields
+  // Status Edit State
   const [editingStatus, setEditingStatus] = useState<string>("Submitted");
   const [editingRemarks, setEditingRemarks] = useState<string>("");
   const [editingRegNo, setEditingRegNo] = useState<string>("");
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
-
-  // Guided PET Follow-up State
-  const [petDate, setPetDate] = useState<string>(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 2);
-    return d.toISOString().split("T")[0];
-  });
-  const [petTime, setPetTime] = useState<string>("06:00 AM - 08:30 AM");
-  const [petVenue, setPetVenue] = useState<string>("SBU Sports Ground (Purulia Road)");
-  const [petInstructions, setPetInstructions] = useState<string>(
-    "Wear white sports PT kit and running shoes. Bring Aadhaar card, original 10th/12th marksheets, and water bottle.",
-  );
-
-  // Guided Medical & Correction Follow-up State
-  const [medicalFitness, setMedicalFitness] = useState<"FIT" | "TEMPORARY_UNFIT" | "UNFIT">("FIT");
-  const [medicalFindings, setMedicalFindings] = useState<string>(
-    "Vision 6/6, Height & Chest expansion verified, Blood pressure normal. Clear for parade drill.",
-  );
-  const [correctionNote, setCorrectionNote] = useState<string>(
-    "Please re-upload a clear scanned copy of your 10th & 12th marksheets and Aadhaar card.",
-  );
-  const [assignedPlatoon, setAssignedPlatoon] = useState<string>("Platoon Alpha (Senior Division)");
-  const [autoDispatchAlert, setAutoDispatchAlert] = useState<boolean>(true);
 
   // Broadcast Form State
   const [broadcastSubject, setBroadcastSubject] = useState<string>("");
@@ -255,20 +215,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
       }
 
       // 2. Fetch Broadcasts / Notifications
-      const notificationsRes = await EnterpriseDataPlatform.getNotifications();
-      if (notificationsRes.success && notificationsRes.data?.notifications) {
-        const mappedBroadcasts: BroadcastMessage[] = notificationsRes.data.notifications.map(
-          (n) => ({
-            id: n.id,
-            subject: n.title,
-            body: n.body,
-            target: n.category === "Parade Order" ? "All Cadets" : "Active Cadre",
-            sentAt: n.date || new Date().toISOString().replace("T", " ").slice(0, 16),
-            recipientCount: enrollRes.data?.enrollments?.length || 0,
-            deliveryStatus: "Dispatched (100%)",
-            channels: ["Email", "In-App Portal"],
-          }),
-        );
+      const notifRes = await EnterpriseDataPlatform.getNotifications();
+      if (notifRes.success && notifRes.data?.notifications) {
+        const mappedBroadcasts: BroadcastMessage[] = notifRes.data.notifications.map((n) => ({
+          id: n.id,
+          subject: n.title,
+          body: n.body,
+          target: n.category === "Parade Order" ? "All Cadets" : "Active Cadre",
+          sentAt: n.date || new Date().toISOString().replace("T", " ").slice(0, 16),
+          recipientCount: enrollRes.data?.enrollments?.length || 0,
+          deliveryStatus: "Dispatched (100%)",
+          channels: ["Email", "In-App Portal"],
+        }));
         setBroadcastHistory(mappedBroadcasts);
       }
 
@@ -294,12 +252,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
       if (discRes.success && discRes.data?.records) {
         setDisciplineEntries(discRes.data.records);
       }
-
-      // 5. Fetch Cadet Leave Applications
-      const leavesRes = await EnterpriseDataPlatform.getLeaves();
-      if (leavesRes.success && leavesRes.data?.leaves) {
-        setLeaves(leavesRes.data.leaves);
-      }
     } catch (err) {
       console.error("Failed to load initial data:", err);
     } finally {
@@ -310,50 +262,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
   useEffect(() => {
     fetchAllData();
   }, []);
-
-  // Leave Review Action Handler
-  const handleReviewLeave = async (
-    leaveId: string,
-    status: "Approved" | "Rejected",
-    customRemark?: string,
-  ) => {
-    const remark =
-      customRemark ||
-      (status === "Approved"
-        ? "Leave approved by ANO Company Office SBU Sub-Unit."
-        : "Leave rejected due to mandatory battalion parade schedule.");
-
-    try {
-      const res = await EnterpriseDataPlatform.updateLeaveStatus({
-        id: leaveId,
-        status,
-        remarks: remark,
-        officerName: "Capt. Dr. Animesh Roy (ANO)",
-      });
-
-      if (res.success) {
-        showToast(`Leave application ${status.toLowerCase()} successfully.`);
-        setLeaves((prev) =>
-          prev.map((l) => (l.id === leaveId ? { ...l, status, officerRemarks: remark } : l)),
-        );
-        fetchAllData();
-      }
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed";
-      showToast(`Error reviewing leave: ${msg}`);
-    }
-  };
-
-  // Regimental Number Auto-Generator
-  const handleAutoGenerateRegNo = (cadet: CadetRecord) => {
-    const wing = cadet.gender === "SW" ? "SW" : "SD";
-    const year = new Date().getFullYear().toString().slice(-2);
-    const cleanRoll =
-      cadet.sbuRollNo.replace(/\D/g, "").slice(-4) ||
-      Math.floor(1000 + Math.random() * 9000).toString();
-    setEditingRegNo(`JHR/${year}/${wing}/19/${cleanRoll}`);
-    showToast("Generated official 19 Battalion Regimental Number.");
-  };
 
   // Filter Logic
   const filteredCadets = enrollments.filter((e) => {
@@ -393,47 +301,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
       (!e.sbuYear.includes("2") && !e.sbuYear.includes("3")),
   );
 
-  // Status Update Handler with Guided Follow-up Metadata
+  // Status Update Handler using Enterprise Data Platform Engine
   const handleUpdateStatus = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedRecord) return;
 
     setIsUpdating(true);
     try {
-      let structuredRemarks = editingRemarks.trim();
-      if (editingStatus === "Physical Scheduled") {
-        structuredRemarks += ` | PET Scheduled: ${petDate} at ${petTime} | Venue: ${petVenue} | Instructions: ${petInstructions}`;
-      } else if (editingStatus === "Medical Cleared") {
-        structuredRemarks += ` | Medical Fitness: ${medicalFitness} | Findings: ${medicalFindings}`;
-      } else if (editingStatus === "Submitted" && correctionNote.trim()) {
-        structuredRemarks += ` | Action Required: ${correctionNote}`;
-      } else if (editingStatus === "Enrolled" || editingStatus === "Selected") {
-        structuredRemarks += ` | Assigned: ${assignedPlatoon} | Kit Allotment Approved`;
-      }
-
       const res = await EnterpriseDataPlatform.updateStatus({
         id: selectedRecord.id,
         status: editingStatus,
-        remarks: structuredRemarks,
+        remarks: editingRemarks,
         enrollmentNo: editingRegNo,
       });
 
       if (res.success) {
         showToast(`Status updated successfully for ${selectedRecord.fullName}`);
-
-        if (autoDispatchAlert) {
-          try {
-            await EnterpriseDataPlatform.broadcastNotice({
-              title: `[19 JHR BN] Application Status: ${editingStatus}`,
-              body: `Dear ${selectedRecord.fullName} (${selectedRecord.id}), your application is now "${editingStatus}". Follow-up details: ${structuredRemarks}`,
-              category: "Parade Order",
-              priority: "High",
-            });
-          } catch {
-            /* non-blocking */
-          }
-        }
-
         setSelectedRecord(null);
         fetchAllData();
       }
@@ -578,7 +461,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
     { id: "dashboard", label: "Overview Dashboard", icon: BarChart3 },
     { id: "batches", label: "Batches & Wings", icon: Layers },
     { id: "cadets", label: "Cadet Database (CRM)", icon: Users },
-    { id: "leaves", label: "Cadet Leave Requests", icon: CalendarDays },
     { id: "activities", label: "Classes & Drill Schedule", icon: BookOpen },
     { id: "broadcast", label: "Broadcast & Notices", icon: Megaphone },
     { id: "attendance", label: "Attendance Sheet Grid", icon: UserCheck },
@@ -614,7 +496,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
       </AnimatePresence>
 
       {/* Top Officer Header Bar */}
-      <header className="glass-panel border-b border-white/10 sticky top-0 z-40 backdrop-blur-xl shadow-lg">
+      <header className="glass-panel border-b border-white/10 sticky top-0 z-40 backdrop-blur-xl shadow-lg relative">
         <div className="w-full px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
           {/* Left: Brand & Sidebar Toggle */}
           <div className="flex items-center space-x-3">
@@ -634,7 +516,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
             </button>
 
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-2xl bg-linear-to-br from-blue-600 to-indigo-700 p-0.5 border border-white/20 shrink-0 flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 p-0.5 border border-white/20 shrink-0 flex items-center justify-center shadow-lg shadow-blue-500/20">
                 <Shield className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -700,7 +582,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                   onClick={() => setActiveTab(item.id as typeof activeTab)}
                   className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-bold transition-all text-left cursor-pointer ${
                     isActive
-                      ? "bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30 border border-blue-400/40"
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30 border border-blue-400/40"
                       : "text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent"
                   } ${sidebarCollapsed ? "justify-center px-0" : ""}`}
                   title={item.label}
@@ -708,23 +590,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                   <Icon
                     className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-zinc-400"}`}
                   />
-                  {!sidebarCollapsed && (
-                    <div className="flex items-center justify-between flex-1 min-w-0">
-                      <span className="truncate">{item.label}</span>
-                      {item.id === "leaves" &&
-                        leaves.filter((l) => l.status === "Pending").length > 0 && (
-                          <span className="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                            {leaves.filter((l) => l.status === "Pending").length}
-                          </span>
-                        )}
-                      {item.id === "cadets" &&
-                        enrollments.filter((e) => e.status === "Submitted").length > 0 && (
-                          <span className="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] font-black bg-blue-500/20 text-blue-300 border border-blue-500/40">
-                            {enrollments.filter((e) => e.status === "Submitted").length}
-                          </span>
-                        )}
-                    </div>
-                  )}
+                  {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
                 </button>
               );
             })}
@@ -784,21 +650,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                         }`}
                       >
                         <Icon className="w-4 h-4 text-blue-400" />
-                        <div className="flex items-center justify-between flex-1 min-w-0">
-                          <span>{item.label}</span>
-                          {item.id === "leaves" &&
-                            leaves.filter((l) => l.status === "Pending").length > 0 && (
-                              <span className="ml-2 px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                                {leaves.filter((l) => l.status === "Pending").length}
-                              </span>
-                            )}
-                          {item.id === "cadets" &&
-                            enrollments.filter((e) => e.status === "Submitted").length > 0 && (
-                              <span className="ml-2 px-1.5 py-0.5 rounded-full text-[10px] font-black bg-blue-500/20 text-blue-300 border border-blue-500/40">
-                                {enrollments.filter((e) => e.status === "Submitted").length}
-                              </span>
-                            )}
-                        </div>
+                        <span>{item.label}</span>
                       </button>
                     );
                   })}
@@ -827,114 +679,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                 enrollments={enrollments}
                 setActiveTab={(tab) => setActiveTab(tab as typeof activeTab)}
               />
-
-              {/* COMMAND FOLLOW-UP CENTER & ACTION QUEUE */}
-              <div className="glass-card-classic rounded-2xl p-6 border border-amber-500/20 shadow-xl space-y-4 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
-                      <Clock className="w-5 h-5 animate-pulse" />
-                    </div>
-                    <div>
-                      <h3 className="font-black text-white text-base sm:text-lg tracking-tight flex items-center gap-2">
-                        <span>Command Follow-up Center & Action Queue</span>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider glass-badge-amber">
-                          Priority Scrutiny
-                        </span>
-                      </h3>
-                      <p className="text-xs text-zinc-400 font-medium">
-                        Real-time scrutiny backlog, pending cadet leaves & compliance reminders
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2 text-xs">
-                    <span className="text-zinc-400">Live Queue:</span>
-                    <span className="font-mono font-bold text-amber-300">
-                      {enrollments.filter((e) => e.status === "Submitted").length +
-                        leaves.filter((l) => l.status === "Pending").length}{" "}
-                      Pending Actions
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Action 1: Pending Applications */}
-                  <div className="glass-panel rounded-xl p-4 border border-white/10 space-y-3 glass-flow-step">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2 text-blue-400">
-                        <UserCheck className="w-4 h-4" />
-                        <span className="font-bold text-xs">Form 1 Scrutiny</span>
-                      </div>
-                      <span className="text-xs font-mono font-black px-2 py-0.5 rounded-lg bg-blue-500/10 text-blue-300 border border-blue-500/20">
-                        {enrollments.filter((e) => e.status === "Submitted").length} New
-                      </span>
-                    </div>
-                    <p className="text-xs text-zinc-300">
-                      Cadet applications waiting for physical test scheduling & document review.
-                    </p>
-                    <button
-                      onClick={() => {
-                        setStatusFilter("Submitted");
-                        setActiveTab("cadets");
-                      }}
-                      className="w-full text-xs font-bold text-blue-300 hover:text-white glass-pill py-2 rounded-xl border border-blue-400/30 hover:bg-blue-600/30 flex items-center justify-center space-x-1 transition-all cursor-pointer"
-                    >
-                      <span>Review Scrutiny Queue</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-
-                  {/* Action 2: Pending Leave Requests */}
-                  <div className="glass-panel rounded-xl p-4 border border-white/10 space-y-3 glass-flow-step">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2 text-amber-400">
-                        <CalendarDays className="w-4 h-4" />
-                        <span className="font-bold text-xs">Leave Requests</span>
-                      </div>
-                      <span className="text-xs font-mono font-black px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                        {leaves.filter((l) => l.status === "Pending").length} Pending
-                      </span>
-                    </div>
-                    <p className="text-xs text-zinc-300">
-                      Cadet leave requests awaiting ANO company authorization for upcoming parades.
-                    </p>
-                    <button
-                      onClick={() => {
-                        setLeaveFilter("Pending");
-                        setActiveTab("leaves");
-                      }}
-                      className="w-full text-xs font-bold text-amber-300 hover:text-white glass-pill py-2 rounded-xl border border-amber-500/30 hover:bg-amber-600/30 flex items-center justify-center space-x-1 transition-all cursor-pointer"
-                    >
-                      <span>Process Leaves</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-
-                  {/* Action 3: Parade Roll & Attendance Reminders */}
-                  <div className="glass-panel rounded-xl p-4 border border-white/10 space-y-3 glass-flow-step">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2 text-emerald-400">
-                        <ShieldCheck className="w-4 h-4" />
-                        <span className="font-bold text-xs">Parade & Attendance</span>
-                      </div>
-                      <span className="text-xs font-mono font-black px-2 py-0.5 rounded-lg bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-                        Active Roll
-                      </span>
-                    </div>
-                    <p className="text-xs text-zinc-300">
-                      Record morning squad muster roll, lecture attendance & reward commendations.
-                    </p>
-                    <button
-                      onClick={() => setActiveTab("attendance")}
-                      className="w-full text-xs font-bold text-emerald-300 hover:text-white glass-pill py-2 rounded-xl border border-emerald-500/30 hover:bg-emerald-600/30 flex items-center justify-center space-x-1 transition-all cursor-pointer"
-                    >
-                      <span>Open Attendance Sheet</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <RecentRegistrations
@@ -2027,199 +1771,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
 
           {/* TAB 11: ATTACK SURFACE & CYBER THREAT INTELLIGENCE */}
           {activeTab === "security" && <AttackSurfaceManager />}
-
-          {/* TAB 12: CADET LEAVE REVIEW PIPELINE */}
-          {activeTab === "leaves" && (
-            <div className="space-y-6">
-              <div className="glass-card-classic rounded-2xl border border-white/10 p-6 shadow-xl space-y-6">
-                {/* Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
-                      <CalendarDays className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="font-black text-white text-lg tracking-tight flex items-center gap-2">
-                        <span>Cadet Leave Review Pipeline</span>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider glass-badge-amber">
-                          ANO Office
-                        </span>
-                      </h3>
-                      <p className="text-xs text-zinc-400 font-medium">
-                        Review, authorize and record cadet parade & lecture absence requests
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => fetchAllData()}
-                      className="px-3.5 py-2 glass-pill text-xs font-bold text-zinc-300 hover:text-white rounded-xl flex items-center space-x-1.5 transition-all cursor-pointer"
-                    >
-                      <RefreshCw className="w-3.5 h-3.5" />
-                      <span>Refresh</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Filter Pills */}
-                <div className="flex flex-wrap items-center gap-2">
-                  {(["All", "Pending", "Approved", "Rejected"] as const).map((status) => {
-                    const count =
-                      status === "All"
-                        ? leaves.length
-                        : leaves.filter((l) => l.status === status).length;
-                    const isSelected = leaveFilter === status;
-                    return (
-                      <button
-                        key={status}
-                        onClick={() => setLeaveFilter(status)}
-                        className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-2 ${
-                          isSelected
-                            ? status === "Pending"
-                              ? "bg-amber-500 text-black font-black shadow-lg shadow-amber-500/30"
-                              : status === "Approved"
-                                ? "bg-emerald-600 text-white font-black shadow-lg shadow-emerald-600/30"
-                                : status === "Rejected"
-                                  ? "bg-red-600 text-white font-black shadow-lg shadow-red-600/30"
-                                  : "bg-blue-600 text-white font-black shadow-lg shadow-blue-600/30"
-                            : "glass-pill text-zinc-300 hover:text-white border border-white/10"
-                        }`}
-                      >
-                        <span>{status}</span>
-                        <span
-                          className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                            isSelected ? "bg-black/20 text-current" : "bg-white/10 text-zinc-400"
-                          }`}
-                        >
-                          {count}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Leaves Table */}
-                <div className="overflow-x-auto rounded-xl border border-white/10 glass-table-container">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-white/5 text-zinc-300 font-black uppercase text-[11px] tracking-wider border-b border-white/10">
-                      <tr>
-                        <th className="py-3 px-4">Leave ID</th>
-                        <th className="py-3 px-4">Cadet Details</th>
-                        <th className="py-3 px-4">Category</th>
-                        <th className="py-3 px-4">Duration & Dates</th>
-                        <th className="py-3 px-4">Reason</th>
-                        <th className="py-3 px-4">Status</th>
-                        <th className="py-3 px-4 text-right">ANO Action</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/5">
-                      {leaves
-                        .filter((l) => (leaveFilter === "All" ? true : l.status === leaveFilter))
-                        .map((l) => {
-                          const start = new Date(l.startDate);
-                          const end = new Date(l.endDate);
-                          const diffDays = Math.max(
-                            1,
-                            Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) +
-                              1,
-                          );
-                          return (
-                            <tr key={l.id} className="hover:bg-white/5 transition-colors group">
-                              <td className="py-3.5 px-4 font-mono font-bold text-[11px] text-zinc-400">
-                                {l.id}
-                              </td>
-                              <td className="py-3.5 px-4">
-                                <p className="font-extrabold text-white group-hover:text-blue-200 transition-colors">
-                                  {l.cadetName}
-                                </p>
-                                <p className="text-[10px] text-zinc-400 font-mono">{l.cadetId}</p>
-                              </td>
-                              <td className="py-3.5 px-4">
-                                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold glass-badge-blue">
-                                  {l.category}
-                                </span>
-                              </td>
-                              <td className="py-3.5 px-4">
-                                <p className="font-bold text-zinc-200">
-                                  {l.startDate} → {l.endDate}
-                                </p>
-                                <p className="text-[10px] text-amber-300 font-semibold">
-                                  {diffDays} {diffDays === 1 ? "Day" : "Days"} Leave
-                                </p>
-                              </td>
-                              <td className="py-3.5 px-4 max-w-xs">
-                                <p className="text-zinc-300 text-xs line-clamp-2">{l.reason}</p>
-                                {l.officerRemarks && (
-                                  <p className="text-[10px] text-zinc-400 italic mt-1">
-                                    ANO Remark: {l.officerRemarks}
-                                  </p>
-                                )}
-                              </td>
-                              <td className="py-3.5 px-4">
-                                <span
-                                  className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                                    l.status === "Approved"
-                                      ? "glass-badge-emerald"
-                                      : l.status === "Rejected"
-                                        ? "glass-badge-red"
-                                        : "glass-badge-amber"
-                                  }`}
-                                >
-                                  {l.status}
-                                </span>
-                              </td>
-                              <td className="py-3.5 px-4 text-right">
-                                {l.status === "Pending" ? (
-                                  <div className="flex items-center justify-end space-x-1.5">
-                                    <button
-                                      onClick={() => handleReviewLeave(l.id, "Approved")}
-                                      className="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-600/30 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40 transition-all cursor-pointer flex items-center space-x-1"
-                                      title="Approve Leave"
-                                    >
-                                      <Check className="w-3.5 h-3.5" />
-                                      <span>Approve</span>
-                                    </button>
-                                    <button
-                                      onClick={() => handleReviewLeave(l.id, "Rejected")}
-                                      className="px-2.5 py-1 rounded-lg text-xs font-bold bg-red-600/30 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/40 transition-all cursor-pointer flex items-center space-x-1"
-                                      title="Reject Leave"
-                                    >
-                                      <X className="w-3.5 h-3.5" />
-                                      <span>Reject</span>
-                                    </button>
-                                  </div>
-                                ) : (
-                                  <span className="text-[11px] text-zinc-400 font-semibold">
-                                    {l.officerName || "Verified"}
-                                  </span>
-                                )}
-                              </td>
-                            </tr>
-                          );
-                        })}
-
-                      {leaves.filter((l) =>
-                        leaveFilter === "All" ? true : l.status === leaveFilter,
-                      ).length === 0 && (
-                        <tr>
-                          <td
-                            colSpan={7}
-                            className="py-12 text-center text-zinc-400 font-medium space-y-2"
-                          >
-                            <CalendarDays className="w-8 h-8 text-zinc-500 mx-auto" />
-                            <p className="text-xs">
-                              No leave applications found under this filter.
-                            </p>
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
         </main>
       </div>
 
@@ -2435,29 +1986,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
         </div>
       )}
 
-      {/* MODAL 2: GUIDED SCRUTINY & FOLLOW-UP COMMAND ENGINE */}
+      {/* MODAL 2: UPDATE STATUS & REGIMENTAL NUMBER */}
       {selectedRecord && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="glass-panel-elevated rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-white/15 shadow-2xl p-6 space-y-5 text-white">
-            <div className="flex items-center justify-between border-b border-white/10 pb-4">
-              <div className="space-y-0.5">
-                <div className="flex items-center space-x-2">
-                  <span className="glass-pill text-amber-300 text-[10px] font-black px-2.5 py-0.5 rounded uppercase border border-amber-400/30">
-                    Guided Scrutiny Flow
-                  </span>
-                  <span className="text-zinc-400 text-xs font-mono">{selectedRecord.id}</span>
-                </div>
-                <h3 className="font-black text-white text-lg">{selectedRecord.fullName}</h3>
+          <div className="glass-panel-elevated rounded-3xl max-w-lg w-full border border-white/15 shadow-2xl p-6 space-y-4 text-white">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div>
+                <h3 className="font-black text-white text-lg">Update Cadet Status</h3>
                 <p className="text-xs text-zinc-400">
-                  {selectedRecord.sbuCourse} • {selectedRecord.gender} • Mobile:{" "}
-                  {selectedRecord.mobile}
+                  {selectedRecord.fullName} ({selectedRecord.id})
                 </p>
               </div>
-              <button
-                onClick={() => setSelectedRecord(null)}
-                className="p-2 glass-pill rounded-xl text-zinc-300 hover:text-white cursor-pointer"
-              >
-                <X className="w-5 h-5" />
+              <button onClick={() => setSelectedRecord(null)} className="p-1 glass-pill rounded-lg">
+                <X className="w-5 h-5 text-zinc-300" />
               </button>
             </div>
 
@@ -2489,235 +2030,32 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                   </option>
                 </select>
               </div>
-            </div>
 
-            <form onSubmit={handleUpdateStatus} className="space-y-4 text-xs">
-              {/* STAGE 1: SUBMITTED (UNDER SCRUTINY / CORRECTION) */}
-              {editingStatus === "Submitted" && (
-                <div className="glass-panel p-4 rounded-2xl border border-amber-500/20 space-y-2 bg-amber-500/5">
-                  <div className="flex items-center space-x-2 text-amber-300 font-bold">
-                    <Info className="w-4 h-4" />
-                    <span>Application Scrutiny & Correction Follow-up</span>
-                  </div>
-                  <p className="text-[11px] text-zinc-300">
-                    If this application has document discrepancies or missing marks cards, note the
-                    exact defect below:
-                  </p>
-                  <textarea
-                    rows={2}
-                    value={correctionNote}
-                    onChange={(e) => setCorrectionNote(e.target.value)}
-                    placeholder="e.g. Please re-upload clear front & back Aadhaar card..."
-                    className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-medium"
-                  />
-                </div>
-              )}
-
-              {/* STAGE 2: PHYSICAL TEST SCHEDULED */}
-              {editingStatus === "Physical Scheduled" && (
-                <div className="glass-panel p-4 rounded-2xl border border-blue-500/20 space-y-3 bg-blue-500/5">
-                  <div className="flex items-center space-x-2 text-blue-300 font-bold">
-                    <CalendarDays className="w-4 h-4" />
-                    <span>Physical Efficiency Test (PET) Follow-up Schedule</span>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[10px] font-bold text-zinc-400 uppercase">
-                        PET Reporting Date
-                      </label>
-                      <input
-                        type="date"
-                        value={petDate}
-                        onChange={(e) => setPetDate(e.target.value)}
-                        className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-bold"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold text-zinc-400 uppercase">
-                        Reporting Time
-                      </label>
-                      <input
-                        type="text"
-                        value={petTime}
-                        onChange={(e) => setPetTime(e.target.value)}
-                        placeholder="06:00 AM - 08:30 AM"
-                        className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-bold"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold text-zinc-400 uppercase">
-                      Parade Ground Venue
-                    </label>
-                    <input
-                      type="text"
-                      value={petVenue}
-                      onChange={(e) => setPetVenue(e.target.value)}
-                      placeholder="SBU Sports Ground / Parade Track"
-                      className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-bold"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold text-zinc-400 uppercase">
-                      Candidate Instructions (1600m Run, Kit)
-                    </label>
-                    <textarea
-                      rows={2}
-                      value={petInstructions}
-                      onChange={(e) => setPetInstructions(e.target.value)}
-                      className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-medium"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* STAGE 3: MEDICAL CLEARED */}
-              {editingStatus === "Medical Cleared" && (
-                <div className="glass-panel p-4 rounded-2xl border border-emerald-500/20 space-y-3 bg-emerald-500/5">
-                  <div className="flex items-center space-x-2 text-emerald-300 font-bold">
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Medical Examination & Fitness Findings</span>
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold text-zinc-400 uppercase">
-                      Medical Fitness Determination
-                    </label>
-                    <select
-                      value={medicalFitness}
-                      onChange={(e) => setMedicalFitness(e.target.value as typeof medicalFitness)}
-                      className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-bold"
-                    >
-                      <option value="FIT" className="bg-[#0b1329] text-white">
-                        Medically FIT for NCC Training & Camps
-                      </option>
-                      <option value="TEMPORARY_UNFIT" className="bg-[#0b1329] text-white">
-                        Temporary Unfit (Observation Period)
-                      </option>
-                      <option value="UNFIT" className="bg-[#0b1329] text-white">
-                        Permanent Medically Unfit
-                      </option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold text-zinc-400 uppercase">
-                      Inspection Findings (Vitals, Vision, Expansion)
-                    </label>
-                    <textarea
-                      rows={2}
-                      value={medicalFindings}
-                      onChange={(e) => setMedicalFindings(e.target.value)}
-                      className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-medium"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* STAGE 4: SELECTED & ENROLLED */}
-              {(editingStatus === "Selected" || editingStatus === "Enrolled") && (
-                <div className="glass-panel p-4 rounded-2xl border border-blue-500/20 space-y-3 bg-blue-500/5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 text-blue-300 font-bold">
-                      <Sparkles className="w-4 h-4" />
-                      <span>Battalion Induction & Regimental Number Allocation</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleAutoGenerateRegNo(selectedRecord)}
-                      className="px-2.5 py-1 text-[11px] font-extrabold bg-blue-600 hover:bg-blue-500 text-white rounded-lg flex items-center space-x-1 cursor-pointer shadow-sm transition-all"
-                    >
-                      <Sparkles className="w-3 h-3" />
-                      <span>Auto-Generate</span>
-                    </button>
-                  </div>
-
-                  <div>
-                    <label className="text-[10px] font-bold text-zinc-400 uppercase">
-                      NCC Regimental Number
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. JHR/26/SD/19/2048"
-                      value={editingRegNo}
-                      onChange={(e) => setEditingRegNo(e.target.value)}
-                      className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-mono font-bold text-blue-200"
-                      required={editingStatus === "Enrolled"}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-[10px] font-bold text-zinc-400 uppercase">
-                      Platoon Assignment
-                    </label>
-                    <select
-                      value={assignedPlatoon}
-                      onChange={(e) => setAssignedPlatoon(e.target.value)}
-                      className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-bold"
-                    >
-                      <option
-                        value="Platoon Alpha (Senior Division)"
-                        className="bg-[#0b1329] text-white"
-                      >
-                        Platoon Alpha (SD - 1st Year Cadre)
-                      </option>
-                      <option
-                        value="Platoon Bravo (Senior Division)"
-                        className="bg-[#0b1329] text-white"
-                      >
-                        Platoon Bravo (SD - 2nd/3rd Year Cadre)
-                      </option>
-                      <option
-                        value="Platoon Charlie (Senior Wing)"
-                        className="bg-[#0b1329] text-white"
-                      >
-                        Platoon Charlie (SW - Women Cadre)
-                      </option>
-                      <option
-                        value="Platoon Delta (Senior Wing)"
-                        className="bg-[#0b1329] text-white"
-                      >
-                        Platoon Delta (SW - Women Cadre)
-                      </option>
-                    </select>
-                  </div>
-                </div>
-              )}
-
-              {/* OFFICER REMARKS */}
               <div>
-                <label className="font-black text-zinc-300 uppercase text-[11px]">
-                  Official ANO Remarks
+                <label className="font-black text-zinc-300 uppercase">
+                  NCC Regimental Number (If Enrolled)
                 </label>
+                <input
+                  type="text"
+                  placeholder="e.g. JHR/26/SD/19/204801"
+                  value={editingRegNo}
+                  onChange={(e) => setEditingRegNo(e.target.value)}
+                  className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-mono font-bold"
+                />
+              </div>
+
+              <div>
+                <label className="font-black text-zinc-300 uppercase">Officer Remarks</label>
                 <textarea
-                  rows={2}
-                  placeholder="Enter remarks regarding fitness, merit rank, interview score..."
+                  rows={3}
+                  placeholder="Enter remarks regarding fitness, ground test performance, medical clearance..."
                   value={editingRemarks}
                   onChange={(e) => setEditingRemarks(e.target.value)}
                   className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-medium"
                 />
               </div>
 
-              {/* AUTOMATED FOLLOW-UP ALERT DISPATCH CHECKBOX */}
-              <div className="flex items-center space-x-2.5 p-3 rounded-xl glass-panel border border-white/10 bg-white/5">
-                <input
-                  type="checkbox"
-                  id="autoDispatchAlert"
-                  checked={autoDispatchAlert}
-                  onChange={(e) => setAutoDispatchAlert(e.target.checked)}
-                  className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 focus:ring-offset-gray-900 cursor-pointer"
-                />
-                <label
-                  htmlFor="autoDispatchAlert"
-                  className="text-xs text-zinc-300 font-medium cursor-pointer"
-                >
-                  Instantly dispatch follow-up notification to cadet portal with these instructions
-                </label>
-              </div>
-
-              {/* ACTION BUTTONS */}
-              <div className="pt-2 flex justify-end space-x-2 border-t border-white/10">
+              <div className="pt-2 flex justify-end space-x-2">
                 <button
                   type="button"
                   onClick={() => setSelectedRecord(null)}
@@ -2728,16 +2066,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                 <button
                   type="submit"
                   disabled={isUpdating}
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold shadow-lg shadow-blue-600/30 cursor-pointer transition-all flex items-center space-x-1.5"
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold shadow-lg shadow-blue-600/30 cursor-pointer transition-all"
                 >
-                  {isUpdating ? (
-                    <span>Saving...</span>
-                  ) : (
-                    <>
-                      <Check className="w-4 h-4" />
-                      <span>Confirm & Record Follow-up</span>
-                    </>
-                  )}
+                  {isUpdating ? "Saving..." : "Save Changes"}
                 </button>
               </div>
             </form>
