@@ -14,8 +14,9 @@ export interface ReminderDispatcherPayload {
 }
 
 export async function dispatchReminder(payload: ReminderDispatcherPayload): Promise<boolean> {
-  const admin = await getAdmin();
+  let admin: Awaited<ReturnType<typeof getAdmin>> | undefined;
   try {
+    admin = await getAdmin();
     const timeText =
       payload.offsetMinutes === 1440
         ? "24 hours before"
@@ -109,10 +110,16 @@ export async function dispatchReminder(payload: ReminderDispatcherPayload): Prom
     return true;
   } catch (err) {
     console.error("[Reminder Dispatcher Error]", err);
-    await admin
-      .from("calendar_event_reminders")
-      .update({ status: "FAILED" })
-      .eq("id", payload.reminderId);
+    if (admin) {
+      try {
+        await admin
+          .from("calendar_event_reminders")
+          .update({ status: "FAILED" })
+          .eq("id", payload.reminderId);
+      } catch {
+        // ignore failure during secondary error handling update
+      }
+    }
     return false;
   }
 }
