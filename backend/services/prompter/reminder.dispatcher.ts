@@ -1,5 +1,5 @@
 import { getAdmin } from "../../lib/ncc-db.ts";
-import { queueEmailJob } from "../queue/queue.service.ts";
+import { queueEmailJobsBatch } from "../queue/queue.service.ts";
 import { emitNotification, emitCalendarUpdate } from "../socket/socket.server.ts";
 
 export interface ReminderDispatcherPayload {
@@ -87,15 +87,19 @@ export async function dispatchReminder(payload: ReminderDispatcherPayload): Prom
         recipients = ["cadet@sbu.ac.in"];
       }
 
-      for (const email of recipients) {
-        await queueEmailJob("sendReminder", email, {
+      const emailJobs = recipients.map((email) => ({
+        jobType: "sendReminder",
+        recipient: email,
+        payload: {
           eventTitle: payload.eventTitle,
           startTime: payload.startTime,
           location: payload.location,
           reminderTimeText: timeText,
           eventId: payload.eventId,
-        });
-      }
+        },
+      }));
+
+      await queueEmailJobsBatch(emailJobs);
     }
 
     // 4. Update reminder status in DB to SENT
