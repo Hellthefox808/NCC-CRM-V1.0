@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getAdmin, json } from "@backend/lib/ncc-db";
 import { prompterEngine } from "@backend/services/prompter/prompter.service";
-import { queueEmailJob } from "@backend/services/queue/queue.service";
+import { queueEmailJobsBatch } from "@backend/services/queue/queue.service";
 import {
   emitCalendarEventUpdated,
   emitCalendarEventCancelled,
@@ -122,8 +122,10 @@ export const Route = createFileRoute("/api/v1/calendar/$id")({
             .filter(Boolean);
           const emailTargets = recipients.length > 0 ? recipients : ["cadet@sbu.ac.in"];
 
-          for (const email of emailTargets) {
-            await queueEmailJob("sendEventUpdated", email, {
+          const emailJobs = emailTargets.map((email) => ({
+            jobType: "sendEventUpdated",
+            recipient: email,
+            payload: {
               eventTitle: updated.title,
               oldStartTime: existing.start_time,
               newStartTime: updated.start_time,
@@ -132,8 +134,10 @@ export const Route = createFileRoute("/api/v1/calendar/$id")({
               changeSummary:
                 (body.changeSummary as string) || "Schedule updated by battalion officer.",
               eventId: updated.id,
-            });
-          }
+            },
+          }));
+
+          await queueEmailJobsBatch(emailJobs);
 
           // Audit Log
           await recordAuditLog({
