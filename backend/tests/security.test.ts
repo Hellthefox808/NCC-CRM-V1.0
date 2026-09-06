@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { maskPublicRecord, sanitizePostgrestQuery, mapToCadetRecord } from "../lib/ncc-db.ts";
 import { bearer, requireOfficer, requireCadetSession } from "../lib/cadet-registry.server.ts";
 import { checkRateLimit, resetRateLimit } from "../lib/rate-limiter.server.ts";
+import { getCorsOrigin, ALLOWED_ORIGINS } from "../../src/server.ts";
 
 describe("Security & Authorization Unit Tests", () => {
   it("bearer() correctly extracts bearer tokens from Authorization headers or HttpOnly cookies", () => {
@@ -144,5 +145,26 @@ describe("Security & Authorization Unit Tests", () => {
     };
     const resValid = loginRequestSchema.safeParse(validPayload);
     assert.equal(resValid.success, true);
+  });
+
+  it("getCorsOrigin() strictly validates allowed origins and rejects arbitrary/untrusted SaaS subdomains", () => {
+    // Valid configured origins must be allowed
+    assert.equal(
+      getCorsOrigin("https://19th-jh-ncc-crm-v1-0.vercel.app"),
+      "https://19th-jh-ncc-crm-v1-0.vercel.app",
+    );
+    assert.equal(getCorsOrigin("http://localhost:3000"), "http://localhost:3000");
+    assert.equal(getCorsOrigin("http://localhost:5173"), "http://localhost:5173");
+    assert.equal(getCorsOrigin("http://127.0.0.1:3000"), "http://127.0.0.1:3000");
+
+    // Untrusted subdomains on SaaS platforms (.vercel.app, .netlify.app) must be rejected
+    assert.equal(getCorsOrigin("https://evil.vercel.app"), ALLOWED_ORIGINS[0]);
+    assert.equal(getCorsOrigin("https://attacker.netlify.app"), ALLOWED_ORIGINS[0]);
+    assert.equal(getCorsOrigin("https://fake-19th-jh-ncc-crm.vercel.app"), ALLOWED_ORIGINS[0]);
+
+    // Arbitrary external domains, null, or empty string must fallback to default origin
+    assert.equal(getCorsOrigin("https://malicious.com"), ALLOWED_ORIGINS[0]);
+    assert.equal(getCorsOrigin(null), ALLOWED_ORIGINS[0]);
+    assert.equal(getCorsOrigin(""), ALLOWED_ORIGINS[0]);
   });
 });

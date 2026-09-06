@@ -44,20 +44,15 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
-const ALLOWED_ORIGINS = [
+export const ALLOWED_ORIGINS = [
   "https://19th-jh-ncc-crm-v1-0.vercel.app",
   "http://localhost:3000",
   "http://localhost:5173",
   "http://127.0.0.1:3000",
 ];
 
-function getCorsOrigin(origin: string | null): string {
-  if (
-    origin &&
-    (ALLOWED_ORIGINS.includes(origin) ||
-      origin.endsWith(".vercel.app") ||
-      origin.endsWith(".netlify.app"))
-  ) {
+export function getCorsOrigin(origin: string | null): string {
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
     return origin;
   }
   return ALLOWED_ORIGINS[0];
