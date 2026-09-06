@@ -35,13 +35,16 @@ describe("Chart Security Sanitization Unit Tests", () => {
       const maliciousPayload = "red; body { background: url('https://evil.com/xss') }";
       assert.strictEqual(
         sanitizeCssValue(maliciousPayload),
-        "red body  background: https://evil.com/xss)"
+        "red body  background: https://evil.com/xss)",
       );
     });
 
     it("strips hazardous CSS function calls like url(), expression(), and javascript()", () => {
       const maliciousPayload = "red; background: url('https://attacker.com/cookie')";
-      assert.strictEqual(sanitizeCssValue(maliciousPayload), "red background: https://attacker.com/cookie)");
+      assert.strictEqual(
+        sanitizeCssValue(maliciousPayload),
+        "red background: https://attacker.com/cookie)",
+      );
     });
   });
 });
