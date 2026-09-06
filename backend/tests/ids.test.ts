@@ -81,4 +81,86 @@ describe("Intrusion Detection System (IDS) Unit Tests", () => {
       "Must execute REVOKE_SESSION containment",
     );
   });
+
+  it("recordSecurityEvent() handles getAdmin database failure gracefully and uses unit test fallback mode", async () => {
+    const origUrl = process.env.SUPABASE_URL;
+    const origKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    try {
+      delete process.env.SUPABASE_URL;
+      delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+      const resFallback = await recordSecurityEvent({
+        eventType: "AUTH_FAILURE",
+        actorIp: "10.100.0.1",
+        details: { mode: "unit_test_fallback" },
+      });
+
+      assert.ok(
+        resFallback.eventId.startsWith("evt_"),
+        "Event ID must use unit test fallback format starting with evt_",
+      );
+      assert.equal(resFallback.riskScore, 15);
+      assert.equal(resFallback.alertTriggered, false);
+
+      const resHighRiskFallback = await recordSecurityEvent({
+        eventType: "UNAUTHORIZED_EXPORT",
+        actorIp: "10.100.0.2",
+        details: { mode: "unit_test_fallback_alert" },
+      });
+
+      assert.ok(
+        resHighRiskFallback.eventId.startsWith("evt_"),
+        "High risk event ID must use fallback format when DB fails",
+      );
+      assert.equal(resHighRiskFallback.riskScore, 50);
+      assert.equal(resHighRiskFallback.alertTriggered, true);
+      assert.equal(resHighRiskFallback.alertLevel, "HIGH");
+      assert.equal(resHighRiskFallback.containmentExecuted, "REVOKE_SESSION");
+    } finally {
+      if (origUrl) process.env.SUPABASE_URL = origUrl;
+      else delete process.env.SUPABASE_URL;
+      if (origKey) process.env.SUPABASE_SERVICE_ROLE_KEY = origKey;
+      else delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+    }
+  });
+
+  it("recordSecurityEvent() handles network/database connection failure cleanly during event logging", async () => {
+    const origUrl = process.env.SUPABASE_URL;
+    const origKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    try {
+      process.env.SUPABASE_URL = "http://127.0.0.1:54321";
+      process.env.SUPABASE_SERVICE_ROLE_KEY = "mock_key";
+
+      const resDbError = await recordSecurityEvent({
+        eventType: "IDOR_ATTEMPT",
+        actorIp: "10.200.0.1",
+        details: { mode: "db_error_simulation" },
+      });
+
+      assert.ok(
+        resDbError.eventId.startsWith("evt_"),
+        "Must retain fallback evt_ ID when ids_events insert fails due to network/DB error",
+      );
+      assert.equal(resDbError.alertTriggered, false);
+
+      const resDbErrorHighRisk = await recordSecurityEvent({
+        eventType: "STORAGE_TOKEN_REPLAY",
+        actorIp: "10.200.0.2",
+        details: { mode: "db_error_high_risk" },
+      });
+
+      assert.ok(resDbErrorHighRisk.eventId.startsWith("evt_"));
+      assert.equal(resDbErrorHighRisk.riskScore, 40);
+      assert.equal(resDbErrorHighRisk.alertTriggered, true);
+      assert.equal(resDbErrorHighRisk.alertLevel, "MEDIUM");
+      assert.equal(resDbErrorHighRisk.containmentExecuted, "QUARANTINE_OBJECT");
+    } finally {
+      if (origUrl) process.env.SUPABASE_URL = origUrl;
+      else delete process.env.SUPABASE_URL;
+      if (origKey) process.env.SUPABASE_SERVICE_ROLE_KEY = origKey;
+      else delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+    }
+  });
 });

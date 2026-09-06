@@ -3,8 +3,8 @@
 **System Name**: 19 Jharkhand Battalion NCC Portal (Sarala Birla University Sub-Unit)  
 **Corpus Name**: Hellthefox808/NCC-CRM-V1.0  
 **Branch**: `main`  
-**Last Updated**: 2026-08-31  
-**Status**: 100% Verified E2E, 60/60 Tests Passing, Elite Glassmorphism UI, Dynamic Backend Sync
+**Last Updated**: 2026-09-06  
+**Status**: 100% Verified E2E, 65/65 Tests Passing, Elite Glassmorphism UI, Dynamic Backend Sync, Hardened Security & Infrastructure
 
 ---
 
@@ -64,14 +64,32 @@ The NCC Portal operates as an integrated, OWASP-compliant identity and managemen
    - Server-enforced middleware (`requireOfficer` vs `requireCadetSession`) with 300s multi-tier session caching reducing DB overhead by >85%.
    - Instant token invalidation across all nodes on logout.
    - Zero frontend-only privilege boundaries.
+5. **IDOR & Broken Object Level Authorization Mitigation**:
+   - Strict session scoping on `/api/v1/discipline` (cadets can only access their own records; cross-cadet lookups trigger IDS alert `IDOR_ATTEMPT` and 403 Forbidden).
+   - Session authentication and ownership verification on notification acknowledgment (`/api/v1/notifications/:id/read`).
+6. **CWE-1236 CSV Formula Injection Neutralization**:
+   - All user-supplied fields in Excel/CSV exports starting with `=`, `@`, `\t`, `\r`, `+`, or `-` are prepended with apostrophe `'`.
+7. **Dual-Layer Rate Limiting & Anti-Brute-Force / Anti-Enumeration**:
+   - Login protected by network IP ceiling (25 req/15min) + target account ceiling (5 req/15min).
+   - Public enrollment status search rate limited (20 req/min per IP) to prevent Aadhaar / phone number enumeration.
+   - Enrollment form submission rate limited (5 req/15min per IP).
+   - OTP requests rate limited (5 req/10min per IP).
+8. **PostgREST Query Injection Defense**:
+   - Strict sanitization stripping PostgREST reserved operators (`.eq.`, `()`, `,`, etc.) across all identifier queries.
+9. **Timing Attack & Memory Safety**:
+   - Constant-time `crypto.timingSafeEqual` comparison on OTP hash verification.
+   - Hard memory ceilings (`MAX_MEMORY_TOKENS = 1000`) and automatic pruning to prevent heap exhaustion.
+10. **Infrastructure Hardening**:
+    - Redis loopback binding (`127.0.0.1:6379`) with password protection in `docker-compose.yml`.
+    - Nginx `api_status_limit` zone, HSTS, and Permissions-Policy headers.
+    - Content-Security-Policy (CSP) header enforced on Nitro SSR responses.
 
 ---
 
 ## 4. Test Suite & Verification Metrics
 
-- **Backend Unit Tests**: **60 / 60 Pass (100%)** across 11 test suites (including Multi-Tier Cache & Storage Capability tests).
+- **Backend Unit Tests**: **65 / 65 Pass (100%)** across 12 test suites (including Security Hardening, Multi-Tier Cache & Storage Capability tests).
 - **ESLint Static Code Analysis**: **0 Errors (100% clean type-safety)**.
 - **CI/CD Automation**: GitHub Actions workflow (`.github/workflows/ci.yml`) automating lint, test suite execution, and production compilation.
 - **Form 1 Enrollment Validation**: Full coverage for SD/SW cadet registration, 18-digit Application Number generation, phone/Aadhaar normalization, and multi-channel dispatches (Email + WhatsApp + SMS).
 - **Production Build Status**: **Success (Vite + Nitro SSR Bundle)** with zero blocking warnings.
-
