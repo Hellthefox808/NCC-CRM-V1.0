@@ -7,8 +7,27 @@
 
 export type CadetRow = Record<string, unknown>;
 
+let adminClientOverride: unknown = null;
+
+export function setAdminClientOverride(override: unknown) {
+  adminClientOverride = override;
+}
+
+export function resetAdminClientOverride() {
+  adminClientOverride = null;
+}
+
 /** Loads the privileged client lazily so it never enters a client bundle. */
 export async function getAdmin() {
+  if (adminClientOverride !== null) {
+    if (typeof adminClientOverride === "function") {
+      return (adminClientOverride as () => unknown)();
+    }
+    if (adminClientOverride instanceof Error) {
+      throw adminClientOverride;
+    }
+    return adminClientOverride;
+  }
   const { supabaseAdmin } = await import("@backend/integrations/supabase/client.server");
   return supabaseAdmin;
 }
@@ -219,8 +238,17 @@ export interface DisciplineRecord {
   officerName: string;
 }
 
+const MAX_MEMORY_RECORDS = 2000;
 const memoryLeaves: LeaveRecord[] = [];
 const memoryDiscipline: DisciplineRecord[] = [];
+
+export function clearMemoryLeaves(): void {
+  memoryLeaves.length = 0;
+}
+
+export function clearMemoryDiscipline(): void {
+  memoryDiscipline.length = 0;
+}
 
 export function getMemoryLeaves(cadetId?: string): LeaveRecord[] {
   if (cadetId) return memoryLeaves.filter((l) => l.cadetId === cadetId);
@@ -244,6 +272,9 @@ export function addMemoryLeave(
     officerName: leave.officerName || "Pending Verification",
   };
   memoryLeaves.unshift(newLeave);
+  if (memoryLeaves.length > MAX_MEMORY_RECORDS) {
+    memoryLeaves.length = MAX_MEMORY_RECORDS;
+  }
   return newLeave;
 }
 
@@ -280,6 +311,9 @@ export function addMemoryDiscipline(
     officerName: entry.officerName || "Capt. Dr. Animesh Roy (ANO)",
   };
   memoryDiscipline.unshift(newEntry);
+  if (memoryDiscipline.length > MAX_MEMORY_RECORDS) {
+    memoryDiscipline.length = MAX_MEMORY_RECORDS;
+  }
   return newEntry;
 }
 
