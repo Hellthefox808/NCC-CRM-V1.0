@@ -44,7 +44,7 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
-const ALLOWED_ORIGINS = [
+export const ALLOWED_ORIGINS = [
   "https://19th-jh-ncc-crm-v1-0.vercel.app",
   "https://ncc.sbu.ac.in",
   "http://localhost:3000",
@@ -52,6 +52,8 @@ const ALLOWED_ORIGINS = [
   "http://127.0.0.1:3000",
 ];
 
+export function getCorsOrigin(origin: string | null): string {
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
 export function isAllowedOrigin(origin: string | null): boolean {
   if (!origin) return false;
   if (ALLOWED_ORIGINS.includes(origin)) return true;
