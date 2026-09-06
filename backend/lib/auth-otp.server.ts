@@ -159,7 +159,16 @@ export async function verifyOtp(
     };
 
   const submitted = await hashCode(String(code).trim(), key);
-  if (submitted !== row.code_hash) {
+  let hashesMatch = false;
+  try {
+    hashesMatch =
+      submitted.length === row.code_hash.length &&
+      crypto.timingSafeEqual(Buffer.from(submitted), Buffer.from(row.code_hash));
+  } catch {
+    hashesMatch = false;
+  }
+
+  if (!hashesMatch) {
     await admin
       .from("auth_otp_codes")
       .update({ attempts: row.attempts + 1 })
@@ -227,7 +236,27 @@ interface TokenRecord {
   consumedAt?: Date;
 }
 
+const MAX_MEMORY_TOKENS = 1000;
 const memoryTokens: TokenRecord[] = [];
+
+/** Clears all in-memory token fallbacks (used in tests and state reset). */
+export function clearMemoryTokens(): void {
+  memoryTokens.length = 0;
+}
+
+/** Prunes expired and consumed tokens to prevent memory leaks under sustained operation. */
+function pruneMemoryTokens(): void {
+  const now = Date.now();
+  for (let i = memoryTokens.length - 1; i >= 0; i--) {
+    const t = memoryTokens[i];
+    if (t.consumedAt || t.expiresAt.getTime() < now) {
+      memoryTokens.splice(i, 1);
+    }
+  }
+  if (memoryTokens.length > MAX_MEMORY_TOKENS) {
+    memoryTokens.splice(0, memoryTokens.length - MAX_MEMORY_TOKENS);
+  }
+}
 
 /** Issues a high-entropy, single-use activation/reset token. Returns rawToken (only HASH stored). */
 export async function issueActivationToken(
@@ -241,6 +270,7 @@ export async function issueActivationToken(
   const tokenHash = await sha256(rawToken);
   const expiresAt = new Date(Date.now() + ttlMinutes * 60 * 1000);
 
+  pruneMemoryTokens();
   memoryTokens.push({
     identifier: key,
     purpose,

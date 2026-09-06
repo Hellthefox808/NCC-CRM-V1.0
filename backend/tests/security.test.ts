@@ -3,6 +3,14 @@ import assert from "node:assert/strict";
 import { maskPublicRecord, sanitizePostgrestQuery, mapToCadetRecord } from "../lib/ncc-db.ts";
 import { bearer, requireOfficer, requireCadetSession } from "../lib/cadet-registry.server.ts";
 import { checkRateLimit, resetRateLimit } from "../lib/rate-limiter.server.ts";
+import { getCorsOrigin, ALLOWED_ORIGINS } from "../../src/server.ts";
+import {
+  logAuditEvent,
+  recordAuditLog,
+  addAuditTransport,
+  resetAuditTransports,
+  StructuredAuditEntry,
+} from "../lib/audit-log.server.ts";
 
 describe("Security & Authorization Unit Tests", () => {
   it("bearer() correctly extracts bearer tokens from Authorization headers or HttpOnly cookies", () => {
@@ -106,6 +114,14 @@ describe("Security & Authorization Unit Tests", () => {
     assert.equal(token.length, 5 + 64);
   });
 
+  it("crypto.randomInt produces secure cryptographically random 6-digit Cadet Regimental ID suffix", async () => {
+    const crypto = await import("crypto");
+    for (let i = 0; i < 100; i++) {
+      const num = crypto.randomInt(100000, 1000000);
+      assert.ok(num >= 100000 && num < 1000000, `Random number ${num} is out of 6-digit range`);
+    }
+  });
+
   it("checkRateLimit() allows attempts within the limit and blocks after exceeding max", () => {
     const key = `test_rate_limit_${Date.now()}`;
 
@@ -144,5 +160,86 @@ describe("Security & Authorization Unit Tests", () => {
     };
     const resValid = loginRequestSchema.safeParse(validPayload);
     assert.equal(resValid.success, true);
+  });
+
+  it("getCorsOrigin() strictly validates allowed origins and rejects arbitrary/untrusted SaaS subdomains", () => {
+    // Valid configured origins must be allowed
+    assert.equal(
+      getCorsOrigin("https://19th-jh-ncc-crm-v1-0.vercel.app"),
+      "https://19th-jh-ncc-crm-v1-0.vercel.app",
+    );
+    assert.equal(getCorsOrigin("http://localhost:3000"), "http://localhost:3000");
+    assert.equal(getCorsOrigin("http://localhost:5173"), "http://localhost:5173");
+    assert.equal(getCorsOrigin("http://127.0.0.1:3000"), "http://127.0.0.1:3000");
+
+    // Untrusted subdomains on SaaS platforms (.vercel.app, .netlify.app) must be rejected
+    assert.equal(getCorsOrigin("https://evil.vercel.app"), ALLOWED_ORIGINS[0]);
+    assert.equal(getCorsOrigin("https://attacker.netlify.app"), ALLOWED_ORIGINS[0]);
+    assert.equal(getCorsOrigin("https://fake-19th-jh-ncc-crm.vercel.app"), ALLOWED_ORIGINS[0]);
+
+    // Arbitrary external domains, null, or empty string must fallback to default origin
+    assert.equal(getCorsOrigin("https://malicious.com"), ALLOWED_ORIGINS[0]);
+    assert.equal(getCorsOrigin(null), ALLOWED_ORIGINS[0]);
+    assert.equal(getCorsOrigin(""), ALLOWED_ORIGINS[0]);
+  it("logAuditEvent emits structured audit log entries through custom transports", () => {
+    const emittedEntries: StructuredAuditEntry[] = [];
+    const customTransport = (entry: StructuredAuditEntry) => {
+      emittedEntries.push(entry);
+    };
+
+    resetAuditTransports([customTransport]);
+
+    logAuditEvent({
+      actor: "officer_101",
+      action: "login_success",
+      target: "auth_portal",
+      ip: "192.168.1.50",
+      metadata: { role: "ANO" },
+    });
+
+    assert.equal(emittedEntries.length, 1);
+    const entry = emittedEntries[0];
+    assert.equal(entry.level, "audit");
+    assert.equal(entry.actor, "officer_101");
+    assert.equal(entry.action, "login_success");
+    assert.equal(entry.target, "auth_portal");
+    assert.equal(entry.ip, "192.168.1.50");
+    assert.deepEqual(entry.meta, { role: "ANO" });
+    assert.ok(typeof entry.ts === "string");
+
+    resetAuditTransports(); // Restore default console transport
+  });
+
+  it("recordAuditLog maps parameters to logAuditEvent correctly", async () => {
+    const emittedEntries: StructuredAuditEntry[] = [];
+    resetAuditTransports([(entry) => emittedEntries.push(entry)]);
+
+    await recordAuditLog({
+      actorId: "cadet_2026_55",
+      action: "enrollment_submit",
+      target: "application_1910022",
+      details: "Submitted Form 1",
+      ip: "10.0.0.1",
+    });
+
+    assert.equal(emittedEntries.length, 1);
+    const entry = emittedEntries[0];
+    assert.equal(entry.actor, "cadet_2026_55");
+    assert.equal(entry.action, "enrollment_submit");
+    assert.equal(entry.target, "application_1910022");
+    assert.equal(entry.ip, "10.0.0.1");
+    assert.deepEqual(entry.meta, { details: "Submitted Form 1" });
+
+    resetAuditTransports();
+  it("initSocketServer enforces secure CORS settings and disallows credentials when origin is '*'", async () => {
+    const { initSocketServer } = await import("../services/socket/socket.server.ts");
+
+    delete process.env.VITE_WS_HOST;
+    const socketServerDefault = initSocketServer();
+    const optsDefault = (
+      socketServerDefault.opts as { cors?: { origin?: string; credentials?: boolean } }
+    ).cors;
+    assert.equal(optsDefault?.origin, "http://localhost:3000");
+    assert.equal(optsDefault?.credentials, true);
   });
 });

@@ -6,29 +6,51 @@ import {
   updateMemoryLeave,
   type LeaveRecord,
 } from "@backend/lib/ncc-db";
+import { extractClientIp } from "@backend/lib/validation.schemas";
 
 export const Route = createFileRoute("/api/v1/leaves")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        const { bearer } = await import("@backend/lib/cadet-registry.server");
-        const token = bearer(request);
-        if (!token) return json({ success: false, error: "Authentication required" }, 401);
+        const { requireOfficer, requireCadetSession } =
+          await import("@backend/lib/cadet-registry.server");
 
         const url = new URL(request.url);
-        const cadetId = url.searchParams.get("cadetId") || undefined;
-        const leaves = getMemoryLeaves(cadetId);
+        const requestedCadetId = url.searchParams.get("cadetId") || undefined;
 
-        return json({
-          success: true,
-          data: { leaves, count: leaves.length },
-        });
+        // Try officer auth first (full access)
+        const officerGate = await requireOfficer(request);
+        if (officerGate.ok) {
+          const leaves = getMemoryLeaves(requestedCadetId);
+          return json({ success: true, data: { leaves, count: leaves.length } });
+        }
+
+        // Fall back to cadet session — can only view own records
+        const cadetGate = await requireCadetSession(request);
+        if (!cadetGate.ok) {
+          return json({ success: false, error: "Authentication required" }, 401);
+        }
+
+        // IDOR protection: cadets may only query their own records
+        const ownCadetId = cadetGate.cadetId ?? undefined;
+        if (requestedCadetId && requestedCadetId !== ownCadetId) {
+          const { recordSecurityEvent } = await import("@backend/services/ids/ids.service");
+          recordSecurityEvent({
+            eventType: "IDOR_ATTEMPT",
+            actorId: ownCadetId,
+            actorIp: extractClientIp(request),
+            details: { target: requestedCadetId, resource: "leaves" },
+          });
+          return json({ success: false, error: "Access denied" }, 403);
+        }
+
+        const leaves = getMemoryLeaves(ownCadetId);
+        return json({ success: true, data: { leaves, count: leaves.length } });
       },
 
       POST: async ({ request }) => {
-        const { bearer } = await import("@backend/lib/cadet-registry.server");
-        const token = bearer(request);
-        if (!token) return json({ success: false, error: "Authentication required" }, 401);
+        const { requireCadetSession, requireOfficer } =
+          await import("@backend/lib/cadet-registry.server");
 
         const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
         const cadetId = typeof body.cadetId === "string" ? body.cadetId : "";
@@ -40,6 +62,19 @@ export const Route = createFileRoute("/api/v1/leaves")({
             { success: false, error: "Cadet ID, start date, and end date are required." },
             400,
           );
+        }
+
+        // Officers can submit on behalf of any cadet
+        const officerGate = await requireOfficer(request);
+        if (!officerGate.ok) {
+          // Cadets can only submit for themselves
+          const cadetGate = await requireCadetSession(request);
+          if (!cadetGate.ok) {
+            return json({ success: false, error: "Authentication required" }, 401);
+          }
+          if (cadetId !== cadetGate.cadetId) {
+            return json({ success: false, error: "Access denied" }, 403);
+          }
         }
 
         const newLeave = addMemoryLeave({

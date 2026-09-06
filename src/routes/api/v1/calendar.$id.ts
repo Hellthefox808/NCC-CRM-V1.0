@@ -124,6 +124,7 @@ export const Route = createFileRoute("/api/v1/calendar/$id")({
 
           const emailJobs = emailTargets.map((email) => ({
             jobType: "sendEventUpdated",
+            jobType: "sendEventUpdated" as const,
             recipient: email,
             payload: {
               eventTitle: updated.title,
