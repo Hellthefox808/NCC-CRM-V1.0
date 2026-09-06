@@ -1,3 +1,4 @@
+import { describe, it, mock } from "node:test";
 import { describe, it, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -5,6 +6,10 @@ import {
   calculateScheduledTime,
 } from "../services/prompter/reminder.rules.ts";
 import { dispatchReminder } from "../services/prompter/reminder.dispatcher.ts";
+
+process.env["SUPABASE_URL"] = process.env["SUPABASE_URL"] || "https://example.supabase.co";
+process.env["SUPABASE_SERVICE_ROLE_KEY"] =
+  process.env["SUPABASE_SERVICE_ROLE_KEY"] || "mock-service-role-key";
 
 describe("Prompter Reminder Engine Unit Tests", () => {
   afterEach(() => {
@@ -38,6 +43,58 @@ describe("Prompter Reminder Engine Unit Tests", () => {
     assert.equal(new Date(timeStart).toISOString(), "2026-08-15T09:00:00.000Z");
   });
 
+  it("checkAndDispatchDueReminders() returns 0 when pendingReminders query returns empty array", async () => {
+    const { supabaseAdmin } = await import("../integrations/supabase/client.server");
+    const { checkAndDispatchDueReminders } = await import("../services/prompter/scheduler");
+
+    void supabaseAdmin.auth;
+    const adminRef = supabaseAdmin as unknown as { from: typeof supabaseAdmin.from };
+    const origFrom = supabaseAdmin.from;
+    adminRef.from = mock.fn(() => ({
+      select: () => ({
+        eq: () => ({
+          lte: () => ({
+            limit: () => Promise.resolve({ data: [], error: null }),
+          }),
+        }),
+      }),
+    })) as unknown as typeof supabaseAdmin.from;
+
+    try {
+      const dispatched = await checkAndDispatchDueReminders();
+      assert.equal(dispatched, 0);
+    } finally {
+      adminRef.from = origFrom;
+    }
+  });
+
+  it("checkAndDispatchDueReminders() returns 0 when query fails with error", async () => {
+    const { supabaseAdmin } = await import("../integrations/supabase/client.server");
+    const { checkAndDispatchDueReminders } = await import("../services/prompter/scheduler");
+
+    void supabaseAdmin.auth;
+    const adminRef = supabaseAdmin as unknown as { from: typeof supabaseAdmin.from };
+    const origFrom = supabaseAdmin.from;
+    adminRef.from = mock.fn(() => ({
+      select: () => ({
+        eq: () => ({
+          lte: () => ({
+            limit: () =>
+              Promise.resolve({
+                data: null,
+                error: { message: "Database connection failure" },
+              }),
+          }),
+        }),
+      }),
+    })) as unknown as typeof supabaseAdmin.from;
+
+    try {
+      const dispatched = await checkAndDispatchDueReminders();
+      assert.equal(dispatched, 0);
+    } finally {
+      adminRef.from = origFrom;
+    }
   it("dispatchReminder() handles reminder payload gracefully", async () => {
     const payload = {
       reminderId: "rem_test_123",
