@@ -46,18 +46,22 @@ function isH3SwallowedErrorBody(body: string): boolean {
 
 const ALLOWED_ORIGINS = [
   "https://19th-jh-ncc-crm-v1-0.vercel.app",
+  "https://ncc.sbu.ac.in",
   "http://localhost:3000",
   "http://localhost:5173",
   "http://127.0.0.1:3000",
 ];
 
-function getCorsOrigin(origin: string | null): string {
-  if (
-    origin &&
-    (ALLOWED_ORIGINS.includes(origin) ||
-      origin.endsWith(".vercel.app") ||
-      origin.endsWith(".netlify.app"))
-  ) {
+export function isAllowedOrigin(origin: string | null): boolean {
+  if (!origin) return false;
+  if (ALLOWED_ORIGINS.includes(origin)) return true;
+  // Local development hostnames (any port)
+  if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return true;
+  return false;
+}
+
+export function getCorsOrigin(origin: string | null): string {
+  if (origin && isAllowedOrigin(origin)) {
     return origin;
   }
   return ALLOWED_ORIGINS[0];
@@ -75,6 +79,14 @@ function applyCorsHeaders(response: Response, origin: string | null): Response {
   newHeaders.set("Access-Control-Allow-Credentials", "true");
   newHeaders.set("X-Content-Type-Options", "nosniff");
   newHeaders.set("X-Frame-Options", "SAMEORIGIN");
+  newHeaders.set("X-XSS-Protection", "1; mode=block");
+  newHeaders.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  newHeaders.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  newHeaders.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+  newHeaders.set(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' ws: wss: https:;",
+  );
   newHeaders.set("Vary", "Accept-Encoding, Origin");
 
   return new Response(response.body, {
@@ -100,6 +112,12 @@ export default {
             "Content-Type, Authorization, X-Requested-With, X-CSRF-Token, X-Request-ID, X-Client-Version",
           "Access-Control-Allow-Credentials": "true",
           "Access-Control-Max-Age": "86400",
+          "X-Content-Type-Options": "nosniff",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "Content-Security-Policy":
+            "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' ws: wss: https:;",
         },
       });
     }
