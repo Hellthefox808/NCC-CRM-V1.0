@@ -4,17 +4,10 @@ import {
   DEFAULT_REMINDER_RULES,
   calculateScheduledTime,
 } from "../services/prompter/reminder.rules";
-import { checkAndDispatchDueReminders } from "../services/prompter/scheduler.ts";
-import { supabaseAdmin } from "../integrations/supabase/client.server.ts";
 
 process.env["SUPABASE_URL"] = process.env["SUPABASE_URL"] || "https://example.supabase.co";
 process.env["SUPABASE_SERVICE_ROLE_KEY"] =
   process.env["SUPABASE_SERVICE_ROLE_KEY"] || "mock-service-role-key";
-
-// Initialize proxy object property before attaching mocks
-if (supabaseAdmin) {
-  void supabaseAdmin.auth;
-}
 
 describe("Prompter Reminder Engine Unit Tests", () => {
   it("DEFAULT_REMINDER_RULES contains standard 24h, 2h, 30m, and start triggers", () => {
@@ -45,8 +38,13 @@ describe("Prompter Reminder Engine Unit Tests", () => {
   });
 
   it("checkAndDispatchDueReminders() returns 0 when pendingReminders query returns empty array", async () => {
+    const { supabaseAdmin } = await import("../integrations/supabase/client.server");
+    const { checkAndDispatchDueReminders } = await import("../services/prompter/scheduler");
+
+    void supabaseAdmin.auth;
+    const adminRef = supabaseAdmin as unknown as { from: typeof supabaseAdmin.from };
     const origFrom = supabaseAdmin.from;
-    (supabaseAdmin as any).from = mock.fn(() => ({
+    adminRef.from = mock.fn(() => ({
       select: () => ({
         eq: () => ({
           lte: () => ({
@@ -54,19 +52,24 @@ describe("Prompter Reminder Engine Unit Tests", () => {
           }),
         }),
       }),
-    }));
+    })) as unknown as typeof supabaseAdmin.from;
 
     try {
       const dispatched = await checkAndDispatchDueReminders();
       assert.equal(dispatched, 0);
     } finally {
-      (supabaseAdmin as any).from = origFrom;
+      adminRef.from = origFrom;
     }
   });
 
   it("checkAndDispatchDueReminders() returns 0 when query fails with error", async () => {
+    const { supabaseAdmin } = await import("../integrations/supabase/client.server");
+    const { checkAndDispatchDueReminders } = await import("../services/prompter/scheduler");
+
+    void supabaseAdmin.auth;
+    const adminRef = supabaseAdmin as unknown as { from: typeof supabaseAdmin.from };
     const origFrom = supabaseAdmin.from;
-    (supabaseAdmin as any).from = mock.fn(() => ({
+    adminRef.from = mock.fn(() => ({
       select: () => ({
         eq: () => ({
           lte: () => ({
@@ -78,13 +81,13 @@ describe("Prompter Reminder Engine Unit Tests", () => {
           }),
         }),
       }),
-    }));
+    })) as unknown as typeof supabaseAdmin.from;
 
     try {
       const dispatched = await checkAndDispatchDueReminders();
       assert.equal(dispatched, 0);
     } finally {
-      (supabaseAdmin as any).from = origFrom;
+      adminRef.from = origFrom;
     }
   });
 });
