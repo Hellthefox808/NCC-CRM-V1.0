@@ -123,6 +123,7 @@ export const Route = createFileRoute("/api/v1/calendar/$id")({
           const emailTargets = recipients.length > 0 ? recipients : ["cadet@sbu.ac.in"];
 
           const emailJobs = emailTargets.map((email) => ({
+            jobType: "sendEventUpdated",
             jobType: "sendEventUpdated" as const,
             recipient: email,
             payload: {
