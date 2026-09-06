@@ -37,7 +37,11 @@ services:
       - redis_data:/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli -a $${REDIS_PASSWORD:-ncc_production_secret_2026} ping | grep PONG"]
+      test:
+        [
+          "CMD-SHELL",
+          "redis-cli -a $${REDIS_PASSWORD:-ncc_production_secret_2026} ping | grep PONG",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5

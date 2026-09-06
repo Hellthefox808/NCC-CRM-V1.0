@@ -12,9 +12,8 @@ export const Route = createFileRoute("/api/v1/leaves")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        const { requireOfficer, requireCadetSession } = await import(
-          "@backend/lib/cadet-registry.server"
-        );
+        const { requireOfficer, requireCadetSession } =
+          await import("@backend/lib/cadet-registry.server");
 
         const url = new URL(request.url);
         const requestedCadetId = url.searchParams.get("cadetId") || undefined;
@@ -35,9 +34,7 @@ export const Route = createFileRoute("/api/v1/leaves")({
         // IDOR protection: cadets may only query their own records
         const ownCadetId = cadetGate.cadetId ?? undefined;
         if (requestedCadetId && requestedCadetId !== ownCadetId) {
-          const { recordSecurityEvent } = await import(
-            "@backend/services/ids/ids.service"
-          );
+          const { recordSecurityEvent } = await import("@backend/services/ids/ids.service");
           recordSecurityEvent({
             eventType: "IDOR_ATTEMPT",
             actorId: ownCadetId,
@@ -52,9 +49,8 @@ export const Route = createFileRoute("/api/v1/leaves")({
       },
 
       POST: async ({ request }) => {
-        const { requireCadetSession, requireOfficer } = await import(
-          "@backend/lib/cadet-registry.server"
-        );
+        const { requireCadetSession, requireOfficer } =
+          await import("@backend/lib/cadet-registry.server");
 
         const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
         const cadetId = typeof body.cadetId === "string" ? body.cadetId : "";
