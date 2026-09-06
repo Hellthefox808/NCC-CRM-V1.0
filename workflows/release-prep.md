@@ -3,6 +3,7 @@
 Full audit → fixes → deploy → PR
 
 ## Agents
+
 - code-auditor
 - security-auditor
 - dep-auditor
@@ -12,4 +13,5 @@ Full audit → fixes → deploy → PR
 - pr-writer
 
 ## Execution
+
 Run the agents in sequence (or parallel where noted). Collect all outputs in `.claude/audits/`.
