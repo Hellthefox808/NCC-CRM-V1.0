@@ -74,4 +74,3 @@ The NCC Portal operates as an integrated, OWASP-compliant identity and managemen
 - **CI/CD Automation**: GitHub Actions workflow (`.github/workflows/ci.yml`) automating lint, test suite execution, and production compilation.
 - **Form 1 Enrollment Validation**: Full coverage for SD/SW cadet registration, 18-digit Application Number generation, phone/Aadhaar normalization, and multi-channel dispatches (Email + WhatsApp + SMS).
 - **Production Build Status**: **Success (Vite + Nitro SSR Bundle)** with zero blocking warnings.
-
