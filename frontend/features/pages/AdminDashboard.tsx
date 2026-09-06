@@ -279,7 +279,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
     // Batch mapping based on Year
     let cadetBatch = "Batch III (1st Year)";
     if (e.sbuYear.includes("3rd") || e.sbuYear.includes("3")) cadetBatch = "Batch I (3rd Year)";
-    else if (e.sbuYear.includes("2nd") || e.sbuYear.includes("2")) cadetBatch = "Batch II (2nd Year)";
+    else if (e.sbuYear.includes("2nd") || e.sbuYear.includes("2"))
+      cadetBatch = "Batch II (2nd Year)";
 
     const matchesBatch = batchFilter === "All" || cadetBatch.includes(batchFilter);
 
@@ -623,7 +624,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                     <Shield className="w-5 h-5 text-blue-400" />
                     <span className="font-black text-white text-sm">Officer Navigation</span>
                   </div>
-                  <button onClick={() => setMobileSidebarOpen(false)} className="p-1 glass-pill rounded-lg">
+                  <button
+                    onClick={() => setMobileSidebarOpen(false)}
+                    className="p-1 glass-pill rounded-lg"
+                  >
                     <X className="w-5 h-5 text-zinc-300" />
                   </button>
                 </div>
@@ -786,10 +790,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                         <span className="bg-blue-600/30 text-blue-300 border border-blue-400/40 font-black text-[10px] px-2.5 py-0.5 rounded-full uppercase">
                           Senior Batch
                         </span>
-                        <h3 className="text-lg font-black text-white pt-2">
-                          Batch I (3rd Year)
-                        </h3>
-                        <p className="text-xs text-zinc-400 font-semibold">'C' Certificate Cadets</p>
+                        <h3 className="text-lg font-black text-white pt-2">Batch I (3rd Year)</h3>
+                        <p className="text-xs text-zinc-400 font-semibold">
+                          'C' Certificate Cadets
+                        </p>
                       </div>
                       <Award className="w-6 h-6 text-blue-400" />
                     </div>
@@ -797,7 +801,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                     <div className="space-y-2 text-xs">
                       <div className="flex justify-between py-1.5 border-b border-white/10">
                         <span className="text-zinc-400 font-medium">Total Cadets:</span>
-                        <span className="font-extrabold text-white">{batchICadets.length} Cadets</span>
+                        <span className="font-extrabold text-white">
+                          {batchICadets.length} Cadets
+                        </span>
                       </div>
                       <div className="flex justify-between py-1.5 border-b border-white/10">
                         <span className="text-zinc-400 font-medium">SD / SW Split:</span>
@@ -830,10 +836,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                         <span className="bg-indigo-600/30 text-indigo-300 border border-indigo-400/40 font-black text-[10px] px-2.5 py-0.5 rounded-full uppercase">
                           Intermediate Batch
                         </span>
-                        <h3 className="text-lg font-black text-white pt-2">
-                          Batch II (2nd Year)
-                        </h3>
-                        <p className="text-xs text-zinc-400 font-semibold">'B' Certificate Cadets</p>
+                        <h3 className="text-lg font-black text-white pt-2">Batch II (2nd Year)</h3>
+                        <p className="text-xs text-zinc-400 font-semibold">
+                          'B' Certificate Cadets
+                        </p>
                       </div>
                       <ShieldCheck className="w-6 h-6 text-indigo-400" />
                     </div>
@@ -841,7 +847,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                     <div className="space-y-2 text-xs">
                       <div className="flex justify-between py-1.5 border-b border-white/10">
                         <span className="text-zinc-400 font-medium">Total Cadets:</span>
-                        <span className="font-extrabold text-white">{batchIICadets.length} Cadets</span>
+                        <span className="font-extrabold text-white">
+                          {batchIICadets.length} Cadets
+                        </span>
                       </div>
                       <div className="flex justify-between py-1.5 border-b border-white/10">
                         <span className="text-zinc-400 font-medium">SD / SW Split:</span>
@@ -874,9 +882,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                         <span className="bg-emerald-600/30 text-emerald-300 border border-emerald-400/40 font-black text-[10px] px-2.5 py-0.5 rounded-full uppercase">
                           Junior Cadre
                         </span>
-                        <h3 className="text-lg font-black text-white pt-2">
-                          Batch III (1st Year)
-                        </h3>
+                        <h3 className="text-lg font-black text-white pt-2">Batch III (1st Year)</h3>
                         <p className="text-xs text-zinc-400 font-semibold">New Enrolled Cadets</p>
                       </div>
                       <GraduationCap className="w-6 h-6 text-emerald-400" />
@@ -885,7 +891,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                     <div className="space-y-2 text-xs">
                       <div className="flex justify-between py-1.5 border-b border-white/10">
                         <span className="text-zinc-400 font-medium">Total Cadets:</span>
-                        <span className="font-extrabold text-white">{batchIIICadets.length} Cadets</span>
+                        <span className="font-extrabold text-white">
+                          {batchIIICadets.length} Cadets
+                        </span>
                       </div>
                       <div className="flex justify-between py-1.5 border-b border-white/10">
                         <span className="text-zinc-400 font-medium">SD / SW Split:</span>
@@ -967,9 +975,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                       onChange={(e) => setGenderFilter(e.target.value)}
                       className="w-full mt-1 px-3 py-2 glass-input rounded-xl text-xs font-medium"
                     >
-                      <option value="All" className="bg-[#0b1329] text-white">All Wings (SD & SW)</option>
-                      <option value="SD" className="bg-[#0b1329] text-white">Senior Division (SD - Male)</option>
-                      <option value="SW" className="bg-[#0b1329] text-white">Senior Wing (SW - Female)</option>
+                      <option value="All" className="bg-[#0b1329] text-white">
+                        All Wings (SD & SW)
+                      </option>
+                      <option value="SD" className="bg-[#0b1329] text-white">
+                        Senior Division (SD - Male)
+                      </option>
+                      <option value="SW" className="bg-[#0b1329] text-white">
+                        Senior Wing (SW - Female)
+                      </option>
                     </select>
                   </div>
 
@@ -982,13 +996,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                       onChange={(e) => setStatusFilter(e.target.value)}
                       className="w-full mt-1 px-3 py-2 glass-input rounded-xl text-xs font-medium"
                     >
-                      <option value="All" className="bg-[#0b1329] text-white">All Statuses</option>
-                      <option value="Submitted" className="bg-[#0b1329] text-white">Submitted (Online)</option>
-                      <option value="Physical Scheduled" className="bg-[#0b1329] text-white">Physical Scheduled</option>
-                      <option value="Medical Cleared" className="bg-[#0b1329] text-white">Medical Cleared</option>
-                      <option value="Selected" className="bg-[#0b1329] text-white">Selected</option>
-                      <option value="Enrolled" className="bg-[#0b1329] text-white">Enrolled</option>
-                      <option value="Rejected" className="bg-[#0b1329] text-white">Rejected</option>
+                      <option value="All" className="bg-[#0b1329] text-white">
+                        All Statuses
+                      </option>
+                      <option value="Submitted" className="bg-[#0b1329] text-white">
+                        Submitted (Online)
+                      </option>
+                      <option value="Physical Scheduled" className="bg-[#0b1329] text-white">
+                        Physical Scheduled
+                      </option>
+                      <option value="Medical Cleared" className="bg-[#0b1329] text-white">
+                        Medical Cleared
+                      </option>
+                      <option value="Selected" className="bg-[#0b1329] text-white">
+                        Selected
+                      </option>
+                      <option value="Enrolled" className="bg-[#0b1329] text-white">
+                        Enrolled
+                      </option>
+                      <option value="Rejected" className="bg-[#0b1329] text-white">
+                        Rejected
+                      </option>
                     </select>
                   </div>
 
@@ -1001,10 +1029,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                       onChange={(e) => setBatchFilter(e.target.value)}
                       className="w-full mt-1 px-3 py-2 glass-input rounded-xl text-xs font-medium"
                     >
-                      <option value="All" className="bg-[#0b1329] text-white">All Batches</option>
-                      <option value="Batch I" className="bg-[#0b1329] text-white">Batch I (3rd Year)</option>
-                      <option value="Batch II" className="bg-[#0b1329] text-white">Batch II (2nd Year)</option>
-                      <option value="Batch III" className="bg-[#0b1329] text-white">Batch III (1st Year)</option>
+                      <option value="All" className="bg-[#0b1329] text-white">
+                        All Batches
+                      </option>
+                      <option value="Batch I" className="bg-[#0b1329] text-white">
+                        Batch I (3rd Year)
+                      </option>
+                      <option value="Batch II" className="bg-[#0b1329] text-white">
+                        Batch II (2nd Year)
+                      </option>
+                      <option value="Batch III" className="bg-[#0b1329] text-white">
+                        Batch III (1st Year)
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -1167,7 +1203,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                           👤 <strong className="text-zinc-200">Instructor:</strong> {cls.instructor}
                         </p>
                         <p>
-                          📅 <strong className="text-zinc-200">Date & Time:</strong> {cls.date} • {cls.time}
+                          📅 <strong className="text-zinc-200">Date & Time:</strong> {cls.date} •{" "}
+                          {cls.time}
                         </p>
                         <p>
                           📍 <strong className="text-zinc-200">Venue:</strong> {cls.venue}
@@ -1223,9 +1260,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                         onChange={(e) => setBroadcastTarget(e.target.value)}
                         className="w-full mt-1 px-3 py-2 glass-input rounded-xl text-xs font-bold"
                       >
-                        <option value="All Cadets" className="bg-[#0b1329] text-white">All Cadets (SD & SW)</option>
-                        <option value="Batch I (3rd Year)" className="bg-[#0b1329] text-white">Batch I (3rd Year 'C' Cert)</option>
-                        <option value="Batch II (2nd Year)" className="bg-[#0b1329] text-white">Batch II (2nd Year 'B' Cert)</option>
+                        <option value="All Cadets" className="bg-[#0b1329] text-white">
+                          All Cadets (SD & SW)
+                        </option>
+                        <option value="Batch I (3rd Year)" className="bg-[#0b1329] text-white">
+                          Batch I (3rd Year 'C' Cert)
+                        </option>
+                        <option value="Batch II (2nd Year)" className="bg-[#0b1329] text-white">
+                          Batch II (2nd Year 'B' Cert)
+                        </option>
                         <option value="Batch III (1st Year)" className="bg-[#0b1329] text-white">
                           Batch III (1st Year Probationers)
                         </option>
@@ -1427,8 +1470,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                       onChange={(e) => setSelectedAttendanceBatch(e.target.value)}
                       className="w-full mt-1 px-3 py-2 glass-input rounded-xl text-xs font-bold"
                     >
-                      <option value="Batch I (3rd Year)" className="bg-[#0b1329] text-white">Batch I (3rd Year 'C' Cert)</option>
-                      <option value="Batch II (2nd Year)" className="bg-[#0b1329] text-white">Batch II (2nd Year 'B' Cert)</option>
+                      <option value="Batch I (3rd Year)" className="bg-[#0b1329] text-white">
+                        Batch I (3rd Year 'C' Cert)
+                      </option>
+                      <option value="Batch II (2nd Year)" className="bg-[#0b1329] text-white">
+                        Batch II (2nd Year 'B' Cert)
+                      </option>
                       <option value="Batch III (1st Year)" className="bg-[#0b1329] text-white">
                         Batch III (1st Year Probationers)
                       </option>
@@ -1576,7 +1623,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
 
                       <h3 className="font-extrabold text-white text-base">{entry.title}</h3>
                       <p className="text-xs text-zinc-300">
-                        <strong className="text-blue-300">Cadet:</strong> {entry.cadetName} ({entry.cadetId})
+                        <strong className="text-blue-300">Cadet:</strong> {entry.cadetName} (
+                        {entry.cadetId})
                       </p>
                       <p className="text-xs text-zinc-300 glass-panel p-3 rounded-xl border border-white/10">
                         {entry.remarks}
@@ -1603,7 +1651,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                 <div className="border-b border-white/10 pb-4">
                   <h2 className="text-2xl font-black text-white">Events & Camps Management</h2>
                   <p className="text-xs text-zinc-400">
-                    Publish Annual Training Camps, Firing Selection, RDC Trials & Institutional Events
+                    Publish Annual Training Camps, Firing Selection, RDC Trials & Institutional
+                    Events
                   </p>
                 </div>
 
@@ -1611,7 +1660,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                   <h3 className="font-bold text-white text-sm">Active Events & Training Camps</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                     {classes.map((cls) => (
-                      <div key={cls.id} className="glass-panel p-4 rounded-xl border border-white/10 space-y-2">
+                      <div
+                        key={cls.id}
+                        className="glass-panel p-4 rounded-xl border border-white/10 space-y-2"
+                      >
                         <p className="font-extrabold text-blue-400 text-sm">{cls.title}</p>
                         <p className="text-zinc-300">Location: {cls.venue}</p>
                         <p className="text-zinc-400 pt-1">
@@ -1637,16 +1689,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                 <div className="border-b border-white/10 pb-4">
                   <h2 className="text-2xl font-black text-white">Reports & Audit Downloads</h2>
                   <p className="text-xs text-zinc-400">
-                    Generate Battalion Nominal Roll, DBT Bank Account Workbooks, and Parade Attendance Logs
+                    Generate Battalion Nominal Roll, DBT Bank Account Workbooks, and Parade
+                    Attendance Logs
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="glass-panel p-6 rounded-2xl border border-white/10 space-y-4">
                     <FileSpreadsheet className="w-8 h-8 text-emerald-400" />
-                    <h3 className="font-black text-white text-base">
-                      Master Nominal Roll (.XLSX)
-                    </h3>
+                    <h3 className="font-black text-white text-base">Master Nominal Roll (.XLSX)</h3>
                     <p className="text-xs text-zinc-300">
                       Contains Nominal Roll, Bank DBT details for Camp Allowances, Next of Kin &
                       Address sheets.
@@ -1662,9 +1713,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
 
                   <div className="glass-panel p-6 rounded-2xl border border-white/10 space-y-4">
                     <Printer className="w-8 h-8 text-blue-400" />
-                    <h3 className="font-black text-white text-base">
-                      Printable Enrollment Slips
-                    </h3>
+                    <h3 className="font-black text-white text-base">Printable Enrollment Slips</h3>
                     <p className="text-xs text-zinc-300">
                       Generate individual or batch official enrollment confirmation slips for SBU &
                       Battalion archives.
@@ -1700,16 +1749,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                     <strong className="text-white">Officer Name:</strong> Capt. Dr. Animesh Roy
                   </p>
                   <p>
-                    <strong className="text-white">Designation:</strong> Associate NCC Officer (ANO) - SBU Sub-Unit
+                    <strong className="text-white">Designation:</strong> Associate NCC Officer (ANO)
+                    - SBU Sub-Unit
                   </p>
                   <p>
-                    <strong className="text-white">Battalion:</strong> 19 Jharkhand Battalion NCC, Ranchi
+                    <strong className="text-white">Battalion:</strong> 19 Jharkhand Battalion NCC,
+                    Ranchi
                   </p>
                   <p>
-                    <strong className="text-white">Directorate:</strong> Bihar and Jharkhand Directorate
+                    <strong className="text-white">Directorate:</strong> Bihar and Jharkhand
+                    Directorate
                   </p>
                   <p>
-                    <strong className="text-white">Institution:</strong> Sarala Birla University, Ranchi
+                    <strong className="text-white">Institution:</strong> Sarala Birla University,
+                    Ranchi
                   </p>
                 </div>
               </div>
@@ -1802,25 +1855,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                     <strong className="text-zinc-400">Email:</strong> {viewingProfileModal.email}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Aadhaar:</strong> {viewingProfileModal.aadhaarNumber}
+                    <strong className="text-zinc-400">Aadhaar:</strong>{" "}
+                    {viewingProfileModal.aadhaarNumber}
                   </p>
                   <p>
                     <strong className="text-zinc-400">DOB:</strong> {viewingProfileModal.dob}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Blood Group:</strong> {viewingProfileModal.bloodGroup}
+                    <strong className="text-zinc-400">Blood Group:</strong>{" "}
+                    {viewingProfileModal.bloodGroup}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Father's Name:</strong> {viewingProfileModal.fatherName}
+                    <strong className="text-zinc-400">Father's Name:</strong>{" "}
+                    {viewingProfileModal.fatherName}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Mother's Name:</strong> {viewingProfileModal.motherName}
+                    <strong className="text-zinc-400">Mother's Name:</strong>{" "}
+                    {viewingProfileModal.motherName}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Identification Mark:</strong> {viewingProfileModal.identificationMark}
+                    <strong className="text-zinc-400">Identification Mark:</strong>{" "}
+                    {viewingProfileModal.identificationMark}
                   </p>
                   <p className="col-span-2">
-                    <strong className="text-zinc-400">Present Address:</strong> {viewingProfileModal.presentAddress}
+                    <strong className="text-zinc-400">Present Address:</strong>{" "}
+                    {viewingProfileModal.presentAddress}
                   </p>
                 </div>
               )}
@@ -1828,23 +1887,28 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
               {profileTab === "academic" && (
                 <div className="grid grid-cols-2 gap-3 glass-panel p-4 rounded-2xl border border-white/10">
                   <p>
-                    <strong className="text-zinc-400">SBU Course:</strong> {viewingProfileModal.sbuCourse}
+                    <strong className="text-zinc-400">SBU Course:</strong>{" "}
+                    {viewingProfileModal.sbuCourse}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">SBU Roll No:</strong> {viewingProfileModal.sbuRollNo}
+                    <strong className="text-zinc-400">SBU Roll No:</strong>{" "}
+                    {viewingProfileModal.sbuRollNo}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Department:</strong> {viewingProfileModal.sbuDepartment}
+                    <strong className="text-zinc-400">Department:</strong>{" "}
+                    {viewingProfileModal.sbuDepartment}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Year / Semester:</strong> {viewingProfileModal.sbuYear} /{" "}
-                    {viewingProfileModal.sbuSemester}
+                    <strong className="text-zinc-400">Year / Semester:</strong>{" "}
+                    {viewingProfileModal.sbuYear} / {viewingProfileModal.sbuSemester}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">10th Percentage:</strong> {viewingProfileModal.marksPercentage10th}%
+                    <strong className="text-zinc-400">10th Percentage:</strong>{" "}
+                    {viewingProfileModal.marksPercentage10th}%
                   </p>
                   <p>
-                    <strong className="text-zinc-400">12th Percentage:</strong> {viewingProfileModal.marksPercentage12th}%
+                    <strong className="text-zinc-400">12th Percentage:</strong>{" "}
+                    {viewingProfileModal.marksPercentage12th}%
                   </p>
                 </div>
               )}
@@ -1852,16 +1916,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
               {profileTab === "physical" && (
                 <div className="grid grid-cols-2 gap-3 glass-panel p-4 rounded-2xl border border-white/10">
                   <p>
-                    <strong className="text-zinc-400">1600m Run Time:</strong> {viewingProfileModal.run1600mTime}
+                    <strong className="text-zinc-400">1600m Run Time:</strong>{" "}
+                    {viewingProfileModal.run1600mTime}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Pushups Count:</strong> {viewingProfileModal.pushupsCount}
+                    <strong className="text-zinc-400">Pushups Count:</strong>{" "}
+                    {viewingProfileModal.pushupsCount}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Height:</strong> {viewingProfileModal.heightCm} cm
+                    <strong className="text-zinc-400">Height:</strong>{" "}
+                    {viewingProfileModal.heightCm} cm
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Weight:</strong> {viewingProfileModal.weightKg} kg
+                    <strong className="text-zinc-400">Weight:</strong>{" "}
+                    {viewingProfileModal.weightKg} kg
                   </p>
                   <p>
                     <strong className="text-zinc-400">Junior 'A' Cert:</strong>{" "}
@@ -1870,7 +1938,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                       : "No"}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Sports Level:</strong> {viewingProfileModal.sportsLevel}
+                    <strong className="text-zinc-400">Sports Level:</strong>{" "}
+                    {viewingProfileModal.sportsLevel}
                   </p>
                 </div>
               )}
@@ -1878,19 +1947,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
               {profileTab === "bank" && (
                 <div className="grid grid-cols-2 gap-3 glass-panel p-4 rounded-2xl border border-white/10">
                   <p>
-                    <strong className="text-zinc-400">Bank Name:</strong> {viewingProfileModal.bankName}
+                    <strong className="text-zinc-400">Bank Name:</strong>{" "}
+                    {viewingProfileModal.bankName}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Account Number:</strong> {viewingProfileModal.accountNumber}
+                    <strong className="text-zinc-400">Account Number:</strong>{" "}
+                    {viewingProfileModal.accountNumber}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">IFSC Code:</strong> {viewingProfileModal.ifscCode}
+                    <strong className="text-zinc-400">IFSC Code:</strong>{" "}
+                    {viewingProfileModal.ifscCode}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Guardian Name:</strong> {viewingProfileModal.guardianName}
+                    <strong className="text-zinc-400">Guardian Name:</strong>{" "}
+                    {viewingProfileModal.guardianName}
                   </p>
                   <p>
-                    <strong className="text-zinc-400">Guardian Mobile:</strong> {viewingProfileModal.guardianMobile}
+                    <strong className="text-zinc-400">Guardian Mobile:</strong>{" "}
+                    {viewingProfileModal.guardianMobile}
                   </p>
                 </div>
               )}
@@ -1936,12 +2010,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                   onChange={(e) => setEditingStatus(e.target.value)}
                   className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-bold"
                 >
-                  <option value="Submitted" className="bg-[#0b1329] text-white">Submitted (Under Scrutiny)</option>
-                  <option value="Physical Scheduled" className="bg-[#0b1329] text-white">Physical Test Scheduled</option>
-                  <option value="Medical Cleared" className="bg-[#0b1329] text-white">Medical Test Cleared</option>
-                  <option value="Selected" className="bg-[#0b1329] text-white">Selected for Enrollment</option>
-                  <option value="Enrolled" className="bg-[#0b1329] text-white">Enrolled (Regimental No Allocated)</option>
-                  <option value="Rejected" className="bg-[#0b1329] text-white">Rejected</option>
+                  <option value="Submitted" className="bg-[#0b1329] text-white">
+                    Submitted (Under Scrutiny)
+                  </option>
+                  <option value="Physical Scheduled" className="bg-[#0b1329] text-white">
+                    Physical Test Scheduled
+                  </option>
+                  <option value="Medical Cleared" className="bg-[#0b1329] text-white">
+                    Medical Test Cleared
+                  </option>
+                  <option value="Selected" className="bg-[#0b1329] text-white">
+                    Selected for Enrollment
+                  </option>
+                  <option value="Enrolled" className="bg-[#0b1329] text-white">
+                    Enrolled (Regimental No Allocated)
+                  </option>
+                  <option value="Rejected" className="bg-[#0b1329] text-white">
+                    Rejected
+                  </option>
                 </select>
               </div>
 
@@ -1995,10 +2081,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
           <div className="glass-panel-elevated rounded-3xl max-w-lg w-full border border-white/15 shadow-2xl p-6 space-y-4 text-white">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <h3 className="font-black text-white text-lg">
-                Schedule Parade / Classroom Session
-              </h3>
-              <button onClick={() => setCreateClassModal(false)} className="p-1 glass-pill rounded-lg">
+              <h3 className="font-black text-white text-lg">Schedule Parade / Classroom Session</h3>
+              <button
+                onClick={() => setCreateClassModal(false)}
+                className="p-1 glass-pill rounded-lg"
+              >
                 <X className="w-5 h-5 text-zinc-300" />
               </button>
             </div>
@@ -2084,7 +2171,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
           <div className="glass-panel-elevated rounded-3xl max-w-lg w-full border border-white/15 shadow-2xl p-6 space-y-4 text-white">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <h3 className="font-black text-white text-lg">Add Discipline / Award Entry</h3>
-              <button onClick={() => setCreateDisciplineModal(false)} className="p-1 glass-pill rounded-lg">
+              <button
+                onClick={() => setCreateDisciplineModal(false)}
+                className="p-1 glass-pill rounded-lg"
+              >
                 <X className="w-5 h-5 text-zinc-300" />
               </button>
             </div>
@@ -2100,7 +2190,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                   className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-bold"
                   required
                 >
-                  <option value="" className="bg-[#0b1329] text-white">Select Cadet...</option>
+                  <option value="" className="bg-[#0b1329] text-white">
+                    Select Cadet...
+                  </option>
                   {enrollments.map((c) => (
                     <option key={c.id} value={c.id} className="bg-[#0b1329] text-white">
                       {c.fullName} ({c.id}) - {c.sbuCourse}
@@ -2122,10 +2214,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                     }
                     className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-bold"
                   >
-                    <option value="Appreciation" className="bg-[#0b1329] text-white">Appreciation</option>
-                    <option value="Reward" className="bg-[#0b1329] text-white">Reward / Badge</option>
-                    <option value="Warning" className="bg-[#0b1329] text-white">Warning</option>
-                    <option value="Punishment" className="bg-[#0b1329] text-white">Punishment / Extra Drill</option>
+                    <option value="Appreciation" className="bg-[#0b1329] text-white">
+                      Appreciation
+                    </option>
+                    <option value="Reward" className="bg-[#0b1329] text-white">
+                      Reward / Badge
+                    </option>
+                    <option value="Warning" className="bg-[#0b1329] text-white">
+                      Warning
+                    </option>
+                    <option value="Punishment" className="bg-[#0b1329] text-white">
+                      Punishment / Extra Drill
+                    </option>
                   </select>
                 </div>
                 <div>
