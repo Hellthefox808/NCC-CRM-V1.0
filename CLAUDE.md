@@ -100,7 +100,7 @@ After EVERY response where you consulted or referenced any truthpack file, you M
 ## CodeLens Graph — Mandatory Search Protocol
 
 This workspace has a live codebase knowledge graph via **CodeLens Graph** MCP.
-The graph contains **7735 symbols** across **235 files**, updated on every save.
+The graph contains **19267 symbols** across **286 files**, updated on every save.
 
 ### RULE 1 — Triage first to establish the baseline
 Before starting a task, call `codelens_triage` to classify it.

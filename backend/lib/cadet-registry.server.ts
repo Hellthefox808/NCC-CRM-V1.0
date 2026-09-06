@@ -5,7 +5,7 @@
  * reachable only through the privileged server client behind an admin session.
  */
 import roster from "../../src/data/cadetRoster.json" with { type: "json" };
-import { getAdmin } from "./ncc-db.ts";
+import { getAdmin, sanitizePostgrestQuery } from "./ncc-db.ts";
 
 export interface AdminGate {
   ok: boolean;
@@ -90,6 +90,7 @@ export function mapCadet(row: Record<string, unknown>, revealSensitive = false) 
     anoName: r.ano_name,
     wingType: r.wing_type,
     groupHq: r.group_hq,
+    directorate: r.directorate,
     address: address || null,
     city: r.city,
     state: r.state,
@@ -155,8 +156,11 @@ export async function syncRoster() {
  * SBU ID / roll no, NCC enrollment ID, registered email or mobile.
  */
 export async function findCadetByIdentifier(identifier: string) {
-  const value = identifier.trim();
+  const raw = identifier.trim();
+  if (!raw) return null;
+  const value = sanitizePostgrestQuery(raw);
   if (!value) return null;
+
   const admin = await getAdmin();
   const { data } = await admin
     .from("cadets")
@@ -176,6 +180,7 @@ export async function findCadetByIdentifier(identifier: string) {
 
 export interface CadetGate extends AdminGate {
   enrollmentId?: string | null;
+  cadetId?: string | null;
   role?: string;
   session?: {
     cadetId?: string;
@@ -209,6 +214,7 @@ export async function requireCadetSession(request: Request): Promise<CadetGate> 
     status: 200,
     role: session.role,
     enrollmentId: cadetEnrollmentId,
+    cadetId: cadetEnrollmentId,
     session: {
       cadetId: cadetEnrollmentId ?? undefined,
     },

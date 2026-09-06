@@ -71,3 +71,11 @@ Cadet / ANO Portal
 
 > [!IMPORTANT]
 > All permissions are strictly validated on the backend API layer (`requireOfficer` / `requireCadetSession`). Client-side UI route hiding is treated only as a UX convenience, never a security boundary.
+
+---
+
+## 5. Authoritative Architecture Reference
+
+For the comprehensive 58-section enterprise OTP, MFA, passkey, and authentication architecture, refer to:
+
+- [NCC CRM — Elite Production OTP & Authentication Architecture](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/security/NCC_CRM_Elite_OTP_Authentication_Architecture.md)

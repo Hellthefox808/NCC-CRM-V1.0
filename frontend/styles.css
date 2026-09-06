@@ -664,3 +664,96 @@
   box-shadow: 0 0 30px -4px rgba(16, 185, 129, 0.28);
 }
 
+/* Elite Classic Glass Cards & Badges */
+.glass-card-classic {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.78) 0%, rgba(10, 15, 30, 0.68) 100%);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+}
+
+.glass-card-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgba(96, 165, 250, 0.4);
+  background: linear-gradient(135deg, rgba(20, 30, 55, 0.85) 0%, rgba(12, 19, 38, 0.78) 100%);
+  box-shadow: 0 20px 45px -10px rgba(37, 99, 235, 0.22), inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+}
+
+.glass-tricolor-ribbon {
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    #dc2626 0%,
+    #dc2626 33.33%,
+    #1d4ed8 33.33%,
+    #1d4ed8 66.66%,
+    #38bdf8 66.66%,
+    #38bdf8 100%
+  );
+  border-radius: 9999px;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+}
+
+.glass-badge-gold {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-badge-blue {
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-badge-red {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-badge-emerald {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #6ee7b7;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-table-container {
+  background: rgba(10, 15, 29, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+}
+
+.glass-badge-amber {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #f59e0b;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-flow-step {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-flow-step:hover {
+  transform: translateY(-1px);
+  border-color: rgba(96, 165, 250, 0.5);
+  box-shadow: 0 8px 24px -4px rgba(37, 99, 235, 0.2);
+}
