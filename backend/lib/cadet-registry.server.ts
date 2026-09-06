@@ -38,11 +38,7 @@ export async function requireOfficer(request: Request): Promise<AdminGate> {
   const { getOrSetCache } = await import("./cache.server.ts");
   const session = await getOrSetCache(`ncc:session:${token}`, 300, async () => {
     const admin = await getAdmin();
-    const { data } = await admin
-      .from("app_sessions")
-      .select("id, role, expires_at, display_name")
-      .eq("token", token)
-      .maybeSingle();
+    const { data } = await admin.from("app_sessions").select("*").eq("token", token).maybeSingle();
     return data ?? null;
   });
 
@@ -195,11 +191,7 @@ export async function requireCadetSession(request: Request): Promise<CadetGate> 
   const { getOrSetCache } = await import("./cache.server.ts");
   const session = await getOrSetCache(`ncc:session:${token}`, 300, async () => {
     const admin = await getAdmin();
-    const { data } = await admin
-      .from("app_sessions")
-      .select("id, role, expires_at, cadet_enrollment_id")
-      .eq("token", token)
-      .maybeSingle();
+    const { data } = await admin.from("app_sessions").select("*").eq("token", token).maybeSingle();
     return data ?? null;
   });
 
