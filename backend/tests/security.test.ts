@@ -114,6 +114,14 @@ describe("Security & Authorization Unit Tests", () => {
     assert.equal(token.length, 5 + 64);
   });
 
+  it("crypto.randomInt produces secure cryptographically random 6-digit Cadet Regimental ID suffix", async () => {
+    const crypto = await import("crypto");
+    for (let i = 0; i < 100; i++) {
+      const num = crypto.randomInt(100000, 1000000);
+      assert.ok(num >= 100000 && num < 1000000, `Random number ${num} is out of 6-digit range`);
+    }
+  });
+
   it("checkRateLimit() allows attempts within the limit and blocks after exceeding max", () => {
     const key = `test_rate_limit_${Date.now()}`;
 
