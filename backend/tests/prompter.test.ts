@@ -1,4 +1,4 @@
-import { describe, it, afterEach } from "node:test";
+import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   DEFAULT_REMINDER_RULES,
@@ -7,10 +7,6 @@ import {
 import { dispatchReminder } from "../services/prompter/reminder.dispatcher.ts";
 
 describe("Prompter Reminder Engine Unit Tests", () => {
-  afterEach(() => {
-    resetAdminClientOverride();
-  });
-
   it("DEFAULT_REMINDER_RULES contains standard 24h, 2h, 30m, and start triggers", () => {
     assert.equal(DEFAULT_REMINDER_RULES.length, 4);
 

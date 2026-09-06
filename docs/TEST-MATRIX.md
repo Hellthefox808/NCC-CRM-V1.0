@@ -6,9 +6,9 @@ This document tracks all unit, integration, security, and build verification tes
 
 ## 1. Test Suite Summary
 
-- **Total Test Suites**: 12
-- **Total Executed Tests**: 65
-- **Passing Tests**: 65 (100%)
+- **Total Test Suites**: 11
+- **Total Executed Tests**: 60
+- **Passing Tests**: 60 (100%)
 - **Failing / Skipped Tests**: 0
 - **Execution Command**: `npm run test`
 
@@ -65,7 +65,7 @@ This document tracks all unit, integration, security, and build verification tes
 - `requireOfficer()` / `requireCadetSession()`: Verifies 401 unauthorized rejection.
 - `maskPublicRecord()`: Verifies PII stripping for public tracking endpoints.
 - `sanitizePostgrestQuery()`: Verifies SQL/filter injection prevention.
-- `loginRequestSchema`: Enforces minimum 8-character password requirement.
+- `bucketTokenisation`: Verifies 256-bit storage tokens and MIME type magic byte checks.
 
 ### Suite 9: Multi-Channel Dispatch & 18-Digit Application Number Unit Tests
 
@@ -82,22 +82,6 @@ This document tracks all unit, integration, security, and build verification tes
 - `RFC 4180 CSV Export generation with UTF-8 BOM`: Tests character escaping and native Excel compatibility.
 - `Sanitizes PostgREST query inputs preventing filter injection`: Verifies special filter character stripping.
 - `Rate Limiter sliding window handles burst requests`: Verifies sliding-window boundary enforcement under burst traffic.
-
-### Suite 11: Security Hardening & Vulnerability Remediation Unit Tests
-
-- `CSV formula injection neutralization handles spreadsheet command payloads`: Verifies prefixes `=`, `@`, `\t`, `\r`, `+`, `-` are safely neutralized to prevent Excel formula execution (CWE-1236).
-- `sanitizePostgrestQuery strips dangerous filter injection tokens`: Verifies `.eq.`, `()`, `,`, and quote characters are stripped before PostgREST query interpolation.
-- `Dual-layer rate limiter enforces both IP ceiling and account brute-force threshold`: Verifies sliding window defense against distributed credential stuffing and targeted account brute-forcing.
-- `Timing-safe OTP hash comparison correctly validates matching hashes`: Verifies constant-time hash equality using `crypto.timingSafeEqual` to prevent side-channel timing attacks.
-- `Memory token structure caps growth and supports state cleanup`: Verifies bounded in-memory token map (`MAX_MEMORY_TOKENS = 1000`) and automatic pruning to prevent memory exhaustion DoS.
-
-### Suite 12: Bucket Tokenisation & Storage Capability Unit Tests
-
-- `generateStorageToken()`: Verifies 256-bit secure token generation and valid SHA-256 hashes.
-- `validateMagicBytes()`: Verifies MIME type validation against file header magic bytes.
-- `ALLOWED_MIME_TYPES`: Restricts dangerous file uploads to whitelisted formats.
-- `createUploadIntent()`: Enforces file size ceilings and server-side opaque object keys.
-- `createUploadIntent()`: Rejects invalid MIME types and oversized requests.
 
 ---
 
