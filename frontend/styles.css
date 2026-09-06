@@ -600,7 +600,9 @@
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 12px 40px -8px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
 }
 
 .glass-panel-elevated {
@@ -608,7 +610,9 @@
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 20px 50px -12px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
 }
 
 .glass-panel-light {
@@ -616,7 +620,9 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 10px 30px -6px rgba(0, 0, 0, 0.07), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 10px 30px -6px rgba(0, 0, 0, 0.07),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
 }
 
 .glass-panel-interactive {
@@ -626,7 +632,9 @@
 .glass-panel-interactive:hover {
   background: rgba(18, 28, 52, 0.85);
   border-color: rgba(96, 165, 250, 0.35);
-  box-shadow: 0 18px 45px -10px rgba(37, 99, 235, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 18px 45px -10px rgba(37, 99, 235, 0.25),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
 }
 
@@ -649,7 +657,9 @@
 .glass-input:focus {
   background: rgba(12, 18, 34, 0.85);
   border-color: rgba(59, 130, 246, 0.6);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2), 0 0 20px -3px rgba(59, 130, 246, 0.3);
+  box-shadow:
+    0 0 0 3px rgba(59, 130, 246, 0.2),
+    0 0 20px -3px rgba(59, 130, 246, 0.3);
 }
 
 .glass-glow-blue {
@@ -670,7 +680,9 @@
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 16px 40px -12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
 }
 
 .glass-card-hover {
@@ -681,7 +693,9 @@
   transform: translateY(-2px);
   border-color: rgba(96, 165, 250, 0.4);
   background: linear-gradient(135deg, rgba(20, 30, 55, 0.85) 0%, rgba(12, 19, 38, 0.78) 100%);
-  box-shadow: 0 20px 45px -10px rgba(37, 99, 235, 0.22), inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 20px 45px -10px rgba(37, 99, 235, 0.22),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
 }
 
 .glass-tricolor-ribbon {
@@ -737,7 +751,9 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 12px 35px -10px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
 }
 
 .glass-badge-amber {

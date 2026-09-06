@@ -43,18 +43,18 @@ flowchart TD
 
 ## 1. Security Objectives & Core Principles
 
-| Objective | Architectural Defense |
-| --- | --- |
-| **Confidentiality of Secrets** | OTP stored solely as HMAC-SHA256 verifier with server-side pepper; never logged, never cached in plaintext. |
-| **Integrity of State** | State machine enforced in authoritative database (`ACTIVE` → `CONSUMED` / `LOCKED` / `EXPIRED` / `REPLACED`). |
-| **High Entropy & Unpredictability** | Generated via CSPRNG (`crypto.randomInt()`), eliminating modulo bias and PRNG predictability. |
-| **Short Validity Windows** | Default 5-minute TTL; expired codes rejected unconditionally by server timestamp comparison. |
-| **Single-Use Semantics** | Atomic transition to `CONSUMED` on first valid submission; zero replay window. |
-| **Brute-Force Resistance** | Hard challenge limit (3–5 attempts) + Multi-dimensional Redis throttling across IP, account, and identifier. |
-| **Cross-Purpose Isolation** | Purpose tag cryptographically bound into challenge verifier; activation codes cannot authorize password resets. |
-| **Anti-Enumeration** | Uniform responses and constant-time behavior across registered and unregistered identifiers. |
-| **Delivery Cost & Abuse Protection** | Strict resend cooldowns (60s), per-account velocity caps, and idempotent background delivery queues. |
-| **Concurrency Safety** | Conditional database atomic updates preventing parallel race-condition verification bypass. |
+| Objective                            | Architectural Defense                                                                                           |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| **Confidentiality of Secrets**       | OTP stored solely as HMAC-SHA256 verifier with server-side pepper; never logged, never cached in plaintext.     |
+| **Integrity of State**               | State machine enforced in authoritative database (`ACTIVE` → `CONSUMED` / `LOCKED` / `EXPIRED` / `REPLACED`).   |
+| **High Entropy & Unpredictability**  | Generated via CSPRNG (`crypto.randomInt()`), eliminating modulo bias and PRNG predictability.                   |
+| **Short Validity Windows**           | Default 5-minute TTL; expired codes rejected unconditionally by server timestamp comparison.                    |
+| **Single-Use Semantics**             | Atomic transition to `CONSUMED` on first valid submission; zero replay window.                                  |
+| **Brute-Force Resistance**           | Hard challenge limit (3–5 attempts) + Multi-dimensional Redis throttling across IP, account, and identifier.    |
+| **Cross-Purpose Isolation**          | Purpose tag cryptographically bound into challenge verifier; activation codes cannot authorize password resets. |
+| **Anti-Enumeration**                 | Uniform responses and constant-time behavior across registered and unregistered identifiers.                    |
+| **Delivery Cost & Abuse Protection** | Strict resend cooldowns (60s), per-account velocity caps, and idempotent background delivery queues.            |
+| **Concurrency Safety**               | Conditional database atomic updates preventing parallel race-condition verification bypass.                     |
 
 > [!IMPORTANT]
 > **Primary Security Principle**: The client browser may only request and submit verification data; the backend alone is authoritative for evaluating and executing security state transitions.
@@ -73,15 +73,15 @@ Username / Email + Password                Email OTP / Secure Link              
 (Argon2id / Scrypt)                        (Short-lived Reset Challenge)              (Origin-Bound Cryptography)
 ```
 
-| Mechanism | Generation Source | Recommended NCC CRM Role | Phishing Resistant? | NIST SP 800-63B-4 Classification |
-| --- | --- | --- | :---: | --- |
-| **Server Random OTP** | Backend CSPRNG | Password recovery, activation, email verification | **No** | Out-of-band confirmation secret |
-| **Email Code** | Backend → Email | Recovery / confirmation | **No** | Out-of-band confirmation secret |
-| **SMS / PSTN Code** | Backend → Cellular | Restricted fallback recovery | **No** | Restricted authenticator (risk controls required) |
-| **TOTP (RFC 6238)** | Authenticator App (Shared Secret + Time) | MFA for ANOs / Officers / Staff | **No** | Multi-factor OTP authenticator |
-| **HOTP (RFC 4226)** | Counter-based Token | Alternative hardware token | **No** | Multi-factor OTP authenticator |
-| **Passkey / WebAuthn** | Device Cryptographic Keypair | Primary/MFA for Unit Admins & Super Admins | **Yes** | Multi-factor cryptographic authenticator |
-| **Recovery Codes** | Pre-generated CSPRNG tokens | Emergency admin account recovery | **No** | Single-use backup secret |
+| Mechanism              | Generation Source                        | Recommended NCC CRM Role                          | Phishing Resistant? | NIST SP 800-63B-4 Classification                  |
+| ---------------------- | ---------------------------------------- | ------------------------------------------------- | :-----------------: | ------------------------------------------------- |
+| **Server Random OTP**  | Backend CSPRNG                           | Password recovery, activation, email verification |       **No**        | Out-of-band confirmation secret                   |
+| **Email Code**         | Backend → Email                          | Recovery / confirmation                           |       **No**        | Out-of-band confirmation secret                   |
+| **SMS / PSTN Code**    | Backend → Cellular                       | Restricted fallback recovery                      |       **No**        | Restricted authenticator (risk controls required) |
+| **TOTP (RFC 6238)**    | Authenticator App (Shared Secret + Time) | MFA for ANOs / Officers / Staff                   |       **No**        | Multi-factor OTP authenticator                    |
+| **HOTP (RFC 4226)**    | Counter-based Token                      | Alternative hardware token                        |       **No**        | Multi-factor OTP authenticator                    |
+| **Passkey / WebAuthn** | Device Cryptographic Keypair             | Primary/MFA for Unit Admins & Super Admins        |       **Yes**       | Multi-factor cryptographic authenticator          |
+| **Recovery Codes**     | Pre-generated CSPRNG tokens              | Emergency admin account recovery                  |       **No**        | Single-use backup secret                          |
 
 ---
 
@@ -96,38 +96,38 @@ Username / Email + Password                Email OTP / Secure Link              
  Redis Throttling]   Database Update]       Constant-Time Path]    Short 5-min TTL]    Email Primary]
 ```
 
-| Threat | Attack Path | Required Architectural Mitigation |
-| --- | --- | --- |
-| **Brute-Force / Guessing** | Repeated code guessing against 6-digit space | Max 5 failed attempts per challenge, sliding window rate limits, lock challenge on limit. |
-| **Distributed Guessing** | Rotating botnet/proxy IPs attacking a single account | Dual-layer throttling: per-IP ceiling AND target identifier/account ceiling. |
-| **Replay / Reuse** | Re-submitting a previously intercepted/accepted code | Atomic update marking `status = 'CONSUMED'` and setting `consumed_at`. Re-submissions fail immediately. |
-| **Race Conditions** | Sending 50 parallel verification requests simultaneously | Conditional SQL update (`WHERE status = 'ACTIVE' AND expires_at > NOW()`). Exactly 1 request succeeds. |
-| **Account Enumeration** | Timing/response variance revealing if an email/phone exists | Uniform 200 OK generic response (*"If eligible, verification instructions have been sent"*). |
-| **SMS Toll Fraud / Delivery Abuse** | Automated scripts triggering bulk SMS dispatches | 60s cooldown per identifier, max 5 requests/hour per account, IP velocity quotas, CAPTCHA on anomaly. |
-| **Channel Interception (MitM)** | Eavesdropping on unencrypted transport | Strict HTTPS/HSTS for APIs; mandatory TLS for SMTP/SES and SMS gateways. Short 5-min TTL. |
-| **SIM Swap / Porting Fraud** | Attacker hijacks victim phone number via carrier | Email designated as primary recovery channel; SMS relegated to restricted fallback. Cooldown on phone updates. |
-| **Secret Leakage via Telemetry** | Plaintext codes leaking to logs, APM, or error traces | Store only HMAC verifiers; filter code values from logging formatters; log events, never secrets. |
-| **Database Compromise** | Stolen DB dump allowing offline cracking of OTPs | Compute HMAC verifier using a server-side pepper stored in AWS Secrets Manager / KMS outside the database. |
-| **Cross-Purpose Substitution** | Using an email verification OTP to reset a password | Purpose binding: `purpose` is included in the HMAC digest and enforced at the database layer. |
-| **Token Hijacking Post-Reset** | Attacker compromises reset token | Reset token is single-use, opaque, 256-bit entropy, 10-minute TTL, bound to user and challenge ID. |
+| Threat                              | Attack Path                                                 | Required Architectural Mitigation                                                                              |
+| ----------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Brute-Force / Guessing**          | Repeated code guessing against 6-digit space                | Max 5 failed attempts per challenge, sliding window rate limits, lock challenge on limit.                      |
+| **Distributed Guessing**            | Rotating botnet/proxy IPs attacking a single account        | Dual-layer throttling: per-IP ceiling AND target identifier/account ceiling.                                   |
+| **Replay / Reuse**                  | Re-submitting a previously intercepted/accepted code        | Atomic update marking `status = 'CONSUMED'` and setting `consumed_at`. Re-submissions fail immediately.        |
+| **Race Conditions**                 | Sending 50 parallel verification requests simultaneously    | Conditional SQL update (`WHERE status = 'ACTIVE' AND expires_at > NOW()`). Exactly 1 request succeeds.         |
+| **Account Enumeration**             | Timing/response variance revealing if an email/phone exists | Uniform 200 OK generic response (_"If eligible, verification instructions have been sent"_).                   |
+| **SMS Toll Fraud / Delivery Abuse** | Automated scripts triggering bulk SMS dispatches            | 60s cooldown per identifier, max 5 requests/hour per account, IP velocity quotas, CAPTCHA on anomaly.          |
+| **Channel Interception (MitM)**     | Eavesdropping on unencrypted transport                      | Strict HTTPS/HSTS for APIs; mandatory TLS for SMTP/SES and SMS gateways. Short 5-min TTL.                      |
+| **SIM Swap / Porting Fraud**        | Attacker hijacks victim phone number via carrier            | Email designated as primary recovery channel; SMS relegated to restricted fallback. Cooldown on phone updates. |
+| **Secret Leakage via Telemetry**    | Plaintext codes leaking to logs, APM, or error traces       | Store only HMAC verifiers; filter code values from logging formatters; log events, never secrets.              |
+| **Database Compromise**             | Stolen DB dump allowing offline cracking of OTPs            | Compute HMAC verifier using a server-side pepper stored in AWS Secrets Manager / KMS outside the database.     |
+| **Cross-Purpose Substitution**      | Using an email verification OTP to reset a password         | Purpose binding: `purpose` is included in the HMAC digest and enforced at the database layer.                  |
+| **Token Hijacking Post-Reset**      | Attacker compromises reset token                            | Reset token is single-use, opaque, 256-bit entropy, 10-minute TTL, bound to user and challenge ID.             |
 
 ---
 
 ## 4. Security Policy Baseline
 
-| Parameter | Standard User (Cadet) | Privileged User (ANO / Admin) |
-| --- | --- | --- |
-| **OTP Code Length** | 6 digits (numeric CSPRNG) | 8 digits (numeric CSPRNG) or TOTP/Passkey |
-| **Validity Period (TTL)** | 5 minutes (300 seconds) | 3–5 minutes (180–300 seconds) |
-| **Max Failed Attempts** | 5 attempts per challenge | 3 attempts per challenge |
-| **Resend Cooldown** | 60 seconds per identifier | 60–120 seconds per identifier |
-| **Concurrent Active Challenges** | Exactly 1 per user/purpose | Exactly 1 per user/purpose |
-| **Max Requests / Account** | 5 requests per hour | 3 requests per hour |
-| **Max Requests / IP** | 10 requests per hour | 10 requests per hour (adaptive) |
-| **Reset Authorization Validity** | 10 minutes (single-use) | 5–10 minutes (single-use) |
-| **Failure Counter Persistence** | **Preserved across resends** (NIST) | **Preserved across resends** (NIST) |
-| **Post-Reset Session Handling** | Invalidate all sessions/tokens | Invalidate all sessions/tokens + Security Alert |
-| **Mandatory MFA** | Optional | **Mandatory** (Phishing-resistant preferred) |
+| Parameter                        | Standard User (Cadet)               | Privileged User (ANO / Admin)                   |
+| -------------------------------- | ----------------------------------- | ----------------------------------------------- |
+| **OTP Code Length**              | 6 digits (numeric CSPRNG)           | 8 digits (numeric CSPRNG) or TOTP/Passkey       |
+| **Validity Period (TTL)**        | 5 minutes (300 seconds)             | 3–5 minutes (180–300 seconds)                   |
+| **Max Failed Attempts**          | 5 attempts per challenge            | 3 attempts per challenge                        |
+| **Resend Cooldown**              | 60 seconds per identifier           | 60–120 seconds per identifier                   |
+| **Concurrent Active Challenges** | Exactly 1 per user/purpose          | Exactly 1 per user/purpose                      |
+| **Max Requests / Account**       | 5 requests per hour                 | 3 requests per hour                             |
+| **Max Requests / IP**            | 10 requests per hour                | 10 requests per hour (adaptive)                 |
+| **Reset Authorization Validity** | 10 minutes (single-use)             | 5–10 minutes (single-use)                       |
+| **Failure Counter Persistence**  | **Preserved across resends** (NIST) | **Preserved across resends** (NIST)             |
+| **Post-Reset Session Handling**  | Invalidate all sessions/tokens      | Invalidate all sessions/tokens + Security Alert |
+| **Mandatory MFA**                | Optional                            | **Mandatory** (Phishing-resistant preferred)    |
 
 ---
 
@@ -177,11 +177,9 @@ export function deriveOtpVerifier(
   challengeId: string,
   purpose: string,
   otp: string,
-  pepper: string
+  pepper: string,
 ): string {
-  return createHmac("sha256", pepper)
-    .update(`${challengeId}:${purpose}:${otp}`)
-    .digest("hex");
+  return createHmac("sha256", pepper).update(`${challengeId}:${purpose}:${otp}`).digest("hex");
 }
 
 /**
@@ -189,7 +187,7 @@ export function deriveOtpVerifier(
  */
 export function verifyVerifierConstantTime(
   candidateVerifier: string,
-  storedVerifier: string
+  storedVerifier: string,
 ): boolean {
   const candidateBuf = Buffer.from(candidateVerifier, "hex");
   const storedBuf = Buffer.from(storedVerifier, "hex");
@@ -557,7 +555,10 @@ export async function processNotificationJob(job: DeliveryJob): Promise<void> {
   const dedupKey = `notification:dedup:${job.challengeId}:${job.attemptNumber}`;
   const acquired = await redis.set(dedupKey, "locked", "EX", 300, "NX");
   if (!acquired) {
-    logger.info({ msg: "Duplicate notification dispatch suppressed", challengeId: job.challengeId });
+    logger.info({
+      msg: "Duplicate notification dispatch suppressed",
+      challengeId: job.challengeId,
+    });
     return;
   }
   await sendViaSES(job);
@@ -631,12 +632,12 @@ Administrative operations require recent ($<15$ minutes) step-up authentication:
 
 ## 26. Role-Based Authentication Matrix
 
-| Role | Standard Login Factor | Account Recovery | Step-Up Trigger Operations | Required Step-Up Factor |
-| --- | --- | --- | --- | --- |
-| **Cadet** | Username + Password | Email OTP | Profile updates, banking DBT details | Password confirmation or Email OTP |
-| **ANO / Officer** | Username + Password + TOTP | Email OTP + Admin Verification | Application Approval, Roster Export, Attendance Overwrite | Active TOTP (RFC 6238) |
-| **Unit Admin** | Username + Password + Passkey | Dual Admin Authorization | Role Assignment, System Config, Permission Elevation | WebAuthn / Hardware Passkey |
-| **Super Admin** | Passkey (FIDO2 Level 3) | Hardware Security Key Backup | All Administrative Mutation Handlers | Hardware Passkey + Audit Reason |
+| Role              | Standard Login Factor         | Account Recovery               | Step-Up Trigger Operations                                | Required Step-Up Factor            |
+| ----------------- | ----------------------------- | ------------------------------ | --------------------------------------------------------- | ---------------------------------- |
+| **Cadet**         | Username + Password           | Email OTP                      | Profile updates, banking DBT details                      | Password confirmation or Email OTP |
+| **ANO / Officer** | Username + Password + TOTP    | Email OTP + Admin Verification | Application Approval, Roster Export, Attendance Overwrite | Active TOTP (RFC 6238)             |
+| **Unit Admin**    | Username + Password + Passkey | Dual Admin Authorization       | Role Assignment, System Config, Permission Elevation      | WebAuthn / Hardware Passkey        |
+| **Super Admin**   | Passkey (FIDO2 Level 3)       | Hardware Security Key Backup   | All Administrative Mutation Handlers                      | Hardware Passkey + Audit Reason    |
 
 ---
 
@@ -847,11 +848,11 @@ if (idempotencyKey) {
 
 ## 37. Dependency Failure Model (Fail-Closed)
 
-| Failure Scenario | Behavior |
-| --- | --- |
-| **Database Unavailable** | Fail closed. Return HTTP 503; zero auth assertions permitted. |
-| **Redis Cache Down** | Fallback to in-memory local token cache; log critical IDS warning. |
-| **SES / Mailer Outage** | Commit challenge to DB; enqueue retry; alert admin. |
+| Failure Scenario              | Behavior                                                                |
+| ----------------------------- | ----------------------------------------------------------------------- |
+| **Database Unavailable**      | Fail closed. Return HTTP 503; zero auth assertions permitted.           |
+| **Redis Cache Down**          | Fallback to in-memory local token cache; log critical IDS warning.      |
+| **SES / Mailer Outage**       | Commit challenge to DB; enqueue retry; alert admin.                     |
 | **KMS / Secret Manager Down** | Fail closed; refusal to sign or verify tokens with fallback dummy keys. |
 
 ---
@@ -879,7 +880,7 @@ if (idempotencyKey) {
 export function OtpVerificationForm({ challengeId, onVerify }: OtpFormProps) {
   const [digits, setDigits] = useState<string[]>(Array(6).fill(""));
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
-  const [cooldown, setCooldown] = useState(60);  // Resend cooldown
+  const [cooldown, setCooldown] = useState(60); // Resend cooldown
   // ... Handles auto-focus, paste parsing, and keyboard navigation
 }
 ```
@@ -890,7 +891,7 @@ export function OtpVerificationForm({ challengeId, onVerify }: OtpFormProps) {
 
 - Display masked destination: `priya.sharma@sbu.ac.in` → `pr••••••@sbu.ac.in`.
 - Never display remaining attempts counter in public responses.
-- Generic error messages: *"Invalid verification code"*, *"This code has expired. Request a new code"*.
+- Generic error messages: _"Invalid verification code"_, _"This code has expired. Request a new code"_.
 
 ---
 
@@ -920,7 +921,7 @@ Simulate 50 parallel verification requests using `Promise.all()`:
 it("Concurrency Race: Exactly 1 of 50 parallel verify requests succeeds", async () => {
   const challenge = await issueTestChallenge();
   const results = await Promise.all(
-    Array.from({ length: 50 }).map(() => verifyOtp(challenge.id, challenge.plainCode))
+    Array.from({ length: 50 }).map(() => verifyOtp(challenge.id, challenge.plainCode)),
   );
   const successCount = results.filter((r) => r.ok).length;
   assert.equal(successCount, 1, "Only one concurrent request can consume the OTP");

@@ -118,8 +118,10 @@ describe("Intrusion Detection System (IDS) Unit Tests", () => {
       assert.equal(resHighRiskFallback.alertLevel, "HIGH");
       assert.equal(resHighRiskFallback.containmentExecuted, "REVOKE_SESSION");
     } finally {
-      if (origUrl) process.env.SUPABASE_URL = origUrl; else delete process.env.SUPABASE_URL;
-      if (origKey) process.env.SUPABASE_SERVICE_ROLE_KEY = origKey; else delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (origUrl) process.env.SUPABASE_URL = origUrl;
+      else delete process.env.SUPABASE_URL;
+      if (origKey) process.env.SUPABASE_SERVICE_ROLE_KEY = origKey;
+      else delete process.env.SUPABASE_SERVICE_ROLE_KEY;
     }
   });
 
@@ -155,8 +157,10 @@ describe("Intrusion Detection System (IDS) Unit Tests", () => {
       assert.equal(resDbErrorHighRisk.alertLevel, "MEDIUM");
       assert.equal(resDbErrorHighRisk.containmentExecuted, "QUARANTINE_OBJECT");
     } finally {
-      if (origUrl) process.env.SUPABASE_URL = origUrl; else delete process.env.SUPABASE_URL;
-      if (origKey) process.env.SUPABASE_SERVICE_ROLE_KEY = origKey; else delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (origUrl) process.env.SUPABASE_URL = origUrl;
+      else delete process.env.SUPABASE_URL;
+      if (origKey) process.env.SUPABASE_SERVICE_ROLE_KEY = origKey;
+      else delete process.env.SUPABASE_SERVICE_ROLE_KEY;
     }
   });
 });
