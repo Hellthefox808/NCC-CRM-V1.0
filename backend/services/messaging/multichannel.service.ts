@@ -75,7 +75,7 @@ ${trackingUrl}
 
 Jai Hind! 🇮🇳`;
 
-  console.log(`[WhatsApp Dispatch] To: +91-${payload.mobile}\nMessage:\n${whatsappMessage}`);
+  console.info(`[WhatsApp Dispatch] To: +91-${payload.mobile}\nMessage:\n${whatsappMessage}`);
 
   const whatsappResult = {
     success: true,
@@ -86,7 +86,7 @@ Jai Hind! 🇮🇳`;
   // 3. SMS Dispatch (Simulated / DLT SMS Gateway Integration)
   const smsMessage = `[19 JHR BN NCC] Dear ${payload.fullName}, your NCC enrollment application is submitted. 18-digit App No: ${payload.applicationId}. Track status: ${trackingUrl} - Jai Hind!`;
 
-  console.log(`[SMS Dispatch] To: +91-${payload.mobile}\nMessage:\n${smsMessage}`);
+  console.info(`[SMS Dispatch] To: +91-${payload.mobile}\nMessage:\n${smsMessage}`);
 
   const smsResult = {
     success: true,
