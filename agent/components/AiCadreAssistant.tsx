@@ -73,6 +73,15 @@ export const AiCadreAssistant: React.FC<AiCadreAssistantProps> = ({ isOpen, onCl
     }
   }, [messages, isOpen, isLoading]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   const handleSend = async (textToSend?: string) => {
     const prompt = (textToSend || input).trim();
     if (!prompt || isLoading) return;
@@ -140,6 +149,12 @@ export const AiCadreAssistant: React.FC<AiCadreAssistantProps> = ({ isOpen, onCl
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Subedar Major AI Assistant"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) onClose();
+          }}
           className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4"
         >
           <motion.div
@@ -189,6 +204,7 @@ export const AiCadreAssistant: React.FC<AiCadreAssistantProps> = ({ isOpen, onCl
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={onClose}
+                  aria-label="Close Subedar Major AI Assistant"
                   className="text-[#5C3D26] hover:text-[#3B281C] hover:bg-black/5 p-2 rounded-full cursor-pointer transition-colors"
                 >
                   <X className="w-5 h-5" />

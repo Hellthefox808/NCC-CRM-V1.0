@@ -23,6 +23,7 @@ import {
   Clock,
 } from "lucide-react";
 import { ACTIVITIES_DATA, CAMPS_DATA } from "@/data/nccData";
+import { toast } from "sonner";
 
 export const ActivitiesGallery: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -66,8 +67,8 @@ export const ActivitiesGallery: React.FC = () => {
       `Generating Parent Consent Form & Clearance Certificate for ${campName}...`,
     );
     setTimeout(() => {
-      alert(
-        `Parent Consent Form & Medical Clearance Certificate for "${campName}" downloaded successfully! Please submit it signed by parent/guardian at SBU NCC Office.`,
+      toast.success(
+        `Parent Consent Form & Medical Clearance Certificate for "${campName}" generated successfully! Please submit it signed by parent/guardian at SBU NCC Office.`,
       );
       setCampNoticeMessage(null);
     }, 1200);
@@ -248,8 +249,9 @@ export const ActivitiesGallery: React.FC = () => {
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() =>
-                      alert(
+                      toast.info(
                         "Official SBU Duty Leave Rule: Cadets attending NCC Camps get 100% attendance credit for missed university lectures & practicals upon producing Camp Completion Certificate issued by 19 JHR BN NCC.",
+                        { duration: 6000 },
                       )
                     }
                     className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-border bg-muted/60 px-4 py-2.5 text-xs font-semibold text-foreground outline-none transition-colors hover:border-primary/40 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -454,8 +456,9 @@ export const ActivitiesGallery: React.FC = () => {
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() =>
-                    alert(
+                    toast.info(
                       "Camp Nomination Procedure:\n1. Ensure 'B' or 'C' enrollment is active.\n2. Submit Medical Fitness Certificate from Govt Medical Officer.\n3. Submit Signed Parent Consent Form & Bank Passbook Copy to SBU NCC ANO.",
+                      { duration: 8000 },
                     )
                   }
                   className="flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-5 py-3 text-xs font-bold text-primary-foreground shadow-md outline-none transition-shadow hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -480,8 +483,9 @@ export const ActivitiesGallery: React.FC = () => {
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() =>
-                    alert(
+                    toast.info(
                       "DBT Camp Messing Allowance: Daily allowance of ₹220/day + Travel Warrants are deposited directly into cadet's bank account linked with Aadhaar.",
+                      { duration: 6000 },
                     )
                   }
                   className="flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-xs font-semibold text-foreground outline-none transition-colors hover:border-primary/40 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"

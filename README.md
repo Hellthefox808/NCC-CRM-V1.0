@@ -9,20 +9,16 @@
 [![TypeScript](<https://img.shields.io/badge/typescript-strict%205.8%20(0%20errors)-blue.svg>)](https://www.typescriptlang.org/)
 [![Design System](https://img.shields.io/badge/design-Regimental%20Glassmorphism-gold.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
 [![Database](https://img.shields.io/badge/database-Supabase%20PostgreSQL%2015%20%2B%20Prisma-3ECF8E.svg)](https://supabase.com)
-[![Frontend](https://img.shields.io/badge/frontend-Vercel%20%7C%20Cloudflare-black.svg)](https://19th-jh-ncc-crm-v1-0.vercel.app/)
-[![Backend](https://img.shields.io/badge/backend-Netlify%20Node%2022%20SSR-00C7B7.svg)](https://agent-6a88700c8504a--spectacular-entremet-464b43.netlify.app/)
+[![Deployment](https://img.shields.io/badge/deployment-Vercel-black.svg)](https://19th-jh-ncc-crm-v1-0.vercel.app/)
 [![Security](https://img.shields.io/badge/OWASP-ASVS%205.0%20Level%202%20%7C%20scrypt-success.svg)](https://owasp.org/)
 
 ---
 
-## 🌐 Live System Deployments
+## 🌐 Live System Deployment
 
-| Component           | Platform / Host | Live URL                                                                                                         | Description                                                 |
-| :------------------ | :-------------- | :--------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------- |
-| **Frontend Client** | **Vercel**      | [19th-jh-ncc-crm-v1-0.vercel.app](https://19th-jh-ncc-crm-v1-0.vercel.app/)                                      | React 19 Client SPA + TanStack Router                       |
-| **Backend & SSR**   | **Netlify**     | [spectacular-entremet-464b43.netlify.app](https://agent-6a88700c8504a--spectacular-entremet-464b43.netlify.app/) | Nitro 3.0 Serverless Edge API & SSR Engine (Node.js 22 LTS) |
-| **Edge Worker**     | **Cloudflare**  | `.output/server/`                                                                                                | Cloudflare Worker compatibility build                       |
-| **Database**        | **Supabase**    | `qsrmzajadmmgqhfbxdwu.supabase.co`                                                                               | PostgreSQL 15 with Row-Level Security (RLS) & Prisma ORM    |
+| Platform | Live URL | Description |
+| :--- | :--- | :--- |
+| **Vercel** | [19th-jh-ncc-crm-v1-0.vercel.app](https://19th-jh-ncc-crm-v1-0.vercel.app/) | Production Cadet Portal & Command Centre |
 
 ---
 

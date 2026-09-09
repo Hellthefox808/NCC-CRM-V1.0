@@ -222,6 +222,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       }
                     }}
                     placeholder="Enter 18-digit Application No. (e.g. 192026081298471625)..."
+                    aria-label="18-digit Application Number"
                     className="w-full bg-transparent pl-2.5 pr-2 py-2 text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100 placeholder-zinc-500/70 focus:outline-hidden font-mono"
                     id="hero-app-no-search-input"
                   />
@@ -243,7 +244,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       openStatusModal();
                     }
                   }}
-                  className="px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 dark:bg-amber-600 dark:hover:bg-amber-700 text-white text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-xs flex items-center justify-center gap-1.5 shrink-0"
+                  className="px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 dark:bg-amber-600 dark:hover:bg-amber-700 text-white text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-xs flex items-center justify-center gap-1.5 shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600 dark:focus-visible:ring-amber-400"
                   id="hero-app-no-search-btn"
                 >
                   <span>Search</span>

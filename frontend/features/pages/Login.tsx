@@ -22,7 +22,7 @@ export const Login: React.FC<LoginProps> = ({
   const goTo = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] py-8 sm:py-12">
+    <div className="min-h-screen bg-background text-foreground py-8 sm:py-12">
       <SbuNccSignupPortal
         defaultSection={defaultSection}
         onLoginSuccess={(type, user) => {

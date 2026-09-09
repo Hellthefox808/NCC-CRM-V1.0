@@ -64,25 +64,51 @@ export const StatusTrackerModal: React.FC<StatusTrackerModalProps> = ({
     }
   }, [initialQuery, handleSearch]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-zinc-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-xl w-full p-6 space-y-6 shadow-2xl border border-zinc-300 text-left relative">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="status-tracker-modal-title"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+    >
+      <div className="bg-card text-card-foreground rounded-2xl max-w-xl w-full p-6 space-y-6 shadow-2xl border border-border text-left relative overflow-hidden">
+        {/* Top Tricolor Accent Hairline */}
+        <div className="absolute top-0 inset-x-0 h-1 regimental-tricolor-gradient" />
+
         {/* Header */}
-        <div className="flex justify-between items-center border-b border-zinc-200 pb-3">
+        <div className="flex justify-between items-center border-b border-border pb-3 pt-1">
           <div className="flex items-center space-x-2">
-            <CheckCircle2 className="w-5 h-5 text-blue-700" />
-            <h3 className="text-base font-bold text-zinc-900">Track NCC Enrollment Status</h3>
+            <CheckCircle2 className="w-5 h-5 text-primary" />
+            <h3 id="status-tracker-modal-title" className="text-base font-bold text-foreground">
+              Track NCC Enrollment Status
+            </h3>
           </div>
-          <button onClick={onClose} className="text-zinc-500 hover:text-zinc-800 p-1 rounded-lg">
+          <button
+            onClick={onClose}
+            aria-label="Close status tracker"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted p-1.5 rounded-lg transition-colors cursor-pointer"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Search Bar */}
         <div className="space-y-2">
-          <label className="block text-xs font-bold text-zinc-700">
+          <label className="block text-xs font-bold text-foreground/80">
             Enter Application ID, Aadhaar Number, or NCC Enrolment Number:
           </label>
           <div className="flex space-x-2">
@@ -90,15 +116,15 @@ export const StatusTrackerModal: React.FC<StatusTrackerModalProps> = ({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="e.g. 19JHR-SBU-2026-001 or JH24SDA104201"
-              className="flex-1 bg-zinc-50 border border-zinc-300 rounded-xl p-2.5 text-xs font-semibold text-zinc-900 focus:ring-2 focus:ring-zinc-900 focus:outline-hidden"
+              placeholder="e.g. 192026081298471625 or JH24SDA104201"
+              className="flex-1 bg-muted/50 border border-border rounded-xl p-2.5 text-xs font-semibold text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary focus:outline-hidden transition-all font-mono"
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               id="status-search-input"
             />
             <button
               onClick={() => handleSearch()}
               disabled={isLoading}
-              className="bg-zinc-900 hover:bg-zinc-900 text-blue-500 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center space-x-1 cursor-pointer disabled:opacity-50"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-4 py-2.5 rounded-xl text-xs flex items-center space-x-1.5 cursor-pointer disabled:opacity-50 transition-colors shadow-sm"
               id="status-search-btn"
             >
               <Search className="w-4 h-4" />
@@ -109,36 +135,37 @@ export const StatusTrackerModal: React.FC<StatusTrackerModalProps> = ({
 
         {/* Loading Spinner */}
         {isLoading && (
-          <div className="text-center py-6 text-xs text-zinc-500 font-semibold">
-            Searching 19 Jharkhand Battalion database...
+          <div className="text-center py-6 text-xs text-muted-foreground font-semibold flex items-center justify-center gap-2">
+            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <span>Searching 19 Jharkhand Battalion database...</span>
           </div>
         )}
 
         {/* Error Message */}
         {errorMsg && (
-          <div className="p-3 bg-red-50 border border-red-300 text-red-900 rounded-xl text-xs font-medium flex items-center space-x-2">
-            <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+          <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive rounded-xl text-xs font-medium flex items-center space-x-2">
+            <AlertCircle className="w-4 h-4 text-destructive shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {/* Status Result Card */}
         {record && (
-          <div className="bg-zinc-50 border border-zinc-300 rounded-xl p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-zinc-200 pb-3">
+          <div className="bg-muted/40 border border-border rounded-xl p-5 space-y-4">
+            <div className="flex items-center justify-between border-b border-border pb-3">
               <div>
-                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                   Application ID
                 </p>
-                <p className="text-base font-black text-zinc-900 font-mono">{record.id}</p>
+                <p className="text-base font-black text-foreground font-mono">{record.id}</p>
               </div>
               <span
                 className={`px-3 py-1 rounded-full text-xs font-bold border ${
                   record.status === "Enrolled" || record.status === "Selected"
-                    ? "bg-emerald-100 text-emerald-900 border-emerald-300"
+                    ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
                     : record.status === "Rejected"
-                      ? "bg-red-100 text-red-900 border-red-300"
-                      : "bg-blue-100 text-blue-700 border-blue-300"
+                      ? "bg-destructive/15 text-destructive border-destructive/30"
+                      : "bg-primary/15 text-primary border-primary/30"
                 }`}
               >
                 {record.status}
@@ -147,48 +174,48 @@ export const StatusTrackerModal: React.FC<StatusTrackerModalProps> = ({
 
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div>
-                <span className="text-zinc-500 font-medium block">Cadet Name:</span>
-                <span className="font-bold text-zinc-900">{record.fullName}</span>
+                <span className="text-muted-foreground font-medium block">Cadet Name:</span>
+                <span className="font-bold text-foreground">{record.fullName}</span>
               </div>
               <div>
-                <span className="text-zinc-500 font-medium block">Division/Wing:</span>
-                <span className="font-semibold text-zinc-800">
+                <span className="text-muted-foreground font-medium block">Division/Wing:</span>
+                <span className="font-semibold text-foreground">
                   {record.gender === "SD" ? "Senior Division (SD)" : "Senior Wing (SW)"}
                 </span>
               </div>
               <div>
-                <span className="text-zinc-500 font-medium block">SBU Course:</span>
-                <span className="font-semibold text-zinc-800">{record.sbuCourse}</span>
+                <span className="text-muted-foreground font-medium block">SBU Course:</span>
+                <span className="font-semibold text-foreground">{record.sbuCourse}</span>
               </div>
               <div>
-                <span className="text-zinc-500 font-medium block">SBU Roll No:</span>
-                <span className="font-semibold text-zinc-800">{record.sbuRollNo}</span>
+                <span className="text-muted-foreground font-medium block">SBU Roll No:</span>
+                <span className="font-semibold text-foreground">{record.sbuRollNo}</span>
               </div>
             </div>
 
             {record.enrollmentNo && (
-              <div className="bg-emerald-50 border border-emerald-300 p-3 rounded-lg text-xs">
-                <span className="text-emerald-800 font-semibold block">
+              <div className="bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-lg text-xs">
+                <span className="text-emerald-700 dark:text-emerald-400 font-semibold block">
                   Official Regimental Number:
                 </span>
-                <span className="text-base font-black text-emerald-950 font-mono">
+                <span className="text-base font-black text-emerald-800 dark:text-emerald-300 font-mono">
                   {record.enrollmentNo}
                 </span>
               </div>
             )}
 
             {record.officerRemarks && (
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-700">
-                <strong>Officer Remarks:</strong> {record.officerRemarks}
+              <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg text-xs text-foreground">
+                <strong className="text-primary">Officer Remarks:</strong> {record.officerRemarks}
               </div>
             )}
 
             <div className="pt-2 flex justify-between items-center">
               <button
                 onClick={() => onOpenPrintableSlip?.(record)}
-                className="bg-zinc-900 hover:bg-zinc-900 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center space-x-1.5 cursor-pointer"
+                className="bg-foreground hover:bg-foreground/90 text-background font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 cursor-pointer transition-colors shadow-xs"
               >
-                <FileCheck2 className="w-3.5 h-3.5 text-blue-500" />
+                <FileCheck2 className="w-3.5 h-3.5" />
                 <span>View / Print Form 1 Slip</span>
               </button>
             </div>
