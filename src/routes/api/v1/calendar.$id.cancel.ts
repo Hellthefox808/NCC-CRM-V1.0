@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getAdmin, json } from "@backend/lib/ncc-db";
 import { prompterEngine } from "@backend/services/prompter/prompter.service";
-import { queueEmailJob } from "@backend/services/queue/queue.service";
+import { queueEmailJobsBatch } from "@backend/services/queue/queue.service";
 import { emitCalendarEventCancelled } from "@backend/services/socket/socket.server";
 import { recordAuditLog } from "@backend/lib/audit-log.server";
 
@@ -51,14 +51,18 @@ export const Route = createFileRoute("/api/v1/calendar/$id/cancel")({
             .filter(Boolean);
           const emailTargets = recipients.length > 0 ? recipients : ["cadet@sbu.ac.in"];
 
-          for (const email of emailTargets) {
-            await queueEmailJob("sendEventCancelled", email, {
+          const emailJobs = emailTargets.map((email) => ({
+            jobType: "sendEventCancelled",
+            recipient: email,
+            payload: {
               eventTitle: event.title,
               startTime: event.start_time,
               reason,
               eventId: event.id,
-            });
-          }
+            },
+          }));
+
+          await queueEmailJobsBatch(emailJobs);
 
           // 4. Audit Log
           await recordAuditLog({

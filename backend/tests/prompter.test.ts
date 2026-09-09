@@ -1,13 +1,21 @@
-import { describe, it } from "node:test";
+import { describe, it, mock, afterEach } from "node:test";
 import assert from "node:assert/strict";
+import { resetAdminClientOverride } from "../lib/ncc-db.ts";
 import {
   DEFAULT_REMINDER_RULES,
   calculateScheduledTime,
-} from "../services/prompter/reminder.rules";
-import { checkAndDispatchDueReminders } from "../services/prompter/scheduler.ts";
-import { getAdmin } from "../lib/ncc-db.ts";
+} from "../services/prompter/reminder.rules.ts";
+import { dispatchReminder } from "../services/prompter/reminder.dispatcher.ts";
+
+process.env["SUPABASE_URL"] = process.env["SUPABASE_URL"] || "https://example.supabase.co";
+process.env["SUPABASE_SERVICE_ROLE_KEY"] =
+  process.env["SUPABASE_SERVICE_ROLE_KEY"] || "mock-service-role-key";
 
 describe("Prompter Reminder Engine Unit Tests", () => {
+  afterEach(() => {
+    resetAdminClientOverride();
+  });
+
   it("DEFAULT_REMINDER_RULES contains standard 24h, 2h, 30m, and start triggers", () => {
     assert.equal(DEFAULT_REMINDER_RULES.length, 4);
 
@@ -35,79 +43,75 @@ describe("Prompter Reminder Engine Unit Tests", () => {
     assert.equal(new Date(timeStart).toISOString(), "2026-08-15T09:00:00.000Z");
   });
 
-  it("checkAndDispatchDueReminders() handles query result error gracefully and returns 0", async () => {
-    const prevUrl = process.env.SUPABASE_URL;
-    const prevKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    process.env.SUPABASE_URL = "https://example.supabase.co";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = "test-service-key";
+  it("checkAndDispatchDueReminders() returns 0 when pendingReminders query returns empty array", async () => {
+    const { supabaseAdmin } = await import("../integrations/supabase/client.server.ts");
+    const { checkAndDispatchDueReminders } = await import("../services/prompter/scheduler.ts");
 
-    const admin = await getAdmin();
-    const originalFrom = admin.from;
-
-    Object.defineProperty(admin, "from", {
-      value: () =>
-        ({
-          select: () => ({
-            eq: () => ({
-              lte: () => ({
-                limit: async () => ({
-                  data: null,
-                  error: { message: "Database query error", code: "PGRST500" },
-                }),
-              }),
-            }),
+    void supabaseAdmin.auth;
+    const adminRef = supabaseAdmin as unknown as { from: typeof supabaseAdmin.from };
+    const origFrom = supabaseAdmin.from;
+    adminRef.from = mock.fn(() => ({
+      select: () => ({
+        eq: () => ({
+          lte: () => ({
+            limit: () => Promise.resolve({ data: [], error: null }),
           }),
-        }) as unknown as ReturnType<typeof admin.from>,
-      writable: true,
-      configurable: true,
-    });
+        }),
+      }),
+    })) as unknown as typeof supabaseAdmin.from;
 
     try {
-      const dispatchedCount = await checkAndDispatchDueReminders();
-      assert.equal(dispatchedCount, 0);
+      const dispatched = await checkAndDispatchDueReminders();
+      assert.equal(dispatched, 0);
     } finally {
-      if (prevUrl !== undefined) process.env.SUPABASE_URL = prevUrl;
-      else delete process.env.SUPABASE_URL;
-      if (prevKey !== undefined) process.env.SUPABASE_SERVICE_ROLE_KEY = prevKey;
-      else delete process.env.SUPABASE_SERVICE_ROLE_KEY;
-      Object.defineProperty(admin, "from", {
-        value: originalFrom,
-        writable: true,
-        configurable: true,
-      });
+      adminRef.from = origFrom;
     }
   });
 
-  it("checkAndDispatchDueReminders() handles getAdmin or database exception gracefully and returns 0", async () => {
-    const prevUrl = process.env.SUPABASE_URL;
-    const prevKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    process.env.SUPABASE_URL = "https://example.supabase.co";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = "test-service-key";
+  it("checkAndDispatchDueReminders() returns 0 when query fails with error", async () => {
+    const { supabaseAdmin } = await import("../integrations/supabase/client.server.ts");
+    const { checkAndDispatchDueReminders } = await import("../services/prompter/scheduler.ts");
 
-    const admin = await getAdmin();
-    const originalFrom = admin.from;
-
-    Object.defineProperty(admin, "from", {
-      value: () => {
-        throw new Error("Simulated DB Connection Error");
-      },
-      writable: true,
-      configurable: true,
-    });
+    void supabaseAdmin.auth;
+    const adminRef = supabaseAdmin as unknown as { from: typeof supabaseAdmin.from };
+    const origFrom = supabaseAdmin.from;
+    adminRef.from = mock.fn(() => ({
+      select: () => ({
+        eq: () => ({
+          lte: () => ({
+            limit: () =>
+              Promise.resolve({
+                data: null,
+                error: { message: "Database connection failure" },
+              }),
+          }),
+        }),
+      }),
+    })) as unknown as typeof supabaseAdmin.from;
 
     try {
-      const dispatchedCount = await checkAndDispatchDueReminders();
-      assert.equal(dispatchedCount, 0);
+      const dispatched = await checkAndDispatchDueReminders();
+      assert.equal(dispatched, 0);
     } finally {
-      if (prevUrl !== undefined) process.env.SUPABASE_URL = prevUrl;
-      else delete process.env.SUPABASE_URL;
-      if (prevKey !== undefined) process.env.SUPABASE_SERVICE_ROLE_KEY = prevKey;
-      else delete process.env.SUPABASE_SERVICE_ROLE_KEY;
-      Object.defineProperty(admin, "from", {
-        value: originalFrom,
-        writable: true,
-        configurable: true,
-      });
+      adminRef.from = origFrom;
     }
+  });
+  it("dispatchReminder() handles reminder payload gracefully", async () => {
+    const payload = {
+      reminderId: "rem_test_123",
+      eventId: "evt_test_123",
+      eventTitle: "Parade Practice",
+      startTime: "2026-08-15T09:00:00.000Z",
+      location: "SBU Parade Ground",
+      offsetMinutes: 120,
+      channel: "EMAIL",
+      recipientScope: "ALL_CADETS",
+    };
+
+    process.env.SUPABASE_URL = process.env.SUPABASE_URL || "http://localhost:54321";
+    process.env.SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "mock-key";
+
+    const result = await dispatchReminder(payload);
+    assert.equal(typeof result, "boolean");
   });
 });

@@ -5,10 +5,33 @@
  * frontend SDK (`/api/v1/...`) keeps working unchanged.
  */
 
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@backend/integrations/supabase/types";
+
+export type AdminClient = SupabaseClient<Database>;
 export type CadetRow = Record<string, unknown>;
 
+let adminClientOverride: unknown = null;
+
+export function setAdminClientOverride(override: unknown) {
+  adminClientOverride = override;
+}
+
+export function resetAdminClientOverride() {
+  adminClientOverride = null;
+}
+
 /** Loads the privileged client lazily so it never enters a client bundle. */
-export async function getAdmin() {
+export async function getAdmin(): Promise<AdminClient> {
+  if (adminClientOverride !== null) {
+    if (typeof adminClientOverride === "function") {
+      return (adminClientOverride as () => AdminClient)();
+    }
+    if (adminClientOverride instanceof Error) {
+      throw adminClientOverride;
+    }
+    return adminClientOverride as AdminClient;
+  }
   const { supabaseAdmin } = await import("@backend/integrations/supabase/client.server");
   return supabaseAdmin;
 }

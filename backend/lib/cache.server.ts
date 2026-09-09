@@ -103,7 +103,7 @@ export async function invalidateCache(key: string): Promise<void> {
  * Invalidates all keys matching a given prefix in both L1 memory and L2 Redis cache.
  */
 export async function invalidateCachePrefix(prefix: string): Promise<void> {
-  for (const k of Array.from(l1Cache.keys())) {
+  for (const k of l1Cache.keys()) {
     if (k.startsWith(prefix)) {
       l1Cache.delete(k);
     }

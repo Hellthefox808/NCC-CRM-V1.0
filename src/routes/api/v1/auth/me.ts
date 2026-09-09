@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { bearerToken, getAdmin, json } from "@backend/lib/ncc-db";
+import { getOrSetCache } from "@backend/lib/cache.server";
+import { invalidateSessionCache } from "@backend/lib/cadet-registry.server";
 
 export const Route = createFileRoute("/api/v1/auth/me")({
   server: {
@@ -11,19 +13,24 @@ export const Route = createFileRoute("/api/v1/auth/me")({
         }
 
         try {
-          const admin = await getAdmin();
-          const { data: session } = await admin
-            .from("app_sessions")
-            .select("*")
-            .eq("token", token)
-            .maybeSingle();
+          const session = await getOrSetCache(`ncc:session:${token}`, 300, async () => {
+            const admin = await getAdmin();
+            const { data } = await admin
+              .from("app_sessions")
+              .select("*")
+              .eq("token", token)
+              .maybeSingle();
+            return data ?? null;
+          });
 
           if (!session) {
             return json({ success: false, error: "Session not found.", code: "UNAUTHORIZED" }, 401);
           }
 
           if (Date.now() > new Date(session.expires_at).getTime()) {
+            const admin = await getAdmin();
             await admin.from("app_sessions").delete().eq("id", session.id);
+            await invalidateSessionCache(token);
             return json(
               { success: false, error: "Session expired.", code: "SESSION_EXPIRED" },
               401,

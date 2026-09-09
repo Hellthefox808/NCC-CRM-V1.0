@@ -1,5 +1,5 @@
 import { getAdmin } from "../../lib/ncc-db.ts";
-import { queueEmailJob } from "../queue/queue.service.ts";
+import { queueEmailJobsBatch } from "../queue/queue.service.ts";
 import { emitNotification, emitCalendarUpdate } from "../socket/socket.server.ts";
 
 export interface ReminderDispatcherPayload {
@@ -14,8 +14,9 @@ export interface ReminderDispatcherPayload {
 }
 
 export async function dispatchReminder(payload: ReminderDispatcherPayload): Promise<boolean> {
-  const admin = await getAdmin();
+  let admin: Awaited<ReturnType<typeof getAdmin>> | undefined;
   try {
+    admin = await getAdmin();
     const timeText =
       payload.offsetMinutes === 1440
         ? "24 hours before"
@@ -86,15 +87,19 @@ export async function dispatchReminder(payload: ReminderDispatcherPayload): Prom
         recipients = ["cadet@sbu.ac.in"];
       }
 
-      for (const email of recipients) {
-        await queueEmailJob("sendReminder", email, {
+      const emailJobs = recipients.map((email) => ({
+        jobType: "sendReminder",
+        recipient: email,
+        payload: {
           eventTitle: payload.eventTitle,
           startTime: payload.startTime,
           location: payload.location,
           reminderTimeText: timeText,
           eventId: payload.eventId,
-        });
-      }
+        },
+      }));
+
+      await queueEmailJobsBatch(emailJobs);
     }
 
     // 4. Update reminder status in DB to SENT
@@ -109,10 +114,16 @@ export async function dispatchReminder(payload: ReminderDispatcherPayload): Prom
     return true;
   } catch (err) {
     console.error("[Reminder Dispatcher Error]", err);
-    await admin
-      .from("calendar_event_reminders")
-      .update({ status: "FAILED" })
-      .eq("id", payload.reminderId);
+    if (admin) {
+      try {
+        await admin
+          .from("calendar_event_reminders")
+          .update({ status: "FAILED" })
+          .eq("id", payload.reminderId);
+      } catch {
+        // ignore failure during secondary error handling update
+      }
+    }
     return false;
   }
 }

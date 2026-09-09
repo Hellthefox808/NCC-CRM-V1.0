@@ -2461,44 +2461,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
               </button>
             </div>
 
-            {/* Interactive Status Flow Stepper */}
-            <div className="space-y-1.5">
-              <label className="font-black text-zinc-300 uppercase text-[11px]">
-                Progression Stage
-              </label>
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 p-1.5 glass-panel rounded-2xl border border-white/10 text-center">
-                {[
-                  { id: "Submitted", label: "Scrutiny" },
-                  { id: "Physical Scheduled", label: "PET Run" },
-                  { id: "Medical Cleared", label: "Medical" },
-                  { id: "Selected", label: "Selected" },
-                  { id: "Enrolled", label: "Enrolled" },
-                  { id: "Rejected", label: "Rejected" },
-                ].map((step) => {
-                  const isCur = editingStatus === step.id;
-                  return (
-                    <button
-                      key={step.id}
-                      type="button"
-                      onClick={() => setEditingStatus(step.id)}
-                      className={`py-2 px-1 rounded-xl text-[10px] font-extrabold transition-all cursor-pointer ${
-                        isCur
-                          ? step.id === "Rejected"
-                            ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
-                            : step.id === "Enrolled" || step.id === "Selected"
-                              ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/40"
-                              : "bg-blue-600 text-white shadow-lg shadow-blue-600/40"
-                          : "text-zinc-400 hover:text-white hover:bg-white/5"
-                      }`}
-                    >
-                      {step.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
             <form onSubmit={handleUpdateStatus} className="space-y-4 text-xs">
+              <div>
+                <label className="font-black text-zinc-300 uppercase">Processing Status</label>
+                <select
+                  value={editingStatus}
+                  onChange={(e) => setEditingStatus(e.target.value)}
+                  className="w-full mt-1 px-3 py-2 glass-input rounded-xl font-bold"
+                >
+                  <option value="Submitted" className="bg-[#0b1329] text-white">
+                    Submitted (Under Scrutiny)
+                  </option>
+                  <option value="Physical Scheduled" className="bg-[#0b1329] text-white">
+                    Physical Test Scheduled
+                  </option>
+                  <option value="Medical Cleared" className="bg-[#0b1329] text-white">
+                    Medical Test Cleared
+                  </option>
+                  <option value="Selected" className="bg-[#0b1329] text-white">
+                    Selected for Enrollment
+                  </option>
+                  <option value="Enrolled" className="bg-[#0b1329] text-white">
+                    Enrolled (Regimental No Allocated)
+                  </option>
+                  <option value="Rejected" className="bg-[#0b1329] text-white">
+                    Rejected
+                  </option>
+                </select>
+              </div>
+
               {/* STAGE 1: SUBMITTED (UNDER SCRUTINY / CORRECTION) */}
               {editingStatus === "Submitted" && (
                 <div className="glass-panel p-4 rounded-2xl border border-amber-500/20 space-y-2 bg-amber-500/5">

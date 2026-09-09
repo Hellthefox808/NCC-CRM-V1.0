@@ -44,7 +44,7 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
-const ALLOWED_ORIGINS = [
+export const ALLOWED_ORIGINS = [
   "https://19th-jh-ncc-crm-v1-0.vercel.app",
   "https://ncc.sbu.ac.in",
   "http://localhost:3000",
