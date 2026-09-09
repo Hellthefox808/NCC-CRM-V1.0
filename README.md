@@ -3,10 +3,11 @@
 > Enterprise Digital Management, Cadet Enrollment & Institutional Identity Platform for **19 Jharkhand Battalion NCC, Sarala Birla University (SBU), Ranchi**.
 
 [![Version](https://img.shields.io/badge/version-1.0.0--PROD-blue.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
-[![Unit Tests](<https://img.shields.io/badge/tests-60%2F60%20passing%20(100%25)-brightgreen.svg>)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
-[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0/actions)
+[![Unit Tests](<https://img.shields.io/badge/tests-89%2F89%20passing%20(100%25)-brightgreen.svg>)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions%20Hardened-blue.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0/actions)
 [![Build Status](https://img.shields.io/badge/build-Vite%208.2%20%2B%20Nitro%203.0%20Passing-brightgreen.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
 [![TypeScript](<https://img.shields.io/badge/typescript-strict%205.8%20(0%20errors)-blue.svg>)](https://www.typescriptlang.org/)
+[![Design System](https://img.shields.io/badge/design-Regimental%20Glassmorphism-gold.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
 [![Database](https://img.shields.io/badge/database-Supabase%20PostgreSQL%2015%20%2B%20Prisma-3ECF8E.svg)](https://supabase.com)
 [![Frontend](https://img.shields.io/badge/frontend-Vercel%20%7C%20Cloudflare-black.svg)](https://19th-jh-ncc-crm-v1-0.vercel.app/)
 [![Backend](https://img.shields.io/badge/backend-Netlify%20Node%2022%20SSR-00C7B7.svg)](https://agent-6a88700c8504a--spectacular-entremet-464b43.netlify.app/)
@@ -58,7 +59,8 @@ graph TD
 
 ### Technical Stack & Key Capabilities
 
-- **Frontend Application**: React 19, TanStack Start, TanStack Router, Tailwind CSS v4, Radix UI, Lucide Icons, Framer Motion.
+- **Frontend Application**: React 19, TanStack Start (SSR), TanStack Router, Tailwind CSS v4, Radix UI, Lucide Icons, Framer Motion.
+- **Design System**: Regimental Glassmorphism (`.regimental-glass-panel`, `.regimental-glass-panel-elevated`, `.regimental-badge`, `.regimental-gold-pill`, `.regimental-tricolor-gradient`) with military prestige styling and WCAG 2.2 AA light/dark mode contrast compliance.
 - **Backend & SSR Engine**: Nitro 3.0 + Vite 8.2 compiling unified TypeScript serverless functions across Node 22 and Cloudflare Workers.
 - **Identity & Access Control**: HttpOnly Cookie Sessions (`ncc_session`), Salted `scrypt` (`N=16384, r=8, p=1`), Single-Use 256-bit SHA-256 Activation Tokens.
 - **Form 1 Cadet Enrollment Engine**: 5-step wizard supporting Senior Division (`SD`) & Senior Wing (`SW`), auto-sanitizing Indian mobile numbers (`+91`), 12-digit Aadhaar validation, and 1-click Application Number copy UX.
@@ -70,6 +72,25 @@ graph TD
 - **Export Capabilities**: RFC 4180 CSV export with UTF-8 BOM (`\uFEFF`) for seamless Microsoft Excel nominal roll generation.
 
 ---
+
+## 🎨 Regimental Glassmorphism & UI/UX Architecture
+
+The portal's visual language is engineered under the **Regimental Glassmorphism** design system, combining authentic Indian military prestige with modern, accessible web ergonomics.
+
+### 1. Regimental Palette & Semantic Tokens
+
+- **Indian Armed Forces Tricolor**: Navy Blue (`#1E3A8A`), Army Red (`#DC2626`), and Sky Blue (`#0284C7`) accented with Regimental Brass Gold (`#FFD700` / `#D4AF37`).
+- **Adaptive Contrast Compliance**: Eliminates raw hardcoded light-theme literals (`#8C5E3C`, `#3B281C`, `bg-white`, `text-zinc-950`) in favor of dynamic CSS variable tokens (`var(--color-background)`, `var(--color-card)`, `var(--color-border)`, `var(--color-foreground)`), guaranteeing WCAG 2.2 AA legibility across both dark and light modes.
+- **Frosted Glass Elevation**: Multi-layered panels with hardware-accelerated `backdrop-filter: blur(24px-28px)` and ambient brass edge glows.
+
+### 2. Modernized Public Landing Page Components
+
+- **Command Hero Card** ([`HeroSection.tsx`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/frontend/features/HeroSection.tsx)): Elevated frosted glass command station framed with an Indian tricolor hairline header accent, brass-ringed dual crests (NCC & SBU), and verified unit status metrics.
+- **18-Digit Application Tracker**: Interactive real-time search input with numeric enforcement, dynamic length counter (`${length}/18`), animated progress indicator, and masked PII status display.
+- **Charter, Motto & Bilingual NCC Song** ([`AboutNCC.tsx`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/frontend/features/AboutNCC.tsx)): Elevated "Unity and Discipline" regimental showcase, interactive Physical Efficiency Test (PET) standards switcher for Senior Division (SD) and Senior Wing (SW) cadres, and a bilingual Hindi/English lyrical anthem modal.
+- **Activities & Training Camps Gallery** ([`ActivitiesGallery.tsx`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/frontend/features/ActivitiesGallery.tsx)): Dual-mode segmented switcher with smooth Framer Motion layout pill transitions and dynamic category filter keylines.
+- **500-Mark Certificate Scheme Table** ([`RanksSyllabusSection.tsx`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/frontend/features/RanksSyllabusSection.tsx)): Structured military-grade breakdown of NCC 'A', 'B', and 'C' examination formats (Written: 350 marks, Practical: 150 marks) and Alpha/Bravo/Charlie grading criteria.
+- **Unified Semantic Footer** ([`Footer.tsx`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/frontend/features/Footer.tsx)): Standardized battalion hierarchy, quick access pathways, interactive campus map chip, and copyright metadata.
 
 ## 🔄 Complete End-to-End System & Project Flow
 
@@ -230,18 +251,49 @@ Active Cadet Session <── Scrypt Set Password <── Email Activation Link �
 
 ---
 
+## 🚀 CI/CD Pipeline & Continuous Delivery
+
+The repository operates an enterprise, zero-trust Continuous Integration and Continuous Delivery pipeline implemented via GitHub Actions. For complete specifications and operational diagrams, see [`docs/CI_CD.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/CI_CD.md).
+
+### 1. Parallel CI Quality Matrix ([`.github/workflows/ci.yml`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/.github/workflows/ci.yml))
+
+Every push and pull request targeting `main` triggers 7 parallel and sequenced validation gates:
+
+- **`lint`**: ESLint 9 static analysis across all frontend, backend, and integration scripts.
+- **`typecheck`**: Strict TypeScript compiler verification (`tsc --noEmit`).
+- **`test`**: Execution of the complete 89-test automated test matrix across 16 test suites.
+- **`prisma-validate`**: Prisma schema integrity validation and client code generation.
+- **`security-check`**: Dependency vulnerability audit (`npm audit --audit-level=critical`) and Git commit history secret pattern inspection.
+- **`build`**: Production compilation of client assets and Nitro SSR server bundle into `.output/`.
+- **`docker-validate`**: Multi-stage Docker container build verification with caching.
+
+### 2. Continuous Delivery & Rollback Automation ([`.github/workflows/deploy.yml`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/.github/workflows/deploy.yml))
+
+- **Immutable Artifacts**: Compiles production bundles and builds Docker containers tagged with git commit SHA (`ncc-crm:${{ github.sha }}`).
+- **Automated Health Probes**: Executes multi-probe liveness (`/api/v1/health?type=liveness`) and readiness checks with exponential backoff retries.
+- **Smoke Testing**: Verifies SSR root page HTML serving and public enrollment status tracking API endpoints.
+- **Automated Failure Handling**: Triggers automated rollback notifications on health or probe failure.
+
+### 3. PR Quality Gate & Scheduled Security Audit
+
+- **PR Title Hygiene** ([`.github/workflows/pr-validation.yml`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/.github/workflows/pr-validation.yml)): Enforces Conventional Commits naming conventions and flags oversized pull requests exceeding 2,500 lines.
+- **Weekly Security Scans** ([`.github/workflows/security-audit.yml`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/.github/workflows/security-audit.yml)): Runs every Sunday at midnight UTC to audit dependency advisories and deep Git patch history for exposed tokens or RSA keys.
+
+---
+
 ## 📁 Repository Documentation Matrix
 
 Detailed architecture and operations guides are located in the [`docs/`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/) directory:
 
-| Document                                                                                                              | Description                                                                          |
-| :-------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------- |
-| **[`docs/ARCHITECTURE.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/ARCHITECTURE.md)**                 | Technical topology, Nitro SSR server architecture, and security boundaries.          |
-| **[`docs/DATABASE.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/DATABASE.md)**                         | Complete database schema, 14 tables, ERD, SQL migrations, and RLS policies.          |
-| **[`docs/PROJECT-CONTEXT.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/PROJECT-CONTEXT.md)**           | System architecture, component stacks, and operational boundaries.                   |
-| **[`docs/TEST-MATRIX.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/TEST-MATRIX.md)**                   | Comprehensive test matrix of all 60 automated unit, integration, and security tests. |
-| **[`docs/REDIS-MODEL.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/REDIS-MODEL.md)**                   | Multi-tier caching architecture and hybrid rate limiting specification.              |
-| **[`docs/PRODUCTION-READINESS.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/PRODUCTION-READINESS.md)** | Production deployment attestation and environment checklist.                         |
+| Document                                                                                                              | Description                                                                                           |
+| :-------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------- |
+| **[`docs/CI_CD.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/CI_CD.md)**                               | Production CI/CD pipeline architecture, quality gates, and automated deployment guide.                |
+| **[`docs/ARCHITECTURE.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/ARCHITECTURE.md)**                 | Technical topology, Nitro SSR server architecture, and security boundaries.                           |
+| **[`docs/DATABASE.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/DATABASE.md)**                         | Complete database schema, 14 tables, ERD, SQL migrations, and RLS policies.                           |
+| **[`docs/PROJECT-CONTEXT.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/PROJECT-CONTEXT.md)**           | System architecture, component stacks, test metrics, and operational state.                           |
+| **[`docs/TEST-MATRIX.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/TEST-MATRIX.md)**                   | Comprehensive test matrix of all 89 automated unit, integration, and security tests across 16 suites. |
+| **[`docs/REDIS-MODEL.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/REDIS-MODEL.md)**                   | Multi-tier caching architecture and hybrid rate limiting specification.                               |
+| **[`docs/PRODUCTION-READINESS.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/PRODUCTION-READINESS.md)** | Production deployment attestation and environment checklist.                                          |
 
 ---
 
@@ -280,8 +332,15 @@ Application will be accessible at `http://localhost:3000`.
 ### 3. Run Automated Tests
 
 ```bash
-# Execute full test suite (60 tests across 11 suites)
-npm run test
+# Execute full test suite (89 tests across 16 suites, 100% pass)
+npm test
+
+# Run strict TypeScript type verification (0 errors)
+npm run typecheck
+
+# Validate Prisma schema and generate ORM client
+npm run prisma:validate
+npm run prisma:generate
 ```
 
 ### 4. Build Production Bundle
@@ -364,14 +423,23 @@ docker-compose logs -f
 ## 🧪 Testing & Quality Assurance
 
 ```bash
-# Execute unit & integration test suite (60/60 passing, 100%)
+# Execute unit & integration test matrix (89/89 passing across 16 suites, 100%)
 npm test
 
-# Run ESLint analysis (0 errors)
+# Run ESLint static code analysis (0 errors)
 npm run lint
 
-# Run TypeScript type safety verification (0 errors)
-npx tsc --noEmit
+# Run strict TypeScript compiler type verification (0 errors)
+npm run typecheck
+
+# Validate Prisma schema definitions
+npm run prisma:validate
+
+# Audit dependencies for critical security advisories (0 critical)
+npm audit --audit-level=critical
+
+# Compile production bundle (Vite 8.2 + Nitro 3.0 SSR)
+npm run build
 
 # Format codebase with Prettier
 npm run format
