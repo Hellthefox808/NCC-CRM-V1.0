@@ -4,15 +4,23 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
+# Build arguments for Supabase client configuration
+ARG VITE_SUPABASE_URL=https://qsrmzajadmmgqhfbxdwu.supabase.co
+ARG VITE_SUPABASE_ANON_KEY=sb_publishable_ru09YlOy1LNorCk6y-SD2w_daWCqr6U
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+
 # Install dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 # Copy source files
 COPY . .
 
-# Build production bundle
+# Generate Prisma Client & Build production bundle
 ENV NODE_ENV=production
+ENV NITRO_PRESET=node-server
+RUN npx prisma generate
 RUN npm run build
 
 # Stage 2: Runtime Production Image

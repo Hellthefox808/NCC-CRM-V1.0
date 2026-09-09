@@ -81,35 +81,35 @@ export const RanksSyllabusSection: React.FC = () => {
           </p>
         </div>
 
-        {/* 500-Mark Examination Scheme — Light Coffee Theme */}
-        <div className="coffee-light-card rounded-[22px] overflow-hidden shadow-xl">
-          <div className="px-6 sm:px-8 py-6 border-b border-[#D6C5B3] flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* 500-Mark Examination Scheme — Regimental Glassmorphic Theme */}
+        <div className="regimental-glass-panel-elevated rounded-[22px] overflow-hidden shadow-xl border border-border">
+          <div className="px-6 sm:px-8 py-6 border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="space-y-1.5">
-              <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#8C5E3C]">
-                <Target className="w-3.5 h-3.5 text-[#8C5E3C]" />
+              <div className="regimental-badge">
+                <Target className="w-3.5 h-3.5 text-blue-700 dark:text-amber-400" />
                 <span>Certificate Assessment</span>
               </div>
-              <h3 className="font-display text-2xl font-black tracking-tight text-[#3B281C]">
+              <h3 className="font-display text-2xl font-black tracking-tight text-foreground">
                 500-Mark Written &amp; Practical Scheme
               </h3>
             </div>
-            <div className="rounded-xl border border-[#D6C5B3] bg-[#EFE5D8]/80 px-4 py-2.5 text-xs font-bold text-[#5C3D26] backdrop-blur-md">
+            <div className="regimental-gold-pill px-4 py-2 text-xs font-bold shadow-xs">
               Pass criteria: {EXAM_MARKS_AND_GRADING.passCriteria}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#D6C5B3]">
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
             {/* Written Theory */}
             <div className="p-6 sm:p-8 space-y-4">
               <div className="flex items-baseline justify-between gap-3">
-                <span className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#7A5435]">
+                <span className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-blue-700 dark:text-amber-400 font-mono">
                   Written Theory
                 </span>
-                <span className="numeric font-display text-3xl font-black text-[#8C5E3C]">
+                <span className="numeric font-display text-3xl font-black text-foreground">
                   {EXAM_MARKS_AND_GRADING.writtenMarks}
                 </span>
               </div>
-              <p className="text-sm text-[#4A3324] font-medium leading-relaxed">
+              <p className="text-sm text-muted-foreground font-medium leading-relaxed">
                 Common subjects — NCC history, drill theory, weapon training, leadership, disaster
                 management — plus specialised Army Wing subjects: map reading, armed forces
                 organisation, field &amp; battle craft.
@@ -119,17 +119,17 @@ export const RanksSyllabusSection: React.FC = () => {
             {/* Practical */}
             <div className="p-6 sm:p-8 space-y-4">
               <div className="flex items-baseline justify-between gap-3">
-                <span className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#7A5435]">
+                <span className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-blue-700 dark:text-amber-400 font-mono">
                   Practical &amp; Range
                 </span>
-                <span className="numeric font-display text-3xl font-black text-[#8C5E3C]">
+                <span className="numeric font-display text-3xl font-black text-foreground">
                   {EXAM_MARKS_AND_GRADING.practicalMarks}
                 </span>
               </div>
-              <ul className="space-y-2 text-sm text-[#4A3324] font-medium">
+              <ul className="space-y-2 text-sm text-muted-foreground font-medium">
                 {EXAM_MARKS_AND_GRADING.practicalStations.map((st, i) => (
                   <li key={i} className="flex items-start gap-2 leading-relaxed">
-                    <CheckCircle2 className="w-3.5 h-3.5 mt-1 shrink-0 text-[#8C5E3C]" />
+                    <CheckCircle2 className="w-3.5 h-3.5 mt-1 shrink-0 text-emerald-600 dark:text-emerald-400" />
                     <span>{st}</span>
                   </li>
                 ))}
@@ -138,17 +138,24 @@ export const RanksSyllabusSection: React.FC = () => {
 
             {/* Grading */}
             <div className="p-6 sm:p-8 space-y-4">
-              <span className="block text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#7A5435]">
+              <span className="block text-[11px] font-extrabold uppercase tracking-[0.14em] text-blue-700 dark:text-amber-400 font-mono">
                 Grading Benchmark
               </span>
               <div className="space-y-3">
                 {EXAM_MARKS_AND_GRADING.grades.map((gr, i) => (
-                  <div key={i} className="space-y-1 border-l-2 border-[#8C5E3C] pl-3">
-                    <div className="flex items-baseline justify-between gap-2 text-sm font-bold text-[#3B281C]">
+                  <div
+                    key={i}
+                    className="space-y-1 border-l-2 border-blue-600 dark:border-amber-500 pl-3"
+                  >
+                    <div className="flex items-baseline justify-between gap-2 text-sm font-bold text-foreground">
                       <span>{gr.grade}</span>
-                      <span className="numeric text-xs font-black text-[#8C5E3C]">{gr.range}</span>
+                      <span className="numeric text-xs font-black text-blue-700 dark:text-amber-400 font-mono">
+                        {gr.range}
+                      </span>
                     </div>
-                    <p className="text-xs text-[#5C4230] font-medium leading-relaxed">{gr.perk}</p>
+                    <p className="text-xs text-muted-foreground font-medium leading-relaxed">
+                      {gr.perk}
+                    </p>
                   </div>
                 ))}
               </div>

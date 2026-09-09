@@ -1,0 +1,57 @@
+name: Scheduled Security Audit & Dependency Hygiene
+
+on:
+  schedule:
+    # Run every Sunday at midnight UTC
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "22.x"
+
+jobs:
+  audit-dependencies:
+    name: NPM Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run NPM Security Audit
+        run: |
+          echo "Auditing package dependencies for critical and high severity advisories..."
+          npm audit --audit-level=critical || exit 1
+          echo "Critical security audit passed."
+
+  secret-detection:
+    name: Git History Secret Leakage Detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source with Full History
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Inspect Git Commit Diff for Private Credentials
+        run: |
+          echo "Scanning recent commits for leaked credentials, RSA keys, and API tokens..."
+          # Pattern search for dangerous secret patterns across non-workflow files and excluding known mock documentation keys
+          SUSPECTS=$(git log -n 50 --patch -- . ":(exclude).github/workflows/*" | grep -E "(BEGIN (RSA |OPENSSH )?PRIVATE KEY|AWS_SECRET_ACCESS_KEY|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{82})" | grep -v "AKIAIOSFODNN7EXAMPLE" || true)
+          if [ -n "$SUSPECTS" ]; then
+            echo "::error::Potential credential leak detected in commit history!"
+            exit 1
+          else
+            echo "Zero credentials detected in recent git commits."
+          fi

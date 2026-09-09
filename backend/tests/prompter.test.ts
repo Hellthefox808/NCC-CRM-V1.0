@@ -36,6 +36,8 @@ describe("Prompter Reminder Engine Unit Tests", () => {
   });
 
   it("checkAndDispatchDueReminders() handles query result error gracefully and returns 0", async () => {
+    const prevUrl = process.env.SUPABASE_URL;
+    const prevKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     process.env.SUPABASE_URL = "https://example.supabase.co";
     process.env.SUPABASE_SERVICE_ROLE_KEY = "test-service-key";
 
@@ -55,7 +57,7 @@ describe("Prompter Reminder Engine Unit Tests", () => {
               }),
             }),
           }),
-        }) as any,
+        }) as unknown as ReturnType<typeof admin.from>,
       writable: true,
       configurable: true,
     });
@@ -64,6 +66,10 @@ describe("Prompter Reminder Engine Unit Tests", () => {
       const dispatchedCount = await checkAndDispatchDueReminders();
       assert.equal(dispatchedCount, 0);
     } finally {
+      if (prevUrl !== undefined) process.env.SUPABASE_URL = prevUrl;
+      else delete process.env.SUPABASE_URL;
+      if (prevKey !== undefined) process.env.SUPABASE_SERVICE_ROLE_KEY = prevKey;
+      else delete process.env.SUPABASE_SERVICE_ROLE_KEY;
       Object.defineProperty(admin, "from", {
         value: originalFrom,
         writable: true,
@@ -73,6 +79,8 @@ describe("Prompter Reminder Engine Unit Tests", () => {
   });
 
   it("checkAndDispatchDueReminders() handles getAdmin or database exception gracefully and returns 0", async () => {
+    const prevUrl = process.env.SUPABASE_URL;
+    const prevKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     process.env.SUPABASE_URL = "https://example.supabase.co";
     process.env.SUPABASE_SERVICE_ROLE_KEY = "test-service-key";
 
@@ -91,6 +99,10 @@ describe("Prompter Reminder Engine Unit Tests", () => {
       const dispatchedCount = await checkAndDispatchDueReminders();
       assert.equal(dispatchedCount, 0);
     } finally {
+      if (prevUrl !== undefined) process.env.SUPABASE_URL = prevUrl;
+      else delete process.env.SUPABASE_URL;
+      if (prevKey !== undefined) process.env.SUPABASE_SERVICE_ROLE_KEY = prevKey;
+      else delete process.env.SUPABASE_SERVICE_ROLE_KEY;
       Object.defineProperty(admin, "from", {
         value: originalFrom,
         writable: true,

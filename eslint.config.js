@@ -25,6 +25,11 @@ export default tseslint.config(
       "docs",
       "nginx",
       "node_modules",
+      ".netlify",
+      ".cache",
+      ".system_generated",
+      "public",
+      "supabase/.temp",
     ],
   },
   {

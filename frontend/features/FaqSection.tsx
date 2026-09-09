@@ -416,27 +416,23 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
           )}
         </div>
 
-        {/* Helpdesk CTA Band - Light Coffee & NCC Tricolor Theme */}
-        <div className="relative overflow-hidden rounded-[22px] bg-[#FAF7F2] border border-[#8C5E3C]/35 p-6 sm:p-8 text-[#3B281C] shadow-lg">
+        {/* Helpdesk CTA Band — Regimental Glassmorphism */}
+        <div className="regimental-glass-panel-elevated relative overflow-hidden rounded-[22px] p-6 sm:p-8 shadow-xl border border-border">
           {/* Top NCC Tricolor Bar */}
-          <div className="absolute top-0 inset-x-0 h-1.5 grid grid-cols-3">
-            <div className="bg-[#1E3A8A]" title="Navy Blue - Indian Navy Wing" />
-            <div className="bg-[#DC2626]" title="Army Red - Indian Army Wing" />
-            <div className="bg-[#0284C7]" title="Light Blue - Indian Air Force Wing" />
-          </div>
+          <div className="absolute top-0 inset-x-0 h-1.5 regimental-tricolor-gradient" />
 
-          <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-[#8C5E3C]/10 blur-2xl pointer-events-none" />
+          <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-blue-500/10 blur-2xl pointer-events-none" />
 
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 pt-1">
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-[#8C5E3C] text-xs font-black uppercase tracking-wider">
-                <PhoneCall className="w-4 h-4 text-[#8C5E3C]" />
+              <div className="regimental-badge">
+                <PhoneCall className="w-3.5 h-3.5 text-blue-700 dark:text-amber-400" />
                 <span>Still have questions?</span>
               </div>
-              <h3 className="font-display text-xl sm:text-2xl font-black text-[#3B281C] tracking-tight">
+              <h3 className="font-display text-xl sm:text-2xl font-black text-foreground tracking-tight">
                 SBU NCC Coy Officer &amp; Battalion Helpdesk
               </h3>
-              <p className="text-xs sm:text-sm text-[#5C3D26] max-w-xl leading-relaxed font-bold">
+              <p className="text-xs sm:text-sm text-muted-foreground max-w-xl leading-relaxed font-medium">
                 Visit the NCC Office at SBU Birla Campus, Mahilong, Ranchi, or ask the 24/7 Subedar
                 Major AI Assistant for instant rules &amp; syllabus guidance.
               </p>
@@ -446,16 +442,16 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
               {openAiAssistant && (
                 <button
                   onClick={openAiAssistant}
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#F5ECE3] hover:bg-[#8C5E3C] text-[#5C3D26] hover:text-white border border-[#D6C5B3] text-xs sm:text-sm font-extrabold transition-all cursor-pointer shadow-xs"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-card hover:bg-muted text-foreground border border-border text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-xs hover:border-primary/40"
                 >
-                  <Sparkles className="w-4 h-4 text-[#8C5E3C] group-hover:text-white" />
+                  <Sparkles className="w-4 h-4 text-blue-600 dark:text-amber-400" />
                   <span>Ask AI Assistant</span>
                 </button>
               )}
               {onStartEnrollment && (
                 <button
                   onClick={onStartEnrollment}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#DC2626] via-[#1E3A8A] to-[#0284C7] hover:brightness-110 text-white text-xs sm:text-sm font-black shadow-md transition-all cursor-pointer uppercase tracking-wider"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-800 hover:brightness-110 text-white text-xs sm:text-sm font-black shadow-md transition-all cursor-pointer uppercase tracking-wider"
                   id="faq-apply-now-btn"
                 >
                   <span>Apply Form 1</span>

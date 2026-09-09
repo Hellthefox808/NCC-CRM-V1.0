@@ -51,16 +51,19 @@ export const AboutNCC: React.FC = () => {
   const tabRefs = React.useRef<Array<HTMLButtonElement | null>>([]);
 
   return (
-    <section className="py-12 bg-white border-b border-zinc-200" id="about-section">
+    <section
+      className="py-16 bg-background border-b border-border transition-colors"
+      id="about-section"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
             What Makes the National Cadet Corps Special?
           </h2>
-          <p className="text-zinc-600 text-sm sm:text-base leading-relaxed">
-            The National Cadet Corps (NCC) is the youth wing of the Indian Armed Forces.
-            Headquartered in New Delhi, it is open to school and college students on a voluntary
+          <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
+            The National Cadet Corps (NCC) is the premier youth organization of the Indian Armed
+            Forces. Headquartered in New Delhi, it is open to university students on a voluntary
             basis, instilling patriotism, character, camaraderie, and selfless service.
           </p>
         </div>
@@ -105,29 +108,30 @@ export const AboutNCC: React.FC = () => {
         {/* Leadership Carousel Section */}
         <LeadershipCarousel autoPlayInterval={4000} />
 
-        {/* Charter: Motto, Aims & Song — Light Coffee Theme */}
+        {/* Charter: Motto, Aims & Song — Regimental Glassmorphism */}
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="coffee-light-card relative overflow-hidden rounded-[22px] p-6 text-left sm:p-10"
+          className="regimental-glass-panel-elevated relative overflow-hidden rounded-[22px] p-6 text-left sm:p-10 shadow-xl"
         >
-          {/* animated ambient washes */}
-          <motion.span
-            animate={{ scale: [1, 1.08, 1], opacity: [0.25, 0.45, 0.25] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[#D4C2AB]/40 blur-3xl"
-          />
-          <motion.span
-            animate={{ scale: [1, 1.12, 1], opacity: [0.2, 0.35, 0.2] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-[#8C5E3C]/20 blur-3xl"
-          />
-          <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#8C5E3C]/50 to-transparent opacity-80" />
-          <span className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#6E4A33]/30 to-transparent opacity-60" />
+          {/* Top Tricolor Hairline Accent */}
+          <div className="absolute top-0 inset-x-0 h-1.5 regimental-tricolor-gradient" />
 
-          <div className="relative z-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:gap-14">
+          {/* Animated subtle ambient washes */}
+          <motion.span
+            animate={{ scale: [1, 1.08, 1], opacity: [0.15, 0.3, 0.15] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-blue-600/10 blur-3xl"
+          />
+          <motion.span
+            animate={{ scale: [1, 1.12, 1], opacity: [0.1, 0.25, 0.1] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-amber-500/10 blur-3xl"
+          />
+
+          <div className="relative z-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:gap-14 pt-2">
             {/* Motto rail */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -136,8 +140,8 @@ export const AboutNCC: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
               className="space-y-5"
             >
-              <div className="coffee-light-badge inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em]">
-                <Flag className="h-3.5 w-3.5 text-[#7A5435]" strokeWidth={2} />
+              <div className="regimental-badge">
+                <Flag className="h-3.5 w-3.5 text-blue-700 dark:text-amber-400" strokeWidth={2} />
                 <span>Charter &amp; Motto</span>
               </div>
 
@@ -147,7 +151,7 @@ export const AboutNCC: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.25 }}
-                  className="text-2xl font-black leading-tight tracking-tight text-[#3B281C] sm:text-[2.25rem]"
+                  className="text-2xl font-black leading-tight tracking-tight text-foreground sm:text-[2.25rem] font-display"
                 >
                   &ldquo;{BATTALION_DETAILS.motto}&rdquo;
                 </motion.h3>
@@ -156,7 +160,7 @@ export const AboutNCC: React.FC = () => {
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.35 }}
-                  className="text-sm font-bold text-[#7A5435]"
+                  className="text-sm font-bold text-blue-700 dark:text-amber-400 font-mono tracking-wide"
                 >
                   {BATTALION_DETAILS.mottoHindi}
                 </motion.p>
@@ -167,19 +171,19 @@ export const AboutNCC: React.FC = () => {
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="h-1 w-20 origin-left rounded-full bg-gradient-to-r from-[#8C5E3C] to-[#5C3D26]"
+                className="h-1 w-24 origin-left rounded-full regimental-tricolor-gradient"
               />
 
               <motion.button
                 whileHover={{ scale: 1.02, x: 2 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setShowSongModal(true)}
-                className="coffee-light-btn group inline-flex cursor-pointer items-center gap-2.5 rounded-xl px-4 py-2.5 text-xs font-bold tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C5E3C] focus-visible:ring-offset-2"
+                className="group inline-flex cursor-pointer items-center gap-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 dark:bg-amber-600 dark:hover:bg-amber-700 text-white px-4 py-2.5 text-xs font-bold tracking-wide transition-all shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                 id="ncc-song-btn"
               >
-                <Music className="h-4 w-4 text-[#D6C4B0]" strokeWidth={1.75} />
+                <Music className="h-4 w-4 text-white" strokeWidth={1.75} />
                 <span>Read the NCC Song &mdash; &ldquo;Hum Sab Bharatiya Hain&rdquo;</span>
-                <ChevronRight className="h-3.5 w-3.5 text-[#D6C4B0]/70 transition-transform group-hover:translate-x-0.5 group-hover:text-white" />
+                <ChevronRight className="h-3.5 w-3.5 text-white/80 transition-transform group-hover:translate-x-0.5 group-hover:text-white" />
               </motion.button>
             </motion.div>
 
@@ -191,10 +195,10 @@ export const AboutNCC: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="space-y-4"
             >
-              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#7A5435]">
+              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-blue-700 dark:text-amber-400 font-mono">
                 Aims of the Corps
               </p>
-              <p className="text-xs leading-relaxed text-[#5C4230] font-medium">
+              <p className="text-xs leading-relaxed text-muted-foreground font-medium">
                 The NCC develops character, comradeship, discipline, a secular outlook, the spirit
                 of adventure and the ideals of selfless service amongst young citizens &mdash;
                 creating a pool of organised, trained and motivated youth with leadership qualities
@@ -215,15 +219,15 @@ export const AboutNCC: React.FC = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: 0.3 + idx * 0.06 }}
-                    whileHover={{
-                      scale: 1.02,
-                    }}
-                    className="coffee-light-item flex items-start gap-2.5 rounded-xl px-3 py-2.5 transition-all shadow-xs"
+                    whileHover={{ scale: 1.02 }}
+                    className="flex items-start gap-2.5 rounded-xl border border-border bg-card/80 dark:bg-zinc-800/60 p-3 transition-all shadow-2xs hover:border-blue-500/40 dark:hover:border-amber-500/40"
                   >
-                    <span className="mt-px font-mono text-[10px] font-bold tabular-nums text-[#8C5E3C]">
+                    <span className="mt-px font-mono text-[10px] font-bold tabular-nums text-blue-600 dark:text-amber-400">
                       {String(idx + 1).padStart(2, "0")}
                     </span>
-                    <span className="text-[11px] font-bold leading-snug text-[#3B281C]">{aim}</span>
+                    <span className="text-[11px] font-bold leading-snug text-foreground">
+                      {aim}
+                    </span>
                   </motion.li>
                 ))}
               </ul>
@@ -237,18 +241,21 @@ export const AboutNCC: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
-          className="rounded-2xl border border-zinc-300 bg-white p-6 text-left shadow-sm sm:p-8"
+          className="rounded-2xl border border-border bg-card p-6 text-left shadow-sm sm:p-8 transition-colors"
         >
-          <div className="flex flex-col gap-5 border-b border-zinc-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-col gap-5 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-blue-700 shadow-xs">
-                <Activity className="h-3.5 w-3.5 text-blue-600" strokeWidth={2} />
+              <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-3.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-blue-700 dark:text-blue-400 shadow-xs">
+                <Activity
+                  className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400"
+                  strokeWidth={2}
+                />
                 <span>Training Standards</span>
               </div>
-              <h3 className="text-xl font-black tracking-tight text-zinc-950 sm:text-2xl">
+              <h3 className="text-xl font-black tracking-tight text-foreground sm:text-2xl font-display">
                 Physical Efficiency Test (PET) Benchmarks
               </h3>
-              <p className="max-w-xl text-xs font-bold leading-relaxed text-zinc-800">
+              <p className="max-w-xl text-xs font-medium leading-relaxed text-muted-foreground">
                 Qualifying marks published for Senior Division and Senior Wing cadets under
                 battalion training orders.
               </p>
@@ -258,7 +265,7 @@ export const AboutNCC: React.FC = () => {
               role="tablist"
               aria-label="Physical Efficiency Test division"
               aria-orientation="horizontal"
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-zinc-300 bg-zinc-100/90 p-1.5 shadow-sm"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-border bg-muted/60 p-1.5 shadow-sm"
             >
               {PET_TABS.map((tab, index) => {
                 const isActive = activeTab === tab.key;
@@ -292,7 +299,7 @@ export const AboutNCC: React.FC = () => {
                     className={`relative cursor-pointer rounded-lg px-4 py-2 text-xs font-black transition-colors outline-none ${
                       isActive
                         ? "text-white"
-                        : "text-zinc-800 hover:text-zinc-950 hover:bg-zinc-200/80"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
                     }`}
                   >
                     {isActive && (
@@ -890,33 +897,39 @@ export const AboutNCC: React.FC = () => {
 
       {/* Song Modal */}
       {showSongModal && (
-        <div className="fixed inset-0 z-50 bg-zinc-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-zinc-300 text-left relative">
-            <div className="flex justify-between items-center border-b border-zinc-200 pb-3">
+        <div className="fixed inset-0 z-50 bg-zinc-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-card text-card-foreground rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-border text-left relative">
+            <div className="flex justify-between items-center border-b border-border pb-3">
               <div className="flex items-center space-x-2">
-                <Music className="w-5 h-5 text-blue-700" />
-                <h3 className="text-base font-bold text-zinc-900">
+                <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-amber-400">
+                  <Music className="w-5 h-5" />
+                </div>
+                <h3 className="text-base font-bold text-foreground">
                   {BATTALION_DETAILS.nccSongTitle}
                 </h3>
               </div>
               <button
                 onClick={() => setShowSongModal(false)}
-                className="text-zinc-500 hover:text-zinc-800 text-sm font-bold"
+                className="text-muted-foreground hover:text-foreground text-sm font-bold p-1 rounded-lg hover:bg-muted transition-colors cursor-pointer"
+                aria-label="Close song lyrics modal"
               >
                 ✕
               </button>
             </div>
 
-            <pre className="whitespace-pre-wrap font-sans text-xs text-zinc-800 leading-relaxed bg-blue-50/60 p-4 rounded-xl border border-blue-200 max-h-80 overflow-y-auto">
+            <pre className="whitespace-pre-wrap font-sans text-xs text-foreground leading-relaxed bg-muted/50 p-4 rounded-xl border border-border max-h-80 overflow-y-auto">
               {BATTALION_DETAILS.nccSongLyrics}
             </pre>
 
-            <div className="pt-2 text-right">
+            <div className="pt-2 flex items-center justify-between">
+              <span className="text-[11px] font-mono text-muted-foreground">
+                Official Song of the National Cadet Corps
+              </span>
               <button
                 onClick={() => setShowSongModal(false)}
-                className="bg-zinc-900 text-white font-bold text-xs px-4 py-2 rounded-lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs px-5 py-2.5 rounded-xl cursor-pointer transition-colors shadow-sm"
               >
-                Close
+                Close Lyrics
               </button>
             </div>
           </div>

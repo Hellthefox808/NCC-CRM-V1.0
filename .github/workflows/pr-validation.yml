@@ -1,0 +1,51 @@
+name: PR Quality Gate & Hygiene
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  pull-requests: read
+  contents: read
+
+jobs:
+  pr-metadata-check:
+    name: Validate PR Title & Scope
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Conventional Commit PR Title
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert
+          requireScope: false
+
+  pr-size-gate:
+    name: Check Pull Request Size
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Calculate Changed Lines
+        run: |
+          DIFF_STAT=$(git diff --shortstat "origin/${{ github.base_ref }}...HEAD" 2>/dev/null || git diff --shortstat "HEAD~1" 2>/dev/null || echo "")
+          DIFF_LINES=$(echo "$DIFF_STAT" | awk '{for(i=1;i<=NF;i++) if($i ~ /^[0-9]+$/ && ($(i+1) ~ /insertion/ || $(i+1) ~ /deletion/)) sum+=$i} END {print sum+0}')
+          echo "Total lines modified in this PR: ${DIFF_LINES:-0}"
+          if [ "${DIFF_LINES:-0}" -gt 2500 ]; then
+            echo "::warning::PR touches over 2,500 lines. Consider splitting into smaller atomic reviews for higher review reliability."
+          fi
