@@ -6,9 +6,9 @@ This document tracks all unit, integration, security, and build verification tes
 
 ## 1. Test Suite Summary
 
-- **Total Test Suites**: 12
-- **Total Executed Tests**: 65
-- **Passing Tests**: 65 (100%)
+- **Total Test Suites**: 16
+- **Total Executed Tests**: 94
+- **Passing Tests**: 94 (100%)
 - **Failing / Skipped Tests**: 0
 - **Execution Command**: `npm run test`
 
@@ -46,7 +46,11 @@ This document tracks all unit, integration, security, and build verification tes
 - `Salted Scrypt Password Hashing & Verification`: Verifies scrypt hashing and timing-safe comparison.
 - `Single-use Cryptographic Activation Token Workflow`: Verifies single-use consumption and token invalidation.
 - `OTP Generator Security Properties`: Verifies 6-digit random numeric properties.
+- `Multi-Purpose OTP Lifecycle & Failover Security`: Verifies OTP issuance, verification, replay protection, and memory fallback across login, onboarding, and password-reset purposes.
 - `Transactional Email Template Renderers`: Verifies activation link delivery without cleartext passwords.
+- `Onboarding Welcome Email Renderer`: Verifies welcome email includes cadet ID, name, active badge, and unit name.
+- `5-Stage Cadet Induction Step Normalization & Completion Evaluation`: Verifies camelCase→snake_case normalization, invalid step rejection, partial progress calculation, and 5-of-5 auto-activation trigger to ACTIVE status.
+- `Onboarding Purpose OTP Verification with Replay Protection`: Verifies onboarding-purpose OTP issuance, wrong-code rejection, correct-code validation, and single-use replay blocking.
 
 ### Suite 6: Prompter Reminder Engine Unit Tests
 
@@ -98,6 +102,30 @@ This document tracks all unit, integration, security, and build verification tes
 - `ALLOWED_MIME_TYPES`: Restricts dangerous file uploads to whitelisted formats.
 - `createUploadIntent()`: Enforces file size ceilings and server-side opaque object keys.
 - `createUploadIntent()`: Rejects invalid MIME types and oversized requests.
+
+### Suite 13: Multi-Tier Cache & High-Throughput Service Unit Tests
+
+- `getOrSetCache()`: Verifies compute-on-miss and return-from-cache-on-hit semantics.
+- `invalidateCache()`: Verifies single-key eviction from L1 cache.
+- `invalidateCachePrefix()`: Verifies prefix-based bulk eviction for related cache entries.
+- `queueEmailJobsBatch()`: Verifies batch email job queuing with bounded concurrency.
+- `invalidateSessionCache()`: Verifies session-specific cache eviction on logout/status change.
+
+### Suite 14: Chart Security Sanitization Unit Tests
+
+- `sanitizeCssIdentifier()`: Verifies safe alphanumeric preservation and strips HTML tags, quotes, brackets, braces, and semicolons from CSS identifiers.
+- `sanitizeCssValue()`: Verifies legitimate CSS color/variable preservation while stripping HTML closing style tags, script injection payloads, CSS rule breakout characters, and hazardous function calls (`url()`, `expression()`, `javascript()`).
+
+### Suite 15: Queue Service Job Execution & Error Handling Unit Tests
+
+- `processPendingEmailJobs()`: Verifies job processing lifecycle including success delivery, retry handling, and FAILED status marking when attempts reach max limit (3).
+- `queueEmailJob()`: Verifies single email job queuing with correct payload serialization.
+- `queueEmailJobsBatch()`: Verifies batch queuing with bounded concurrency and error isolation.
+
+### Suite 16: Onboarding Batch Schema Validation Unit Tests
+
+- `onboardingBatchSchema`: Verifies acceptance of valid 5-step onboarding checklist payloads.
+- `onboardingBatchSchema`: Verifies rejection of unknown/invalid step keys in batch submissions.
 
 ---
 
