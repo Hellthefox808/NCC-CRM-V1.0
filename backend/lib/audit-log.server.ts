@@ -25,6 +25,9 @@ export type AuditAction =
   | "enrollment_submit"
   | "enrollment_status_change"
   | "cadet_modified"
+  | "onboarding_step_updated"
+  | "onboarding_batch_updated"
+  | "onboarding_completed"
   | "notification_broadcast"
   | "roster_sync"
   | "export_data";

@@ -34,7 +34,7 @@ export const Route = createFileRoute("/api/v1/auth/otp/request")({
           );
         }
 
-        const { identifier, userType } = validation.data;
+        const { identifier, userType, purpose } = validation.data;
         const clientIp = extractClientIp(request);
 
         // IP-Level Rate Limiting: Max 5 OTP requests per 10 minutes per IP
@@ -92,7 +92,7 @@ export const Route = createFileRoute("/api/v1/auth/otp/request")({
         if (!known) return json(generic);
 
         try {
-          const issued = await issueOtp(identifier, destination);
+          const issued = await issueOtp(identifier, destination, purpose);
           if (!issued) {
             return json(
               {

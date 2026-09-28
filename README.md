@@ -3,12 +3,12 @@
 > Enterprise Digital Management, Cadet Enrollment & Institutional Identity Platform for **19 Jharkhand Battalion NCC, Sarala Birla University (SBU), Ranchi**.
 
 [![Version](https://img.shields.io/badge/version-1.0.0--PROD-blue.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
-[![Unit Tests](<https://img.shields.io/badge/tests-89%2F89%20passing%20(100%25)-brightgreen.svg>)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
+[![Unit Tests](https://img.shields.io/badge/tests-92%2F92%20passing%20(100%25)-brightgreen.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions%20Hardened-blue.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0/actions)
 [![Build Status](https://img.shields.io/badge/build-Vite%208.2%20%2B%20Nitro%203.0%20Passing-brightgreen.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
-[![TypeScript](<https://img.shields.io/badge/typescript-strict%205.8%20(0%20errors)-blue.svg>)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/typescript-strict%205.8%20(0%20errors)-blue.svg)](https://www.typescriptlang.org/)
 [![Design System](https://img.shields.io/badge/design-Regimental%20Glassmorphism-gold.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
-[![Database](https://img.shields.io/badge/database-Supabase%20PostgreSQL%2015%20%2B%20Prisma-3ECF8E.svg)](https://supabase.com)
+[![Database](https://img.shields.io/badge/database-Supabase%20PostgreSQL%2015%20%2B%20Prisma%20%2B%20MongoDB-3ECF8E.svg)](https://supabase.com)
 [![Deployment](https://img.shields.io/badge/deployment-Vercel-black.svg)](https://19th-jh-ncc-crm-v1-0.vercel.app/)
 [![Security](https://img.shields.io/badge/OWASP-ASVS%205.0%20Level%202%20%7C%20scrypt-success.svg)](https://owasp.org/)
 
@@ -16,8 +16,8 @@
 
 ## 🌐 Live System Deployment
 
-| Platform | Live URL | Description |
-| :--- | :--- | :--- |
+| Platform   | Live URL                                                                    | Description                              |
+| :--------- | :-------------------------------------------------------------------------- | :--------------------------------------- |
 | **Vercel** | [19th-jh-ncc-crm-v1-0.vercel.app](https://19th-jh-ncc-crm-v1-0.vercel.app/) | Production Cadet Portal & Command Centre |
 
 ---
@@ -245,6 +245,43 @@ Active Cadet Session <── Scrypt Set Password <── Email Activation Link �
 - **Zero Client Token Storage**: Session tokens are not stored in `localStorage` or `sessionStorage` to mitigate XSS attacks.
 - **HttpOnly Cookie Handling**: Auth middleware extracts tokens from `HttpOnly; SameSite=Strict; Secure` cookies.
 
+### 4. Multi-Purpose OTP & Dual-Tier Failover Engine
+
+The authentication engine features a multi-purpose OTP subsystem with dual-tier failover and cryptographic brute-force protection:
+
+- **Purpose Segregation**: Strictly isolates tokens by intent (`password_reset`, `onboarding`, `account_activation`, `verification`), preventing token cross-use across different security workflows.
+- **Dual-Tier High-Availability Storage**:
+  - **Primary**: Supabase PostgreSQL `auth_otp_codes` table storing `sha256(raw_otp)`.
+  - **Failover**: In-memory self-pruning store (`memoryOtps`) automatically engages if the database is temporarily unreachable, maintaining uninterrupted authentication and verification.
+- **Brute-Force & Flood Controls**:
+  - **45-Second Resend Cooldown**: Per-identifier sliding window prevents SMS/Email flooding.
+  - **5-Attempt Lockout**: Maximum 5 failed verification attempts before the OTP is permanently invalidated.
+  - **Single-Use Auto-Destruction**: Automatically consumed upon successful verification (`used_at = NOW()`).
+- **Timing-Safe Responses**: Constant-time verification comparisons eliminate side-channel timing attacks.
+
+### 5. Cadet Onboarding Progression & Auto-Activation Workflow
+
+Upon enrollment approval, cadets complete a 5-pillar onboarding lifecycle before full operational authorization:
+
+```text
+Step 1: Profile Initialization    [profile_completed]
+Step 2: Contact & OTP Verification [contact_verified]  ── (Auto-linked to Cadet Record)
+Step 3: Document Audit & Clearance [documents_verified]
+Step 4: Cadet Oath & Declaration  [declaration_accepted]
+Step 5: Unit Orientation Briefing [orientation_completed]
+                         │
+                         ▼
+        All 5 Steps Complete (100%)
+                         │
+                         ├── Auto-transition: cadet_users.account_status = 'ACTIVE'
+                         ├── Queue Transactional Welcome Email via QueueWorker
+                         └── Log Structured Security Audit Event (onboarding_completed)
+```
+
+- **Interactive Cadet Card**: Real-time progress tracker (`<CadetOnboardingCard />`) in the Cadet Dashboard with inline OTP dispatch and verification.
+- **Atomic Batch & Step APIs**: REST endpoints supporting both granular step toggles (`PATCH /api/v1/onboarding/:step`) and atomic multi-step batch updates (`PATCH /api/v1/onboarding`).
+- **Audit Provenance**: Every step modification is immutably logged with actor IP, timestamp, and metadata.
+
 ---
 
 ## 🚀 CI/CD Pipeline & Continuous Delivery
@@ -257,7 +294,7 @@ Every push and pull request targeting `main` triggers 7 parallel and sequenced v
 
 - **`lint`**: ESLint 9 static analysis across all frontend, backend, and integration scripts.
 - **`typecheck`**: Strict TypeScript compiler verification (`tsc --noEmit`).
-- **`test`**: Execution of the complete 89-test automated test matrix across 16 test suites.
+- **`test`**: Execution of the complete 92-test automated test matrix across 16 test suites.
 - **`prisma-validate`**: Prisma schema integrity validation and client code generation.
 - **`security-check`**: Dependency vulnerability audit (`npm audit --audit-level=critical`) and Git commit history secret pattern inspection.
 - **`build`**: Production compilation of client assets and Nitro SSR server bundle into `.output/`.
@@ -275,6 +312,13 @@ Every push and pull request targeting `main` triggers 7 parallel and sequenced v
 - **PR Title Hygiene** ([`.github/workflows/pr-validation.yml`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/.github/workflows/pr-validation.yml)): Enforces Conventional Commits naming conventions and flags oversized pull requests exceeding 2,500 lines.
 - **Weekly Security Scans** ([`.github/workflows/security-audit.yml`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/.github/workflows/security-audit.yml)): Runs every Sunday at midnight UTC to audit dependency advisories and deep Git patch history for exposed tokens or RSA keys.
 
+### 4. GitHub Repository Governance & Lovable Synchronization
+
+- **Upstream Repository**: [`Hellthefox808/NCC-CRM-V1.0`](https://github.com/Hellthefox808/NCC-CRM-V1.0)
+- **Lovable Synchronization**: Connected to [Lovable.dev](https://lovable.dev). To preserve project history, rewriting published git history (force-pushing, rebasing published commits, amending pushed history) is strictly prohibited. Every commit pushed to `main` must maintain clean, compilable, regression-free state.
+- **Branch Protection & Conventional PRs**: Direct changes to production enforce pull request validation gates, PR size ceilings (max 2,500 lines), semantic commit title enforcement (`feat:`, `fix:`, `chore:`, `refactor:`), and zero-secret commit scanning.
+- **Engineering Execution Mode**: Mandatory 22-step synchronized engineering workflow for all phases and feature additions (repository state inspection, code graph triage, security review, typecheck, tests, and production build).
+
 ---
 
 ## 📁 Repository Documentation Matrix
@@ -287,7 +331,7 @@ Detailed architecture and operations guides are located in the [`docs/`](file://
 | **[`docs/ARCHITECTURE.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/ARCHITECTURE.md)**                 | Technical topology, Nitro SSR server architecture, and security boundaries.                           |
 | **[`docs/DATABASE.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/DATABASE.md)**                         | Complete database schema, 14 tables, ERD, SQL migrations, and RLS policies.                           |
 | **[`docs/PROJECT-CONTEXT.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/PROJECT-CONTEXT.md)**           | System architecture, component stacks, test metrics, and operational state.                           |
-| **[`docs/TEST-MATRIX.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/TEST-MATRIX.md)**                   | Comprehensive test matrix of all 89 automated unit, integration, and security tests across 16 suites. |
+| **[`docs/TEST-MATRIX.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/TEST-MATRIX.md)**                   | Comprehensive test matrix of all 92 automated unit, integration, and security tests across 16 suites. |
 | **[`docs/REDIS-MODEL.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/REDIS-MODEL.md)**                   | Multi-tier caching architecture and hybrid rate limiting specification.                               |
 | **[`docs/PRODUCTION-READINESS.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/PRODUCTION-READINESS.md)** | Production deployment attestation and environment checklist.                                          |
 
@@ -328,7 +372,7 @@ Application will be accessible at `http://localhost:3000`.
 ### 3. Run Automated Tests
 
 ```bash
-# Execute full test suite (89 tests across 16 suites, 100% pass)
+# Execute full test suite (92 tests across 16 suites, 100% pass)
 npm test
 
 # Run strict TypeScript type verification (0 errors)
@@ -349,22 +393,23 @@ npm run build
 
 ## ⚙️ Environment Variables Reference
 
-| Variable Name               | Required | Default / Example                          | Purpose                                         |
-| :-------------------------- | :------: | :----------------------------------------- | :---------------------------------------------- |
-| `NODE_ENV`                  |   Yes    | `development` / `production`               | Application execution environment               |
-| `PORT`                      |    No    | `3000`                                     | HTTP server listening port                      |
-| `VITE_SUPABASE_URL`         |   Yes    | `https://qsrmzajadmmgqhfbxdwu.supabase.co` | Public Supabase API Endpoint                    |
-| `VITE_SUPABASE_ANON_KEY`    |   Yes    | `eyJhbGciOi...`                            | Supabase Anonymous Client Key                   |
-| `SUPABASE_SERVICE_ROLE_KEY` |   Yes    | `eyJhbGciOi...`                            | Supabase Service Role Key (Backend Server Only) |
-| `REDIS_URL`                 | Optional | `redis://localhost:6379`                   | Connection URL for Local / Docker TCP Redis     |
-| `UPSTASH_REDIS_REST_URL`    | Optional | `https://...upstash.io`                    | Upstash Redis REST URL for Serverless Edge      |
-| `UPSTASH_REDIS_REST_TOKEN`  | Optional | `AXXX...`                                  | Upstash Redis REST API Authorization Token      |
-| `JWT_SECRET`                |   Yes    | `min-32-character-secret`                  | 256-bit secret for signing user auth tokens     |
-| `SESSION_SECRET`            |   Yes    | `session-encryption-secret`                | Encryption key for cookie-based session state   |
-| `SMTP_HOST`                 | Optional | `smtp.gmail.com`                           | Host for email notification server              |
-| `SMTP_PORT`                 | Optional | `587`                                      | Port for SMTP mailer connection                 |
-| `SMTP_USER`                 | Optional | `user@sbu.ac.in`                           | SMTP authentication user                        |
-| `SMTP_PASS`                 | Optional | `app-password`                             | SMTP authentication password                    |
+| Variable Name               | Required | Default / Example                          | Purpose                                                |
+| :-------------------------- | :------: | :----------------------------------------- | :----------------------------------------------------- |
+| `NODE_ENV`                  |   Yes    | `development` / `production`               | Application execution environment                      |
+| `PORT`                      |    No    | `3000`                                     | HTTP server listening port                             |
+| `VITE_SUPABASE_URL`         |   Yes    | `https://qsrmzajadmmgqhfbxdwu.supabase.co` | Public Supabase API Endpoint                           |
+| `VITE_SUPABASE_ANON_KEY`    |   Yes    | `eyJhbGciOi...`                            | Supabase Anonymous Client Key                          |
+| `SUPABASE_SERVICE_ROLE_KEY` |   Yes    | `eyJhbGciOi...`                            | Supabase Service Role Key (Backend Server Only)        |
+| `REDIS_URL`                 | Optional | `redis://localhost:6379`                   | Connection URL for Local / Docker TCP Redis            |
+| `UPSTASH_REDIS_REST_URL`    | Optional | `https://...upstash.io`                    | Upstash Redis REST URL for Serverless Edge             |
+| `UPSTASH_REDIS_REST_TOKEN`  | Optional | `AXXX...`                                  | Upstash Redis REST API Authorization Token             |
+| `JWT_SECRET`                |   Yes    | `min-32-character-secret`                  | 256-bit secret for signing user auth tokens            |
+| `SESSION_SECRET`            |   Yes    | `session-encryption-secret`                | Encryption key for cookie-based session state          |
+| `SMTP_HOST`                 | Optional | `smtp.gmail.com`                           | Host for email notification server                     |
+| `SMTP_PORT`                 | Optional | `587`                                      | Port for SMTP mailer connection                        |
+| `SMTP_USER`                 | Optional | `user@sbu.ac.in`                           | SMTP authentication user                               |
+| `SMTP_PASS`                 | Optional | `app-password`                             | SMTP authentication password                           |
+| `MONGODB_URI`               | Optional | `mongodb://cluster.mongodb.net`            | MongoDB Atlas Replica Set URI for secondary analytics  |
 
 ---
 
@@ -394,9 +439,12 @@ docker-compose logs -f
 | **Auth**          | `/api/v1/auth/me`                                 | GET        | Session          | Retrieve active user session profile                 |
 | **Auth**          | `/api/v1/auth/activate`                           | POST       | Public           | Validate single-use activation token                 |
 | **Auth**          | `/api/v1/auth/set-password`                       | POST       | Public           | Set password & activate cadet account                |
-| **Auth**          | `/api/v1/auth/otp/request`                        | POST       | Public           | Request OTP for authentication/recovery              |
-| **Auth**          | `/api/v1/auth/otp/verify`                         | POST       | Public           | Verify OTP code                                      |
+| **Auth**          | `/api/v1/auth/otp/request`                        | POST       | Public           | Request OTP (purpose: reset, onboarding, activation) |
+| **Auth**          | `/api/v1/auth/otp/verify`                         | POST       | Public           | Verify OTP with purpose & auto-link cadet record     |
 | **Auth**          | `/api/v1/auth/forgot-password`                    | POST       | Public           | Request password reset link                          |
+| **Onboarding**    | `/api/v1/onboarding`                              | GET        | Cadet / Officer  | Fetch 5-step checklist, progress %, & nextStep guide |
+| **Onboarding**    | `/api/v1/onboarding`                              | PATCH      | Cadet / Officer  | Batch update onboarding steps atomically             |
+| **Onboarding**    | `/api/v1/onboarding/$step`                        | PATCH      | Cadet / Officer  | Update single step & auto-activate on 100% complete  |
 | **Enrollment**    | `/api/v1/enrollments`                             | POST / GET | Public / Officer | Submit Form 1 application / list enrollments         |
 | **Enrollment**    | `/api/v1/enrollments/status/$query`               | GET        | Public           | Track application status (PII masked)                |
 | **ANO Review**    | `/api/v1/ano/applications/$id/approve`            | POST       | Officer          | Approve application & issue activation token         |
@@ -419,7 +467,7 @@ docker-compose logs -f
 ## 🧪 Testing & Quality Assurance
 
 ```bash
-# Execute unit & integration test matrix (89/89 passing across 16 suites, 100%)
+# Execute unit & integration test matrix (92/92 passing across 16 suites, 100%)
 npm test
 
 # Run ESLint static code analysis (0 errors)

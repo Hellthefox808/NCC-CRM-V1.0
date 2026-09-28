@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 
 import { CadetProfile, AttendanceSummary } from "@/types";
+import { CadetOnboardingCard } from "./CadetOnboardingCard";
 
 export interface CadetTaskItem {
   id: string;
@@ -102,7 +103,7 @@ const MetricTile: React.FC<{
           />
           {typeof progressFloor === "number" && (
             <span
-              className="absolute top-[-3px] h-[calc(100%+6px)] w-0.5 rounded-full bg-foreground/40"
+              className="absolute -top-0.75 h-[calc(100%+6px)] w-0.5 rounded-full bg-foreground/40"
               style={{ left: `${progressFloor}%` }}
               aria-hidden
             />
@@ -200,6 +201,12 @@ export const CadetDashboardOverview: React.FC<CadetDashboardOverviewProps> = ({
           </div>
         </div>
       </section>
+
+      {/* Real-time Cadet Induction & Onboarding Tracker */}
+      <CadetOnboardingCard
+        cadetId={cadetProfile.regNo || cadetProfile.sbuRollNo}
+        identifier={cadetProfile.email || cadetProfile.mobile}
+      />
 
       {/* Metric rail */}
       <section
@@ -396,7 +403,7 @@ export const CadetDashboardOverview: React.FC<CadetDashboardOverviewProps> = ({
               ].map((item) => (
                 <li key={item.title} className="relative">
                   <span
-                    className={`absolute -left-[30px] top-1 h-3 w-3 rounded-full ring-4 ring-card ${item.tone}`}
+                    className={`absolute -left-7.5 top-1 h-3 w-3 rounded-full ring-4 ring-card ${item.tone}`}
                     aria-hidden
                   />
                   <p className="text-xs font-semibold text-foreground">{item.title}</p>

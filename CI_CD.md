@@ -68,19 +68,19 @@ docker build -t ncc-crm:local .
 
 The following secrets and environment variables must be configured in GitHub Repository / Environment settings (`production` environment):
 
-| Name | Type | Purpose | Example / Description |
-| :--- | :--- | :--- | :--- |
-| `DATABASE_URL` | Secret | Production PostgreSQL Database Connection String | `postgresql://user:pass@host:5432/db` |
-| `DIRECT_URL` | Secret | Direct Database Connection URL (Prisma Migrations) | `postgresql://user:pass@host:5432/db` |
-| `JWT_SECRET` | Secret | 256-Bit Secret Key for Auth Tokens | Minimum 32 characters |
-| `SESSION_SECRET` | Secret | Session Encryption Secret Key | Minimum 32 bytes |
-| `SUPABASE_URL` | Secret / Env | Backend Supabase API URL | `https://qsrmzajadmmgqhfbxdwu.supabase.co` |
-| `SUPABASE_ANON_KEY` | Secret / Env | Supabase Anonymous Client Key | `eyJhbGciOi...` |
-| `SUPABASE_SERVICE_ROLE_KEY` | Secret | Supabase Service Role Key | `eyJhbGciOi...` |
-| `VITE_SUPABASE_URL` | Secret / Env | Frontend Supabase API URL | `https://qsrmzajadmmgqhfbxdwu.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | Secret / Env | Frontend Supabase Anonymous Key | `eyJhbGciOi...` |
-| `PROD_HEALTH_URL` | Variable | Production Endpoint for Health Checks | `https://.../api/v1/health` |
-| `PROD_BASE_URL` | Variable | Production Application Base URL | `https://19th-jh-ncc-crm-v1-0.vercel.app` |
+| Name                        | Type         | Purpose                                            | Example / Description                      |
+| :-------------------------- | :----------- | :------------------------------------------------- | :----------------------------------------- |
+| `DATABASE_URL`              | Secret       | Production PostgreSQL Database Connection String   | `postgresql://user:pass@host:5432/db`      |
+| `DIRECT_URL`                | Secret       | Direct Database Connection URL (Prisma Migrations) | `postgresql://user:pass@host:5432/db`      |
+| `JWT_SECRET`                | Secret       | 256-Bit Secret Key for Auth Tokens                 | Minimum 32 characters                      |
+| `SESSION_SECRET`            | Secret       | Session Encryption Secret Key                      | Minimum 32 bytes                           |
+| `SUPABASE_URL`              | Secret / Env | Backend Supabase API URL                           | `https://qsrmzajadmmgqhfbxdwu.supabase.co` |
+| `SUPABASE_ANON_KEY`         | Secret / Env | Supabase Anonymous Client Key                      | `eyJhbGciOi...`                            |
+| `SUPABASE_SERVICE_ROLE_KEY` | Secret       | Supabase Service Role Key                          | `eyJhbGciOi...`                            |
+| `VITE_SUPABASE_URL`         | Secret / Env | Frontend Supabase API URL                          | `https://qsrmzajadmmgqhfbxdwu.supabase.co` |
+| `VITE_SUPABASE_ANON_KEY`    | Secret / Env | Frontend Supabase Anonymous Key                    | `eyJhbGciOi...`                            |
+| `PROD_HEALTH_URL`           | Variable     | Production Endpoint for Health Checks              | `https://.../api/v1/health`                |
+| `PROD_BASE_URL`             | Variable     | Production Application Base URL                    | `https://19th-jh-ncc-crm-v1-0.vercel.app`  |
 
 ---
 

@@ -125,6 +125,11 @@ export const enhancedLoginRequestSchema = baseLoginObject
   })
   .superRefine(validateLoginIdentifiers);
 
+/** OTP purpose definition */
+export const otpPurposeSchema = z
+  .enum(["password_reset", "onboarding", "account_activation", "verification"])
+  .default("password_reset");
+
 /** OTP request validation */
 export const otpRequestSchema = z.object({
   identifier: z
@@ -133,6 +138,7 @@ export const otpRequestSchema = z.object({
     .max(100, "Identifier too long")
     .transform((val) => val.trim().toLowerCase()),
   userType: z.enum(["cadet", "admin"]),
+  purpose: otpPurposeSchema,
 });
 
 /** OTP verification validation */
@@ -144,6 +150,7 @@ export const otpVerifySchema = z
       .transform((val) => val.trim().toLowerCase()),
     code: otpCodeSchema,
     newPassword: strongPasswordSchema.optional(),
+    purpose: otpPurposeSchema,
   })
   .superRefine((data, ctx) => {
     // If setting new password, it's required and must be strong
@@ -155,6 +162,20 @@ export const otpVerifySchema = z
       });
     }
   });
+
+/** Onboarding batch step update validation */
+export const onboardingBatchSchema = z.object({
+  steps: z.record(
+    z.enum([
+      "profile_completed",
+      "contact_verified",
+      "documents_verified",
+      "declaration_accepted",
+      "orientation_completed",
+    ]),
+    z.boolean(),
+  ),
+});
 
 // ── Cadet Registration Schemas ──────────────────────────────────────
 

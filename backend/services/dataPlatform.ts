@@ -120,6 +120,14 @@ export class EnterpriseDataPlatform {
     return this.authToken;
   }
 
+  public static clearCache(): void {
+    dataCache.clear();
+  }
+
+  public static invalidateCache(pattern: string): void {
+    dataCache.invalidatePattern(pattern);
+  }
+
   /**
    * Helper request handler with validation, correlation ID, retries, and errors
    */
@@ -630,6 +638,104 @@ export class EnterpriseDataPlatform {
       body: JSON.stringify(payload),
     });
   }
+
+  /**
+   * Request an OTP for authentication, activation, verification, or onboarding
+   */
+  static async requestOtp(payload: {
+    identifier: string;
+    purpose?: OtpPurpose;
+  }): Promise<ApiResponse<{ message: string; cooldownSeconds: number; emailMasked?: string }>> {
+    return this.request("/auth/otp/request", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Verify an OTP code
+   */
+  static async verifyOtp(payload: {
+    identifier: string;
+    otp: string;
+    purpose?: OtpPurpose;
+  }): Promise<
+    ApiResponse<{
+      verified: boolean;
+      message: string;
+      purpose?: string;
+      cadetLinked?: boolean;
+    }>
+  > {
+    return this.request("/auth/otp/verify", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Fetch Cadet Onboarding Checklist and Progress
+   */
+  static async getOnboardingProgress(
+    cadetId?: string,
+  ): Promise<ApiResponse<OnboardingProgressData>> {
+    const qs = cadetId ? `?cadetId=${encodeURIComponent(cadetId)}` : "";
+    return this.request(`/onboarding${qs}`);
+  }
+
+  /**
+   * Update a specific onboarding step
+   */
+  static async updateOnboardingStep(
+    step: string,
+    payload: {
+      completed?: boolean;
+      cadetId?: string;
+      metadata?: Record<string, unknown>;
+    } = {},
+  ): Promise<ApiResponse<OnboardingProgressData>> {
+    return this.request(`/onboarding/${encodeURIComponent(step)}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Batch update multiple onboarding steps atomically
+   */
+  static async updateOnboardingBatch(payload: {
+    cadetId?: string;
+    steps: Record<string, boolean>;
+    metadata?: Record<string, unknown>;
+  }): Promise<ApiResponse<OnboardingProgressData>> {
+    return this.request("/onboarding", {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  }
+}
+
+export type OtpPurpose = "password_reset" | "onboarding" | "account_activation" | "verification";
+
+export interface OnboardingStepDetail {
+  id: string;
+  name: string;
+  description: string;
+  completed: boolean;
+  required: boolean;
+}
+
+export interface OnboardingProgressData {
+  cadetId: string;
+  enrollmentId?: string;
+  accountStatus: string;
+  isComplete: boolean;
+  completedStepsCount: number;
+  totalStepsCount: number;
+  progressPercentage: number;
+  checklist: OnboardingStepDetail[];
+  nextStep: OnboardingStepDetail | null;
+  updatedAt?: string;
 }
 
 export interface LeaveRecordItem {

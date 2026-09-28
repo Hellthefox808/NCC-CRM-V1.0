@@ -74,37 +74,106 @@ export interface IssuedOtp {
   expiresAt: string;
 }
 
-/** Creates and stores a fresh code. Returns null when throttled. */
+interface MemoryOtpRecord {
+  id: string;
+  identifier: string;
+  purpose: string;
+  codeHash: string;
+  destination: string;
+  attempts: number;
+  expiresAt: Date;
+  consumedAt?: Date;
+  createdAt: Date;
+}
+
+const MAX_MEMORY_OTPS = 1000;
+const memoryOtps: MemoryOtpRecord[] = [];
+
+/** Clears all in-memory OTP codes (used in tests and state resets). */
+export function clearMemoryOtps(): void {
+  memoryOtps.length = 0;
+}
+
+/** Prunes expired and consumed in-memory OTPs. */
+function pruneMemoryOtps(): void {
+  const now = Date.now();
+  for (let i = memoryOtps.length - 1; i >= 0; i--) {
+    const t = memoryOtps[i];
+    if (t.consumedAt || t.expiresAt.getTime() < now) {
+      memoryOtps.splice(i, 1);
+    }
+  }
+  if (memoryOtps.length > MAX_MEMORY_OTPS) {
+    memoryOtps.splice(0, memoryOtps.length - MAX_MEMORY_OTPS);
+  }
+}
+
+/** Creates and stores a fresh code. Returns null when throttled. Resilient to DB offline. */
 export async function issueOtp(
   identifier: string,
   destination: string,
   purpose = "password_reset",
 ): Promise<IssuedOtp | null> {
-  const admin = await getAdmin();
   const key = identifier.trim().toLowerCase();
+  const now = Date.now();
 
-  const { data: recent } = await admin
-    .from("auth_otp_codes")
-    .select("created_at")
-    .eq("identifier", key)
-    .eq("purpose", purpose)
-    .order("created_at", { ascending: false })
-    .limit(1);
+  // Check in-memory cooldown first
+  pruneMemoryOtps();
+  const recentMem = memoryOtps
+    .filter((o) => o.identifier === key && o.purpose === purpose)
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0];
 
-  const last = recent?.[0]?.created_at;
-  if (last && Date.now() - new Date(last).getTime() < RESEND_COOLDOWN_MS) return null;
+  if (recentMem && now - recentMem.createdAt.getTime() < RESEND_COOLDOWN_MS) {
+    return null;
+  }
+
+  // Check database cooldown if DB is reachable
+  try {
+    const admin = await getAdmin();
+    const { data: recent } = await admin
+      .from("auth_otp_codes")
+      .select("created_at")
+      .eq("identifier", key)
+      .eq("purpose", purpose)
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    const last = recent?.[0]?.created_at;
+    if (last && now - new Date(last).getTime() < RESEND_COOLDOWN_MS) return null;
+  } catch {
+    // DB offline/unconfigured: fallback to memory check done above
+  }
 
   const code = generateOtp();
-  const expiresAt = new Date(Date.now() + OTP_TTL_MINUTES * 60 * 1000);
+  const expiresAt = new Date(now + OTP_TTL_MINUTES * 60 * 1000);
+  const codeHash = await hashCode(code, key);
 
-  const { error } = await admin.from("auth_otp_codes").insert({
+  // Store in memory cache
+  const memoryRecord: MemoryOtpRecord = {
+    id: crypto.randomUUID(),
     identifier: key,
     purpose,
-    code_hash: await hashCode(code, key),
+    codeHash,
     destination,
-    expires_at: expiresAt.toISOString(),
-  });
-  if (error) throw error;
+    attempts: 0,
+    expiresAt,
+    createdAt: new Date(now),
+  };
+  memoryOtps.push(memoryRecord);
+
+  // Attempt database persistence
+  try {
+    const admin = await getAdmin();
+    await admin.from("auth_otp_codes").insert({
+      identifier: key,
+      purpose,
+      code_hash: codeHash,
+      destination,
+      expires_at: expiresAt.toISOString(),
+    });
+  } catch {
+    // Database unconfigured or unreachable — memory fallback active
+  }
 
   return { code, destination, expiresAt: expiresAt.toISOString() };
 }
@@ -121,59 +190,120 @@ export async function verifyOtp(
   code: string,
   purpose = "password_reset",
 ): Promise<VerifyResult> {
-  const admin = await getAdmin();
   const key = identifier.trim().toLowerCase();
+  const submitted = await hashCode(String(code).trim(), key);
 
-  const { data: rows, error } = await admin
-    .from("auth_otp_codes")
-    .select("id, code_hash, attempts, consumed_at, expires_at")
-    .eq("identifier", key)
-    .eq("purpose", purpose)
-    .is("consumed_at", null)
-    .order("created_at", { ascending: false })
-    .limit(1);
-  if (error) throw error;
+  // 1. Try querying primary database
+  try {
+    const admin = await getAdmin();
+    const { data: rows, error } = await admin
+      .from("auth_otp_codes")
+      .select("id, code_hash, attempts, consumed_at, expires_at")
+      .eq("identifier", key)
+      .eq("purpose", purpose)
+      .is("consumed_at", null)
+      .order("created_at", { ascending: false })
+      .limit(1);
 
-  const row = rows?.[0] as
-    | {
+    if (!error && rows && rows.length > 0) {
+      const row = rows[0] as {
         id: string;
         code_hash: string;
         attempts: number;
         consumed_at: string | null;
         expires_at: string;
+      };
+
+      if (new Date(row.expires_at).getTime() < Date.now()) {
+        return {
+          ok: false,
+          error: "This code has expired. Request a new one.",
+          code: "OTP_EXPIRED",
+        };
       }
-    | undefined;
-  if (!row)
+      if (row.attempts >= MAX_ATTEMPTS) {
+        return {
+          ok: false,
+          error: "Too many incorrect attempts. Request a new code.",
+          code: "OTP_LOCKED",
+        };
+      }
+
+      let hashesMatch = false;
+      try {
+        hashesMatch =
+          submitted.length === row.code_hash.length &&
+          crypto.timingSafeEqual(Buffer.from(submitted), Buffer.from(row.code_hash));
+      } catch {
+        hashesMatch = false;
+      }
+
+      if (!hashesMatch) {
+        await admin
+          .from("auth_otp_codes")
+          .update({ attempts: row.attempts + 1 })
+          .eq("id", row.id);
+        const left = MAX_ATTEMPTS - (row.attempts + 1);
+        return {
+          ok: false,
+          error: `Incorrect code. ${left > 0 ? `${left} attempt${left === 1 ? "" : "s"} remaining.` : "Request a new code."}`,
+          code: "OTP_INVALID",
+        };
+      }
+
+      await admin
+        .from("auth_otp_codes")
+        .update({ consumed_at: new Date().toISOString() })
+        .eq("id", row.id);
+
+      // Also consume in memory if mirrored
+      const memMatch = memoryOtps.find((m) => m.identifier === key && m.codeHash === row.code_hash);
+      if (memMatch) memMatch.consumedAt = new Date();
+
+      return { ok: true };
+    }
+  } catch {
+    // Database error or offline — fall through to in-memory verification
+  }
+
+  // 2. Fallback to in-memory OTP verification
+  pruneMemoryOtps();
+  const memRec = memoryOtps
+    .filter((o) => o.identifier === key && o.purpose === purpose && !o.consumedAt)
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0];
+
+  if (!memRec) {
     return {
       ok: false,
       error: "No active verification code. Request a new one.",
       code: "OTP_NOT_FOUND",
     };
-  if (new Date(row.expires_at).getTime() < Date.now())
+  }
+
+  if (memRec.expiresAt.getTime() < Date.now()) {
     return { ok: false, error: "This code has expired. Request a new one.", code: "OTP_EXPIRED" };
-  if (row.attempts >= MAX_ATTEMPTS)
+  }
+
+  if (memRec.attempts >= MAX_ATTEMPTS) {
     return {
       ok: false,
       error: "Too many incorrect attempts. Request a new code.",
       code: "OTP_LOCKED",
     };
-
-  const submitted = await hashCode(String(code).trim(), key);
-  let hashesMatch = false;
-  try {
-    hashesMatch =
-      submitted.length === row.code_hash.length &&
-      crypto.timingSafeEqual(Buffer.from(submitted), Buffer.from(row.code_hash));
-  } catch {
-    hashesMatch = false;
   }
 
-  if (!hashesMatch) {
-    await admin
-      .from("auth_otp_codes")
-      .update({ attempts: row.attempts + 1 })
-      .eq("id", row.id);
-    const left = MAX_ATTEMPTS - (row.attempts + 1);
+  let memHashesMatch = false;
+  try {
+    memHashesMatch =
+      submitted.length === memRec.codeHash.length &&
+      crypto.timingSafeEqual(Buffer.from(submitted), Buffer.from(memRec.codeHash));
+  } catch {
+    memHashesMatch = false;
+  }
+
+  if (!memHashesMatch) {
+    memRec.attempts += 1;
+    const left = MAX_ATTEMPTS - memRec.attempts;
     return {
       ok: false,
       error: `Incorrect code. ${left > 0 ? `${left} attempt${left === 1 ? "" : "s"} remaining.` : "Request a new code."}`,
@@ -181,10 +311,7 @@ export async function verifyOtp(
     };
   }
 
-  await admin
-    .from("auth_otp_codes")
-    .update({ consumed_at: new Date().toISOString() })
-    .eq("id", row.id);
+  memRec.consumedAt = new Date();
   return { ok: true };
 }
 

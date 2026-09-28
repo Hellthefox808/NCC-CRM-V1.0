@@ -109,6 +109,7 @@ jobs:
             -e SUPABASE_SERVICE_ROLE_KEY="${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
             -e JWT_SECRET="${{ secrets.JWT_SECRET || 'ci-test-jwt-secret-key-32-chars-long' }}" \
             -e SESSION_SECRET="${{ secrets.SESSION_SECRET || 'ci-test-session-secret-key-32-bytes' }}" \
+            -e MONGODB_URI="${{ secrets.MONGODB_URI }}" \
             ncc-crm:${{ github.sha }}
 
       - name: Automated Health Check Verification

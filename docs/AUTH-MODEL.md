@@ -74,7 +74,40 @@ Cadet / ANO Portal
 
 ---
 
-## 5. Authoritative Architecture Reference
+## 5. Multi-Purpose OTP Engine & Failover Architecture
+
+1. **Purposes Supported**:
+   - `password_reset`: Default self-service password recovery.
+   - `onboarding`: Contact verification step during cadet onboarding.
+   - `account_activation`: Initial identity verification for provisioned cadets.
+   - `verification`: General-purpose step-up identity confirmation.
+2. **Dual-Tier Resilient Storage**:
+   - Primary: Database table `auth_otp_codes` with index on `(identifier, purpose, consumed_at)`.
+   - Failover: Bounded, self-pruning in-memory store with `RESEND_COOLDOWN_MS` (45s) and `MAX_ATTEMPTS` (5) lockout.
+3. **Verification Security**:
+   - Hash comparison via `crypto.timingSafeEqual` prevents side-channel timing attacks.
+   - Atomic consumption prevents replay attacks.
+
+---
+
+## 6. Cadet Onboarding Progression & Auto-Activation Workflow
+
+Cadets progress through a 5-step checklist (`/api/v1/onboarding` and `/api/v1/onboarding/$step`):
+1. `profile_completed`: Verification of name, blood group, college roll no.
+2. `contact_verified`: Validated via OTP verification (`purpose: "onboarding"`).
+3. `documents_verified`: Verification of uploaded marksheets & identification.
+4. `declaration_accepted`: Acceptance of NCC Cadet Declaration & Anti-Ragging pledge.
+5. `orientation_completed`: Review and sign-off on Battalion standing orders.
+
+**Auto-Activation Trigger**:
+- When all 5 steps are marked complete:
+  - `cadet_users.account_status` is atomically transitioned to `ACTIVE`.
+  - Transactional `sendOnboardingWelcome` email is queued via `queueEmailJob`.
+  - Structured audit trail `onboarding_completed` is recorded.
+
+---
+
+## 7. Authoritative Architecture Reference
 
 For the comprehensive 58-section enterprise OTP, MFA, passkey, and authentication architecture, refer to:
 

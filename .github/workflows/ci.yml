@@ -23,6 +23,8 @@ env:
   VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'sb_publishable_ru09YlOy1LNorCk6y-SD2w_daWCqr6U' }}
   SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://qsrmzajadmmgqhfbxdwu.supabase.co' }}
   SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'sb_publishable_ru09YlOy1LNorCk6y-SD2w_daWCqr6U' }}
+  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || 'sb_secret_ci_mock_test_key_placeholder' }}
+  MONGODB_URI: ${{ secrets.MONGODB_URI || 'mongodb://localhost:27017/ncc_test' }}
 
 jobs:
   lint:

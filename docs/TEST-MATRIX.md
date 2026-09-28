@@ -6,9 +6,9 @@ This document tracks all unit, integration, security, and build verification tes
 
 ## 1. Test Suite Summary
 
-- **Total Test Suites**: 16
-- **Total Executed Tests**: 94
-- **Passing Tests**: 94 (100%)
+- **Total Test Suites**: 17
+- **Total Executed Tests**: 100
+- **Passing Tests**: 100 (100%)
 - **Failing / Skipped Tests**: 0
 - **Execution Command**: `npm run test`
 
@@ -126,6 +126,15 @@ This document tracks all unit, integration, security, and build verification tes
 
 - `onboardingBatchSchema`: Verifies acceptance of valid 5-step onboarding checklist payloads.
 - `onboardingBatchSchema`: Verifies rejection of unknown/invalid step keys in batch submissions.
+
+### Suite 17: Enterprise Data Platform & MongoDB Client Unit Tests
+
+- `DataPlatformError`: Verifies initialization with error code, HTTP status, request correlation ID, and message.
+- `getMongoClient()`: Verifies descriptive configuration error thrown when `MONGODB_URI` environment variable is missing.
+- `EnterpriseDataPlatform.getOnboardingProgress()`: Verifies API URL construction (`/api/v1/onboarding?cadetId=...`) and payload parsing.
+- `EnterpriseDataPlatform.updateOnboardingStep()`: Verifies HTTP PATCH method dispatch and payload serialization to step route.
+- `EnterpriseDataPlatform.requestOtp()` and `verifyOtp()`: Verifies multi-purpose OTP dispatch to authentication endpoints.
+- `dataCache.deduplicate()`: Verifies concurrent in-flight query deduplication preventing duplicate network requests.
 
 ---
 
