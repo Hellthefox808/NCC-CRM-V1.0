@@ -13,7 +13,8 @@
     "format": "prettier --write .",
     "test": "node --import tsx --test backend/tests/*.test.ts",
     "prisma:validate": "prisma validate",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generate",
+    "db:init:mongo": "node scripts/init-mongodb.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
