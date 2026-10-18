@@ -17,6 +17,7 @@ import { Route as CadetDatabaseRouteImport } from './routes/cadet-database'
 import { Route as EnrollRouteImport } from './routes/enroll'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as NoticesRouteImport } from './routes/notices'
 import { Route as ApiV1ActivitiesRouteImport } from './routes/api/v1/activities'
 import { Route as ApiV1AiChatRouteImport } from './routes/api/v1/ai-chat'
@@ -43,6 +44,9 @@ import { Route as ApiV1AuthSetPasswordRouteImport } from './routes/api/v1/auth/s
 import { Route as ApiV1CadetsMeRouteImport } from './routes/api/v1/cadets/me'
 import { Route as ApiV1CalendarIdRouteImport } from './routes/api/v1/calendar.$id'
 import { Route as ApiV1EnrollmentsStatusRouteImport } from './routes/api/v1/enrollments.status'
+import { Route as ApiV1MessagesContactsRouteImport } from './routes/api/v1/messages.contacts'
+import { Route as ApiV1MessagesConversationsRouteImport } from './routes/api/v1/messages.conversations'
+import { Route as ApiV1MessagesSearchRouteImport } from './routes/api/v1/messages.search'
 import { Route as ApiV1OnboardingStepRouteImport } from './routes/api/v1/onboarding.$step'
 import { Route as ApiV1AuthOtpRequestRouteImport } from './routes/api/v1/auth/otp.request'
 import { Route as ApiV1AuthOtpVerifyRouteImport } from './routes/api/v1/auth/otp.verify'
@@ -50,10 +54,20 @@ import { Route as ApiV1CalendarIdCancelRouteImport } from './routes/api/v1/calen
 import { Route as ApiV1CalendarIdPublishRouteImport } from './routes/api/v1/calendar.$id.publish'
 import { Route as ApiV1CalendarIdRemindersRouteImport } from './routes/api/v1/calendar.$id.reminders'
 import { Route as ApiV1EnrollmentsStatusQueryRouteImport } from './routes/api/v1/enrollments.status.$query'
+import { Route as ApiV1MessagesConversationsIdRouteImport } from './routes/api/v1/messages.conversations.$id'
+import { Route as ApiV1MessagesMessagesIdRouteImport } from './routes/api/v1/messages.messages.$id'
 import { Route as ApiV1NotificationsIdReadRouteImport } from './routes/api/v1/notifications.$id.read'
 import { Route as ApiV1AnoApplicationsIdApproveRouteImport } from './routes/api/v1/ano/applications.$id.approve'
 import { Route as ApiV1AnoApplicationsIdRejectRouteImport } from './routes/api/v1/ano/applications.$id.reject'
 import { Route as ApiV1AnoApplicationsIdRequestCorrectionRouteImport } from './routes/api/v1/ano/applications.$id.request-correction'
+import { Route as ApiV1MessagesConversationsIdMembersRouteImport } from './routes/api/v1/messages.conversations.$id.members'
+import { Route as ApiV1MessagesConversationsIdMessagesRouteImport } from './routes/api/v1/messages.conversations.$id.messages'
+import { Route as ApiV1MessagesConversationsIdPollRouteImport } from './routes/api/v1/messages.conversations.$id.poll'
+import { Route as ApiV1MessagesConversationsIdReadRouteImport } from './routes/api/v1/messages.conversations.$id.read'
+import { Route as ApiV1MessagesMessagesIdConvertTaskRouteImport } from './routes/api/v1/messages.messages.$id.convert-task'
+import { Route as ApiV1MessagesMessagesIdPinRouteImport } from './routes/api/v1/messages.messages.$id.pin'
+import { Route as ApiV1MessagesMessagesIdPollVoteRouteImport } from './routes/api/v1/messages.messages.$id.poll-vote'
+import { Route as ApiV1MessagesMessagesIdReactionsRouteImport } from './routes/api/v1/messages.messages.$id.reactions'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -93,6 +107,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NoticesRoute = NoticesRouteImport.update({
@@ -225,6 +244,22 @@ const ApiV1EnrollmentsStatusRoute = ApiV1EnrollmentsStatusRouteImport.update({
   path: '/status',
   getParentRoute: () => ApiV1EnrollmentsRoute,
 } as any)
+const ApiV1MessagesContactsRoute = ApiV1MessagesContactsRouteImport.update({
+  id: '/api/v1/messages/contacts',
+  path: '/api/v1/messages/contacts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1MessagesConversationsRoute =
+  ApiV1MessagesConversationsRouteImport.update({
+    id: '/api/v1/messages/conversations',
+    path: '/api/v1/messages/conversations',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiV1MessagesSearchRoute = ApiV1MessagesSearchRouteImport.update({
+  id: '/api/v1/messages/search',
+  path: '/api/v1/messages/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1OnboardingStepRoute = ApiV1OnboardingStepRouteImport.update({
   id: '/$step',
   path: '/$step',
@@ -262,6 +297,17 @@ const ApiV1EnrollmentsStatusQueryRoute =
     path: '/$query',
     getParentRoute: () => ApiV1EnrollmentsStatusRoute,
   } as any)
+const ApiV1MessagesConversationsIdRoute =
+  ApiV1MessagesConversationsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => ApiV1MessagesConversationsRoute,
+  } as any)
+const ApiV1MessagesMessagesIdRoute = ApiV1MessagesMessagesIdRouteImport.update({
+  id: '/api/v1/messages/messages/$id',
+  path: '/api/v1/messages/messages/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1NotificationsIdReadRoute =
   ApiV1NotificationsIdReadRouteImport.update({
     id: '/$id/read',
@@ -286,6 +332,54 @@ const ApiV1AnoApplicationsIdRequestCorrectionRoute =
     path: '/api/v1/ano/applications/$id/request-correction',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiV1MessagesConversationsIdMembersRoute =
+  ApiV1MessagesConversationsIdMembersRouteImport.update({
+    id: '/members',
+    path: '/members',
+    getParentRoute: () => ApiV1MessagesConversationsIdRoute,
+  } as any)
+const ApiV1MessagesConversationsIdMessagesRoute =
+  ApiV1MessagesConversationsIdMessagesRouteImport.update({
+    id: '/messages',
+    path: '/messages',
+    getParentRoute: () => ApiV1MessagesConversationsIdRoute,
+  } as any)
+const ApiV1MessagesConversationsIdPollRoute =
+  ApiV1MessagesConversationsIdPollRouteImport.update({
+    id: '/poll',
+    path: '/poll',
+    getParentRoute: () => ApiV1MessagesConversationsIdRoute,
+  } as any)
+const ApiV1MessagesConversationsIdReadRoute =
+  ApiV1MessagesConversationsIdReadRouteImport.update({
+    id: '/read',
+    path: '/read',
+    getParentRoute: () => ApiV1MessagesConversationsIdRoute,
+  } as any)
+const ApiV1MessagesMessagesIdConvertTaskRoute =
+  ApiV1MessagesMessagesIdConvertTaskRouteImport.update({
+    id: '/convert-task',
+    path: '/convert-task',
+    getParentRoute: () => ApiV1MessagesMessagesIdRoute,
+  } as any)
+const ApiV1MessagesMessagesIdPinRoute =
+  ApiV1MessagesMessagesIdPinRouteImport.update({
+    id: '/pin',
+    path: '/pin',
+    getParentRoute: () => ApiV1MessagesMessagesIdRoute,
+  } as any)
+const ApiV1MessagesMessagesIdPollVoteRoute =
+  ApiV1MessagesMessagesIdPollVoteRouteImport.update({
+    id: '/poll-vote',
+    path: '/poll-vote',
+    getParentRoute: () => ApiV1MessagesMessagesIdRoute,
+  } as any)
+const ApiV1MessagesMessagesIdReactionsRoute =
+  ApiV1MessagesMessagesIdReactionsRouteImport.update({
+    id: '/reactions',
+    path: '/reactions',
+    getParentRoute: () => ApiV1MessagesMessagesIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -296,6 +390,7 @@ export interface FileRoutesByFullPath {
   '/enroll': typeof EnrollRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRoute
   '/notices': typeof NoticesRoute
   '/api/v1/activities': typeof ApiV1ActivitiesRoute
   '/api/v1/ai-chat': typeof ApiV1AiChatRoute
@@ -322,6 +417,9 @@ export interface FileRoutesByFullPath {
   '/api/v1/cadets/me': typeof ApiV1CadetsMeRoute
   '/api/v1/calendar/$id': typeof ApiV1CalendarIdRouteWithChildren
   '/api/v1/enrollments/status': typeof ApiV1EnrollmentsStatusRouteWithChildren
+  '/api/v1/messages/contacts': typeof ApiV1MessagesContactsRoute
+  '/api/v1/messages/conversations': typeof ApiV1MessagesConversationsRouteWithChildren
+  '/api/v1/messages/search': typeof ApiV1MessagesSearchRoute
   '/api/v1/onboarding/$step': typeof ApiV1OnboardingStepRoute
   '/api/v1/auth/otp/request': typeof ApiV1AuthOtpRequestRoute
   '/api/v1/auth/otp/verify': typeof ApiV1AuthOtpVerifyRoute
@@ -329,10 +427,20 @@ export interface FileRoutesByFullPath {
   '/api/v1/calendar/$id/publish': typeof ApiV1CalendarIdPublishRoute
   '/api/v1/calendar/$id/reminders': typeof ApiV1CalendarIdRemindersRoute
   '/api/v1/enrollments/status/$query': typeof ApiV1EnrollmentsStatusQueryRoute
+  '/api/v1/messages/conversations/$id': typeof ApiV1MessagesConversationsIdRouteWithChildren
+  '/api/v1/messages/messages/$id': typeof ApiV1MessagesMessagesIdRouteWithChildren
   '/api/v1/notifications/$id/read': typeof ApiV1NotificationsIdReadRoute
   '/api/v1/ano/applications/$id/approve': typeof ApiV1AnoApplicationsIdApproveRoute
   '/api/v1/ano/applications/$id/reject': typeof ApiV1AnoApplicationsIdRejectRoute
   '/api/v1/ano/applications/$id/request-correction': typeof ApiV1AnoApplicationsIdRequestCorrectionRoute
+  '/api/v1/messages/conversations/$id/members': typeof ApiV1MessagesConversationsIdMembersRoute
+  '/api/v1/messages/conversations/$id/messages': typeof ApiV1MessagesConversationsIdMessagesRoute
+  '/api/v1/messages/conversations/$id/poll': typeof ApiV1MessagesConversationsIdPollRoute
+  '/api/v1/messages/conversations/$id/read': typeof ApiV1MessagesConversationsIdReadRoute
+  '/api/v1/messages/messages/$id/convert-task': typeof ApiV1MessagesMessagesIdConvertTaskRoute
+  '/api/v1/messages/messages/$id/pin': typeof ApiV1MessagesMessagesIdPinRoute
+  '/api/v1/messages/messages/$id/poll-vote': typeof ApiV1MessagesMessagesIdPollVoteRoute
+  '/api/v1/messages/messages/$id/reactions': typeof ApiV1MessagesMessagesIdReactionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -343,6 +451,7 @@ export interface FileRoutesByTo {
   '/enroll': typeof EnrollRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRoute
   '/notices': typeof NoticesRoute
   '/api/v1/activities': typeof ApiV1ActivitiesRoute
   '/api/v1/ai-chat': typeof ApiV1AiChatRoute
@@ -369,6 +478,9 @@ export interface FileRoutesByTo {
   '/api/v1/cadets/me': typeof ApiV1CadetsMeRoute
   '/api/v1/calendar/$id': typeof ApiV1CalendarIdRouteWithChildren
   '/api/v1/enrollments/status': typeof ApiV1EnrollmentsStatusRouteWithChildren
+  '/api/v1/messages/contacts': typeof ApiV1MessagesContactsRoute
+  '/api/v1/messages/conversations': typeof ApiV1MessagesConversationsRouteWithChildren
+  '/api/v1/messages/search': typeof ApiV1MessagesSearchRoute
   '/api/v1/onboarding/$step': typeof ApiV1OnboardingStepRoute
   '/api/v1/auth/otp/request': typeof ApiV1AuthOtpRequestRoute
   '/api/v1/auth/otp/verify': typeof ApiV1AuthOtpVerifyRoute
@@ -376,10 +488,20 @@ export interface FileRoutesByTo {
   '/api/v1/calendar/$id/publish': typeof ApiV1CalendarIdPublishRoute
   '/api/v1/calendar/$id/reminders': typeof ApiV1CalendarIdRemindersRoute
   '/api/v1/enrollments/status/$query': typeof ApiV1EnrollmentsStatusQueryRoute
+  '/api/v1/messages/conversations/$id': typeof ApiV1MessagesConversationsIdRouteWithChildren
+  '/api/v1/messages/messages/$id': typeof ApiV1MessagesMessagesIdRouteWithChildren
   '/api/v1/notifications/$id/read': typeof ApiV1NotificationsIdReadRoute
   '/api/v1/ano/applications/$id/approve': typeof ApiV1AnoApplicationsIdApproveRoute
   '/api/v1/ano/applications/$id/reject': typeof ApiV1AnoApplicationsIdRejectRoute
   '/api/v1/ano/applications/$id/request-correction': typeof ApiV1AnoApplicationsIdRequestCorrectionRoute
+  '/api/v1/messages/conversations/$id/members': typeof ApiV1MessagesConversationsIdMembersRoute
+  '/api/v1/messages/conversations/$id/messages': typeof ApiV1MessagesConversationsIdMessagesRoute
+  '/api/v1/messages/conversations/$id/poll': typeof ApiV1MessagesConversationsIdPollRoute
+  '/api/v1/messages/conversations/$id/read': typeof ApiV1MessagesConversationsIdReadRoute
+  '/api/v1/messages/messages/$id/convert-task': typeof ApiV1MessagesMessagesIdConvertTaskRoute
+  '/api/v1/messages/messages/$id/pin': typeof ApiV1MessagesMessagesIdPinRoute
+  '/api/v1/messages/messages/$id/poll-vote': typeof ApiV1MessagesMessagesIdPollVoteRoute
+  '/api/v1/messages/messages/$id/reactions': typeof ApiV1MessagesMessagesIdReactionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -391,6 +513,7 @@ export interface FileRoutesById {
   '/enroll': typeof EnrollRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRoute
   '/notices': typeof NoticesRoute
   '/api/v1/activities': typeof ApiV1ActivitiesRoute
   '/api/v1/ai-chat': typeof ApiV1AiChatRoute
@@ -417,6 +540,9 @@ export interface FileRoutesById {
   '/api/v1/cadets/me': typeof ApiV1CadetsMeRoute
   '/api/v1/calendar/$id': typeof ApiV1CalendarIdRouteWithChildren
   '/api/v1/enrollments/status': typeof ApiV1EnrollmentsStatusRouteWithChildren
+  '/api/v1/messages/contacts': typeof ApiV1MessagesContactsRoute
+  '/api/v1/messages/conversations': typeof ApiV1MessagesConversationsRouteWithChildren
+  '/api/v1/messages/search': typeof ApiV1MessagesSearchRoute
   '/api/v1/onboarding/$step': typeof ApiV1OnboardingStepRoute
   '/api/v1/auth/otp/request': typeof ApiV1AuthOtpRequestRoute
   '/api/v1/auth/otp/verify': typeof ApiV1AuthOtpVerifyRoute
@@ -424,10 +550,20 @@ export interface FileRoutesById {
   '/api/v1/calendar/$id/publish': typeof ApiV1CalendarIdPublishRoute
   '/api/v1/calendar/$id/reminders': typeof ApiV1CalendarIdRemindersRoute
   '/api/v1/enrollments/status/$query': typeof ApiV1EnrollmentsStatusQueryRoute
+  '/api/v1/messages/conversations/$id': typeof ApiV1MessagesConversationsIdRouteWithChildren
+  '/api/v1/messages/messages/$id': typeof ApiV1MessagesMessagesIdRouteWithChildren
   '/api/v1/notifications/$id/read': typeof ApiV1NotificationsIdReadRoute
   '/api/v1/ano/applications/$id/approve': typeof ApiV1AnoApplicationsIdApproveRoute
   '/api/v1/ano/applications/$id/reject': typeof ApiV1AnoApplicationsIdRejectRoute
   '/api/v1/ano/applications/$id/request-correction': typeof ApiV1AnoApplicationsIdRequestCorrectionRoute
+  '/api/v1/messages/conversations/$id/members': typeof ApiV1MessagesConversationsIdMembersRoute
+  '/api/v1/messages/conversations/$id/messages': typeof ApiV1MessagesConversationsIdMessagesRoute
+  '/api/v1/messages/conversations/$id/poll': typeof ApiV1MessagesConversationsIdPollRoute
+  '/api/v1/messages/conversations/$id/read': typeof ApiV1MessagesConversationsIdReadRoute
+  '/api/v1/messages/messages/$id/convert-task': typeof ApiV1MessagesMessagesIdConvertTaskRoute
+  '/api/v1/messages/messages/$id/pin': typeof ApiV1MessagesMessagesIdPinRoute
+  '/api/v1/messages/messages/$id/poll-vote': typeof ApiV1MessagesMessagesIdPollVoteRoute
+  '/api/v1/messages/messages/$id/reactions': typeof ApiV1MessagesMessagesIdReactionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -440,6 +576,7 @@ export interface FileRouteTypes {
     | '/enroll'
     | '/forgot-password'
     | '/login'
+    | '/messages'
     | '/notices'
     | '/api/v1/activities'
     | '/api/v1/ai-chat'
@@ -466,6 +603,9 @@ export interface FileRouteTypes {
     | '/api/v1/cadets/me'
     | '/api/v1/calendar/$id'
     | '/api/v1/enrollments/status'
+    | '/api/v1/messages/contacts'
+    | '/api/v1/messages/conversations'
+    | '/api/v1/messages/search'
     | '/api/v1/onboarding/$step'
     | '/api/v1/auth/otp/request'
     | '/api/v1/auth/otp/verify'
@@ -473,10 +613,20 @@ export interface FileRouteTypes {
     | '/api/v1/calendar/$id/publish'
     | '/api/v1/calendar/$id/reminders'
     | '/api/v1/enrollments/status/$query'
+    | '/api/v1/messages/conversations/$id'
+    | '/api/v1/messages/messages/$id'
     | '/api/v1/notifications/$id/read'
     | '/api/v1/ano/applications/$id/approve'
     | '/api/v1/ano/applications/$id/reject'
     | '/api/v1/ano/applications/$id/request-correction'
+    | '/api/v1/messages/conversations/$id/members'
+    | '/api/v1/messages/conversations/$id/messages'
+    | '/api/v1/messages/conversations/$id/poll'
+    | '/api/v1/messages/conversations/$id/read'
+    | '/api/v1/messages/messages/$id/convert-task'
+    | '/api/v1/messages/messages/$id/pin'
+    | '/api/v1/messages/messages/$id/poll-vote'
+    | '/api/v1/messages/messages/$id/reactions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -487,6 +637,7 @@ export interface FileRouteTypes {
     | '/enroll'
     | '/forgot-password'
     | '/login'
+    | '/messages'
     | '/notices'
     | '/api/v1/activities'
     | '/api/v1/ai-chat'
@@ -513,6 +664,9 @@ export interface FileRouteTypes {
     | '/api/v1/cadets/me'
     | '/api/v1/calendar/$id'
     | '/api/v1/enrollments/status'
+    | '/api/v1/messages/contacts'
+    | '/api/v1/messages/conversations'
+    | '/api/v1/messages/search'
     | '/api/v1/onboarding/$step'
     | '/api/v1/auth/otp/request'
     | '/api/v1/auth/otp/verify'
@@ -520,10 +674,20 @@ export interface FileRouteTypes {
     | '/api/v1/calendar/$id/publish'
     | '/api/v1/calendar/$id/reminders'
     | '/api/v1/enrollments/status/$query'
+    | '/api/v1/messages/conversations/$id'
+    | '/api/v1/messages/messages/$id'
     | '/api/v1/notifications/$id/read'
     | '/api/v1/ano/applications/$id/approve'
     | '/api/v1/ano/applications/$id/reject'
     | '/api/v1/ano/applications/$id/request-correction'
+    | '/api/v1/messages/conversations/$id/members'
+    | '/api/v1/messages/conversations/$id/messages'
+    | '/api/v1/messages/conversations/$id/poll'
+    | '/api/v1/messages/conversations/$id/read'
+    | '/api/v1/messages/messages/$id/convert-task'
+    | '/api/v1/messages/messages/$id/pin'
+    | '/api/v1/messages/messages/$id/poll-vote'
+    | '/api/v1/messages/messages/$id/reactions'
   id:
     | '__root__'
     | '/'
@@ -534,6 +698,7 @@ export interface FileRouteTypes {
     | '/enroll'
     | '/forgot-password'
     | '/login'
+    | '/messages'
     | '/notices'
     | '/api/v1/activities'
     | '/api/v1/ai-chat'
@@ -560,6 +725,9 @@ export interface FileRouteTypes {
     | '/api/v1/cadets/me'
     | '/api/v1/calendar/$id'
     | '/api/v1/enrollments/status'
+    | '/api/v1/messages/contacts'
+    | '/api/v1/messages/conversations'
+    | '/api/v1/messages/search'
     | '/api/v1/onboarding/$step'
     | '/api/v1/auth/otp/request'
     | '/api/v1/auth/otp/verify'
@@ -567,10 +735,20 @@ export interface FileRouteTypes {
     | '/api/v1/calendar/$id/publish'
     | '/api/v1/calendar/$id/reminders'
     | '/api/v1/enrollments/status/$query'
+    | '/api/v1/messages/conversations/$id'
+    | '/api/v1/messages/messages/$id'
     | '/api/v1/notifications/$id/read'
     | '/api/v1/ano/applications/$id/approve'
     | '/api/v1/ano/applications/$id/reject'
     | '/api/v1/ano/applications/$id/request-correction'
+    | '/api/v1/messages/conversations/$id/members'
+    | '/api/v1/messages/conversations/$id/messages'
+    | '/api/v1/messages/conversations/$id/poll'
+    | '/api/v1/messages/conversations/$id/read'
+    | '/api/v1/messages/messages/$id/convert-task'
+    | '/api/v1/messages/messages/$id/pin'
+    | '/api/v1/messages/messages/$id/poll-vote'
+    | '/api/v1/messages/messages/$id/reactions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -582,6 +760,7 @@ export interface RootRouteChildren {
   EnrollRoute: typeof EnrollRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  MessagesRoute: typeof MessagesRoute
   NoticesRoute: typeof NoticesRoute
   ApiV1ActivitiesRoute: typeof ApiV1ActivitiesRoute
   ApiV1AiChatRoute: typeof ApiV1AiChatRoute
@@ -605,8 +784,12 @@ export interface RootRouteChildren {
   ApiV1AuthLogoutRoute: typeof ApiV1AuthLogoutRoute
   ApiV1AuthMeRoute: typeof ApiV1AuthMeRoute
   ApiV1AuthSetPasswordRoute: typeof ApiV1AuthSetPasswordRoute
+  ApiV1MessagesContactsRoute: typeof ApiV1MessagesContactsRoute
+  ApiV1MessagesConversationsRoute: typeof ApiV1MessagesConversationsRouteWithChildren
+  ApiV1MessagesSearchRoute: typeof ApiV1MessagesSearchRoute
   ApiV1AuthOtpRequestRoute: typeof ApiV1AuthOtpRequestRoute
   ApiV1AuthOtpVerifyRoute: typeof ApiV1AuthOtpVerifyRoute
+  ApiV1MessagesMessagesIdRoute: typeof ApiV1MessagesMessagesIdRouteWithChildren
   ApiV1AnoApplicationsIdApproveRoute: typeof ApiV1AnoApplicationsIdApproveRoute
   ApiV1AnoApplicationsIdRejectRoute: typeof ApiV1AnoApplicationsIdRejectRoute
   ApiV1AnoApplicationsIdRequestCorrectionRoute: typeof ApiV1AnoApplicationsIdRequestCorrectionRoute
@@ -668,6 +851,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notices': {
@@ -852,6 +1042,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1EnrollmentsStatusRouteImport
       parentRoute: typeof ApiV1EnrollmentsRoute
     }
+    '/api/v1/messages/contacts': {
+      id: '/api/v1/messages/contacts'
+      path: '/api/v1/messages/contacts'
+      fullPath: '/api/v1/messages/contacts'
+      preLoaderRoute: typeof ApiV1MessagesContactsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/messages/conversations': {
+      id: '/api/v1/messages/conversations'
+      path: '/api/v1/messages/conversations'
+      fullPath: '/api/v1/messages/conversations'
+      preLoaderRoute: typeof ApiV1MessagesConversationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/messages/search': {
+      id: '/api/v1/messages/search'
+      path: '/api/v1/messages/search'
+      fullPath: '/api/v1/messages/search'
+      preLoaderRoute: typeof ApiV1MessagesSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/onboarding/$step': {
       id: '/api/v1/onboarding/$step'
       path: '/$step'
@@ -901,6 +1112,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1EnrollmentsStatusQueryRouteImport
       parentRoute: typeof ApiV1EnrollmentsStatusRoute
     }
+    '/api/v1/messages/conversations/$id': {
+      id: '/api/v1/messages/conversations/$id'
+      path: '/$id'
+      fullPath: '/api/v1/messages/conversations/$id'
+      preLoaderRoute: typeof ApiV1MessagesConversationsIdRouteImport
+      parentRoute: typeof ApiV1MessagesConversationsRoute
+    }
+    '/api/v1/messages/messages/$id': {
+      id: '/api/v1/messages/messages/$id'
+      path: '/api/v1/messages/messages/$id'
+      fullPath: '/api/v1/messages/messages/$id'
+      preLoaderRoute: typeof ApiV1MessagesMessagesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/v1/notifications/$id/read': {
       id: '/api/v1/notifications/$id/read'
       path: '/$id/read'
@@ -928,6 +1153,62 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/v1/ano/applications/$id/request-correction'
       preLoaderRoute: typeof ApiV1AnoApplicationsIdRequestCorrectionRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/messages/conversations/$id/members': {
+      id: '/api/v1/messages/conversations/$id/members'
+      path: '/members'
+      fullPath: '/api/v1/messages/conversations/$id/members'
+      preLoaderRoute: typeof ApiV1MessagesConversationsIdMembersRouteImport
+      parentRoute: typeof ApiV1MessagesConversationsIdRoute
+    }
+    '/api/v1/messages/conversations/$id/messages': {
+      id: '/api/v1/messages/conversations/$id/messages'
+      path: '/messages'
+      fullPath: '/api/v1/messages/conversations/$id/messages'
+      preLoaderRoute: typeof ApiV1MessagesConversationsIdMessagesRouteImport
+      parentRoute: typeof ApiV1MessagesConversationsIdRoute
+    }
+    '/api/v1/messages/conversations/$id/poll': {
+      id: '/api/v1/messages/conversations/$id/poll'
+      path: '/poll'
+      fullPath: '/api/v1/messages/conversations/$id/poll'
+      preLoaderRoute: typeof ApiV1MessagesConversationsIdPollRouteImport
+      parentRoute: typeof ApiV1MessagesConversationsIdRoute
+    }
+    '/api/v1/messages/conversations/$id/read': {
+      id: '/api/v1/messages/conversations/$id/read'
+      path: '/read'
+      fullPath: '/api/v1/messages/conversations/$id/read'
+      preLoaderRoute: typeof ApiV1MessagesConversationsIdReadRouteImport
+      parentRoute: typeof ApiV1MessagesConversationsIdRoute
+    }
+    '/api/v1/messages/messages/$id/convert-task': {
+      id: '/api/v1/messages/messages/$id/convert-task'
+      path: '/convert-task'
+      fullPath: '/api/v1/messages/messages/$id/convert-task'
+      preLoaderRoute: typeof ApiV1MessagesMessagesIdConvertTaskRouteImport
+      parentRoute: typeof ApiV1MessagesMessagesIdRoute
+    }
+    '/api/v1/messages/messages/$id/pin': {
+      id: '/api/v1/messages/messages/$id/pin'
+      path: '/pin'
+      fullPath: '/api/v1/messages/messages/$id/pin'
+      preLoaderRoute: typeof ApiV1MessagesMessagesIdPinRouteImport
+      parentRoute: typeof ApiV1MessagesMessagesIdRoute
+    }
+    '/api/v1/messages/messages/$id/poll-vote': {
+      id: '/api/v1/messages/messages/$id/poll-vote'
+      path: '/poll-vote'
+      fullPath: '/api/v1/messages/messages/$id/poll-vote'
+      preLoaderRoute: typeof ApiV1MessagesMessagesIdPollVoteRouteImport
+      parentRoute: typeof ApiV1MessagesMessagesIdRoute
+    }
+    '/api/v1/messages/messages/$id/reactions': {
+      id: '/api/v1/messages/messages/$id/reactions'
+      path: '/reactions'
+      fullPath: '/api/v1/messages/messages/$id/reactions'
+      preLoaderRoute: typeof ApiV1MessagesMessagesIdReactionsRouteImport
+      parentRoute: typeof ApiV1MessagesMessagesIdRoute
     }
   }
 }
@@ -1020,6 +1301,67 @@ const ApiV1OnboardingRouteWithChildren = ApiV1OnboardingRoute._addFileChildren(
   ApiV1OnboardingRouteChildren,
 )
 
+interface ApiV1MessagesConversationsIdRouteChildren {
+  ApiV1MessagesConversationsIdMembersRoute: typeof ApiV1MessagesConversationsIdMembersRoute
+  ApiV1MessagesConversationsIdMessagesRoute: typeof ApiV1MessagesConversationsIdMessagesRoute
+  ApiV1MessagesConversationsIdPollRoute: typeof ApiV1MessagesConversationsIdPollRoute
+  ApiV1MessagesConversationsIdReadRoute: typeof ApiV1MessagesConversationsIdReadRoute
+}
+
+const ApiV1MessagesConversationsIdRouteChildren: ApiV1MessagesConversationsIdRouteChildren =
+  {
+    ApiV1MessagesConversationsIdMembersRoute:
+      ApiV1MessagesConversationsIdMembersRoute,
+    ApiV1MessagesConversationsIdMessagesRoute:
+      ApiV1MessagesConversationsIdMessagesRoute,
+    ApiV1MessagesConversationsIdPollRoute:
+      ApiV1MessagesConversationsIdPollRoute,
+    ApiV1MessagesConversationsIdReadRoute:
+      ApiV1MessagesConversationsIdReadRoute,
+  }
+
+const ApiV1MessagesConversationsIdRouteWithChildren =
+  ApiV1MessagesConversationsIdRoute._addFileChildren(
+    ApiV1MessagesConversationsIdRouteChildren,
+  )
+
+interface ApiV1MessagesConversationsRouteChildren {
+  ApiV1MessagesConversationsIdRoute: typeof ApiV1MessagesConversationsIdRouteWithChildren
+}
+
+const ApiV1MessagesConversationsRouteChildren: ApiV1MessagesConversationsRouteChildren =
+  {
+    ApiV1MessagesConversationsIdRoute:
+      ApiV1MessagesConversationsIdRouteWithChildren,
+  }
+
+const ApiV1MessagesConversationsRouteWithChildren =
+  ApiV1MessagesConversationsRoute._addFileChildren(
+    ApiV1MessagesConversationsRouteChildren,
+  )
+
+interface ApiV1MessagesMessagesIdRouteChildren {
+  ApiV1MessagesMessagesIdConvertTaskRoute: typeof ApiV1MessagesMessagesIdConvertTaskRoute
+  ApiV1MessagesMessagesIdPinRoute: typeof ApiV1MessagesMessagesIdPinRoute
+  ApiV1MessagesMessagesIdPollVoteRoute: typeof ApiV1MessagesMessagesIdPollVoteRoute
+  ApiV1MessagesMessagesIdReactionsRoute: typeof ApiV1MessagesMessagesIdReactionsRoute
+}
+
+const ApiV1MessagesMessagesIdRouteChildren: ApiV1MessagesMessagesIdRouteChildren =
+  {
+    ApiV1MessagesMessagesIdConvertTaskRoute:
+      ApiV1MessagesMessagesIdConvertTaskRoute,
+    ApiV1MessagesMessagesIdPinRoute: ApiV1MessagesMessagesIdPinRoute,
+    ApiV1MessagesMessagesIdPollVoteRoute: ApiV1MessagesMessagesIdPollVoteRoute,
+    ApiV1MessagesMessagesIdReactionsRoute:
+      ApiV1MessagesMessagesIdReactionsRoute,
+  }
+
+const ApiV1MessagesMessagesIdRouteWithChildren =
+  ApiV1MessagesMessagesIdRoute._addFileChildren(
+    ApiV1MessagesMessagesIdRouteChildren,
+  )
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivateRoute: ActivateRoute,
@@ -1029,6 +1371,7 @@ const rootRouteChildren: RootRouteChildren = {
   EnrollRoute: EnrollRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  MessagesRoute: MessagesRoute,
   NoticesRoute: NoticesRoute,
   ApiV1ActivitiesRoute: ApiV1ActivitiesRoute,
   ApiV1AiChatRoute: ApiV1AiChatRoute,
@@ -1052,8 +1395,12 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1AuthLogoutRoute: ApiV1AuthLogoutRoute,
   ApiV1AuthMeRoute: ApiV1AuthMeRoute,
   ApiV1AuthSetPasswordRoute: ApiV1AuthSetPasswordRoute,
+  ApiV1MessagesContactsRoute: ApiV1MessagesContactsRoute,
+  ApiV1MessagesConversationsRoute: ApiV1MessagesConversationsRouteWithChildren,
+  ApiV1MessagesSearchRoute: ApiV1MessagesSearchRoute,
   ApiV1AuthOtpRequestRoute: ApiV1AuthOtpRequestRoute,
   ApiV1AuthOtpVerifyRoute: ApiV1AuthOtpVerifyRoute,
+  ApiV1MessagesMessagesIdRoute: ApiV1MessagesMessagesIdRouteWithChildren,
   ApiV1AnoApplicationsIdApproveRoute: ApiV1AnoApplicationsIdApproveRoute,
   ApiV1AnoApplicationsIdRejectRoute: ApiV1AnoApplicationsIdRejectRoute,
   ApiV1AnoApplicationsIdRequestCorrectionRoute:

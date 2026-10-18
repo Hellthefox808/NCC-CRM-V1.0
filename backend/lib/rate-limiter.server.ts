@@ -25,6 +25,7 @@ export interface RateLimitResult {
   retryAfterMs: number;
 }
 
+export const MAX_RATE_LIMITER_ITEMS = 5000;
 const store = new Map<string, RateLimitEntry>();
 
 /** Prune expired entries every 5 minutes to prevent unbounded memory growth. */
@@ -41,6 +42,15 @@ function pruneIfNeeded(windowMs: number) {
     entry.timestamps = entry.timestamps.filter((t) => t > cutoff);
     if (entry.timestamps.length === 0) store.delete(key);
   }
+
+  // Capacity bound check
+  if (store.size > MAX_RATE_LIMITER_ITEMS) {
+    const excess = store.size - MAX_RATE_LIMITER_ITEMS;
+    const keysToEvict = Array.from(store.keys()).slice(0, excess);
+    for (const k of keysToEvict) {
+      store.delete(k);
+    }
+  }
 }
 
 /**
@@ -54,7 +64,16 @@ export function checkRateLimit(key: string, options: RateLimitOptions): RateLimi
 
   let entry = store.get(key);
   if (!entry) {
+    // Enforce immediate bounded LRU ceiling before adding new key
+    if (store.size >= MAX_RATE_LIMITER_ITEMS) {
+      const oldestKey = store.keys().next().value;
+      if (oldestKey) store.delete(oldestKey);
+    }
     entry = { timestamps: [] };
+    store.set(key, entry);
+  } else {
+    // Refresh access order for LRU
+    store.delete(key);
     store.set(key, entry);
   }
 

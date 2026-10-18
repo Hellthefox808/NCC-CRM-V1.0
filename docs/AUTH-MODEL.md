@@ -93,6 +93,7 @@ Cadet / ANO Portal
 ## 6. Cadet Onboarding Progression & Auto-Activation Workflow
 
 Cadets progress through a 5-step checklist (`/api/v1/onboarding` and `/api/v1/onboarding/$step`):
+
 1. `profile_completed`: Verification of name, blood group, college roll no.
 2. `contact_verified`: Validated via OTP verification (`purpose: "onboarding"`).
 3. `documents_verified`: Verification of uploaded marksheets & identification.
@@ -100,6 +101,7 @@ Cadets progress through a 5-step checklist (`/api/v1/onboarding` and `/api/v1/on
 5. `orientation_completed`: Review and sign-off on Battalion standing orders.
 
 **Auto-Activation Trigger**:
+
 - When all 5 steps are marked complete:
   - `cadet_users.account_status` is atomically transitioned to `ACTIVE`.
   - Transactional `sendOnboardingWelcome` email is queued via `queueEmailJob`.

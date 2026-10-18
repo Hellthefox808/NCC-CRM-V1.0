@@ -13,6 +13,7 @@ import { CertificatesSection } from "@frontend/features/Cadet/CertificatesSectio
 import { AchievementsSection } from "@frontend/features/Cadet/AchievementsSection";
 import { StudyMaterialSection } from "@frontend/features/Cadet/StudyMaterialSection";
 import { SettingsSection } from "@frontend/features/Cadet/SettingsSection";
+import { CommunicationHub } from "@frontend/features/Messaging/CommunicationHub";
 import {
   AlertTriangle,
   Award,
@@ -27,6 +28,7 @@ import {
   GraduationCap,
   LogOut,
   Menu,
+  MessageSquare,
   Printer,
   QrCode,
   Settings,
@@ -52,6 +54,7 @@ export type CadetTab =
   | "achievements"
   | "materials"
   | "notifications"
+  | "messages"
   | "leave"
   | "settings";
 
@@ -476,6 +479,7 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
       icon: Bell,
       badge: notifications.filter((n) => !n.read).length,
     },
+    { id: "messages", label: "Cadre Messaging Hub", icon: MessageSquare },
     { id: "leave", label: "Leave / Permission", icon: FileText },
     { id: "settings", label: "Settings", icon: Settings },
   ];
@@ -849,6 +853,19 @@ export const CadetDashboard: React.FC<CadetDashboardProps> = ({ onLogout }) => {
               handleApplyLeave={handleApplyLeave}
               leaveHistory={leaveHistory}
             />
+          )}
+
+          {/* TAB: MESSAGES */}
+          {activeTab === "messages" && (
+            <div className="h-[calc(100vh-10rem)] min-h-[650px] w-full">
+              <CommunicationHub
+                currentUser={{
+                  id: cadetProfile.regNo || "cadet_default",
+                  name: `${cadetProfile.fullName} (${cadetProfile.rank})`,
+                  role: "CADET",
+                }}
+              />
+            </div>
           )}
 
           {/* TAB 11: SETTINGS */}

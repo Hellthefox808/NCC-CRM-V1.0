@@ -758,3 +758,17 @@
 .glass-glow-emerald {
   box-shadow: 0 0 30px -4px rgba(16, 185, 129, 0.28);
 }
+
+/* ==========================================================================
+   WCAG 2.2 AA ACCESSIBILITY & REDUCED MOTION PREFERENCES
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

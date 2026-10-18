@@ -58,6 +58,8 @@ services:
       - REDIS_URL=redis://:${REDIS_PASSWORD:-ncc_production_secret_2026}@redis:6379
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - MONGODB_URI=${MONGODB_URI}
+      - MONGODB_DB_NAME=${MONGODB_DB_NAME:-ncc_crm}
     depends_on:
       redis:
         condition: service_healthy
@@ -89,6 +91,8 @@ services:
       - REDIS_URL=redis://:${REDIS_PASSWORD:-ncc_production_secret_2026}@redis:6379
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - MONGODB_URI=${MONGODB_URI}
+      - MONGODB_DB_NAME=${MONGODB_DB_NAME:-ncc_crm}
     depends_on:
       redis:
         condition: service_healthy

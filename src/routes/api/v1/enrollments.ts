@@ -146,6 +146,31 @@ export const Route = createFileRoute("/api/v1/enrollments")({
 
           const mapped = mapToCadetRecord(inserted);
 
+          // Multi-Tier Cache Invalidation
+          const { invalidateCachePrefix } = await import("@backend/lib/cache.server");
+          await invalidateCachePrefix("ncc:enrollment:");
+
+          // Real-Time WebSocket Emission to connected officer dashboards
+          const { emitEnrollmentSubmitted } =
+            await import("@backend/services/socket/socket.server");
+          emitEnrollmentSubmitted(mapped as unknown as Record<string, unknown>);
+
+          // Structured Security Audit Log
+          const { recordAuditLog } = await import("@backend/lib/audit-log.server");
+          await recordAuditLog({
+            actorId: mapped.id,
+            actor: "applicant",
+            action: "enrollment_submit",
+            target: mapped.id,
+            ip: clientIp,
+            details: `New cadet enrollment Form 1 submitted by ${mapped.fullName} (${mapped.sbuCourse})`,
+            metadata: {
+              applicationId: mapped.id,
+              fullName: mapped.fullName,
+              sbuCourse: mapped.sbuCourse,
+            },
+          });
+
           // Multi-Channel Dispatch: Email + WhatsApp + SMS with 18-digit Application Number
           const { sendMultiChannelApplicationConfirmation } =
             await import("@backend/services/messaging/multichannel.service");

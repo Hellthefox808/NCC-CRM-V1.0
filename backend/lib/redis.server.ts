@@ -280,20 +280,62 @@ export async function redisDel(key: string): Promise<boolean> {
   return true;
 }
 
-/** Deletes all keys matching a prefix from Redis (or memory fallback). */
+/** Deletes all keys matching a prefix from Redis (or memory fallback) using non-blocking SCAN. */
 export async function redisDelPrefix(prefix: string): Promise<boolean> {
   try {
+    const upstash = await getUpstashClient();
+    if (upstash) {
+      const upstashAny = upstash as unknown as {
+        scan?: (
+          cursor: number,
+          opts?: { match?: string; count?: number },
+        ) => Promise<[number, string[]]>;
+        del: (...keys: string[]) => Promise<unknown>;
+      };
+      if (typeof upstashAny.scan === "function") {
+        let cursor = 0;
+        do {
+          const [nextCursor, keys] = await upstashAny.scan(cursor, {
+            match: `${prefix}*`,
+            count: 100,
+          });
+          cursor = nextCursor;
+          if (keys && keys.length > 0) {
+            await upstashAny.del(...keys);
+          }
+        } while (cursor !== 0);
+      }
+    }
+
     const ioClient = await getIoRedisClient();
     if (ioClient && ioClient.status === "ready") {
       const rawClient = ioClient as unknown as {
-        keys?: (pattern: string) => Promise<string[]>;
+        scanStream?: (opts: { match: string; count?: number }) => AsyncIterable<string[]>;
+        scan?: (cursor: string, ...args: unknown[]) => Promise<[string, string[]]>;
         del: (...keys: string[]) => Promise<unknown>;
       };
-      if (typeof rawClient.keys === "function") {
-        const matchingKeys = await rawClient.keys(`${prefix}*`);
-        if (matchingKeys && matchingKeys.length > 0) {
-          await rawClient.del(...matchingKeys);
+      if (typeof rawClient.scanStream === "function") {
+        const stream = rawClient.scanStream({ match: `${prefix}*`, count: 100 });
+        for await (const keys of stream) {
+          if (keys && keys.length > 0) {
+            await rawClient.del(...keys);
+          }
         }
+      } else if (typeof rawClient.scan === "function") {
+        let cursor = "0";
+        do {
+          const [nextCursor, keys] = await rawClient.scan(
+            cursor,
+            "MATCH",
+            `${prefix}*`,
+            "COUNT",
+            100,
+          );
+          cursor = nextCursor;
+          if (keys && keys.length > 0) {
+            await rawClient.del(...keys);
+          }
+        } while (cursor !== "0");
       }
     }
   } catch (err) {

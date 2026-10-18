@@ -106,8 +106,68 @@ export function sanitizeFileName(input: string): string {
     .slice(0, 100); // Reasonable length limit
 }
 
+// ── Official UIDAI Verhoeff D5 Algorithm Tables ──────────────────────
+const VERHOEFF_D: number[][] = [
+  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+  [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+  [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+  [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+  [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+  [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+  [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+  [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+  [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+  [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+];
+
+const VERHOEFF_P: number[][] = [
+  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+  [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+  [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+  [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+  [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+  [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+  [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+  [7, 0, 4, 6, 9, 1, 3, 2, 5, 8],
+];
+
+const VERHOEFF_INV: number[] = [0, 4, 3, 2, 1, 5, 6, 7, 8, 9];
+
 /**
- * Validates and sanitizes Aadhaar numbers
+ * Validates a numeric string using the official UIDAI Verhoeff D5 checksum algorithm.
+ */
+export function validateVerhoeff(input: string): boolean {
+  if (typeof input !== "string") return false;
+  const cleaned = input.replace(/\D/g, "");
+  if (cleaned.length === 0) return false;
+
+  let c = 0;
+  const digits = cleaned.split("").map(Number).reverse();
+
+  for (let i = 0; i < digits.length; i++) {
+    c = VERHOEFF_D[c][VERHOEFF_P[i % 8][digits[i]]];
+  }
+
+  return c === 0;
+}
+
+/**
+ * Calculates the Verhoeff check digit for an incomplete numeric string.
+ */
+export function generateVerhoeffCheckDigit(input: string): number {
+  const cleaned = input.replace(/\D/g, "");
+  let c = 0;
+  const digits = cleaned.split("").map(Number).reverse();
+
+  for (let i = 0; i < digits.length; i++) {
+    c = VERHOEFF_D[c][VERHOEFF_P[(i + 1) % 8][digits[i]]];
+  }
+
+  return VERHOEFF_INV[c];
+}
+
+/**
+ * Validates and sanitizes Aadhaar numbers using the official UIDAI Verhoeff algorithm.
  */
 export function sanitizeAadhaar(input: string): string {
   const cleaned = input.replace(/\D/g, ""); // Remove non-digits
@@ -116,17 +176,7 @@ export function sanitizeAadhaar(input: string): string {
     throw new Error("Aadhaar number must be exactly 12 digits");
   }
 
-  // Basic Luhn-like validation for Aadhaar
-  const digits = cleaned.split("").map(Number);
-  const multipliers = [2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4];
-  const sum = digits.slice(0, 11).reduce((acc, digit, index) => {
-    return acc + digit * multipliers[index];
-  }, 0);
-
-  const checksum = sum % 11;
-  const expectedCheckDigit = checksum < 2 ? checksum : 11 - checksum;
-
-  if (digits[11] !== expectedCheckDigit) {
+  if (!validateVerhoeff(cleaned)) {
     throw new Error("Invalid Aadhaar number checksum");
   }
 

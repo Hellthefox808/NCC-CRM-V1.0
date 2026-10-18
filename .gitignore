@@ -67,4 +67,5 @@ desktop.ini
 
 # CodeLens Graph local index
 .codelens/
+.llm-guardrail/
 

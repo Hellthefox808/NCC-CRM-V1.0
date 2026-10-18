@@ -6,9 +6,9 @@ This document tracks all unit, integration, security, and build verification tes
 
 ## 1. Test Suite Summary
 
-- **Total Test Suites**: 17
-- **Total Executed Tests**: 100
-- **Passing Tests**: 100 (100%)
+- **Total Test Suites**: 18
+- **Total Executed Tests**: 109
+- **Passing Tests**: 109 (100%)
 - **Failing / Skipped Tests**: 0
 - **Execution Command**: `npm run test`
 
@@ -134,12 +134,46 @@ This document tracks all unit, integration, security, and build verification tes
 - `EnterpriseDataPlatform.getOnboardingProgress()`: Verifies API URL construction (`/api/v1/onboarding?cadetId=...`) and payload parsing.
 - `EnterpriseDataPlatform.updateOnboardingStep()`: Verifies HTTP PATCH method dispatch and payload serialization to step route.
 - `EnterpriseDataPlatform.requestOtp()` and `verifyOtp()`: Verifies multi-purpose OTP dispatch to authentication endpoints.
-- `dataCache.deduplicate()`: Verifies concurrent in-flight query deduplication preventing duplicate network requests.
+
+### Suite 18: NCC Pipeline Repair & High-Throughput System Optimization Tests
+
+- `validateVerhoeff()`: Verifies mathematical Verhoeff check over dihedral group $D_5$ with official permutation and inverse tables.
+- `generateVerhoeffCheckDigit()`: Verifies accurate generation of check digits for 11-digit numbers.
+- `sanitizeAadhaar()`: Verifies format stripping and Verhoeff validation; rejects malformed lengths and bad checksums.
+- `getOrSetCache()` Single-Flight deduplication: Verifies 25 simultaneous concurrent requests on cold key execute authoritative fetcher exactly once without stampede.
+- `getCacheStats()`: Verifies multi-tier telemetry tracking (L1/L2 hits, misses, hit ratio calculation, and memory sizes).
+- `checkRateLimit()` capacity bounds: Enforces `MAX_RATE_LIMITER_ITEMS = 5000` LRU bound under distributed IP floods.
+- `recordSecurityEvent()` capacity bounds: Enforces `MAX_IDS_EVENT_HISTORY = 5000` memory ceiling on security event log.
+- `redisDelPrefix()`: Verifies non-blocking `SCAN` iteration for prefix invalidation across distributed Redis tiers.
+
+### Suite 19: NCC CRM Communication Hub & Cadre Collaboration Test Suite
+
+- `Battalion Channel Initialization`: Verifies automatic provisioning of official battalion announcement channels and company platoon hubs with appropriate role-based permissions (`isOfficial: true`, read-only for cadets).
+- `Direct Messaging Canonical Pair Guarantee`: Verifies that initiating 1-to-1 conversations in either participant order resolves deterministically to the identical canonical conversation room without duplicate creation.
+- `Group Conversation & Role Administration`: Verifies group provisioning with custom types (`unit`, `camp`, `training`, `committee`, `event`, `general`), member roles (`creator`, `admin`, `member`, `read_only`), and automatic system event audit message creation.
+- `Message Threading, Quoted Replies & CRM Cards`: Verifies root and reply message persistence, reply preview snippet generation, and embedded CRM context card attachment (`training`, `camp`, `event`, `notice`).
+- `Message Edit Authorization & Audit Log`: Verifies that only the original author can edit message contents, enforcing `isEdited: true` and `editedAt` audit timestamps while rejecting unauthorized edits.
+- `Message Soft-Deletion & Content Masking`: Verifies soft-deletion preserving audit trail while masking content to `"This message was deleted"` and stripping attachments.
+- `Emoji Reaction Lifecycle`: Verifies multi-user emoji reactions (`🫡`, `🇮🇳`, `🎖️`, `🔥`), reaction count aggregation, user attribution tracking, and toggle-off removal.
+- `Read State Advancement & Unread Tracking`: Verifies member `lastReadMessageId` advancement and automatic unread counter synchronization.
+- `Interactive Poll Creation & Voting`: Verifies creation of single-choice and multiple-choice polls, real-time vote casting, toggling, percentage computation, and authorization checks.
+- `Message Pinning & Official Orders Drawer`: Verifies message pinning, unpinning, timestamp recording, and pinned orders listing within conversations.
+- `Cadre Group Member Administration`: Verifies server-side member addition, member removal, and role promotion/demotion (admin vs member) with authorization barriers.
+- `Message-to-Task Conversion`: Verifies converting operational chat instructions into structured CRM follow-up tasks linked to authoritative records with priority and due date.
+
+### Suite 20: NCC Internationalization & Localization Engine Tests
+
+- `Default Locale & Supported Locales`: Verifies default locale is `"en"` and both English and Hindi are registered with valid LTR metadata.
+- `English & Hindi Translation Dictionaries`: Verifies resolution of official organization titles, unit names, mottoes, common actions, and navigation modules in both languages.
+- `Dynamic Parameter Interpolation`: Verifies runtime placeholder substitution (`{name}`, `{count}`) within localized message strings.
+- `Fallback Semantics`: Verifies deterministic fallback to English if a key is missing in a secondary locale, and returning raw key if completely unmapped.
+- `Indian Numbering & Date Formatting`: Verifies locale-aware formatting using `Intl.NumberFormat` (Indian numbering system: lakhs/crores) and `Intl.DateTimeFormat`.
+- `Locale State Persistence`: Verifies switching active locale state via `setLocale()` and retrieval via `getLocale()`.
 
 ---
 
 ## 3. Build & Compilation Verification
 
 - **Command**: `npm run build`
-- **Engine**: Vite 8.2 + Nitro 3.0 SSR Bundle
-- **Result**: Zero TypeScript errors, clean bundle generated under `.output/`.
+- **Engine**: Vite + Nitro SSR Bundle (TanStack Start)
+- **Result**: **131 / 131 Unit Tests Passing (100% across 24 suites)**, `npm run typecheck` (`tsc --noEmit`) 0 errors, `npm run lint` (`eslint .`) 0 errors, clean SSR bundle generated under `.output/` with worker name `hellthefox808-ncc-crm-v1-0`.

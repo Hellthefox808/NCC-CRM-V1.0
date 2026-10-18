@@ -3,10 +3,10 @@
 > Enterprise Digital Management, Cadet Enrollment & Institutional Identity Platform for **19 Jharkhand Battalion NCC, Sarala Birla University (SBU), Ranchi**.
 
 [![Version](https://img.shields.io/badge/version-1.0.0--PROD-blue.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
-[![Unit Tests](https://img.shields.io/badge/tests-92%2F92%20passing%20(100%25)-brightgreen.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
+[![Unit Tests](<https://img.shields.io/badge/tests-92%2F92%20passing%20(100%25)-brightgreen.svg>)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions%20Hardened-blue.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0/actions)
 [![Build Status](https://img.shields.io/badge/build-Vite%208.2%20%2B%20Nitro%203.0%20Passing-brightgreen.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
-[![TypeScript](https://img.shields.io/badge/typescript-strict%205.8%20(0%20errors)-blue.svg)](https://www.typescriptlang.org/)
+[![TypeScript](<https://img.shields.io/badge/typescript-strict%205.8%20(0%20errors)-blue.svg>)](https://www.typescriptlang.org/)
 [![Design System](https://img.shields.io/badge/design-Regimental%20Glassmorphism-gold.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
 [![Database](https://img.shields.io/badge/database-Supabase%20PostgreSQL%2015%20%2B%20Prisma%20%2B%20MongoDB-3ECF8E.svg)](https://supabase.com)
 [![Deployment](https://img.shields.io/badge/deployment-Vercel-black.svg)](https://19th-jh-ncc-crm-v1-0.vercel.app/)
@@ -393,23 +393,23 @@ npm run build
 
 ## ⚙️ Environment Variables Reference
 
-| Variable Name               | Required | Default / Example                          | Purpose                                                |
-| :-------------------------- | :------: | :----------------------------------------- | :----------------------------------------------------- |
-| `NODE_ENV`                  |   Yes    | `development` / `production`               | Application execution environment                      |
-| `PORT`                      |    No    | `3000`                                     | HTTP server listening port                             |
-| `VITE_SUPABASE_URL`         |   Yes    | `https://qsrmzajadmmgqhfbxdwu.supabase.co` | Public Supabase API Endpoint                           |
-| `VITE_SUPABASE_ANON_KEY`    |   Yes    | `eyJhbGciOi...`                            | Supabase Anonymous Client Key                          |
-| `SUPABASE_SERVICE_ROLE_KEY` |   Yes    | `eyJhbGciOi...`                            | Supabase Service Role Key (Backend Server Only)        |
-| `REDIS_URL`                 | Optional | `redis://localhost:6379`                   | Connection URL for Local / Docker TCP Redis            |
-| `UPSTASH_REDIS_REST_URL`    | Optional | `https://...upstash.io`                    | Upstash Redis REST URL for Serverless Edge             |
-| `UPSTASH_REDIS_REST_TOKEN`  | Optional | `AXXX...`                                  | Upstash Redis REST API Authorization Token             |
-| `JWT_SECRET`                |   Yes    | `min-32-character-secret`                  | 256-bit secret for signing user auth tokens            |
-| `SESSION_SECRET`            |   Yes    | `session-encryption-secret`                | Encryption key for cookie-based session state          |
-| `SMTP_HOST`                 | Optional | `smtp.gmail.com`                           | Host for email notification server                     |
-| `SMTP_PORT`                 | Optional | `587`                                      | Port for SMTP mailer connection                        |
-| `SMTP_USER`                 | Optional | `user@sbu.ac.in`                           | SMTP authentication user                               |
-| `SMTP_PASS`                 | Optional | `app-password`                             | SMTP authentication password                           |
-| `MONGODB_URI`               | Optional | `mongodb://cluster.mongodb.net`            | MongoDB Atlas Replica Set URI for secondary analytics  |
+| Variable Name               | Required | Default / Example                          | Purpose                                               |
+| :-------------------------- | :------: | :----------------------------------------- | :---------------------------------------------------- |
+| `NODE_ENV`                  |   Yes    | `development` / `production`               | Application execution environment                     |
+| `PORT`                      |    No    | `3000`                                     | HTTP server listening port                            |
+| `VITE_SUPABASE_URL`         |   Yes    | `https://qsrmzajadmmgqhfbxdwu.supabase.co` | Public Supabase API Endpoint                          |
+| `VITE_SUPABASE_ANON_KEY`    |   Yes    | `eyJhbGciOi...`                            | Supabase Anonymous Client Key                         |
+| `SUPABASE_SERVICE_ROLE_KEY` |   Yes    | `eyJhbGciOi...`                            | Supabase Service Role Key (Backend Server Only)       |
+| `REDIS_URL`                 | Optional | `redis://localhost:6379`                   | Connection URL for Local / Docker TCP Redis           |
+| `UPSTASH_REDIS_REST_URL`    | Optional | `https://...upstash.io`                    | Upstash Redis REST URL for Serverless Edge            |
+| `UPSTASH_REDIS_REST_TOKEN`  | Optional | `AXXX...`                                  | Upstash Redis REST API Authorization Token            |
+| `JWT_SECRET`                |   Yes    | `min-32-character-secret`                  | 256-bit secret for signing user auth tokens           |
+| `SESSION_SECRET`            |   Yes    | `session-encryption-secret`                | Encryption key for cookie-based session state         |
+| `SMTP_HOST`                 | Optional | `smtp.gmail.com`                           | Host for email notification server                    |
+| `SMTP_PORT`                 | Optional | `587`                                      | Port for SMTP mailer connection                       |
+| `SMTP_USER`                 | Optional | `user@sbu.ac.in`                           | SMTP authentication user                              |
+| `SMTP_PASS`                 | Optional | `app-password`                             | SMTP authentication password                          |
+| `MONGODB_URI`               | Optional | `mongodb://cluster.mongodb.net`            | MongoDB Atlas Replica Set URI for secondary analytics |
 
 ---
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { NotificationsFeed } from "@frontend/features/NotificationsFeed";
+import { CommunicationHub } from "@frontend/features/Messaging/CommunicationHub";
 import { StatsOverview } from "@frontend/features/Admin/StatsOverview";
 import { RecentRegistrations } from "@frontend/features/Admin/RecentRegistrations";
 import { NotificationBroadcaster } from "@frontend/features/Admin/NotificationBroadcaster";
@@ -31,6 +32,7 @@ import {
   LogOut,
   Megaphone,
   Menu,
+  MessageSquare,
   Plus,
   Printer,
   Radio,
@@ -87,6 +89,69 @@ interface BroadcastMessage {
   channels: string[];
 }
 
+const PIPELINE_STAGES: Array<{
+  id: CadetRecord["status"];
+  title: string;
+  subtitle: string;
+  badgeClass: string;
+  borderClass: string;
+  headerBg: string;
+  nextStatus?: CadetRecord["status"];
+}> = [
+  {
+    id: "Submitted",
+    title: "1. Scrutiny",
+    subtitle: "Form 1 Application",
+    badgeClass: "bg-blue-500/20 text-blue-300 border-blue-500/30",
+    borderClass: "border-blue-500/30",
+    headerBg: "bg-blue-500/10",
+    nextStatus: "Physical Scheduled",
+  },
+  {
+    id: "Physical Scheduled",
+    title: "2. PET Screening",
+    subtitle: "1600m Run & Pushups",
+    badgeClass: "bg-amber-500/20 text-amber-300 border-amber-500/30",
+    borderClass: "border-amber-500/30",
+    headerBg: "bg-amber-500/10",
+    nextStatus: "Medical Cleared",
+  },
+  {
+    id: "Medical Cleared",
+    title: "3. Medical Fitness",
+    subtitle: "Fitness Certified",
+    badgeClass: "bg-purple-500/20 text-purple-300 border-purple-500/30",
+    borderClass: "border-purple-500/30",
+    headerBg: "bg-purple-500/10",
+    nextStatus: "Selected",
+  },
+  {
+    id: "Selected",
+    title: "4. Merit Approved",
+    subtitle: "Command Clearance",
+    badgeClass: "bg-indigo-500/20 text-indigo-300 border-indigo-500/30",
+    borderClass: "border-indigo-500/30",
+    headerBg: "bg-indigo-500/10",
+    nextStatus: "Enrolled",
+  },
+  {
+    id: "Enrolled",
+    title: "5. Enrolled Cadre",
+    subtitle: "Regimental ID Issued",
+    badgeClass: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
+    borderClass: "border-emerald-500/30",
+    headerBg: "bg-emerald-500/10",
+  },
+  {
+    id: "Rejected",
+    title: "Archived / Ineligible",
+    subtitle: "Disqualified / Withdrawn",
+    badgeClass: "bg-rose-500/20 text-rose-300 border-rose-500/30",
+    borderClass: "border-rose-500/30",
+    headerBg: "bg-rose-500/10",
+  },
+];
+
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableSlip }) => {
   // Navigation active module state
   const [activeTab, setActiveTab] = useState<
@@ -102,6 +167,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
     | "security"
     | "settings"
     | "leaves"
+    | "messages"
   >("dashboard");
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
@@ -114,6 +180,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
   const [genderFilter, setGenderFilter] = useState<string>("All");
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [batchFilter, setBatchFilter] = useState<string>("All");
+  const [cadetViewMode, setCadetViewMode] = useState<"table" | "kanban">("table");
 
   // Leaves CRM State
   const [leaves, setLeaves] = useState<LeaveRecordItem[]>([]);
@@ -133,6 +200,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
   const [editingRemarks, setEditingRemarks] = useState<string>("");
   const [editingRegNo, setEditingRegNo] = useState<string>("");
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [initialChatConvId, setInitialChatConvId] = useState<string | null>(null);
 
   // Guided PET Follow-up State
   const [petDate, setPetDate] = useState<string>(() => {
@@ -353,6 +421,28 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
       Math.floor(1000 + Math.random() * 9000).toString();
     setEditingRegNo(`JHR/${year}/${wing}/19/${cleanRoll}`);
     showToast("Generated official 19 Battalion Regimental Number.");
+  };
+
+  // Start Direct Conversation with Cadet from Profile, Table, or Kanban
+  const handleMessageCadet = async (cadet: CadetRecord) => {
+    try {
+      const cadetUserId = cadet.enrollmentNo || cadet.id || cadet.email || "cadet_default";
+      const res = await EnterpriseDataPlatform.createConversation({
+        type: "direct",
+        recipientId: cadetUserId,
+        title: `${cadet.fullName} (${cadet.enrollmentNo || "Cadet"})`,
+      });
+      if (res?.data?.conversation?.id) {
+        setInitialChatConvId(res.data.conversation.id);
+      }
+      showToast(`Opening direct conversation with Cadet ${cadet.fullName}`);
+    } catch (err: unknown) {
+      console.error("Failed to start cadet conversation:", err);
+      showToast("Switched to cadre messaging hub.");
+    } finally {
+      setViewingProfileModal(null);
+      setActiveTab("messages");
+    }
   };
 
   // Filter Logic
@@ -581,6 +671,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
     { id: "leaves", label: "Cadet Leave Requests", icon: CalendarDays },
     { id: "activities", label: "Classes & Drill Schedule", icon: BookOpen },
     { id: "broadcast", label: "Broadcast & Notices", icon: Megaphone },
+    { id: "messages", label: "Cadre Messaging Hub", icon: MessageSquare },
     { id: "attendance", label: "Attendance Sheet Grid", icon: UserCheck },
     { id: "discipline", label: "Discipline & Awards", icon: Award },
     { id: "events", label: "Events & Camps Calendar", icon: Calendar },
@@ -1193,7 +1284,34 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                     </p>
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex items-center bg-white/5 border border-white/10 rounded-xl p-0.5">
+                      <button
+                        type="button"
+                        onClick={() => setCadetViewMode("table")}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
+                          cadetViewMode === "table"
+                            ? "bg-blue-600 text-white shadow-md"
+                            : "text-zinc-400 hover:text-white"
+                        }`}
+                      >
+                        <FileSpreadsheet className="w-3.5 h-3.5" />
+                        <span>Table View</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCadetViewMode("kanban")}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
+                          cadetViewMode === "kanban"
+                            ? "bg-blue-600 text-white shadow-md"
+                            : "text-zinc-400 hover:text-white"
+                        }`}
+                      >
+                        <Layers className="w-3.5 h-3.5" />
+                        <span>Kanban Pipeline</span>
+                      </button>
+                    </div>
+
                     <button
                       onClick={handleDownloadExcel}
                       className="glass-pill text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/20 font-bold px-3.5 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow-sm cursor-pointer transition-all hover:scale-105"
@@ -1301,114 +1419,274 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                   </div>
                 </div>
 
-                {/* Cadet Data Table */}
-                <div className="overflow-x-auto border border-white/10 rounded-2xl glass-panel">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-white/5 text-zinc-300 font-black uppercase tracking-wider border-b border-white/10">
-                      <tr>
-                        <th className="py-3.5 px-4">S.No</th>
-                        <th className="py-3.5 px-4">Regimental No / App ID</th>
-                        <th className="py-3.5 px-4">Cadet Name</th>
-                        <th className="py-3.5 px-4">Wing</th>
-                        <th className="py-3.5 px-4">SBU Course & Roll</th>
-                        <th className="py-3.5 px-4">Fitness Score</th>
-                        <th className="py-3.5 px-4">Status</th>
-                        <th className="py-3.5 px-4 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/5">
-                      {filteredCadets.length === 0 ? (
+                {/* Cadet Data Presentation: Table vs Kanban Board */}
+                {cadetViewMode === "table" ? (
+                  <div className="overflow-x-auto border border-white/10 rounded-2xl glass-panel">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-white/5 text-zinc-300 font-black uppercase tracking-wider border-b border-white/10">
                         <tr>
-                          <td colSpan={8} className="py-12 text-center text-zinc-400 font-bold">
-                            No cadets found matching search criteria.
-                          </td>
+                          <th className="py-3.5 px-4">S.No</th>
+                          <th className="py-3.5 px-4">Regimental No / App ID</th>
+                          <th className="py-3.5 px-4">Cadet Name</th>
+                          <th className="py-3.5 px-4">Wing</th>
+                          <th className="py-3.5 px-4">SBU Course & Roll</th>
+                          <th className="py-3.5 px-4">Fitness Score</th>
+                          <th className="py-3.5 px-4">Status</th>
+                          <th className="py-3.5 px-4 text-right">Actions</th>
                         </tr>
-                      ) : (
-                        filteredCadets.map((cadet, idx) => (
-                          <tr key={cadet.id} className="hover:bg-white/5 transition-colors">
-                            <td className="py-3.5 px-4 font-bold text-zinc-400">{idx + 1}</td>
-                            <td className="py-3.5 px-4 font-mono font-bold text-zinc-200">
-                              <p className="text-xs font-extrabold text-blue-400">
-                                {cadet.enrollmentNo || cadet.id}
-                              </p>
-                              <p className="text-[10px] text-zinc-400">App: {cadet.id}</p>
-                            </td>
-                            <td className="py-3.5 px-4">
-                              <p className="font-black text-white text-sm">{cadet.fullName}</p>
-                              <p className="text-[10px] text-zinc-400">📱 {cadet.mobile}</p>
-                            </td>
-                            <td className="py-3.5 px-4">
-                              <span
-                                className={`px-2.5 py-0.5 rounded-full font-black text-[10px] ${
-                                  cadet.gender === "SD"
-                                    ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
-                                    : "bg-pink-500/20 text-pink-300 border border-pink-500/30"
-                                }`}
-                              >
-                                {cadet.gender === "SD" ? "Senior Div (SD)" : "Senior Wing (SW)"}
-                              </span>
-                            </td>
-                            <td className="py-3.5 px-4">
-                              <p className="font-extrabold text-zinc-200">{cadet.sbuCourse}</p>
-                              <p className="text-[10px] text-zinc-400">
-                                {cadet.sbuRollNo} • {cadet.sbuYear}
-                              </p>
-                            </td>
-                            <td className="py-3.5 px-4 text-zinc-300 font-semibold">
-                              <p>🏃 1600m: {cadet.run1600mTime}</p>
-                              <p className="text-[10px] text-zinc-400">
-                                Pushups: {cadet.pushupsCount}
-                              </p>
-                            </td>
-                            <td className="py-3.5 px-4">
-                              <span
-                                className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${
-                                  cadet.status === "Enrolled"
-                                    ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                                    : cadet.status === "Selected"
-                                      ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
-                                      : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-                                }`}
-                              >
-                                {cadet.status}
-                              </span>
-                            </td>
-                            <td className="py-3.5 px-4 text-right space-x-1.5">
-                              <button
-                                onClick={() => setViewingProfileModal(cadet)}
-                                className="px-2.5 py-1.5 glass-pill hover:bg-white/10 text-zinc-200 rounded-lg text-xs font-bold transition-all cursor-pointer inline-flex items-center space-x-1"
-                                title="View Full Profile"
-                              >
-                                <Eye className="w-3.5 h-3.5 text-blue-400" />
-                                <span className="hidden sm:inline">Profile</span>
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setSelectedRecord(cadet);
-                                  setEditingStatus(cadet.status);
-                                  setEditingRemarks(cadet.officerRemarks || "");
-                                  setEditingRegNo(cadet.enrollmentNo || "");
-                                }}
-                                className="px-2.5 py-1.5 bg-blue-600/30 border border-blue-500/40 hover:bg-blue-600/50 text-blue-300 rounded-lg text-xs font-bold transition-all cursor-pointer inline-flex items-center space-x-1"
-                                title="Update Status & Regimental Number"
-                              >
-                                <Edit3 className="w-3.5 h-3.5" />
-                                <span className="hidden sm:inline">Status</span>
-                              </button>
-                              <button
-                                onClick={() => onOpenPrintableSlip(cadet)}
-                                className="px-2 py-1.5 glass-pill text-zinc-300 hover:text-white rounded-lg text-xs font-bold transition-all cursor-pointer inline-flex items-center space-x-1"
-                                title="Print Application Slip"
-                              >
-                                <Printer className="w-3.5 h-3.5" />
-                              </button>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                        {filteredCadets.length === 0 ? (
+                          <tr>
+                            <td colSpan={8} className="py-12 text-center text-zinc-400 font-bold">
+                              No cadets found matching search criteria.
                             </td>
                           </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                        ) : (
+                          filteredCadets.map((cadet, idx) => (
+                            <tr key={cadet.id} className="hover:bg-white/5 transition-colors">
+                              <td className="py-3.5 px-4 font-bold text-zinc-400">{idx + 1}</td>
+                              <td className="py-3.5 px-4 font-mono font-bold text-zinc-200">
+                                <p className="text-xs font-extrabold text-blue-400">
+                                  {cadet.enrollmentNo || cadet.id}
+                                </p>
+                                <p className="text-[10px] text-zinc-400">App: {cadet.id}</p>
+                              </td>
+                              <td className="py-3.5 px-4">
+                                <p className="font-black text-white text-sm">{cadet.fullName}</p>
+                                <p className="text-[10px] text-zinc-400">📱 {cadet.mobile}</p>
+                              </td>
+                              <td className="py-3.5 px-4">
+                                <span
+                                  className={`px-2.5 py-0.5 rounded-full font-black text-[10px] ${
+                                    cadet.gender === "SD"
+                                      ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                                      : "bg-pink-500/20 text-pink-300 border border-pink-500/30"
+                                  }`}
+                                >
+                                  {cadet.gender === "SD" ? "Senior Div (SD)" : "Senior Wing (SW)"}
+                                </span>
+                              </td>
+                              <td className="py-3.5 px-4">
+                                <p className="font-extrabold text-zinc-200">{cadet.sbuCourse}</p>
+                                <p className="text-[10px] text-zinc-400">
+                                  {cadet.sbuRollNo} • {cadet.sbuYear}
+                                </p>
+                              </td>
+                              <td className="py-3.5 px-4 text-zinc-300 font-semibold">
+                                <p>🏃 1600m: {cadet.run1600mTime}</p>
+                                <p className="text-[10px] text-zinc-400">
+                                  Pushups: {cadet.pushupsCount}
+                                </p>
+                              </td>
+                              <td className="py-3.5 px-4">
+                                <span
+                                  className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${
+                                    cadet.status === "Enrolled"
+                                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                                      : cadet.status === "Selected"
+                                        ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                                        : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                                  }`}
+                                >
+                                  {cadet.status}
+                                </span>
+                              </td>
+                              <td className="py-3.5 px-4 text-right space-x-1.5">
+                                <button
+                                  onClick={() => setViewingProfileModal(cadet)}
+                                  className="px-2.5 py-1.5 glass-pill hover:bg-white/10 text-zinc-200 rounded-lg text-xs font-bold transition-all cursor-pointer inline-flex items-center space-x-1"
+                                  title="View Full Profile"
+                                >
+                                  <Eye className="w-3.5 h-3.5 text-blue-400" />
+                                  <span className="hidden sm:inline">Profile</span>
+                                </button>
+                                <button
+                                  onClick={() => handleMessageCadet(cadet)}
+                                  className="px-2.5 py-1.5 bg-blue-600/20 border border-blue-500/30 hover:bg-blue-600/40 text-blue-300 rounded-lg text-xs font-bold transition-all cursor-pointer inline-flex items-center space-x-1"
+                                  title="Direct Message Cadet"
+                                >
+                                  <MessageSquare className="w-3.5 h-3.5" />
+                                  <span className="hidden sm:inline">Chat</span>
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setSelectedRecord(cadet);
+                                    setEditingStatus(cadet.status);
+                                    setEditingRemarks(cadet.officerRemarks || "");
+                                    setEditingRegNo(cadet.enrollmentNo || "");
+                                  }}
+                                  className="px-2.5 py-1.5 bg-blue-600/30 border border-blue-500/40 hover:bg-blue-600/50 text-blue-300 rounded-lg text-xs font-bold transition-all cursor-pointer inline-flex items-center space-x-1"
+                                  title="Update Status & Regimental Number"
+                                >
+                                  <Edit3 className="w-3.5 h-3.5" />
+                                  <span className="hidden sm:inline">Status</span>
+                                </button>
+                                <button
+                                  onClick={() => onOpenPrintableSlip(cadet)}
+                                  className="px-2 py-1.5 glass-pill text-zinc-300 hover:text-white rounded-lg text-xs font-bold transition-all cursor-pointer inline-flex items-center space-x-1"
+                                  title="Print Application Slip"
+                                >
+                                  <Printer className="w-3.5 h-3.5" />
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  /* 6-Stage Interactive Kanban Pipeline View */
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 overflow-x-auto pb-4">
+                    {[
+                      {
+                        stage: "Submitted",
+                        label: "1. Submitted",
+                        accent: "border-blue-500/40 bg-blue-950/20 text-blue-400",
+                        badge: "bg-blue-500/20 text-blue-300 border border-blue-500/30",
+                      },
+                      {
+                        stage: "Physical Scheduled",
+                        label: "2. Physical Exam",
+                        accent: "border-amber-500/40 bg-amber-950/20 text-amber-400",
+                        badge: "bg-amber-500/20 text-amber-300 border border-amber-500/30",
+                      },
+                      {
+                        stage: "Medical Cleared",
+                        label: "3. Medical Clear",
+                        accent: "border-purple-500/40 bg-purple-950/20 text-purple-400",
+                        badge: "bg-purple-500/20 text-purple-300 border border-purple-500/30",
+                      },
+                      {
+                        stage: "Selected",
+                        label: "4. Selected",
+                        accent: "border-cyan-500/40 bg-cyan-950/20 text-cyan-400",
+                        badge: "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30",
+                      },
+                      {
+                        stage: "Enrolled",
+                        label: "5. Enrolled (Cadet)",
+                        accent: "border-emerald-500/40 bg-emerald-950/20 text-emerald-400",
+                        badge: "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30",
+                      },
+                      {
+                        stage: "Rejected",
+                        label: "6. Rejected / Archived",
+                        accent: "border-red-500/40 bg-red-950/20 text-red-400",
+                        badge: "bg-red-500/20 text-red-300 border border-red-500/30",
+                      },
+                    ].map(({ stage, label, accent, badge }) => {
+                      const stageCadets = filteredCadets.filter((c) => c.status === stage);
+                      return (
+                        <div
+                          key={stage}
+                          className={`rounded-2xl border p-3.5 space-y-3 flex flex-col min-w-[260px] ${accent}`}
+                        >
+                          <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                            <span className="font-black text-xs uppercase tracking-wider text-white">
+                              {label}
+                            </span>
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-black ${badge}`}
+                            >
+                              {stageCadets.length}
+                            </span>
+                          </div>
+
+                          <div className="space-y-2.5 overflow-y-auto max-h-[580px] pr-1">
+                            {stageCadets.length === 0 ? (
+                              <div className="py-8 text-center text-[11px] text-zinc-500 font-medium italic border border-dashed border-white/5 rounded-xl">
+                                No cadets in this stage
+                              </div>
+                            ) : (
+                              stageCadets.map((cadet) => (
+                                <div
+                                  key={cadet.id}
+                                  className="glass-panel p-3 rounded-xl border border-white/10 hover:border-white/20 transition-all space-y-2 shadow-sm"
+                                >
+                                  <div className="flex items-start justify-between gap-1">
+                                    <div>
+                                      <p className="font-black text-white text-xs leading-snug">
+                                        {cadet.fullName}
+                                      </p>
+                                      <p className="text-[10px] font-mono text-zinc-400">
+                                        {cadet.enrollmentNo || cadet.id}
+                                      </p>
+                                    </div>
+                                    <span
+                                      className={`px-1.5 py-0.5 rounded text-[9px] font-black ${
+                                        cadet.gender === "SD"
+                                          ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                                          : "bg-pink-500/20 text-pink-300 border border-pink-500/30"
+                                      }`}
+                                    >
+                                      {cadet.gender}
+                                    </span>
+                                  </div>
+
+                                  <div className="text-[10px] text-zinc-400 space-y-0.5">
+                                    <p className="truncate">
+                                      {cadet.sbuCourse} • Roll: {cadet.sbuRollNo}
+                                    </p>
+                                    <p>📱 {cadet.mobile}</p>
+                                    {cadet.run1600mTime && (
+                                      <p className="text-zinc-300 font-semibold">
+                                        🏃 {cadet.run1600mTime} | Pushups: {cadet.pushupsCount}
+                                      </p>
+                                    )}
+                                  </div>
+
+                                  <div className="pt-1.5 border-t border-white/5 flex items-center justify-between gap-1">
+                                    <button
+                                      type="button"
+                                      onClick={() => setViewingProfileModal(cadet)}
+                                      className="px-2 py-1 glass-pill hover:bg-white/10 text-zinc-300 rounded text-[10px] font-bold cursor-pointer inline-flex items-center space-x-1"
+                                      title="View Profile"
+                                    >
+                                      <Eye className="w-3 h-3 text-blue-400" />
+                                      <span>View</span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleMessageCadet(cadet)}
+                                      className="px-1.5 py-1 glass-pill text-blue-300 hover:text-white rounded text-[10px] font-bold cursor-pointer inline-flex items-center"
+                                      title="Direct Message Cadet"
+                                    >
+                                      <MessageSquare className="w-3 h-3" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setSelectedRecord(cadet);
+                                        setEditingStatus(cadet.status);
+                                        setEditingRemarks(cadet.officerRemarks || "");
+                                        setEditingRegNo(cadet.enrollmentNo || "");
+                                      }}
+                                      className="px-2 py-1 bg-blue-600/30 border border-blue-500/40 hover:bg-blue-600/50 text-blue-300 rounded text-[10px] font-bold cursor-pointer inline-flex items-center space-x-1"
+                                      title="Update Status"
+                                    >
+                                      <Edit3 className="w-3 h-3" />
+                                      <span>Move</span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => onOpenPrintableSlip(cadet)}
+                                      className="px-1.5 py-1 glass-pill text-zinc-300 hover:text-white rounded text-[10px] font-bold cursor-pointer"
+                                      title="Print Slip"
+                                    >
+                                      <Printer className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -2220,6 +2498,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
               </div>
             </div>
           )}
+
+          {/* TAB: CADRE MESSAGING HUB */}
+          {activeTab === "messages" && (
+            <div className="h-[calc(100vh-10rem)] min-h-[650px] w-full">
+              <CommunicationHub
+                currentUser={{
+                  id: "officer_ano",
+                  name: "Capt. Dr. Animesh Roy (ANO)",
+                  role: "ADMIN",
+                }}
+                initialConversationId={initialChatConvId || undefined}
+              />
+            </div>
+          )}
         </main>
       </div>
 
@@ -2241,12 +2533,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPrintableS
                   Regimental No: {viewingProfileModal.enrollmentNo || "Pending Allocation"}
                 </p>
               </div>
-              <button
-                onClick={() => setViewingProfileModal(null)}
-                className="p-2 rounded-xl glass-pill text-zinc-300 hover:text-white cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={() => handleMessageCadet(viewingProfileModal)}
+                  className="px-3 py-1.5 rounded-xl bg-blue-600/30 border border-blue-500/40 hover:bg-blue-600/50 text-blue-300 hover:text-white text-xs font-bold flex items-center space-x-1.5 transition-all shadow-sm cursor-pointer"
+                  title="Direct Message Cadet"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>Message Cadet</span>
+                </button>
+                <button
+                  onClick={() => setViewingProfileModal(null)}
+                  className="p-2 rounded-xl glass-pill text-zinc-300 hover:text-white cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {/* Modal Sub-tabs */}

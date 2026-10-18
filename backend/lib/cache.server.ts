@@ -16,8 +16,19 @@ interface CacheItem<T> {
 }
 
 // Bounded in-memory L1 cache with LRU eviction
-const L1_MAX_ITEMS = 2000;
+export const MAX_MEMORY_ITEMS = 5000;
+const L1_MAX_ITEMS = MAX_MEMORY_ITEMS;
 const l1Cache = new Map<string, CacheItem<unknown>>();
+
+// Single-flight in-flight promise deduplication map to prevent cache stampedes
+const inFlightPromises = new Map<string, Promise<unknown>>();
+
+// Telemetry metrics
+let l1Hits = 0;
+let l1Misses = 0;
+let l2Hits = 0;
+let l2Misses = 0;
+let l1Evictions = 0;
 
 function pruneL1() {
   const now = Date.now();
@@ -29,6 +40,7 @@ function pruneL1() {
   // Enforce capacity bounds (evict oldest inserted/accessed)
   if (l1Cache.size > L1_MAX_ITEMS) {
     const keysToEvict = Array.from(l1Cache.keys()).slice(0, l1Cache.size - L1_MAX_ITEMS);
+    l1Evictions += keysToEvict.length;
     for (const k of keysToEvict) {
       l1Cache.delete(k);
     }
@@ -37,6 +49,9 @@ function pruneL1() {
 
 /**
  * Retrieves a cached value or executes the fetcher function to compute and cache it.
+ *
+ * Employs single-flight in-flight deduplication so concurrent requests for a cold key
+ * share a single fetcher execution without cache stampede.
  *
  * @param key Unique cache key (e.g., "ncc:calendar:published")
  * @param ttlSeconds Expiration duration in seconds
@@ -52,39 +67,60 @@ export async function getOrSetCache<T>(
   // 1. Check L1 in-memory cache
   const l1Entry = l1Cache.get(key) as CacheItem<T> | undefined;
   if (l1Entry && l1Entry.expiresAt > now) {
+    l1Hits++;
     // Refresh access order for LRU
     l1Cache.delete(key);
     l1Cache.set(key, l1Entry as CacheItem<unknown>);
     return l1Entry.value;
   }
+  l1Misses++;
 
-  // 2. Check L2 Redis cache
-  try {
-    const raw = await redisGet(key);
-    if (raw !== null) {
-      const parsed = JSON.parse(raw) as T;
-      // Populate L1 cache for subsequent fast reads
-      pruneL1();
-      l1Cache.set(key, { value: parsed, expiresAt: now + ttlSeconds * 1000 });
-      return parsed;
+  // 2. Check if an in-flight operation is already running for this key (Single-flight deduplication)
+  const existingInFlight = inFlightPromises.get(key);
+  if (existingInFlight) {
+    return (await existingInFlight) as T;
+  }
+
+  // 3. Register in-flight promise SYNCHRONOUSLY before any async yield to prevent cache stampedes
+  const executionPromise = (async () => {
+    try {
+      // Check L2 Redis cache
+      try {
+        const raw = await redisGet(key);
+        if (raw !== null) {
+          l2Hits++;
+          const parsed = JSON.parse(raw) as T;
+          // Populate L1 cache for subsequent fast reads
+          pruneL1();
+          l1Cache.set(key, { value: parsed, expiresAt: Date.now() + ttlSeconds * 1000 });
+          return parsed;
+        }
+        l2Misses++;
+      } catch {
+        l2Misses++;
+        // Fallback to fetcher on Redis read or JSON parse error
+      }
+
+      // 4. Cache Miss — Execute Fetcher
+      const freshData = await fetcher();
+
+      // Update L1 and L2
+      try {
+        pruneL1();
+        l1Cache.set(key, { value: freshData, expiresAt: Date.now() + ttlSeconds * 1000 });
+        await redisSet(key, JSON.stringify(freshData), ttlSeconds);
+      } catch (err) {
+        console.warn(`[Cache Write Warning] Failed to write key ${key}:`, err);
+      }
+
+      return freshData;
+    } finally {
+      inFlightPromises.delete(key);
     }
-  } catch {
-    // Fallback to fetcher on Redis read or JSON parse error
-  }
+  })();
 
-  // 3. Cache Miss — Execute Fetcher
-  const freshData = await fetcher();
-
-  // 4. Update L1 and L2
-  try {
-    pruneL1();
-    l1Cache.set(key, { value: freshData, expiresAt: now + ttlSeconds * 1000 });
-    await redisSet(key, JSON.stringify(freshData), ttlSeconds);
-  } catch (err) {
-    console.warn(`[Cache Write Warning] Failed to write key ${key}:`, err);
-  }
-
-  return freshData;
+  inFlightPromises.set(key, executionPromise);
+  return (await executionPromise) as T;
 }
 
 /**
@@ -92,6 +128,7 @@ export async function getOrSetCache<T>(
  */
 export async function invalidateCache(key: string): Promise<void> {
   l1Cache.delete(key);
+  inFlightPromises.delete(key);
   try {
     await redisDel(key);
   } catch {
@@ -108,6 +145,11 @@ export async function invalidateCachePrefix(prefix: string): Promise<void> {
       l1Cache.delete(k);
     }
   }
+  for (const k of inFlightPromises.keys()) {
+    if (k.startsWith(prefix)) {
+      inFlightPromises.delete(k);
+    }
+  }
   try {
     await redisDelPrefix(prefix);
   } catch {
@@ -116,8 +158,37 @@ export async function invalidateCachePrefix(prefix: string): Promise<void> {
 }
 
 /**
- * Clears all items from the L1 in-memory cache (primarily for tests).
+ * Returns telemetry and operational health metrics for the multi-tier cache.
+ */
+export function getCacheStats() {
+  const totalRequests = l1Hits + l1Misses;
+  const hitRatio = totalRequests > 0 ? (l1Hits + l2Hits) / totalRequests : 0;
+  return {
+    l1Hits,
+    l1Misses,
+    l2Hits,
+    l2Misses,
+    l1Size: l1Cache.size,
+    l1Evictions,
+    hitRatio: Math.round(hitRatio * 10000) / 100,
+  };
+}
+
+/**
+ * Resets cache statistics counters (primarily for tests).
+ */
+export function resetCacheStats(): void {
+  l1Hits = 0;
+  l1Misses = 0;
+  l2Hits = 0;
+  l2Misses = 0;
+  l1Evictions = 0;
+}
+
+/**
+ * Clears all items from the L1 in-memory cache and in-flight promises (primarily for tests).
  */
 export function clearL1Cache(): void {
   l1Cache.clear();
+  inFlightPromises.clear();
 }

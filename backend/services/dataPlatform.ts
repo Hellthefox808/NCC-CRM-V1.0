@@ -1,5 +1,15 @@
 import { CadetRecord } from "@/types";
 import { NotificationItem } from "@frontend/features/NotificationsFeed";
+import type {
+  Conversation,
+  ChatMessage,
+  ConversationMember,
+  ChatContact,
+  CrmCardPayload,
+  AttachmentItem,
+  PollData,
+  MemberRole,
+} from "@backend/services/messaging/chat.service";
 
 // Enterprise Data Platform Types & Schema Definitions
 export interface ApiResponse<T> {
@@ -710,6 +720,278 @@ export class EnterpriseDataPlatform {
   }): Promise<ApiResponse<OnboardingProgressData>> {
     return this.request("/onboarding", {
       method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  // ── Communication Hub & Messaging API Methods ──────────────────────────────
+
+  /**
+   * List all conversations for current user
+   */
+  static async listConversations(): Promise<
+    ApiResponse<{ conversations: Conversation[]; count: number }>
+  > {
+    return this.request("/messages/conversations", { method: "GET" });
+  }
+
+  /**
+   * Create a direct conversation or group chat
+   */
+  static async createConversation(payload: {
+    type: "direct" | "group" | "channel";
+    title?: string;
+    description?: string;
+    groupType?: string;
+    isOfficial?: boolean;
+    recipientId?: string;
+    recipientName?: string;
+    recipientRole?: string;
+    memberIds?: string[];
+    crmResource?: { type: string; id: string };
+  }): Promise<ApiResponse<{ conversation: Conversation }>> {
+    return this.request("/messages/conversations", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Get single conversation details and members
+   */
+  static async getConversation(
+    conversationId: string,
+  ): Promise<ApiResponse<{ conversation: Conversation; members: ConversationMember[] }>> {
+    return this.request(`/messages/conversations/${conversationId}`, { method: "GET" });
+  }
+
+  /**
+   * Update conversation metadata, pin, or mute state
+   */
+  static async updateConversation(
+    conversationId: string,
+    payload: {
+      title?: string;
+      description?: string;
+      isPinned?: boolean;
+      isMuted?: boolean;
+      isArchived?: boolean;
+    },
+  ): Promise<ApiResponse<{ conversation: Conversation; membership: Partial<ConversationMember> }>> {
+    return this.request(`/messages/conversations/${conversationId}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * List paginated messages for a conversation
+   */
+  static async listMessages(
+    conversationId: string,
+    options: { limit?: number; beforeId?: string } = {},
+  ): Promise<ApiResponse<{ messages: ChatMessage[]; count: number }>> {
+    const params = new URLSearchParams();
+    if (options.limit) params.set("limit", options.limit.toString());
+    if (options.beforeId) params.set("beforeId", options.beforeId);
+    const query = params.toString() ? `?${params.toString()}` : "";
+    return this.request(`/messages/conversations/${conversationId}/messages${query}`, {
+      method: "GET",
+    });
+  }
+
+  /**
+   * Send a new message
+   */
+  static async sendMessage(
+    conversationId: string,
+    payload: {
+      content: string;
+      replyToId?: string;
+      attachments?: AttachmentItem[];
+      messageType?: string;
+      crmCard?: CrmCardPayload;
+    },
+  ): Promise<ApiResponse<{ message: ChatMessage }>> {
+    return this.request(`/messages/conversations/${conversationId}/messages`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Edit message content
+   */
+  static async editMessage(
+    messageId: string,
+    content: string,
+    conversationId?: string,
+  ): Promise<ApiResponse<{ message: ChatMessage }>> {
+    return this.request(`/messages/messages/${messageId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ content, conversationId }),
+    });
+  }
+
+  /**
+   * Soft-delete a message
+   */
+  static async deleteMessage(
+    messageId: string,
+    conversationId?: string,
+  ): Promise<ApiResponse<{ success: boolean; messageId: string }>> {
+    const query = conversationId ? `?conversationId=${encodeURIComponent(conversationId)}` : "";
+    return this.request(`/messages/messages/${messageId}${query}`, {
+      method: "DELETE",
+    });
+  }
+
+  /**
+   * Toggle emoji reaction
+   */
+  static async toggleReaction(
+    messageId: string,
+    emoji: string,
+    conversationId?: string,
+  ): Promise<ApiResponse<{ reactions: ChatMessage["reactions"] }>> {
+    return this.request(`/messages/messages/${messageId}/reactions`, {
+      method: "POST",
+      body: JSON.stringify({ emoji, conversationId }),
+    });
+  }
+
+  /**
+   * Mark conversation as read
+   */
+  static async markConversationRead(
+    conversationId: string,
+    messageId?: string,
+  ): Promise<ApiResponse<{ success: boolean; lastReadMessageId: string }>> {
+    return this.request(`/messages/conversations/${conversationId}/read`, {
+      method: "POST",
+      body: JSON.stringify({ messageId }),
+    });
+  }
+
+  /**
+   * Search messages across user's authorized conversations
+   */
+  static async searchMessages(
+    query: string,
+  ): Promise<ApiResponse<{ messages: ChatMessage[]; count: number }>> {
+    return this.request(`/messages/search?q=${encodeURIComponent(query)}`, { method: "GET" });
+  }
+
+  /**
+   * Get eligible contacts directory for messaging and invitations
+   */
+  static async getEligibleContacts(): Promise<
+    ApiResponse<{ contacts: ChatContact[]; count: number }>
+  > {
+    return this.request("/messages/contacts", { method: "GET" });
+  }
+
+  /**
+   * Create an interactive Poll in a conversation
+   */
+  static async createPoll(
+    conversationId: string,
+    payload: { question: string; options: string[]; allowsMultiple?: boolean },
+  ): Promise<ApiResponse<{ message: ChatMessage }>> {
+    return this.request(`/messages/conversations/${conversationId}/poll`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Cast or toggle a vote on a poll
+   */
+  static async votePoll(
+    messageId: string,
+    optionId: string,
+    conversationId?: string,
+  ): Promise<ApiResponse<{ poll: PollData }>> {
+    return this.request(`/messages/messages/${messageId}/poll-vote`, {
+      method: "POST",
+      body: JSON.stringify({ optionId, conversationId }),
+    });
+  }
+
+  /**
+   * Pin or unpin a message
+   */
+  static async pinMessage(
+    messageId: string,
+    isPinned: boolean,
+    conversationId?: string,
+  ): Promise<ApiResponse<{ message: ChatMessage }>> {
+    return this.request(`/messages/messages/${messageId}/pin`, {
+      method: "POST",
+      body: JSON.stringify({ isPinned, conversationId }),
+    });
+  }
+
+  /**
+   * Add a new member to an existing group conversation
+   */
+  static async addGroupMember(
+    conversationId: string,
+    payload: {
+      userId: string;
+      name?: string;
+      role?: string;
+      memberRole?: MemberRole;
+    },
+  ): Promise<ApiResponse<{ member: ConversationMember }>> {
+    return this.request(`/messages/conversations/${conversationId}/members`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Remove a member or leave a group conversation
+   */
+  static async removeGroupMember(
+    conversationId: string,
+    userId: string,
+  ): Promise<ApiResponse<{ success: boolean; removedUserId: string }>> {
+    const qs = encodeURIComponent(userId);
+    return this.request(`/messages/conversations/${conversationId}/members?userId=${qs}`, {
+      method: "DELETE",
+    });
+  }
+
+  /**
+   * Update a member's role (admin, moderator, member, read_only)
+   */
+  static async updateMemberRole(
+    conversationId: string,
+    userId: string,
+    memberRole: MemberRole,
+  ): Promise<ApiResponse<{ member: ConversationMember }>> {
+    return this.request(`/messages/conversations/${conversationId}/members`, {
+      method: "PATCH",
+      body: JSON.stringify({ userId, memberRole }),
+    });
+  }
+
+  /**
+   * Convert an operational chat message into a tracked CRM follow-up Task
+   */
+  static async convertMessageToTask(
+    messageId: string,
+    payload: {
+      title: string;
+      assignedTo?: string;
+      dueDate?: string;
+      priority?: "low" | "medium" | "high";
+      conversationId?: string;
+    },
+  ): Promise<ApiResponse<{ taskId: string; message: ChatMessage }>> {
+    return this.request(`/messages/messages/${messageId}/convert-task`, {
+      method: "POST",
       body: JSON.stringify(payload),
     });
   }

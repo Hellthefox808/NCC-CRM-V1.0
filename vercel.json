@@ -34,14 +34,6 @@
   ],
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://agent-6a88700c8504a--spectacular-entremet-464b43.netlify.app/api/:path*"
-    },
-    {
-      "source": "/socket.io/:path*",
-      "destination": "https://agent-6a88700c8504a--spectacular-entremet-464b43.netlify.app/socket.io/:path*"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

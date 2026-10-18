@@ -23,7 +23,8 @@ export interface SecurityEventResult {
   containmentExecuted?: string;
 }
 
-// In-Memory Recent Event Memory Window for rapid correlation
+// In-Memory Recent Event Memory Window for rapid correlation (bounded to 5,000 items)
+export const MAX_IDS_EVENT_HISTORY = 5000;
 const eventHistory: Array<{ eventType: string; actorIp: string; timestamp: number }> = [];
 
 /** Records a security event, correlates threat rules, and executes containment if needed */
@@ -38,9 +39,12 @@ export async function recordSecurityEvent(
   // Track event in history window
   eventHistory.push({ eventType, actorIp, timestamp: now });
 
-  // Cleanup old events (>15 minutes)
+  // Cleanup old events (>15 minutes) and enforce MAX_IDS_EVENT_HISTORY capacity bound
   const windowStart = now - 15 * 60 * 1000;
-  while (eventHistory.length > 0 && eventHistory[0].timestamp < windowStart) {
+  while (
+    (eventHistory.length > 0 && eventHistory[0].timestamp < windowStart) ||
+    eventHistory.length > MAX_IDS_EVENT_HISTORY
+  ) {
     eventHistory.shift();
   }
 

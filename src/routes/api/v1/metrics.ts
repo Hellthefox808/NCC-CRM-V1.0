@@ -48,6 +48,9 @@ export const Route = createFileRoute("/api/v1/metrics")({
           const mem = process.memoryUsage();
           const memoryUsageMb = Math.round((mem.heapUsed / 1024 / 1024) * 100) / 100;
 
+          const { getCacheStats } = await import("@backend/lib/cache.server");
+          const cacheStats = getCacheStats();
+
           return json({
             success: true,
             data: {
@@ -64,6 +67,7 @@ export const Route = createFileRoute("/api/v1/metrics")({
               memoryUsageMb,
               heapTotalMb: Math.round((mem.heapTotal / 1024 / 1024) * 100) / 100,
               rssMb: Math.round((mem.rss / 1024 / 1024) * 100) / 100,
+              cache: cacheStats,
             },
           });
         } catch {
