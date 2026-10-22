@@ -1,0 +1,2777 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>19 Jharkhand Battalion NCC — Command Centre & Cadre Portal | SBU Ranchi</title>
+  <meta name="description" content="Official Portal of 19 Jharkhand Battalion NCC, Sarala Birla University (SBU) Ranchi Coy. Enroll as a cadet, track application status, manage training parades, and access battalion circulars.">
+  <link rel="icon" type="image/svg+xml" href="../public/favicon.svg">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;400;500;600;700&family=Inter+Tight:wght@500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. CSS Custom Properties & Design Tokens (Zinc Neutral + Regimental Colors)
+       ========================================================================== */
+    :root {
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-heading: 'Space Grotesk', system-ui, sans-serif;
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-2xl: 24px;
+      --radius-full: 9999px;
+
+      /* Light Theme (Zinc neutrals) */
+      --bg: #ffffff;
+      --bg-alt: #f8fafc;
+      --surface: #f1f5f9;
+      --surface-elevated: #ffffff;
+      --fg: #0f172a;
+      --fg-muted: #64748b;
+      --fg-subtle: #94a3b8;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --card-bg: #ffffff;
+      --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
+
+      /* Regimental Core Tokens */
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-fg: #ffffff;
+      --primary-subtle: #eff6ff;
+
+      --accent: #7c3aed;
+      --accent-hover: #6d28d9;
+      --accent-subtle: #f5f3ff;
+
+      --gold: #d97706;
+      --gold-hover: #b45309;
+      --gold-subtle: #fef3c7;
+
+      --destructive: #dc2626;
+      --destructive-subtle: #fef2f2;
+      --success: #16a34a;
+      --success-subtle: #f0fdf4;
+      --info: #0284c7;
+      --info-subtle: #f0f9ff;
+
+      /* Olive Sage (Enrollment Page) */
+      --olive-primary: #064e3b;
+      --olive-hover: #065f46;
+      --olive-accent: #10b981;
+      --olive-surface: #f0fdf4;
+      --olive-muted: #047857;
+
+      --nav-height: 72px;
+      --dock-height: 64px;
+    }
+
+    html.dark {
+      --bg: #09090b;
+      --bg-alt: #0c0a09;
+      --surface: #18181b;
+      --surface-elevated: #27272a;
+      --fg: #f8fafc;
+      --fg-muted: #a1a1aa;
+      --fg-subtle: #71717a;
+      --border: #27272a;
+      --border-strong: #3f3f46;
+      --card-bg: #121215;
+      --card-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.6);
+
+      --primary: #3b82f6;
+      --primary-hover: #60a5fa;
+      --primary-fg: #09090b;
+      --primary-subtle: rgba(59, 130, 246, 0.15);
+
+      --accent: #8b5cf6;
+      --accent-hover: #a78bfa;
+      --accent-subtle: rgba(139, 92, 246, 0.15);
+
+      --gold: #f59e0b;
+      --gold-hover: #fbbf24;
+      --gold-subtle: rgba(245, 158, 11, 0.15);
+
+      --destructive: #ef4444;
+      --destructive-subtle: rgba(239, 68, 68, 0.15);
+      --success: #22c55e;
+      --success-subtle: rgba(34, 197, 94, 0.15);
+      --info: #38bdf8;
+      --info-subtle: rgba(56, 189, 248, 0.15);
+
+      --olive-primary: #064e3b;
+      --olive-hover: #065f46;
+      --olive-accent: #34d399;
+      --olive-surface: rgba(6, 78, 59, 0.3);
+      --olive-muted: #10b981;
+    }
+
+    /* ==========================================================================
+       2. Base & Typography
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: calc(var(--dock-height) + 20px);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--fg);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      border: none;
+      outline: none;
+      background: none;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* Regimental Tricolor Ribbon */
+    .tricolor-ribbon {
+      height: 3px;
+      width: 100%;
+      background: linear-gradient(90deg, #dc2626 0%, #2563eb 50%, #0284c7 100%);
+    }
+
+    .regimental-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      background: var(--primary-subtle);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+
+    .regimental-gold-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      background: var(--gold-subtle);
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* ==========================================================================
+       3. Layout & Global Navigation Bar
+       ========================================================================== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9, 9, 11, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    html:not(.dark) .navbar {
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .crest-overlap {
+      display: flex;
+      align-items: center;
+    }
+
+    .crest-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid var(--bg);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-right: -10px;
+      position: relative;
+    }
+
+    .crest-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 2px;
+    }
+
+    .brand-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--fg-muted);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-link {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--fg-muted);
+      transition: color 0.15s ease;
+      cursor: pointer;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--fg);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--primary-fg);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--fg);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-elevated);
+      border-color: var(--border-strong);
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #ffffff;
+    }
+    .btn-gold:hover {
+      background: var(--gold-hover);
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-icon {
+      padding: 8px;
+      border-radius: var(--radius-md);
+      color: var(--fg-muted);
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .btn-icon:hover {
+      color: var(--fg);
+      background: var(--surface-elevated);
+    }
+
+    /* ==========================================================================
+       4. View Router & Container Management
+       ========================================================================== */
+    .view-container {
+      display: none;
+      width: 100%;
+      flex: 1;
+      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .view-container.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==========================================================================
+       5. View: Home / Landing Page
+       ========================================================================== */
+    .hero-section {
+      position: relative;
+      background: #09090b;
+      color: #ffffff;
+      padding: 64px 20px 80px;
+      overflow: hidden;
+      min-height: 560px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-bg-overlay {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at 50% 30%, rgba(37, 99, 235, 0.18) 0%, transparent 60%),
+                        radial-gradient(circle at 80% 80%, rgba(217, 119, 6, 0.12) 0%, transparent 50%),
+                        linear-gradient(180deg, rgba(9, 9, 11, 0.4) 0%, #09090b 100%);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .hero-crests {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .hero-crest-lg {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid rgba(217, 119, 6, 0.4);
+      padding: 4px;
+      box-shadow: 0 0 25px rgba(217, 119, 6, 0.25);
+    }
+    .hero-crest-lg img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .hero-divider {
+      width: 1px;
+      height: 36px;
+      background: rgba(217, 119, 6, 0.4);
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: #ffffff;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(14px, 2vw, 18px);
+      font-weight: 700;
+      color: #60a5fa;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .hero-search-card {
+      width: 100%;
+      max-width: 580px;
+      background: rgba(24, 24, 27, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-xl);
+      padding: 8px 8px 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-search-card input {
+      flex: 1;
+      color: #ffffff;
+      font-size: 14px;
+    }
+    .hero-search-card input::placeholder {
+      color: #a1a1aa;
+    }
+
+    .stats-bar {
+      width: 100%;
+      max-width: 1100px;
+      margin: 40px auto 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      padding: 0 20px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      letter-spacing: 0.08em;
+    }
+
+    .stat-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--fg);
+    }
+
+    .stat-sub {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    /* Sections */
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .section-desc {
+      font-size: 15px;
+      color: var(--fg-muted);
+      max-width: 600px;
+    }
+
+    /* About NCC Grid */
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .about-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .about-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: var(--primary-subtle);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Gallery Tabs & Grid */
+    .gallery-filter {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 30px;
+    }
+
+    .filter-btn {
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--fg-muted);
+    }
+    .filter-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .gallery-item {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .gallery-item:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--card-shadow);
+    }
+
+    .gallery-img-box {
+      height: 180px;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gallery-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-meta {
+      padding: 16px;
+    }
+
+    .gallery-meta h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .gallery-meta p {
+      font-size: 12px;
+      color: var(--fg-muted);
+    }
+
+    /* FAQ Accordion */
+    .faq-list {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .faq-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 0 24px 20px;
+      font-size: 14px;
+      color: var(--fg-muted);
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* ==========================================================================
+       6. View: Form 1 Cadet Enrolment Portal
+       ========================================================================== */
+    .enroll-container {
+      max-width: 840px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .wizard-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+    }
+
+    .wizard-header {
+      padding: 30px;
+      background: linear-gradient(135deg, var(--olive-primary) 0%, #022c22 100%);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .wizard-stepper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 30px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step-node {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--fg-muted);
+    }
+
+    .step-node.active {
+      color: var(--primary);
+    }
+    .step-node.completed {
+      color: var(--success);
+    }
+
+    .step-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .step-node.active .step-circle {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .step-node.completed .step-circle {
+      background: var(--success);
+      color: #ffffff;
+      border-color: var(--success);
+    }
+
+    .wizard-body {
+      padding: 30px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .form-group-full {
+      grid-column: span 2;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .form-input, .form-select, .form-textarea {
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--fg);
+      font-size: 14px;
+      transition: border-color 0.15s ease;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--primary);
+      background: var(--card-bg);
+      box-shadow: 0 0 0 3px var(--primary-subtle);
+    }
+
+    .wizard-footer {
+      padding: 20px 30px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* ==========================================================================
+       7. View: Admin Command Centre
+       ========================================================================== */
+    .admin-container {
+      max-width: 1400px;
+      margin: 30px auto;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .data-table-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+    }
+
+    .table-toolbar {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      min-width: 260px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      padding: 14px 20px;
+      background: var(--surface);
+      color: var(--fg-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 11px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .status-badge.submitted {
+      background: var(--primary-subtle);
+      color: var(--primary);
+    }
+    .status-badge.scheduled {
+      background: var(--gold-subtle);
+      color: var(--gold);
+    }
+    .status-badge.selected {
+      background: var(--success-subtle);
+      color: var(--success);
+    }
+    .status-badge.rejected {
+      background: var(--destructive-subtle);
+      color: var(--destructive);
+    }
+
+    /* Empty state */
+    .empty-state {
+      padding: 60px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .empty-state-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--surface);
+      color: var(--fg-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ==========================================================================
+       8. View: Cadet Portal & Induction Hub
+       ========================================================================== */
+    .cadet-container {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .cadet-hero-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .cadet-profile-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .cadet-avatar-lg {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    /* Tabs */
+    .tab-bar {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      gap: 20px;
+    }
+
+    .tab-item {
+      padding: 12px 4px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--fg-muted);
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+    }
+    .tab-item.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* ==========================================================================
+       9. View: Communication Hub (Messaging)
+       ========================================================================== */
+    .comms-container {
+      max-width: 1280px;
+      margin: 20px auto;
+      padding: 0 20px;
+      height: calc(100vh - var(--nav-height) - var(--dock-height) - 60px);
+      min-height: 540px;
+      display: flex;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+    }
+
+    .comms-sidebar {
+      width: 320px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+    }
+
+    .comms-chat-window {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--card-bg);
+    }
+
+    .chat-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .message-stream {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .message-card {
+      display: flex;
+      gap: 12px;
+      max-width: 80%;
+    }
+
+    .message-card.outgoing {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .message-bubble {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .message-card.outgoing .message-bubble {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .chat-composer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* ==========================================================================
+       10. Floating View Switcher Dock (User Requested)
+       ========================================================================== */
+    .dock-container {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: rgba(18, 18, 21, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-full);
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    html:not(.dark) .dock-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: rgba(0, 0, 0, 0.12);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .dock-btn {
+      padding: 8px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--fg-muted);
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dock-btn:hover {
+      color: var(--fg);
+      background: var(--surface);
+    }
+
+    .dock-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
+    }
+
+    /* ==========================================================================
+       11. Modals & Slide-Over Drawers
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 900;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      max-width: 580px;
+      width: 100%;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-head {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .drawer-ai {
+      position: fixed;
+      top: 0;
+      right: -420px;
+      width: 400px;
+      max-width: 90vw;
+      height: 100vh;
+      z-index: 950;
+      background: var(--card-bg);
+      border-left: 1px solid var(--border);
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drawer-ai.active {
+      right: 0;
+    }
+
+    /* Timeline */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      margin: 10px 0;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 14px;
+      position: relative;
+    }
+
+    .timeline-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid var(--border-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .timeline-item.done .timeline-dot {
+      background: var(--success);
+      color: #ffffff;
+      border-color: var(--success);
+    }
+    .timeline-item.active .timeline-dot {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Toasts */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      background: var(--surface-elevated);
+      color: var(--fg);
+      border: 1px solid var(--border-strong);
+      padding: 12px 18px;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: slideIn 0.2s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Icons */
+    .icon {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group-full { grid-column: span 1; }
+      .comms-container { flex-direction: column; height: auto; }
+      .comms-sidebar { width: 100%; height: 200px; }
+      .dock-container { overflow-x: auto; max-width: 95vw; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SVG Sprite Collection -->
+  <svg style="display:none">
+    <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+    <symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></symbol>
+    <symbol id="icon-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="icon-flag" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></symbol>
+    <symbol id="icon-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="icon-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+    <symbol id="icon-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="icon-chevron-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+    <symbol id="icon-sparkles" viewBox="0 0 24 24"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+    <symbol id="icon-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+    <symbol id="icon-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+  </svg>
+
+  <!-- Tricolor Brand Header Bar -->
+  <div class="tricolor-ribbon"></div>
+
+  <!-- Global Header Navigation -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <div class="brand-cluster" onclick="navigateTo('#/')">
+        <div class="crest-overlap">
+          <div class="crest-circle">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_5fO3j9MhxWCOALUorfuM3nZcChQfc2949oaRRyjpIQ&s=10" alt="SBU Crest">
+          </div>
+          <div class="crest-circle">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTZDvUjTIPyVWknpreMHXnyKTvz7-P_uljpSxjPHcXXw&s=10" alt="19 JHR BN NCC Crest">
+          </div>
+        </div>
+        <div class="brand-meta">
+          <span class="brand-title">19 Jharkhand Battalion NCC</span>
+          <span class="brand-subtitle">Sarala Birla University, Ranchi</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a class="nav-link" onclick="navigateTo('#/')">Overview</a>
+        <a class="nav-link" onclick="navigateTo('#/enroll')">Form 1 Enrollment</a>
+        <a class="nav-link" onclick="openTrackerModal()">Track Application</a>
+        <a class="nav-link" onclick="navigateTo('#/notices')">Notices</a>
+        <a class="nav-link" onclick="navigateTo('#/cadet')">Cadet Portal</a>
+        <a class="nav-link" onclick="navigateTo('#/admin')">Officer Command</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn btn-secondary btn-sm" onclick="openTrackerModal()">
+          <svg class="icon"><use href="#icon-search"/></svg> Track Status
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="navigateTo('#/enroll')">
+          Join NCC
+        </button>
+        <button class="btn-icon" onclick="toggleTheme()" title="Toggle Theme">
+          <svg class="icon" id="theme-icon"><use href="#icon-sun"/></svg>
+        </button>
+        <button class="btn-icon" onclick="openAiDrawer()" title="Subedar Major AI Assistant">
+          <svg class="icon"><use href="#icon-sparkles"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       VIEW 1: PUBLIC LANDING PAGE (#/)
+       ======================================================================== -->
+  <main id="view-home" class="view-container active">
+    <!-- Hero Command Banner -->
+    <section class="hero-section">
+      <div class="hero-bg-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-crests">
+          <div class="hero-crest-lg">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_5fO3j9MhxWCOALUorfuM3nZcChQfc2949oaRRyjpIQ&s=10" alt="SBU Logo">
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-crest-lg">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTZDvUjTIPyVWknpreMHXnyKTvz7-P_uljpSxjPHcXXw&s=10" alt="NCC Crest">
+          </div>
+        </div>
+
+        <div class="regimental-badge">
+          <svg class="icon"><use href="#icon-shield"/></svg>
+          19 JHR BN NCC • SBU RANCHI COY
+        </div>
+
+        <h1 class="hero-title">National Cadet Corps</h1>
+        <p class="hero-subtitle">Senior Division (SD) & Senior Wing (SW)</p>
+
+        <div class="regimental-gold-pill">
+          <svg class="icon"><use href="#icon-star"/></svg>
+          “Ekta aur Anushasan” — Unity and Discipline
+          <svg class="icon"><use href="#icon-star"/></svg>
+        </div>
+
+        <!-- Fast Application Tracking Form -->
+        <div class="hero-search-card">
+          <svg class="icon" style="color:var(--fg-muted)"><use href="#icon-search"/></svg>
+          <input type="text" id="hero-tracker-input" placeholder="Enter 18-digit Application No. or Mobile No.">
+          <button class="btn btn-gold btn-sm" onclick="handleHeroTrack()">Track Status</button>
+        </div>
+
+        <div style="display:flex; gap:14px; margin-top:10px;">
+          <button class="btn btn-primary" onclick="navigateTo('#/enroll')">
+            Join SBU NCC — Enroll Online <svg class="icon"><use href="#icon-chevron-right"/></svg>
+          </button>
+          <button class="btn btn-secondary" onclick="navigateTo('#/admin')">
+            Officer Command Portal
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <span class="stat-label">BATTALION UNIT</span>
+        <span class="stat-val">19 JHR BN NCC</span>
+        <span class="stat-sub">Ranchi Headquarters</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">DIRECTORATE</span>
+        <span class="stat-val">Bihar & Jharkhand</span>
+        <span class="stat-sub">Patna / Ranchi HQ</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">CAMPUS COMPANY</span>
+        <span class="stat-val">SBU Ranchi Coy</span>
+        <span class="stat-sub">Senior Division & Wing</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">CERTIFICATIONS</span>
+        <span class="stat-val">'B' & 'C' Certs</span>
+        <span class="stat-sub">Direct SSB Entry Scheme</span>
+      </div>
+    </div>
+
+    <!-- About Section -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">About 19 Jharkhand Battalion NCC</h2>
+        <p class="section-desc">Fostering character, comradeship, discipline, leadership, secular outlook, and ideals of selfless service amongst the youth.</p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-card">
+          <div class="about-card-icon"><svg class="icon"><use href="#icon-shield"/></svg></div>
+          <h3>Four Cardinal Principles</h3>
+          <p style="font-size:14px; color:var(--fg-muted); line-height:1.6;">
+            1. Obey with a smile.<br>
+            2. Be punctual in every drill.<br>
+            3. Work hard and without fuss.<br>
+            4. Make no excuses and tell no lies.
+          </p>
+        </div>
+        <div class="about-card">
+          <div class="about-card-icon"><svg class="icon"><use href="#icon-award"/></svg></div>
+          <h3>Direct SSB Entry Benefits</h3>
+          <p style="font-size:14px; color:var(--fg-muted); line-height:1.6;">
+            Holders of the NCC 'C' Certificate (Grade 'A' or 'B') receive direct 5-day SSB interview calls for Indian Army (IMA/OTA), Navy, and Air Force without appearing for CDSE exams.
+          </p>
+        </div>
+        <div class="about-card">
+          <div class="about-card-icon"><svg class="icon"><use href="#icon-flag"/></svg></div>
+          <h3>SBU Ranchi Company Cadre</h3>
+          <p style="font-size:14px; color:var(--fg-muted); line-height:1.6;">
+            Under the command of Associate NCC Officer (ANO) Capt. Dr. Animesh Roy, the SBU Company trains cadets through comprehensive weapon handling, map reading, obstacle courses, and drill parades.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Camps & Activities Gallery -->
+    <section class="section" style="background:var(--bg-alt);">
+      <div class="section-header">
+        <h2 class="section-title">Training Camps & Regimental Activities</h2>
+        <p class="section-desc">Immersive military field exposure, weapon firing, physical obstacle courses, and national integration camps.</p>
+      </div>
+
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <div class="gallery-img-box">
+            <img src="../public/ncc-marching-parade.jpg" alt="Republic Day Camp Drill" onerror="this.src='https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=600&q=80'">
+          </div>
+          <div class="gallery-meta">
+            <h4>Squad Drill & Ceremonial March</h4>
+            <p>Drill precision, synchronized paces (120 paces/min), and ceremonial parade protocols.</p>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-img-box">
+            <img src="https://images.unsplash.com/photo-1584467735871-8e85353a8413?auto=format&fit=crop&w=600&q=80" alt="Firing Range Training">
+          </div>
+          <div class="gallery-meta">
+            <h4>0.22" Deluxe Rifle Firing</h4>
+            <p>Target grouping, marksmanship fundamentals, and range safety drills at Morabadi Range.</p>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-img-box">
+            <img src="https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=600&q=80" alt="Obstacle Course Training">
+          </div>
+          <div class="gallery-meta">
+            <h4>Standard 10 Obstacle Training</h4>
+            <p>Clearance of Straight Balance, High Wall, Double Ditch, Vault, and Zig-Zag Balance.</p>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-img-box">
+            <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=600&q=80" alt="Camp Life & Bivouac">
+          </div>
+          <div class="gallery-meta">
+            <h4>Combined Annual Training (CATC)</h4>
+            <p>10-day military bivouac, tent pitching, night sentry duty, and fieldcraft simulations.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-desc">Everything you need to know about joining 19 JHR BN NCC at Sarala Birla University.</p>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item open">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            What are the physical efficiency criteria for SD and SW?
+            <svg class="icon"><use href="#icon-chevron-right"/></svg>
+          </div>
+          <div class="faq-answer">
+            For Senior Division (Male): Minimum height ~170 cm, 1.6 km run within 6 mins 30 secs, 20+ push-ups, 30+ sit-ups. For Senior Wing (Female): Minimum height ~152 cm, 800m run, and core flexibility tests.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            How does the NCC Special Entry Scheme work for SSB?
+            <svg class="icon"><use href="#icon-chevron-right"/></svg>
+          </div>
+          <div class="faq-answer">
+            Cadets who graduate with an NCC 'C' Certificate with Grade 'A' or 'B' are exempt from the UPSC CDSE written examination and receive direct 5-day SSB interview call letters for IMA Dehradun, OTA Chennai, and equivalent Naval/Air Force academies.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Is attendance in regular parades mandatory?
+            <svg class="icon"><use href="#icon-chevron-right"/></svg>
+          </div>
+          <div class="faq-answer">
+            Yes. A minimum of 75% attendance in regular battalion training parades and completion of at least one Annual Training Camp (ATC/CATC) is mandatory to appear for the 'B' Certificate examination.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background:#09090b; color:#a1a1aa; border-top:1px solid #27272a; padding:40px 20px 80px;">
+      <div style="max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:30px;">
+        <div>
+          <h4 style="color:#ffffff; margin-bottom:12px;">19 JHR BN NCC</h4>
+          <p style="font-size:13px; line-height:1.6;">Sarala Birla University Company<br>Mahilong, Purulia Road, Ranchi<br>Jharkhand — 834010</p>
+        </div>
+        <div>
+          <h4 style="color:#ffffff; margin-bottom:12px;">Quick Access</h4>
+          <p style="font-size:13px; line-height:1.8;">
+            <a onclick="navigateTo('#/enroll')">Form 1 Enrollment</a><br>
+            <a onclick="openTrackerModal()">Status Tracker</a><br>
+            <a onclick="navigateTo('#/notices')">Parade Orders</a><br>
+            <a onclick="navigateTo('#/admin')">Officer Command</a>
+          </p>
+        </div>
+        <div>
+          <h4 style="color:#ffffff; margin-bottom:12px;">Headquarters</h4>
+          <p style="font-size:13px; line-height:1.6;">NCC Group HQ Ranchi<br>Bihar & Jharkhand Directorate<br>Ministry of Defence, Govt. of India</p>
+        </div>
+      </div>
+      <div style="max-width:1200px; margin:30px auto 0; padding-top:20px; border-top:1px solid #18181b; font-size:12px; text-align:center;">
+        © 2026 19 Jharkhand Battalion NCC, Sarala Birla University. Dedicated to National Service.
+      </div>
+    </footer>
+  </main>
+
+  <!-- ========================================================================
+       VIEW 2: FORM 1 CADET ENROLMENT (#/enroll)
+       ======================================================================== -->
+  <main id="view-enroll" class="view-container">
+    <div class="enroll-container">
+      <div class="wizard-card">
+        <div class="wizard-header">
+          <div class="regimental-badge" style="background:rgba(255,255,255,0.15); color:#ffffff; border-color:rgba(255,255,255,0.3)">
+            GOVERNMENT OF INDIA • FORM 1 ENROLMENT
+          </div>
+          <h2 style="font-size:24px; color:#ffffff;">Cadet Application Form</h2>
+          <p style="font-size:13px; opacity:0.85;">19 Jharkhand Battalion NCC (Senior Division / Senior Wing) — Sarala Birla University</p>
+        </div>
+
+        <div class="wizard-stepper">
+          <div class="step-node active" id="step-node-1">
+            <span class="step-circle">1</span> Personal
+          </div>
+          <div class="step-node" id="step-node-2">
+            <span class="step-circle">2</span> Academic
+          </div>
+          <div class="step-node" id="step-node-3">
+            <span class="step-circle">3</span> Physical
+          </div>
+          <div class="step-node" id="step-node-4">
+            <span class="step-circle">4</span> Next of Kin
+          </div>
+          <div class="step-node" id="step-node-5">
+            <span class="step-circle">5</span> Declaration
+          </div>
+        </div>
+
+        <form id="enrollment-form" onsubmit="handleEnrollSubmit(event)">
+          <!-- STEP 1: Personal Particulars -->
+          <div class="wizard-body" id="step-1">
+            <div class="form-grid">
+              <div class="form-group form-group-full">
+                <label class="form-label">Full Name of Applicant (as in Matriculation Certificate) *</label>
+                <input type="text" id="inp-full-name" class="form-input" required placeholder="e.g. Rahul Kumar">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Father's Name *</label>
+                <input type="text" id="inp-father-name" class="form-input" required placeholder="e.g. Sunil Kumar">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mother's Name *</label>
+                <input type="text" id="inp-mother-name" class="form-input" required placeholder="e.g. Meena Devi">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Date of Birth *</label>
+                <input type="date" id="inp-dob" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Cadet Wing / Gender *</label>
+                <select id="inp-gender" class="form-select" required>
+                  <option value="SD">Senior Division (SD - Male)</option>
+                  <option value="SW">Senior Wing (SW - Female)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Blood Group *</label>
+                <select id="inp-blood-group" class="form-select" required>
+                  <option value="O+">O Positive (O+)</option>
+                  <option value="A+">A Positive (A+)</option>
+                  <option value="B+">B Positive (B+)</option>
+                  <option value="AB+">AB Positive (AB+)</option>
+                  <option value="O-">O Negative (O-)</option>
+                  <option value="A-">A Negative (A-)</option>
+                  <option value="B-">B Negative (B-)</option>
+                  <option value="AB-">AB Negative (AB-)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Aadhaar Number (12 Digits) *</label>
+                <input type="text" id="inp-aadhaar" class="form-input" maxlength="12" required placeholder="12-digit UIDAI Number" oninput="validateAadhaarInput(this)">
+                <span id="aadhaar-msg" style="font-size:11px; color:var(--fg-muted)">UIDAI Verhoeff Checksum Validated</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mobile Number *</label>
+                <input type="tel" id="inp-mobile" class="form-input" maxlength="10" required placeholder="10-digit Mobile">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address *</label>
+                <input type="email" id="inp-email" class="form-input" required placeholder="cadet@sbu.ac.in">
+              </div>
+              <div class="form-group form-group-full">
+                <label class="form-label">Visible Identification Mark *</label>
+                <input type="text" id="inp-mark" class="form-input" required placeholder="e.g. Mole on right cheek / Scar on forehead">
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2: Academic Details -->
+          <div class="wizard-body" id="step-2" style="display:none;">
+            <div class="form-grid">
+              <div class="form-group form-group-full">
+                <label class="form-label">Educational Institution *</label>
+                <input type="text" id="inp-institution" class="form-input" readonly value="Sarala Birla University, Ranchi">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Faculty / Department *</label>
+                <input type="text" id="inp-department" class="form-input" required placeholder="e.g. Computer Science & Engineering">
+              </div>
+              <div class="form-group">
+                <label class="form-label">University Roll / Registration No. *</label>
+                <input type="text" id="inp-roll" class="form-input" required placeholder="e.g. SBU2026CS104">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Current Academic Year *</label>
+                <select id="inp-year" class="form-select">
+                  <option value="1st Year">1st Year (Semester I / II)</option>
+                  <option value="2nd Year">2nd Year (Semester III / IV)</option>
+                  <option value="3rd Year">3rd Year (Semester V / VI)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">10th Matriculation Score (%) *</label>
+                <input type="number" id="inp-marks-10" class="form-input" min="35" max="100" required placeholder="e.g. 84.5">
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3: Physical & Medical -->
+          <div class="wizard-body" id="step-3" style="display:none;">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Height in Centimeters (cm) *</label>
+                <input type="number" id="inp-height" class="form-input" min="140" max="210" required placeholder="e.g. 172" oninput="checkHeightEligibility(this)">
+                <span id="height-eligibility-msg" style="font-size:11px; color:var(--fg-muted)">Min SD: ~170 cm, SW: ~152 cm</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Weight in Kilograms (kg) *</label>
+                <input type="number" id="inp-weight" class="form-input" min="40" max="120" required placeholder="e.g. 64">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Chest Measurement (cm, Unexpanded) *</label>
+                <input type="number" id="inp-chest-norm" class="form-input" required placeholder="e.g. 78">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Chest Expansion (Min 5 cm) *</label>
+                <input type="number" id="inp-chest-exp" class="form-input" required placeholder="e.g. 83">
+              </div>
+              <div class="form-group form-group-full">
+                <label class="form-label">Medical History / Chronic Ailments (if any)</label>
+                <textarea id="inp-medical" class="form-textarea" rows="2" placeholder="State NIL if no major illness or surgical history.">NIL</textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4: Next of Kin & Bank Details -->
+          <div class="wizard-body" id="step-4" style="display:none;">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Next of Kin (NOK) Full Name *</label>
+                <input type="text" id="inp-nok-name" class="form-input" required placeholder="e.g. Sunil Kumar">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Relationship with NOK *</label>
+                <input type="text" id="inp-nok-rel" class="form-input" required placeholder="e.g. Father / Mother / Guardian">
+              </div>
+              <div class="form-group">
+                <label class="form-label">NOK Emergency Contact *</label>
+                <input type="tel" id="inp-nok-mobile" class="form-input" required placeholder="10-digit Phone">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Bank Account Number (for Camp Allowances) *</label>
+                <input type="text" id="inp-bank-acc" class="form-input" required placeholder="Account Number">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Bank IFSC Code *</label>
+                <input type="text" id="inp-bank-ifsc" class="form-input" required placeholder="e.g. SBIN0001234">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Bank Name & Branch *</label>
+                <input type="text" id="inp-bank-name" class="form-input" required placeholder="e.g. State Bank of India, Ranchi">
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 5: Declaration & Final Submission -->
+          <div class="wizard-body" id="step-5" style="display:none;">
+            <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px; margin-bottom:20px;">
+              <h4 style="margin-bottom:8px;">Cadet Oath & Regimental Declaration</h4>
+              <p style="font-size:13px; color:var(--fg-muted); line-height:1.6;">
+                "I hereby solemnly declare that the particulars given above are correct to the best of my knowledge and belief. I agree to abide by the rules and regulations of the National Cadet Corps Act 1948 and will attend all parades, training camps, and activities with unyielding discipline."
+              </p>
+            </div>
+
+            <div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:20px;">
+              <input type="checkbox" id="inp-oath" required style="margin-top:4px;">
+              <label for="inp-oath" style="font-size:13px; font-weight:600; cursor:pointer;">
+                I accept the NCC Cadet Oath and affirm that I will uphold the honor of 19 Jharkhand Battalion NCC and Sarala Birla University.
+              </label>
+            </div>
+          </div>
+
+          <!-- Wizard Footer Navigation -->
+          <div class="wizard-footer">
+            <button type="button" class="btn btn-secondary" id="btn-wizard-prev" onclick="changeWizardStep(-1)" style="visibility:hidden">
+              Back
+            </button>
+            <button type="button" class="btn btn-primary" id="btn-wizard-next" onclick="changeWizardStep(1)">
+              Continue <svg class="icon"><use href="#icon-chevron-right"/></svg>
+            </button>
+            <button type="submit" class="btn btn-gold" id="btn-wizard-submit" style="display:none">
+              Submit Enrollment (Form 1)
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       VIEW 3: ANO / OFFICER COMMAND CENTRE (#/admin)
+       ======================================================================== -->
+  <main id="view-admin" class="view-container">
+    <div class="admin-container">
+      <div class="admin-header">
+        <div>
+          <div class="regimental-badge" style="margin-bottom:6px;">BATTALION COMMAND CENTER</div>
+          <h2>ANO & Officer Dashboard</h2>
+          <p style="font-size:14px; color:var(--fg-muted);">19 Jharkhand Battalion NCC • SBU Ranchi Cadre Unit</p>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-secondary btn-sm" onclick="exportCadetsCsv()">
+            <svg class="icon"><use href="#icon-download"/></svg> Export CSV
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="openBroadcastModal()">
+            <svg class="icon"><use href="#icon-bell"/></svg> Broadcast Alert
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
+        <div class="stat-card">
+          <span class="stat-label">TOTAL APPLICATIONS</span>
+          <span class="stat-val" id="metric-total-apps">0</span>
+          <span class="stat-sub">Enrolled Form 1 Cadre</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">PENDING ANO REVIEW</span>
+          <span class="stat-val" id="metric-pending-review">0</span>
+          <span class="stat-sub">Awaiting Scrutiny</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">PET DRILL SCHEDULED</span>
+          <span class="stat-val" id="metric-pet-scheduled">0</span>
+          <span class="stat-sub">Physical Efficiency Test</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">ACTIVE CADETS SELECTED</span>
+          <span class="stat-val" id="metric-selected">0</span>
+          <span class="stat-sub">Cadre Enrolment Ready</span>
+        </div>
+      </div>
+
+      <!-- Cadet Table -->
+      <div class="data-table-container">
+        <div class="table-toolbar">
+          <div class="search-box">
+            <svg class="icon"><use href="#icon-search"/></svg>
+            <input type="text" id="admin-search-input" placeholder="Search cadet name, mobile, app no..." oninput="filterAdminTable()">
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="filter-btn active" onclick="setAdminFilter('ALL', this)">All</button>
+            <button class="filter-btn" onclick="setAdminFilter('Submitted', this)">Submitted</button>
+            <button class="filter-btn" onclick="setAdminFilter('Physical Scheduled', this)">Scheduled</button>
+            <button class="filter-btn" onclick="setAdminFilter('Selected', this)">Selected</button>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>App Number</th>
+                <th>Full Name</th>
+                <th>Wing</th>
+                <th>Mobile</th>
+                <th>Aadhaar</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-cadet-tbody">
+              <!-- Dynamically populated via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="admin-empty-state" class="empty-state" style="display:none;">
+          <div class="empty-state-icon"><svg class="icon" style="width:24px;height:24px;"><use href="#icon-users"/></svg></div>
+          <h4 style="font-size:16px;">No Cadet Applications Found</h4>
+          <p style="font-size:13px; color:var(--fg-muted);">Submit a Form 1 application or click below to populate mock records.</p>
+          <button class="btn btn-secondary btn-sm" onclick="loadSampleCadetData()">Load Demo Cadre Records</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       VIEW 4: CADET PORTAL & INDUCTION HUB (#/cadet)
+       ======================================================================== -->
+  <main id="view-cadet" class="view-container">
+    <div class="cadet-container">
+      <div class="cadet-hero-card">
+        <div class="cadet-profile-info">
+          <div class="cadet-avatar-lg">RK</div>
+          <div>
+            <div class="regimental-badge" style="margin-bottom:4px;">SENIOR UNDER OFFICER (SUO)</div>
+            <h3>Rahul Kumar</h3>
+            <p style="font-size:13px; color:var(--fg-muted);">19 JHR BN NCC • Enrolment: 19/2026/SD/10408</p>
+          </div>
+        </div>
+        <div style="display:flex; gap:24px; text-align:right;">
+          <div>
+            <span class="stat-label">PARADE ATTENDANCE</span>
+            <div style="font-size:22px; font-weight:800; color:var(--success);">88.4%</div>
+          </div>
+          <div>
+            <span class="stat-label">CERTIFICATE CADRE</span>
+            <div style="font-size:22px; font-weight:800; color:var(--gold);">'B' Eligible</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-bar">
+        <div class="tab-item active" onclick="switchCadetTab('overview', this)">Overview</div>
+        <div class="tab-item" onclick="switchCadetTab('attendance', this)">Attendance Log</div>
+        <div class="tab-item" onclick="switchCadetTab('leave', this)">Leave Request</div>
+      </div>
+
+      <!-- Cadet Overview Tab -->
+      <div id="cadet-tab-overview" class="cadet-tab-content">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+          <div class="stat-card">
+            <span class="stat-label">UPCOMING PARADE</span>
+            <span class="stat-val">Squad Drill & PT</span>
+            <span class="stat-sub">Saturday, 06:00 AM • SBU Ground</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">FIRING SCORE</span>
+            <span class="stat-val">42 / 50 Pts</span>
+            <span class="stat-sub">0.22" Deluxe Rifle (100m)</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">CAMP COMPLETED</span>
+            <span class="stat-val">CATC-XII (2025)</span>
+            <span class="stat-sub">Khelgaon Stadium, Ranchi</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cadet Attendance Tab -->
+      <div id="cadet-tab-attendance" class="cadet-tab-content" style="display:none;">
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr><th>Date</th><th>Parade Type</th><th>Location</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>2026-10-18</td><td>Weapon Training & Stripping</td><td>SBU Armory Hall</td><td><span class="status-badge selected">Present</span></td></tr>
+              <tr><td>2026-10-11</td><td>Squad Drill & Word of Command</td><td>Parade Ground</td><td><span class="status-badge selected">Present</span></td></tr>
+              <tr><td>2026-10-04</td><td>Map Reading & Compass Prism</td><td>Academic Block B</td><td><span class="status-badge selected">Present</span></td></tr>
+              <tr><td>2026-09-27</td><td>Obstacle Course Practice</td><td>Obstacle Field</td><td><span class="status-badge rejected">Absent (Sanctioned)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Cadet Leave Tab -->
+      <div id="cadet-tab-leave" class="cadet-tab-content" style="display:none;">
+        <div class="wizard-card" style="padding:24px;">
+          <h4 style="margin-bottom:16px;">Apply for Parade Leave of Absence</h4>
+          <form onsubmit="handleLeaveSubmit(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Parade Date *</label>
+                <input type="date" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Reason for Absence *</label>
+                <select class="form-select" required>
+                  <option value="Academic Exam">University Examination / Sessional</option>
+                  <option value="Medical">Medical Illness / Injury</option>
+                  <option value="Family Emergency">Urgent Family Matter</option>
+                </select>
+              </div>
+              <div class="form-group form-group-full">
+                <label class="form-label">Detailed Justification</label>
+                <textarea class="form-textarea" rows="3" placeholder="Provide details for ANO Capt. Dr. Animesh Roy's review..."></textarea>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top:16px;">Submit Leave Request</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       VIEW 5: COMMUNICATION HUB (#/messages)
+       ======================================================================== -->
+  <main id="view-messages" class="view-container">
+    <div class="comms-container">
+      <div class="comms-sidebar">
+        <div style="padding:16px; border-bottom:1px solid var(--border); font-weight:800; font-size:15px;">
+          Operational Channels
+        </div>
+        <div style="display:flex; flex-direction:column; padding:8px;">
+          <button class="dock-btn active" style="width:100%; border-radius:var(--radius-md); text-align:left;" onclick="switchChannel('#announcements')">
+            # announcements
+          </button>
+          <button class="dock-btn" style="width:100%; border-radius:var(--radius-md); text-align:left;" onclick="switchChannel('#parade-schedule')">
+            # parade-schedule
+          </button>
+          <button class="dock-btn" style="width:100%; border-radius:var(--radius-md); text-align:left;" onclick="switchChannel('#alpha-company')">
+            # alpha-company
+          </button>
+        </div>
+      </div>
+
+      <div class="comms-chat-window">
+        <div class="chat-header">
+          <div style="font-weight:700;" id="chat-channel-title"># announcements</div>
+          <div class="regimental-badge">ROOM SECURED</div>
+        </div>
+
+        <div class="message-stream" id="chat-stream">
+          <div class="message-card">
+            <div class="message-avatar">ANO</div>
+            <div class="message-bubble">
+              <span style="font-size:11px; font-weight:700; color:var(--primary);">Capt. Dr. Animesh Roy (ANO) • 09:30 AM</span>
+              <p style="font-size:14px;">Jai Hind Cadets! Report in clean uniform with Beret and DMS boots on Saturday at 05:45 AM sharp for drill practice.</p>
+            </div>
+          </div>
+          <div class="message-card">
+            <div class="message-avatar">SUO</div>
+            <div class="message-bubble">
+              <span style="font-size:11px; font-weight:700; color:var(--gold);">SUO Rahul Kumar • 09:42 AM</span>
+              <p style="font-size:14px;">Jai Hind Sir. Alpha & Bravo sections have been briefed. Roll call will commence at 05:50 AM.</p>
+            </div>
+          </div>
+        </div>
+
+        <form class="chat-composer" onsubmit="handleSendMessage(event)">
+          <input type="text" id="chat-input" class="form-input" style="flex:1;" placeholder="Type regimental message..." required>
+          <button type="submit" class="btn btn-primary">
+            <svg class="icon"><use href="#icon-send"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       VIEW 6: NOTICES & CIRCULARS (#/notices)
+       ======================================================================== -->
+  <main id="view-notices" class="view-container">
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Official Circulars & Parade Orders</h2>
+        <p class="section-desc">Authoritative directives from 19 JHR BN NCC Headquarters and SBU Ranchi Coy.</p>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px; max-width:900px; margin:0 auto;">
+        <div class="stat-card" style="display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
+          <div>
+            <div class="regimental-badge" style="background:var(--destructive-subtle); color:var(--destructive); margin-bottom:6px;">URGENT ORDER</div>
+            <h4>Pre-RDC Selection Camp 2026 Trial Schedule</h4>
+            <p style="font-size:13px; color:var(--fg-muted);">Trials scheduled on 15 November 2026 at Morabadi Ground. Mandatory for all 'B' certified cadets.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="showToast('Notice Downloaded', 'Pre-RDC Selection Circular saved as PDF', 'success')">
+            <svg class="icon"><use href="#icon-download"/></svg> PDF
+          </button>
+        </div>
+
+        <div class="stat-card" style="display:flex; flex-direction:row; align-items:center; justify-content:space-between;">
+          <div>
+            <div class="regimental-badge" style="margin-bottom:6px;">GENERAL CIRCULAR</div>
+            <h4>Annual Uniform Inspection & Beret Fitment</h4>
+            <p style="font-size:13px; color:var(--fg-muted);">All cadets must present uniforms with hackle, rank chevrons, and polished brass belt buckles.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="showToast('Notice Downloaded', 'Uniform Guideline Document downloaded', 'success')">
+            <svg class="icon"><use href="#icon-download"/></svg> PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       STATUS TRACKER MODAL (Global)
+       ======================================================================== -->
+  <div id="modal-tracker" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-head">
+        <h3 style="font-size:18px;">Track Enrolment Status</h3>
+        <button class="btn-icon" onclick="closeTrackerModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; gap:10px;">
+          <input type="text" id="modal-tracker-input" class="form-input" style="flex:1;" placeholder="18-digit App No. or 10-digit Phone">
+          <button class="btn btn-primary" onclick="lookupApplicationStatus()">Verify</button>
+        </div>
+
+        <!-- Result Container -->
+        <div id="tracker-result-box" style="display:none; margin-top:10px;">
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; margin-bottom:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <span class="stat-label">CANDIDATE NAME</span>
+                <div style="font-size:16px; font-weight:700;" id="track-res-name">-</div>
+                <div style="font-size:12px; color:var(--fg-muted);" id="track-res-id">-</div>
+              </div>
+              <span class="status-badge submitted" id="track-res-badge">Submitted</span>
+            </div>
+          </div>
+
+          <!-- 5-Stage Timeline -->
+          <div class="timeline">
+            <div class="timeline-item done">
+              <div class="timeline-dot"><svg class="icon" style="width:12px;height:12px"><use href="#icon-check"/></svg></div>
+              <div>
+                <strong style="font-size:13px;">1. Form 1 Enrolment Submitted</strong>
+                <p style="font-size:11px; color:var(--fg-muted);">Application received in 19 JHR BN NCC system.</p>
+              </div>
+            </div>
+            <div class="timeline-item active" id="tl-step-2">
+              <div class="timeline-dot">2</div>
+              <div>
+                <strong style="font-size:13px;">2. Document Verification (ANO Scrutiny)</strong>
+                <p style="font-size:11px; color:var(--fg-muted);">Aadhaar & Matriculation marks under verification.</p>
+              </div>
+            </div>
+            <div class="timeline-item" id="tl-step-3">
+              <div class="timeline-dot">3</div>
+              <div>
+                <strong style="font-size:13px;">3. Physical Efficiency Test (PET)</strong>
+                <p style="font-size:11px; color:var(--fg-muted);">1.6 km run & endurance test at SBU Ground.</p>
+              </div>
+            </div>
+            <div class="timeline-item" id="tl-step-4">
+              <div class="timeline-dot">4</div>
+              <div>
+                <strong style="font-size:13px;">4. Medical Examination</strong>
+                <p style="font-size:11px; color:var(--fg-muted);">Military RMO fitness clearance.</p>
+              </div>
+            </div>
+            <div class="timeline-item" id="tl-step-5">
+              <div class="timeline-dot">5</div>
+              <div>
+                <strong style="font-size:13px;">5. Final Cadre Enrolment Roll</strong>
+                <p style="font-size:11px; color:var(--fg-muted);">Regimental Number issuance and uniform grant.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       SUBEDAR MAJOR AI ASSISTANT (Global Slide-over Drawer)
+       ======================================================================== -->
+  <aside id="drawer-ai" class="drawer-ai">
+    <div style="padding:20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="crest-circle" style="width:36px; height:36px; margin:0;">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTZDvUjTIPyVWknpreMHXnyKTvz7-P_uljpSxjPHcXXw&s=10" alt="Crest">
+        </div>
+        <div>
+          <h4 style="font-size:14px;">Subedar Major AI Assistant</h4>
+          <span style="font-size:11px; color:var(--fg-muted);">19 JHR BN NCC Knowledge Engine</span>
+        </div>
+      </div>
+      <button class="btn-icon" onclick="closeAiDrawer()">&times;</button>
+    </div>
+
+    <!-- Quick Chips -->
+    <div style="padding:12px 20px; display:flex; gap:6px; flex-wrap:wrap; border-bottom:1px solid var(--border); background:var(--surface);">
+      <button class="btn btn-secondary btn-sm" onclick="askAiChip('What is the physical criteria for joining?')">PET Criteria</button>
+      <button class="btn btn-secondary btn-sm" onclick="askAiChip('Explain the direct SSB entry benefit of C certificate.')">SSB Benefit</button>
+      <button class="btn btn-secondary btn-sm" onclick="askAiChip('What are squad drill commands in Hindi?')">Drill Commands</button>
+    </div>
+
+    <div class="message-stream" id="ai-chat-stream" style="flex:1;">
+      <div class="message-card">
+        <div class="message-avatar" style="background:var(--gold);">SM</div>
+        <div class="message-bubble">
+          <span style="font-size:11px; font-weight:700; color:var(--gold);">Subedar Major AI</span>
+          <p style="font-size:13px; line-height:1.5;">Jai Hind! I am your 19 Jharkhand Battalion NCC advisor. Ask me regarding enrolment criteria, camp syllabus, drill words of command, or direct SSB benefits.</p>
+        </div>
+      </div>
+    </div>
+
+    <form style="padding:16px 20px; border-top:1px solid var(--border); display:flex; gap:10px;" onsubmit="handleAiChatSubmit(event)">
+      <input type="text" id="ai-input" class="form-input" style="flex:1;" placeholder="Ask military question..." required>
+      <button type="submit" class="btn btn-gold btn-sm">
+        <svg class="icon"><use href="#icon-send"/></svg>
+      </button>
+    </form>
+  </aside>
+
+  <!-- ========================================================================
+       FLOATING VIEW SWITCHER DOCK (User Requested for Rapid Navigation)
+       ======================================================================== -->
+  <div class="dock-container" id="dock-switcher">
+    <button class="dock-btn active" onclick="navigateTo('#/')" id="dock-home">
+      <svg class="icon"><use href="#icon-shield"/></svg> Home
+    </button>
+    <button class="dock-btn" onclick="navigateTo('#/enroll')" id="dock-enroll">
+      Form 1 Enroll
+    </button>
+    <button class="dock-btn" onclick="openTrackerModal()" id="dock-track">
+      <svg class="icon"><use href="#icon-search"/></svg> Track App
+    </button>
+    <button class="dock-btn" onclick="navigateTo('#/admin')" id="dock-admin">
+      Officer Command
+    </button>
+    <button class="dock-btn" onclick="navigateTo('#/cadet')" id="dock-cadet">
+      Cadet Portal
+    </button>
+    <button class="dock-btn" onclick="navigateTo('#/messages')" id="dock-messages">
+      <svg class="icon"><use href="#icon-chat"/></svg> Comms Hub
+    </button>
+    <button class="dock-btn" onclick="navigateTo('#/notices')" id="dock-notices">
+      Notices
+    </button>
+    <button class="dock-btn" onclick="openAiDrawer()" style="color:var(--gold)">
+      <svg class="icon"><use href="#icon-sparkles"/></svg> Ask AI
+    </button>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toast-box"></div>
+
+  <!-- ========================================================================
+       12. Vanilla JavaScript Client-Side Engine
+       ======================================================================== -->
+  <script>
+    // --- Application State Store ---
+    const APP_STATE = {
+      cadets: [],
+      currentWizardStep: 1,
+      theme: 'dark'
+    };
+
+    // Load persisted state from localStorage if available
+    try {
+      const savedCadets = localStorage.getItem('ncc_prototype_cadets');
+      if (savedCadets) {
+        APP_STATE.cadets = JSON.parse(savedCadets);
+      }
+    } catch (e) {
+      console.warn('Storage unavailable', e);
+    }
+
+    // --- Verhoeff Checksum Algorithm (UIDAI Aadhaar Validation) ---
+    const VERHOEFF_D = [
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+      [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+      [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+      [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+      [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+      [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+      [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+      [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+      [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    ];
+    const VERHOEFF_P = [
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+      [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+      [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+      [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+      [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+      [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+      [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
+    ];
+
+    function validateVerhoeff(str) {
+      if (!/^\d{12}$/.test(str)) return false;
+      let c = 0;
+      const reversed = str.split('').reverse().map(Number);
+      for (let i = 0; i < reversed.length; i++) {
+        c = VERHOEFF_D[c][VERHOEFF_P[i % 8][reversed[i]]];
+      }
+      return c === 0;
+    }
+
+    function validateAadhaarInput(el) {
+      const val = el.value.trim();
+      const msg = document.getElementById('aadhaar-msg');
+      if (val.length === 12) {
+        if (validateVerhoeff(val)) {
+          msg.textContent = '✓ Valid Aadhaar Checksum';
+          msg.style.color = 'var(--success)';
+        } else {
+          msg.textContent = '⚠ Standard 12-digit format accepted for demo';
+          msg.style.color = 'var(--gold)';
+        }
+      } else {
+        msg.textContent = '12 Digits Required';
+        msg.style.color = 'var(--fg-muted)';
+      }
+    }
+
+    function checkHeightEligibility(el) {
+      const h = parseInt(el.value, 10);
+      const gender = document.getElementById('inp-gender').value;
+      const msg = document.getElementById('height-eligibility-msg');
+      if (isNaN(h)) return;
+
+      if (gender === 'SD' && h >= 170) {
+        msg.textContent = '✓ Eligible for Senior Division (~170 cm standard)';
+        msg.style.color = 'var(--success)';
+      } else if (gender === 'SW' && h >= 152) {
+        msg.textContent = '✓ Eligible for Senior Wing (~152 cm standard)';
+        msg.style.color = 'var(--success)';
+      } else {
+        msg.textContent = 'Below normal height guideline (Relaxations apply for tribal/hill regions)';
+        msg.style.color = 'var(--gold)';
+      }
+    }
+
+    // --- Hash Router & Navigation ---
+    function navigateTo(hash) {
+      window.location.hash = hash;
+    }
+
+    function handleRoute() {
+      const hash = window.location.hash || '#/';
+      const views = document.querySelectorAll('.view-container');
+      views.forEach(v => v.classList.remove('active'));
+
+      const dockBtns = document.querySelectorAll('.dock-btn');
+      dockBtns.forEach(b => b.classList.remove('active'));
+
+      if (hash === '#/' || hash === '') {
+        document.getElementById('view-home').classList.add('active');
+        document.getElementById('dock-home')?.classList.add('active');
+      } else if (hash === '#/enroll') {
+        document.getElementById('view-enroll').classList.add('active');
+        document.getElementById('dock-enroll')?.classList.add('active');
+      } else if (hash === '#/admin') {
+        document.getElementById('view-admin').classList.add('active');
+        document.getElementById('dock-admin')?.classList.add('active');
+        renderAdminTable();
+      } else if (hash === '#/cadet') {
+        document.getElementById('view-cadet').classList.add('active');
+        document.getElementById('dock-cadet')?.classList.add('active');
+      } else if (hash === '#/messages') {
+        document.getElementById('view-messages').classList.add('active');
+        document.getElementById('dock-messages')?.classList.add('active');
+      } else if (hash === '#/notices') {
+        document.getElementById('view-notices').classList.add('active');
+        document.getElementById('dock-notices')?.classList.add('active');
+      } else if (hash === '#/track') {
+        openTrackerModal();
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.addEventListener('hashchange', handleRoute);
+    window.addEventListener('DOMContentLoaded', () => {
+      handleRoute();
+      renderAdminTable();
+    });
+
+    // --- Form 1 Wizard Stepper ---
+    function changeWizardStep(dir) {
+      const current = APP_STATE.currentWizardStep;
+      const next = current + dir;
+
+      if (next < 1 || next > 5) return;
+
+      document.getElementById(`step-${current}`).style.display = 'none';
+      document.getElementById(`step-node-${current}`).classList.remove('active');
+      if (dir > 0) document.getElementById(`step-node-${current}`).classList.add('completed');
+
+      document.getElementById(`step-${next}`).style.display = 'block';
+      document.getElementById(`step-node-${next}`).classList.add('active');
+
+      document.getElementById('btn-wizard-prev').style.visibility = next > 1 ? 'visible' : 'hidden';
+
+      if (next === 5) {
+        document.getElementById('btn-wizard-next').style.display = 'none';
+        document.getElementById('btn-wizard-submit').style.display = 'inline-flex';
+      } else {
+        document.getElementById('btn-wizard-next').style.display = 'inline-flex';
+        document.getElementById('btn-wizard-submit').style.display = 'none';
+      }
+
+      APP_STATE.currentWizardStep = next;
+    }
+
+    function handleEnrollSubmit(e) {
+      e.preventDefault();
+
+      const fullName = document.getElementById('inp-full-name').value.trim();
+      const mobile = document.getElementById('inp-mobile').value.trim();
+      const gender = document.getElementById('inp-gender').value;
+      const aadhaar = document.getElementById('inp-aadhaar').value.trim();
+
+      // Generate 18-digit regimental application number (19 + YYYYMMDD + 4 seq + 4 rand)
+      const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+      const seq4 = String(APP_STATE.cadets.length + 1).padStart(4, '0');
+      const rand4 = Math.floor(1000 + Math.random() * 9000);
+      const appNo = `19${dateStr}${seq4}${rand4}`;
+
+      const newCadet = {
+        appNo,
+        fullName,
+        gender,
+        mobile,
+        aadhaar,
+        status: 'Submitted',
+        applicationDate: new Date().toLocaleDateString('en-IN')
+      };
+
+      APP_STATE.cadets.unshift(newCadet);
+      try {
+        localStorage.setItem('ncc_prototype_cadets', JSON.stringify(APP_STATE.cadets));
+      } catch (err) {}
+
+      showToast('Enrolment Submitted!', `Application No. ${appNo} created.`, 'success');
+
+      // Reset form & navigate to tracker modal
+      document.getElementById('enrollment-form').reset();
+      changeWizardStep(-4);
+      navigateTo('#/');
+      setTimeout(() => {
+        openTrackerModal(appNo);
+      }, 400);
+    }
+
+    // --- Status Tracker Engine ---
+    function openTrackerModal(prefill) {
+      const modal = document.getElementById('modal-tracker');
+      modal.classList.add('active');
+      if (prefill) {
+        document.getElementById('modal-tracker-input').value = prefill;
+        lookupApplicationStatus();
+      }
+    }
+
+    function closeTrackerModal() {
+      document.getElementById('modal-tracker').classList.remove('active');
+    }
+
+    function handleHeroTrack() {
+      const query = document.getElementById('hero-tracker-input').value.trim();
+      if (!query) {
+        showToast('Please enter Application or Mobile Number', '', 'warning');
+        return;
+      }
+      openTrackerModal(query);
+    }
+
+    function lookupApplicationStatus() {
+      const query = document.getElementById('modal-tracker-input').value.trim();
+      const resBox = document.getElementById('tracker-result-box');
+      if (!query) return;
+
+      const found = APP_STATE.cadets.find(c => c.appNo === query || c.mobile === query);
+
+      if (found) {
+        resBox.style.display = 'block';
+        document.getElementById('track-res-name').textContent = found.fullName;
+        document.getElementById('track-res-id').textContent = `App No: ${found.appNo} • Wing: ${found.gender}`;
+        const badge = document.getElementById('track-res-badge');
+        badge.textContent = found.status;
+        badge.className = `status-badge ${found.status.toLowerCase().replace(' ', '-')}`;
+
+        // Timeline activation
+        if (found.status === 'Physical Scheduled') {
+          document.getElementById('tl-step-2').className = 'timeline-item done';
+          document.getElementById('tl-step-3').className = 'timeline-item active';
+        } else if (found.status === 'Selected') {
+          document.getElementById('tl-step-2').className = 'timeline-item done';
+          document.getElementById('tl-step-3').className = 'timeline-item done';
+          document.getElementById('tl-step-4').className = 'timeline-item done';
+          document.getElementById('tl-step-5').className = 'timeline-item done';
+        }
+      } else {
+        resBox.style.display = 'block';
+        document.getElementById('track-res-name').textContent = 'Candidate Record Found (Simulated)';
+        document.getElementById('track-res-id').textContent = `Application Ref: ${query}`;
+        document.getElementById('track-res-badge').textContent = 'Submitted';
+        document.getElementById('track-res-badge').className = 'status-badge submitted';
+      }
+    }
+
+    // --- Admin Dashboard Engine ---
+    let currentAdminFilter = 'ALL';
+
+    function renderAdminTable() {
+      const tbody = document.getElementById('admin-cadet-tbody');
+      const emptyState = document.getElementById('admin-empty-state');
+      tbody.innerHTML = '';
+
+      let filtered = APP_STATE.cadets;
+      if (currentAdminFilter !== 'ALL') {
+        filtered = filtered.filter(c => c.status === currentAdminFilter);
+      }
+
+      // Update metrics
+      document.getElementById('metric-total-apps').textContent = APP_STATE.cadets.length;
+      document.getElementById('metric-pending-review').textContent = APP_STATE.cadets.filter(c => c.status === 'Submitted').length;
+      document.getElementById('metric-pet-scheduled').textContent = APP_STATE.cadets.filter(c => c.status === 'Physical Scheduled').length;
+      document.getElementById('metric-selected').textContent = APP_STATE.cadets.filter(c => c.status === 'Selected').length;
+
+      if (filtered.length === 0) {
+        emptyState.style.display = 'flex';
+        return;
+      } else {
+        emptyState.style.display = 'none';
+      }
+
+      filtered.forEach(cadet => {
+        const tr = document.createElement('tr');
+        const badgeClass = cadet.status.toLowerCase().replace(' ', '-');
+        tr.innerHTML = `
+          <td style="font-family:var(--font-mono); font-weight:700;">${cadet.appNo}</td>
+          <td style="font-weight:700;">${cadet.fullName}</td>
+          <td><span class="regimental-badge">${cadet.gender}</span></td>
+          <td>${cadet.mobile}</td>
+          <td>${cadet.aadhaar ? cadet.aadhaar.slice(0, 4) + '****' + cadet.aadhaar.slice(8) : '-'}</td>
+          <td><span class="status-badge ${badgeClass}">${cadet.status}</span></td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-secondary btn-sm" onclick="advanceCadetStatus('${cadet.appNo}', 'Physical Scheduled')">Schedule PET</button>
+              <button class="btn btn-primary btn-sm" onclick="advanceCadetStatus('${cadet.appNo}', 'Selected')">Select</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function setAdminFilter(status, btn) {
+      currentAdminFilter = status;
+      document.querySelectorAll('.table-toolbar .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderAdminTable();
+    }
+
+    function filterAdminTable() {
+      const q = document.getElementById('admin-search-input').value.toLowerCase();
+      const rows = document.querySelectorAll('#admin-cadet-tbody tr');
+      rows.forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    }
+
+    function advanceCadetStatus(appNo, newStatus) {
+      const cadet = APP_STATE.cadets.find(c => c.appNo === appNo);
+      if (cadet) {
+        cadet.status = newStatus;
+        try {
+          localStorage.setItem('ncc_prototype_cadets', JSON.stringify(APP_STATE.cadets));
+        } catch (e) {}
+        renderAdminTable();
+        showToast(`Cadet Status Updated`, `${cadet.fullName} marked as ${newStatus}`, 'success');
+      }
+    }
+
+    function loadSampleCadetData() {
+      APP_STATE.cadets = [
+        {
+          appNo: '192026102300018491',
+          fullName: 'SUO Rahul Kumar',
+          gender: 'SD',
+          mobile: '9835102938',
+          aadhaar: '548291038472',
+          status: 'Selected',
+          applicationDate: '2026-10-15'
+        },
+        {
+          appNo: '192026102300029341',
+          fullName: 'JUO Priya Singh',
+          gender: 'SW',
+          mobile: '9431827401',
+          aadhaar: '629183740192',
+          status: 'Physical Scheduled',
+          applicationDate: '2026-10-18'
+        },
+        {
+          appNo: '192026102300031849',
+          fullName: 'Cadet Amit Soren',
+          gender: 'SD',
+          mobile: '9123847291',
+          aadhaar: '739102847192',
+          status: 'Submitted',
+          applicationDate: '2026-10-22'
+        }
+      ];
+      try {
+        localStorage.setItem('ncc_prototype_cadets', JSON.stringify(APP_STATE.cadets));
+      } catch (e) {}
+      renderAdminTable();
+      showToast('Sample Cadets Loaded', '3 demo records added to database', 'info');
+    }
+
+    function exportCadetsCsv() {
+      let csv = 'Application No,Full Name,Wing,Mobile,Aadhaar,Status\n';
+      APP_STATE.cadets.forEach(c => {
+        csv += `${c.appNo},"${c.fullName}",${c.gender},${c.mobile},${c.aadhaar},${c.status}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `19_JHR_BN_NCC_Cadet_Database_${Date.now()}.csv`;
+      a.click();
+      showToast('CSV Exported', 'Cadet database downloaded successfully', 'success');
+    }
+
+    // --- Cadet Portal Tab Switching ---
+    function switchCadetTab(tabName, el) {
+      document.querySelectorAll('.tab-bar .tab-item').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('.cadet-tab-content').forEach(c => c.style.display = 'none');
+      document.getElementById(`cadet-tab-${tabName}`).style.display = 'block';
+    }
+
+    function handleLeaveSubmit(e) {
+      e.preventDefault();
+      showToast('Leave Submitted', 'Leave application forwarded to Capt. Dr. Animesh Roy', 'success');
+      e.target.reset();
+    }
+
+    // --- Real-Time Communication Hub Simulation ---
+    function switchChannel(channelName) {
+      document.getElementById('chat-channel-title').textContent = channelName;
+      showToast('Channel Switched', `Now in ${channelName}`, 'info');
+    }
+
+    function handleSendMessage(e) {
+      e.preventDefault();
+      const inp = document.getElementById('chat-input');
+      const text = inp.value.trim();
+      if (!text) return;
+
+      const stream = document.getElementById('chat-stream');
+      const msg = document.createElement('div');
+      msg.className = 'message-card outgoing';
+      msg.innerHTML = `
+        <div class="message-avatar">ME</div>
+        <div class="message-bubble">
+          <span style="font-size:11px; font-weight:700; opacity:0.8;">You • Just now</span>
+          <p style="font-size:14px;">${text}</p>
+        </div>
+      `;
+      stream.appendChild(msg);
+      stream.scrollTop = stream.scrollHeight;
+      inp.value = '';
+    }
+
+    // --- Subedar Major AI Assistant ---
+    function openAiDrawer() {
+      document.getElementById('drawer-ai').classList.add('active');
+    }
+    function closeAiDrawer() {
+      document.getElementById('drawer-ai').classList.remove('active');
+    }
+
+    function askAiChip(text) {
+      document.getElementById('ai-input').value = text;
+      handleAiChatSubmit(new Event('submit'));
+    }
+
+    function handleAiChatSubmit(e) {
+      e.preventDefault();
+      const inp = document.getElementById('ai-input');
+      const question = inp.value.trim();
+      if (!question) return;
+
+      const stream = document.getElementById('ai-chat-stream');
+
+      // User Bubble
+      const userMsg = document.createElement('div');
+      userMsg.className = 'message-card outgoing';
+      userMsg.innerHTML = `
+        <div class="message-avatar">YOU</div>
+        <div class="message-bubble">
+          <p style="font-size:13px;">${question}</p>
+        </div>
+      `;
+      stream.appendChild(userMsg);
+      inp.value = '';
+
+      // Simulated Military AI Response
+      setTimeout(() => {
+        let reply = "Jai Hind! As per 19 JHR BN NCC standard operating procedure, maintain physical readiness and discipline. For detailed directives, consult ANO Capt. Dr. Animesh Roy at SBU Coy.";
+        const lower = question.toLowerCase();
+
+        if (lower.includes('physical') || lower.includes('height') || lower.includes('run')) {
+          reply = "Jai Hind! Physical Efficiency Test criteria for SBU Coy:<br>• **Senior Division (Male)**: Min Height 170 cm, 1.6 km run under 6m 30s, 20 push-ups.<br>• **Senior Wing (Female)**: Min Height 152 cm, 800m run, flexibility test.";
+        } else if (lower.includes('ssb') || lower.includes('benefit') || lower.includes('certificate')) {
+          reply = "Jai Hind! Under the NCC Special Entry Scheme, cadets holding a 'C' Certificate with Grade 'A' or 'B' receive direct 5-day SSB interview call letters for IMA/OTA without writing UPSC CDSE.";
+        } else if (lower.includes('command') || lower.includes('drill')) {
+          reply = "Jai Hind! Regimental Words of Command:<br>• **Savadhan** (Attention) | **Vishram** (Stand at Ease)<br>• **Dahine Mud** (Right Turn) | **Bayen Mud** (Left Turn)<br>• **Tez Chal** (Quick March at 120 paces/min).";
+        }
+
+        const aiMsg = document.createElement('div');
+        aiMsg.className = 'message-card';
+        aiMsg.innerHTML = `
+          <div class="message-avatar" style="background:var(--gold);">SM</div>
+          <div class="message-bubble">
+            <span style="font-size:11px; font-weight:700; color:var(--gold);">Subedar Major AI</span>
+            <p style="font-size:13px; line-height:1.5;">${reply}</p>
+          </div>
+        `;
+        stream.appendChild(aiMsg);
+        stream.scrollTop = stream.scrollHeight;
+      }, 400);
+    }
+
+    // --- UI Helpers: Toasts, FAQ, Theme ---
+    function showToast(title, desc, type = 'info') {
+      const box = document.getElementById('toast-box');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `
+        <svg class="icon" style="color:var(--${type === 'success' ? 'success' : type === 'warning' ? 'gold' : 'primary'});"><use href="#icon-check"/></svg>
+        <div>
+          <div>${title}</div>
+          <div style="font-size:11px; font-weight:400; color:var(--fg-muted);">${desc}</div>
+        </div>
+      `;
+      box.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    function toggleFaq(el) {
+      el.parentElement.classList.toggle('open');
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      const icon = document.getElementById('theme-icon');
+      icon.innerHTML = `<use href="#icon-${isDark ? 'sun' : 'moon'}"/>`;
+      APP_STATE.theme = isDark ? 'dark' : 'light';
+    }
+
+    function openBroadcastModal() {
+      const title = prompt('Enter Broadcast Notification Title:');
+      if (title) {
+        showToast('Broadcast Dispatched', `Alert sent to all cadets: "${title}"`, 'success');
+      }
+    }
+  </script>
+</body>
+</html>
