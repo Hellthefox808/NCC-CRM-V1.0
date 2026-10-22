@@ -43,10 +43,8 @@ if (!rawUri) {
 }
 
 // Fallback replica set URI for Windows systems where DNS SRV queries encounter querySrv ETIMEOUT
-const directReplicaUri =
-  "mongodb://Vercel-Admin-atlas-19-JH-BN-NCC_CRM:fFIUJn2A2x3SMAJ8@ac-gtsemyp-shard-00-00.zimeecy.mongodb.net:27017,ac-gtsemyp-shard-00-01.zimeecy.mongodb.net:27017,ac-gtsemyp-shard-00-02.zimeecy.mongodb.net:27017/" +
-  dbName +
-  "?ssl=true&replicaSet=atlas-hmx0f7-shard-0&authSource=admin&retryWrites=true&w=majority";
+// Configured via MONGODB_DIRECT_URI environment variable if direct shard connection is required
+const directReplicaUri = process.env.MONGODB_DIRECT_URI || null;
 
 console.log("\n======================================================");
 console.log("  NCC CRM — MongoDB Atlas Database Initialization");
@@ -71,7 +69,10 @@ async function run() {
     try {
       client = await tryConnect(rawUri, "Standard SRV Connection");
     } catch (srvErr) {
-      if (srvErr.code === "ETIMEOUT" || (srvErr.message && srvErr.message.includes("querySrv"))) {
+      if (
+        directReplicaUri &&
+        (srvErr.code === "ETIMEOUT" || (srvErr.message && srvErr.message.includes("querySrv")))
+      ) {
         console.warn(
           "⚠️  Standard SRV DNS lookup timed out (common on Windows DNS). Falling back to direct replica set connection...",
         );

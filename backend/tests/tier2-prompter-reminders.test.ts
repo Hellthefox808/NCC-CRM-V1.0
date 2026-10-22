@@ -1,6 +1,6 @@
 import { describe, it, afterEach } from "node:test";
 import assert from "node:assert/strict";
-import { resetAdminClientOverride } from "../lib/ncc-db.ts";
+import { resetAdminClientOverride, setAdminClientOverride } from "../lib/ncc-db.ts";
 import {
   DEFAULT_REMINDER_RULES,
   calculateScheduledTime,
@@ -69,6 +69,19 @@ describe("Tier 2: Prompter Reminder Engine & Dynamic Lifecycle Tests", () => {
     });
 
     it("dispatchReminder() formats payload and executes cleanly", async () => {
+      setAdminClientOverride({
+        from: () => ({
+          insert: () => ({
+            select: () => ({
+              single: () => Promise.resolve({ data: { id: "notif-test-101" }, error: null }),
+            }),
+          }),
+          update: () => ({
+            eq: () => Promise.resolve({ data: null, error: null }),
+          }),
+        }),
+      });
+
       const reminder = {
         reminderId: "rem-101",
         eventId: "event-202",
@@ -81,7 +94,7 @@ describe("Tier 2: Prompter Reminder Engine & Dynamic Lifecycle Tests", () => {
       };
 
       const result = await dispatchReminder(reminder);
-      assert.equal(typeof result, "boolean");
+      assert.equal(result, true);
     });
   });
 });
