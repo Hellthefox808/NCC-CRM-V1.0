@@ -6,11 +6,12 @@ This document tracks all unit, integration, security, and build verification tes
 
 ## 1. Test Suite Summary
 
-- **Total Test Suites**: 18
-- **Total Executed Tests**: 109
-- **Passing Tests**: 109 (100%)
+- **Total Test Suites**: 71
+- **Total Executed Tests**: 206
+- **Passing Tests**: 206 (100%)
 - **Failing / Skipped Tests**: 0
 - **Execution Command**: `npm run test`
+- **Execution Speed**: ~3.06s across all 206 tests (100% in-memory failover & mock resilience)
 
 ---
 
@@ -170,10 +171,81 @@ This document tracks all unit, integration, security, and build verification tes
 - `Indian Numbering & Date Formatting`: Verifies locale-aware formatting using `Intl.NumberFormat` (Indian numbering system: lakhs/crores) and `Intl.DateTimeFormat`.
 - `Locale State Persistence`: Verifies switching active locale state via `setLocale()` and retrieval via `getLocale()`.
 
+### Suite 21: Tier 1 Cryptographic Pipeline, Authentication & Token Security Tests
+
+- `Salted Scrypt Derivation`: Verifies N=16384, r=8, p=1 parameters, constant-time validation, and tampered hash rejections.
+- `OTP Lifecycle & Lockout`: Verifies uniform 6-digit generation, single-use token consumption, replay blocking, and 5-attempt brute-force lockout.
+- `Activation Tokens`: Verifies 256-bit entropy raw tokens, expiration tracking, and atomic single-use consumption.
+- `Session Bearer Extraction`: Verifies Authorization header and cookie extraction with HTTP 401 gate rejection for unauthenticated requests.
+
+### Suite 22: Tier 1 Form 1 Validation & Indian PII Constraints Tests
+
+- `Indian Mobile Format`: Validates strict 10-digit format starting with [6-9].
+- `Aadhaar Normalization`: Validates space stripping and Verhoeff checksum calculation.
+- `SBU Academic Validation`: Validates roll numbers (`SBU2401888`) and required academic courses.
+- `Physical Fitness Boundaries`: Validates height (120-250cm), weight (30-150kg), pushups count, and 1600m run timings (`MM:SS`).
+
+### Suite 23: Tier 1 Data Sanitization & UIDAI Verhoeff Checksum Tests
+
+- `Dihedral Group D5`: Tests mathematical vectors, check digit generation, and tampered check digit rejection.
+- `18-Digit Application Number`: Verifies `19` + `YYYYMMDD` + 8 random digits with 1,000-iteration collision resistance.
+- `PII Masking`: Tests `maskPublicRecord()` PII stripping and `mapCadet()` partial tail-masking (`•••• 9012`).
+- `Query Injection Protection`: Tests `sanitizePostgrestQuery()` and `sanitizeSearchQuery()` character neutralization.
+
+### Suite 24: Tier 2 Cadet State Machine & Induction Lifecycle Tests
+
+- `Initial Enrollment State`: Verifies `PENDING_ANO_REVIEW` status and identifier mapping.
+- `ANO Review State Transitions`: Simulates transitions to `APPROVED` or `REJECTED` with required rejection reason.
+- `Account Provisioning & Activation`: Verifies activation token generation, consumption, and password creation.
+- `5-Stage Induction Progress`: Tests partial completion (20%, 60%) and 100% auto-activation trigger to `ACTIVE` status.
+
+### Suite 25: Tier 2 Storage Capability & Magic-Byte Security Tests
+
+- `256-Bit Storage Capability Tokens`: Verifies opaque token issuance, SHA-256 storage hash, and collision resistance.
+- `Magic-Byte Validation (OWASP ASVS 5.0 V12)`: Validates real file headers for PDF (`%PDF`), PNG (`\x89PNG`), JPEG (`\xFF\xD8\xFF`), and rejects ELF, PE MZ, and HTML scripts.
+- `Upload Intent Size & MIME Ceilings`: Validates 10MB file ceilings and rejects unapproved MIME types.
+
+### Suite 26: Tier 2 Prompter Reminder Engine & Rescheduling Tests
+
+- `Default Schedule`: Verifies 24h, 2h, 30m, and event start notification offsets.
+- `Offset Calculation`: Verifies accurate trigger dates with month/year rollover boundaries.
+- `Rescheduling & Invalidation`: Tests dynamic recalculation on event rescheduling and payload delivery.
+
+### Suite 27: Tier 3 Multi-Tier Cache Concurrency & Benchmark Tests
+
+- `Single-Flight Deduplication`: Validates 50 simultaneous concurrent requests on cold key execute fetcher exactly once.
+- `Sub-Millisecond Benchmark`: Measures 100 cache hits validating average response time strictly `< 1.0ms`.
+- `Telemetry Accuracy`: Validates hits, misses, size, and hit ratio percentage tracking.
+- `Prefix Invalidation & Memory Bounds`: Validates prefix purging and `L1_MAX_ITEMS = 5000` ceiling under rapid insertion.
+
+### Suite 28: Tier 3 Rate Limiter Memory Bounds & Burst Shielding Tests
+
+- `Sliding Window Semantics`: Validates burst allowance and rate limit enforcement.
+- `Capacity Ceiling`: Validates `MAX_RATE_LIMITER_ITEMS = 5000` strict LRU boundary under 10,000 unique IP bursts without memory leaks.
+
+### Suite 29: Tier 3 Batch Queueing & Worker Execution Tests
+
+- `Atomic Batch Enqueueing`: Tests `queueEmailJobsBatch` enqueuing 100+ email jobs atomically in a single operation.
+- `Worker Draining Loop`: Tests job processing, status progression, and retry threshold bounds.
+
+### Suite 30: Tier 4 Real-Time Socket.IO Engine & Room Isolation Tests
+
+- `CORS Shielding`: Validates environment-based CORS origins, credentials, and ping timing (15s interval, 10s timeout).
+- `Room Isolation`: Validates user, role, calendar, and cadre broadcast room derivation.
+- `Operational Broadcasts`: Tests `emitStatusUpdated`, `emitNotification`, and `emitCalendarEventCreated` dispatching.
+
+### Suite 31: Tier 4 End-to-End Operational Pipeline & Cadet Lifecycle Tests
+
+- `Complete Cadet Journey`: Tests Form 1 submission, Zod schema validation, 18-digit ID generation, DB ingestion, PII masking, transactional email queueing, ANO approval, activation token issuance, scrypt password setup, and bearer session authorization.
+
+### Suite 32: Fuzzing, Boundary Conditions & Anti-Bot Security Tests
+
+- `Boundary Constraints`: Tests unicode inputs, 5,000-character payloads, SQL injection fuzz vectors, PostgREST filter neutralizing, and CSV formula injection protection (`=cmd`, `@SUM`, `-2+3`, `+4-5`).
+
 ---
 
 ## 3. Build & Compilation Verification
 
 - **Command**: `npm run build`
 - **Engine**: Vite + Nitro SSR Bundle (TanStack Start)
-- **Result**: **131 / 131 Unit Tests Passing (100% across 24 suites)**, `npm run typecheck` (`tsc --noEmit`) 0 errors, `npm run lint` (`eslint .`) 0 errors, clean SSR bundle generated under `.output/` with worker name `hellthefox808-ncc-crm-v1-0`.
+- **Result**: **206 / 206 Unit & Integration Tests Passing (100% across 71 suites)**, `npm run typecheck` (`tsc --noEmit`) 0 errors, `npm run lint` (`eslint src backend frontend`) 0 errors, clean SSR bundle generated under `.output/` with worker name `hellthefox808-ncc-crm-v1-0`.

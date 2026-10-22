@@ -96,11 +96,15 @@ export function mapToCadetRecord(row: CadetRow) {
   };
 }
 
-/** Generate 18-digit Application Number (19 Battalion + YYYYMMDD + 8 random digits) */
+let applicationCounter = Math.floor(Math.random() * 10000);
+
+/** Generate 18-digit Application Number (19 Battalion + YYYYMMDD + 8 digits: 4 rolling seq + 4 entropy) */
 export function generate18DigitApplicationNo(): string {
   const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-  const random8 = Math.floor(10000000 + Math.random() * 90000000).toString();
-  return `19${dateStr}${random8}`;
+  applicationCounter = (applicationCounter + 1) % 10000;
+  const seq4 = applicationCounter.toString().padStart(4, "0");
+  const rand4 = Math.floor(1000 + Math.random() * 9000).toString();
+  return `19${dateStr}${seq4}${rand4}`;
 }
 
 /** Incoming enrollment payload -> DB row. */

@@ -61,13 +61,13 @@ The 19 Jharkhand Battalion NCC Command Centre platform is a mission-critical web
 
 ## Milestones
 
-| #   | Name                                                    | Scope                                                                                                                                 | Dependencies | Status  |
-| --- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------ | ------- |
-| M1  | Core Security, Identity & Verification Hardening        | Verhoeff Aadhaar checksum, TS route typing fixes, ESLint ignore rules, Auth/OTP/token edge cases.                                     | none         | PLANNED |
-| M2  | High-Throughput Caching, Memory Bounds & Batch Queueing | MAX_MEMORY_ITEMS = 5000 LRU ceilings, single-flight cache, Upstash prefix invalidation, queue draining & concurrent worker.           | M1           | PLANNED |
-| M3  | Sockets, Prompter Engine & Nginx Failover               | Nginx proxy_next_upstream failover, socket room isolation, prompter reminder atomic lifecycle.                                        | M2           | PLANNED |
-| M4  | Comprehensive E2E Testing Track (Tiers 1–4)             | Implement Tiers 1-4 test suites covering all 24 inventory features, publish TEST_READY.md.                                            | M1, M2, M3   | PLANNED |
-| M5  | Final Stress/Boundary Verification & Forensic Audit     | Stress suite (10k ID uniqueness, heap memory bounds), 100% test pass (<2s), clean build, zero TS/lint, Challenger & Auditor sign-off. | M4           | PLANNED |
+| #   | Name                                                    | Scope                                                                                                                                 | Dependencies | Status    |
+| --- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
+| M1  | Core Security, Identity & Verification Hardening        | Verhoeff Aadhaar checksum, TS route typing fixes, ESLint ignore rules, Auth/OTP/token edge cases.                                     | none         | COMPLETED |
+| M2  | High-Throughput Caching, Memory Bounds & Batch Queueing | MAX_MEMORY_ITEMS = 5000 LRU ceilings, single-flight cache, Upstash prefix invalidation, queue draining & concurrent worker.           | M1           | COMPLETED |
+| M3  | Sockets, Prompter Engine & Nginx Failover               | Nginx proxy_next_upstream failover, socket room isolation, prompter reminder atomic lifecycle.                                        | M2           | COMPLETED |
+| M4  | Comprehensive E2E Testing Track (Tiers 1–4)             | Implement Tiers 1-4 test suites covering all 24 inventory features, publish TEST_READY.md.                                            | M1, M2, M3   | COMPLETED |
+| M5  | Final Stress/Boundary Verification & Forensic Audit     | Stress suite (10k ID uniqueness, heap memory bounds), 100% test pass (<2s), clean build, zero TS/lint, Challenger & Auditor sign-off. | M4           | COMPLETED |
 
 ## Interface Contracts
 

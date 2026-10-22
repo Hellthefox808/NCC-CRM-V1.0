@@ -37,9 +37,10 @@ function pruneL1() {
       l1Cache.delete(k);
     }
   }
-  // Enforce capacity bounds (evict oldest inserted/accessed)
-  if (l1Cache.size > L1_MAX_ITEMS) {
-    const keysToEvict = Array.from(l1Cache.keys()).slice(0, l1Cache.size - L1_MAX_ITEMS);
+  // Enforce capacity bounds (evict oldest inserted/accessed so adding one key stays within L1_MAX_ITEMS)
+  if (l1Cache.size >= L1_MAX_ITEMS) {
+    const excess = l1Cache.size - L1_MAX_ITEMS + 1;
+    const keysToEvict = Array.from(l1Cache.keys()).slice(0, excess);
     l1Evictions += keysToEvict.length;
     for (const k of keysToEvict) {
       l1Cache.delete(k);
