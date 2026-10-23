@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getAdmin, json } from "@backend/lib/ncc-db";
+import { json } from "@backend/lib/ncc-db";
 import { getRedisStatus } from "@backend/lib/redis.server";
+import { checkSupabaseAdminHealth } from "@backend/integrations/supabase/client.server";
+import { checkPrismaHealth } from "@backend/lib/prisma.server";
+import { checkMongoHealth } from "@backend/lib/mongodb.server";
 
 const STARTED_AT = Date.now();
 
@@ -29,32 +32,31 @@ export const Route = createFileRoute("/api/v1/health")({
           );
         }
 
-        // Database ping check for Readiness / Full Health
-        let dbOk = true;
-        let dbLatencyMs = 0;
-        let dbErrorDetail: string | null = null;
-        const dbStart = Date.now();
+        // Primary Database (Supabase PostgreSQL) readiness check
+        const supabaseHealth = await checkSupabaseAdminHealth();
 
+        // Prisma ORM Engine status check
+        let prismaHealth;
         try {
-          const admin = await getAdmin();
-          const { error } = await admin
-            .from("cadet_enrollments")
-            .select("id", { count: "exact", head: true });
-
-          dbLatencyMs = Date.now() - dbStart;
-
-          if (error) {
-            dbOk = false;
-            dbErrorDetail = error.message;
-          }
-        } catch (err) {
-          dbOk = false;
-          dbLatencyMs = Date.now() - dbStart;
-          dbErrorDetail = err instanceof Error ? err.message : String(err);
+          prismaHealth = await checkPrismaHealth();
+        } catch {
+          prismaHealth = {
+            status: "DISCONNECTED" as const,
+            connected: false,
+            error: "Prisma check failed",
+          };
         }
 
-        if (dbErrorDetail) {
-          console.error("[Health Probe Database Error]", dbErrorDetail);
+        // MongoDB Atlas secondary store check
+        let mongoHealth;
+        try {
+          mongoHealth = await checkMongoHealth();
+        } catch {
+          mongoHealth = {
+            status: "DISCONNECTED" as const,
+            connected: false,
+            error: "MongoDB check failed",
+          };
         }
 
         // Redis cache status probe
@@ -76,7 +78,8 @@ export const Route = createFileRoute("/api/v1/health")({
         const memoryUsageMb = Math.round((mem.heapUsed / 1024 / 1024) * 100) / 100;
         const rssMb = Math.round((mem.rss / 1024 / 1024) * 100) / 100;
 
-        const isHealthy = dbOk;
+        // Overall system readiness: Primary Supabase DB must be operational
+        const isHealthy = supabaseHealth.connected;
 
         return json(
           {
@@ -84,19 +87,47 @@ export const Route = createFileRoute("/api/v1/health")({
             status: isHealthy ? "HEALTHY" : "DEGRADED",
             probe: probeType,
             service: "19 JHR BN NCC SBU Data Engine",
-            version: "3.1.0",
+            version: "3.2.0",
             timestamp: new Date().toISOString(),
             uptimeSeconds: Math.floor((Date.now() - STARTED_AT) / 1000),
             checks: {
               database: {
-                status: dbOk ? "CONNECTED" : "DISCONNECTED",
-                latencyMs: dbLatencyMs,
-                ...(dbErrorDetail
+                status: supabaseHealth.status,
+                connected: supabaseHealth.connected,
+                latencyMs: supabaseHealth.latencyMs ?? 0,
+                ...(supabaseHealth.error
                   ? {
                       error:
                         process.env.NODE_ENV !== "production"
-                          ? dbErrorDetail
-                          : "Database unreachable",
+                          ? supabaseHealth.error
+                          : "Primary database unreachable",
+                    }
+                  : {}),
+              },
+              prisma: {
+                status: prismaHealth.status,
+                connected: prismaHealth.connected,
+                latencyMs: prismaHealth.latencyMs,
+                ...(prismaHealth.error
+                  ? {
+                      error:
+                        process.env.NODE_ENV !== "production"
+                          ? prismaHealth.error
+                          : "Prisma database unreachable",
+                    }
+                  : {}),
+              },
+              mongodb: {
+                status: mongoHealth.status,
+                connected: mongoHealth.connected,
+                latencyMs: mongoHealth.latencyMs,
+                dbName: mongoHealth.dbName,
+                ...(mongoHealth.error
+                  ? {
+                      error:
+                        process.env.NODE_ENV !== "production"
+                          ? mongoHealth.error
+                          : "MongoDB store unreachable",
                     }
                   : {}),
               },
