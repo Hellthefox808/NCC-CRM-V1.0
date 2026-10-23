@@ -7,7 +7,7 @@
 [![TypeScript](https://img.shields.io/badge/typescript-strict%205.8-blue.svg)](https://www.typescriptlang.org/)
 [![Runtime](https://img.shields.io/badge/runtime-Node.js%2022%20LTS-green.svg)](https://nodejs.org/)
 [![Database](https://img.shields.io/badge/database-Supabase%20PostgreSQL%2015-3ECF8E.svg)](https://supabase.com)
-[![Testing](https://img.shields.io/badge/tests-71%20suites%20%7C%20206%20cases-brightgreen.svg)](docs/TEST-MATRIX.md)
+[![Testing](https://img.shields.io/badge/tests-75%20suites%20%7C%20224%20cases-brightgreen.svg)](docs/TEST-MATRIX.md)
 [![Security](https://img.shields.io/badge/security-OWASP%20ASVS%205.0%20L2-success.svg)](docs/security/SECURITY_BASELINE.md)
 
 ---
@@ -262,7 +262,7 @@ The repository enforces a comprehensive automated testing matrix executed via th
 
 | Script | Command | Purpose |
 | :--- | :--- | :--- |
-| **Test Suite** | `npm test` | Runs 206 automated tests across 71 suites (`backend/tests/*.test.ts`). |
+| **Test Suite** | `npm test` | Runs 224 automated tests across 75 suites (`backend/tests/*.test.ts`). |
 | **Typecheck** | `npm run typecheck` | Strict TypeScript compiler validation (`tsc --noEmit`). |
 | **Linter** | `npm run lint` | ESLint 9 static analysis across `src`, `backend`, and `frontend`. |
 | **Prisma Validate** | `npm run prisma:validate` | Validates Prisma schema syntax and relationship integrity. |
@@ -355,17 +355,21 @@ We welcome contributions to the 19 Jharkhand Battalion NCC Command Portal. Pleas
 ### Branching & Commit Workflow
 
 1. Create a focused branch from `main`:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
+
 2. Make atomic, focused changes adhering to existing architectural patterns.
 3. Validate your changes locally:
+
    ```bash
    npm run lint
    npm run typecheck
    npm test
    npm run build
    ```
+
 4. Commit using Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`).
 5. Open a Pull Request targeting `main` with a detailed description of changes, testing evidence, and affected components.
 
