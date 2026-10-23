@@ -1,497 +1,392 @@
-# 19 JHR BN NCC Command Centre & Cadet Portal
+# 19 Jharkhand Battalion NCC Command Centre & Cadet Portal
 
-> Enterprise Digital Management, Cadet Enrollment & Institutional Identity Platform for **19 Jharkhand Battalion NCC, Sarala Birla University (SBU), Ranchi**.
+> Enterprise Cadet Lifecycle Management, Form 1 Enrollment & Institutional Command Platform for **19 Jharkhand Battalion NCC, Sarala Birla University (SBU), Ranchi**.
 
-[![Version](https://img.shields.io/badge/version-1.0.0--PROD-blue.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
-[![Unit Tests](<https://img.shields.io/badge/tests-92%2F92%20passing%20(100%25)-brightgreen.svg>)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
-[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions%20Hardened-blue.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0/actions)
-[![Build Status](https://img.shields.io/badge/build-Vite%208.2%20%2B%20Nitro%203.0%20Passing-brightgreen.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
-[![TypeScript](<https://img.shields.io/badge/typescript-strict%205.8%20(0%20errors)-blue.svg>)](https://www.typescriptlang.org/)
-[![Design System](https://img.shields.io/badge/design-Regimental%20Glassmorphism-gold.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0)
-[![Database](https://img.shields.io/badge/database-Supabase%20PostgreSQL%2015%20%2B%20Prisma%20%2B%20MongoDB-3ECF8E.svg)](https://supabase.com)
-[![Deployment](https://img.shields.io/badge/deployment-Vercel-black.svg)](https://19th-jh-ncc-crm-v1-0.vercel.app/)
-[![Security](https://img.shields.io/badge/OWASP-ASVS%205.0%20Level%202%20%7C%20scrypt-success.svg)](https://owasp.org/)
+[![CI](https://github.com/Hellthefox808/NCC-CRM-V1.0/actions/workflows/ci.yml/badge.svg)](https://github.com/Hellthefox808/NCC-CRM-V1.0/actions/workflows/ci.yml)
+[![Deployment](https://img.shields.io/badge/deployment-Vercel%20Edge-black.svg)](https://19th-jh-ncc-crm-v1-0.vercel.app/)
+[![TypeScript](https://img.shields.io/badge/typescript-strict%205.8-blue.svg)](https://www.typescriptlang.org/)
+[![Runtime](https://img.shields.io/badge/runtime-Node.js%2022%20LTS-green.svg)](https://nodejs.org/)
+[![Database](https://img.shields.io/badge/database-Supabase%20PostgreSQL%2015-3ECF8E.svg)](https://supabase.com)
+[![Testing](https://img.shields.io/badge/tests-71%20suites%20%7C%20206%20cases-brightgreen.svg)](docs/TEST-MATRIX.md)
+[![Security](https://img.shields.io/badge/security-OWASP%20ASVS%205.0%20L2-success.svg)](docs/security/SECURITY_BASELINE.md)
 
 ---
 
-## 🌐 Live System Deployment
+## Table of Contents
 
-| Platform   | Live URL                                                                    | Description                              |
-| :--------- | :-------------------------------------------------------------------------- | :--------------------------------------- |
-| **Vercel** | [19th-jh-ncc-crm-v1-0.vercel.app](https://19th-jh-ncc-crm-v1-0.vercel.app/) | Production Cadet Portal & Command Centre |
+- [Project Introduction](#project-introduction)
+- [System Architecture](#system-architecture)
+- [Technology Stack](#technology-stack)
+- [Repository Structure](#repository-structure)
+- [Getting Started](#getting-started)
+- [Environment Configuration](#environment-configuration)
+- [Testing & Quality Assurance](#testing--quality-assurance)
+- [CI/CD & Delivery Pipelines](#cicd--delivery-pipelines)
+- [Docker & Container Deployment](#docker--container-deployment)
+- [Documentation Index](#documentation-index)
+- [Contribution & Governance](#contribution--governance)
+- [Privacy & Data Protection](#privacy--data-protection)
+- [License & Attribution](#license--attribution)
 
 ---
 
-## 📐 Architecture Overview
+## Project Introduction
+
+The **19 Jharkhand Battalion NCC Command Centre & Cadet Portal** is an institutional software platform designed to manage the end-to-end operational lifecycle of National Cadet Corps (NCC) cadets at Sarala Birla University, Ranchi.
+
+### Operational Scope & User Roles
+
+- **Prospective Applicants**: Access unit information, Physical Efficiency Test (PET) criteria, syllabus details, and complete the 5-step Form 1 Cadet Enrollment wizard.
+- **Enrolled Cadets**: Authenticate via single-use token activation and salted `scrypt` credentials, review parade attendance, receive duty rosters, download digital identity credentials, and access training schedules.
+- **Associate NCC Officers (ANOs)**: Review and triage candidate applications, request corrections, issue single-use activation credentials, manage nominal rolls, schedule training parades, and publish battalion circulars.
+- **Permanent Instructional (PI) Staff & Administrators**: Log muster parade attendance, verify physical documentation, track weapon training and camp quotas, and generate official nominal roll exports.
+
+### Implemented Capabilities
+
+1. **Form 1 Enrollment Engine**: 5-step applicant wizard supporting Senior Division (`SD`) and Senior Wing (`SW`) cadres with client-side draft auto-save, Aadhaar format validation, and Indian mobile (`+91`) normalization.
+2. **18-Digit Application Tracking**: Deterministic institutional tracking numbers (`19${YYYYMMDD}${8-digit random}`) with zero-PII-leak public status lookup (`/api/v1/enrollments/status/:query`).
+3. **Officer Review & Lifecycle Gate**: Controlled state transitions (`PENDING_ANO_REVIEW` → `APPROVED` / `REJECTED` / `CORRECTION_REQUIRED`) with audit-logged decision remarks.
+4. **Single-Use Cryptographic Activation**: 256-bit entropy raw tokens dispatched via time-limited (24-hour TTL) emails; only `sha256(rawToken)` is stored in PostgreSQL.
+5. **Session & Credential Security**: Salted `scrypt` password hashing (`N=16384, r=8, p=1`), timing-safe comparisons, and tamper-resistant `HttpOnly; SameSite=Strict; Secure` session cookies (`ncc_session`).
+6. **Multi-Channel Notification Dispatch**: Automated dispatch across Email (Nodemailer SMTP), WhatsApp Cloud API, and transactional SMS gateways upon enrollment, approval, and event alerts.
+7. **Battalion Calendar & Prompter Engine**: 4-stage automated event alert scheduler (T-24h briefing email, T-2h gear checklist SMS, T-30m Socket.IO real-time notification, T-0m digital roll call).
+8. **Nominal Roll Export**: Official RFC 4180 CSV export with UTF-8 BOM (`\uFEFF`) for seamless Microsoft Excel import by battalion headquarters.
+9. **Multi-Tier Cache & Rate Limiting**: L1 in-memory LRU cache (`< 0.05ms`) paired with distributed L2 Redis caching (`1.5-3.2ms`) and a sliding-window rate limiter.
+10. **Intrusion Detection System (IDS)**: Cumulative security risk scoring with automated defensive throttling, session invalidation, and quarantine escalation.
+
+### Live Deployments
+
+- **Production Portal**: [19th-jh-ncc-crm-v1-0.vercel.app](https://19th-jh-ncc-crm-v1-0.vercel.app/)
+- **Upstream Repository**: [Hellthefox808/NCC-CRM-V1.0](https://github.com/Hellthefox808/NCC-CRM-V1.0)
+
+---
+
+## System Architecture
+
+The portal is architected as a high-performance Full-Stack Application leveraging TanStack Start for server-side rendering (SSR) and Nitro for unified server execution across Node.js and serverless edge runtimes.
 
 ```mermaid
 graph TD
-    Client["Client Browsers (Cadets, ANOs, Public)"] --> Edge["Cloudflare Edge / Netlify CDN"]
-    Edge --> NitroSSR["Nitro SSR Server Engine (Node 22 / Cloudflare Worker)"]
+    Client["Client Browsers (Cadets, ANO Officers, Public)"] --> Edge["Edge CDN / Vercel Edge Network"]
+    Edge --> NitroSSR["Nitro SSR Server Engine (Node 22 / Cloudflare)"]
 
     subgraph "Server Runtime Layer"
-        NitroSSR --> Router["TanStack Router (File-based API & Page Routes)"]
-        Router --> AuthMiddleware["Security Middleware (JWT / Scrypt / RBAC)"]
-        Router --> RateLimiter["Hybrid Sliding Window Rate Limiter"]
+        NitroSSR --> Router["TanStack Router (File-Based Routes & Server Functions)"]
+        Router --> RateLimiter["Hybrid Sliding-Window Rate Limiter"]
+        Router --> AuthMiddleware["Security Middleware (scrypt / RBAC / Cookie Sessions)"]
         Router --> CacheLayer["Multi-Tier Cache (L1 LRU + L2 Redis)"]
     end
 
-    subgraph "Application Services"
+    subgraph "Core Application Services"
         Router --> CadetRegistry["Cadet Registry & Enrollment Engine"]
-        Router --> StorageService["Opaque Storage & Magic Bytes Validator"]
-        Router --> PrompterService["Prompter Event & Reminder Engine"]
-        Router --> QueueService["Transactional Email & Delivery Worker"]
-        Router --> IDSService["Intrusion Detection System (IDS Engine)"]
+        Router --> StorageService["Opaque Storage & Magic-Bytes MIME Validator"]
+        Router --> PrompterService["Battalion Prompter & Event Scheduler"]
+        Router --> QueueService["Transactional Mail & Notification Worker"]
+        Router --> IDSService["Intrusion Detection System (Risk Scorer)"]
     end
 
-    subgraph "External Integrations & Data Tier"
-        CadetRegistry --> Supabase["PostgreSQL (Supabase DB + Auth Attacher)"]
+    subgraph "Data Tier & External Integrations"
+        CadetRegistry --> Supabase["Supabase PostgreSQL 15 (Prisma ORM + RLS)"]
         StorageService --> S3["Object Storage / Supabase Storage S3"]
-        CacheLayer --> Redis["Upstash Redis / Redis Cluster (L2 Cache)"]
-        QueueService --> SMTP["Nodemailer SMTP / Dev Transporter"]
+        CacheLayer --> Redis["Redis (Local TCP or Upstash REST)"]
+        QueueService --> SMTP["Nodemailer SMTP Transporter"]
         PrompterService --> WhatsApp["WhatsApp Cloud API & SMS Gateways"]
+        PrompterService --> WebSockets["Socket.IO Real-Time Dispatch"]
     end
 ```
 
-### Technical Stack & Key Capabilities
+### Component Status & Boundary Disclaimers
 
-- **Frontend Application**: React 19, TanStack Start (SSR), TanStack Router, Tailwind CSS v4, Radix UI, Lucide Icons, Framer Motion.
-- **Design System**: Regimental Glassmorphism (`.regimental-glass-panel`, `.regimental-glass-panel-elevated`, `.regimental-badge`, `.regimental-gold-pill`, `.regimental-tricolor-gradient`) with military prestige styling and WCAG 2.2 AA light/dark mode contrast compliance.
-- **Backend & SSR Engine**: Nitro 3.0 + Vite 8.2 compiling unified TypeScript serverless functions across Node 22 and Cloudflare Workers.
-- **Identity & Access Control**: HttpOnly Cookie Sessions (`ncc_session`), Salted `scrypt` (`N=16384, r=8, p=1`), Single-Use 256-bit SHA-256 Activation Tokens.
-- **Form 1 Cadet Enrollment Engine**: 5-step wizard supporting Senior Division (`SD`) & Senior Wing (`SW`), auto-sanitizing Indian mobile numbers (`+91`), 12-digit Aadhaar validation, and 1-click Application Number copy UX.
-- **18-Digit Application Number Subsystem**: Generates standard `19${YYYYMMDD}${8-digit random}` tracking numbers (e.g. `192026082163982382`).
-- **Multi-Channel Notification Dispatch**: Automated dispatch across Email (Nodemailer / SMTP), WhatsApp (`+91` E.164), and SMS upon application submission, ANO approval, and event announcements.
-- **Multi-Tier Cache Subsystem**: L1 In-Memory LRU Map (`< 0.05ms`) + L2 Redis (`ioredis` / Upstash REST, `1.5-3.2ms`) with synchronous dual-tier cache prefix invalidation.
-- **Intrusion Detection System (IDS)**: Cumulative risk scoring engine with automated threat mitigation (`RATE_LIMIT_IP`, `REVOKE_SESSION`, `QUARANTINE_OBJECT`).
-- **Database & Storage**: Supabase PostgreSQL 15 with 14 relational tables, Prisma ORM schema, idempotent migrations, and zero-leak Row-Level Security policies.
-- **Export Capabilities**: RFC 4180 CSV export with UTF-8 BOM (`\uFEFF`) for seamless Microsoft Excel nominal roll generation.
+| Component | Status | Operational Context |
+| :--- | :--- | :--- |
+| **Nitro SSR & TanStack Router** | Required | Primary application server and file-based routing runtime. |
+| **Supabase PostgreSQL 15** | Required | Primary persistent datastore (14 relational tables, migrations, Prisma ORM). |
+| **L1 In-Memory LRU Cache** | Required | Built-in zero-latency local caching layer. |
+| **Redis (TCP / Upstash REST)** | Optional / Fallback | L2 distributed cache. Falls back gracefully to L1 in-memory when unavailable. |
+| **SMTP Notification Dispatch** | Optional / Fallback | Production uses SMTP host; development falls back to mock/JSON console logger. |
+| **MongoDB Atlas** | Optional | Secondary datastore for unstructured logs and analytical aggregation. |
 
 ---
 
-## 🎨 Regimental Glassmorphism & UI/UX Architecture
+## Technology Stack
 
-The portal's visual language is engineered under the **Regimental Glassmorphism** design system, combining authentic Indian military prestige with modern, accessible web ergonomics.
+### Frontend Application
 
-### 1. Regimental Palette & Semantic Tokens
+- **Core Framework**: React 19 (`^19.0.0`)
+- **SSR & Routing**: TanStack Start (`^1.168.32`) & TanStack Router (`^1.170.18`)
+- **Styling & Design System**: Tailwind CSS v4 (`@tailwindcss/vite ^4.2.1`) with military Regimental Glassmorphism tokens
+- **Component Primitives**: Radix UI (Dialog, Dropdown, Tabs, Tooltip, Progress, Accordion)
+- **Animation & Visuals**: Framer Motion (`^12.4.7`), Canvas Confetti, Lucide Icons
 
-- **Indian Armed Forces Tricolor**: Navy Blue (`#1E3A8A`), Army Red (`#DC2626`), and Sky Blue (`#0284C7`) accented with Regimental Brass Gold (`#FFD700` / `#D4AF37`).
-- **Adaptive Contrast Compliance**: Eliminates raw hardcoded light-theme literals (`#8C5E3C`, `#3B281C`, `bg-white`, `text-zinc-950`) in favor of dynamic CSS variable tokens (`var(--color-background)`, `var(--color-card)`, `var(--color-border)`, `var(--color-foreground)`), guaranteeing WCAG 2.2 AA legibility across both dark and light modes.
-- **Frosted Glass Elevation**: Multi-layered panels with hardware-accelerated `backdrop-filter: blur(24px-28px)` and ambient brass edge glows.
+### Backend & Server Runtime
 
-### 2. Modernized Public Landing Page Components
+- **Server Engine**: Nitro 3.0 via Vite 8.2 (`vite ^8.2.0`)
+- **Target Runtime**: Node.js 22 LTS
+- **Data Access & Schema**: Prisma ORM (`@prisma/client ^7.9.1`, `prisma ^7.9.1`) & Supabase JS (`@supabase/supabase-js ^2.112.3`)
+- **Validation**: Zod schema validation
+- **Caching**: `ioredis` for TCP Redis, `@upstash/redis` for serverless REST Redis
 
-- **Command Hero Card** ([`HeroSection.tsx`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/frontend/features/HeroSection.tsx)): Elevated frosted glass command station framed with an Indian tricolor hairline header accent, brass-ringed dual crests (NCC & SBU), and verified unit status metrics.
-- **18-Digit Application Tracker**: Interactive real-time search input with numeric enforcement, dynamic length counter (`${length}/18`), animated progress indicator, and masked PII status display.
-- **Charter, Motto & Bilingual NCC Song** ([`AboutNCC.tsx`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/frontend/features/AboutNCC.tsx)): Elevated "Unity and Discipline" regimental showcase, interactive Physical Efficiency Test (PET) standards switcher for Senior Division (SD) and Senior Wing (SW) cadres, and a bilingual Hindi/English lyrical anthem modal.
-- **Activities & Training Camps Gallery** ([`ActivitiesGallery.tsx`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/frontend/features/ActivitiesGallery.tsx)): Dual-mode segmented switcher with smooth Framer Motion layout pill transitions and dynamic category filter keylines.
-- **500-Mark Certificate Scheme Table** ([`RanksSyllabusSection.tsx`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/frontend/features/RanksSyllabusSection.tsx)): Structured military-grade breakdown of NCC 'A', 'B', and 'C' examination formats (Written: 350 marks, Practical: 150 marks) and Alpha/Bravo/Charlie grading criteria.
-- **Unified Semantic Footer** ([`Footer.tsx`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/frontend/features/Footer.tsx)): Standardized battalion hierarchy, quick access pathways, interactive campus map chip, and copyright metadata.
+### Security & Authentication
 
-## 🔄 Complete End-to-End System & Project Flow
+- **Password Derivation**: Salted `scrypt` (`N=16384, r=8, p=1`)
+- **Tokens**: 256-bit cryptographically secure activation tokens (`crypto.randomBytes(32)`), stored as SHA-256 hashes
+- **Sessions**: `HttpOnly; SameSite=Strict; Secure` session cookies (`ncc_session`)
+- **File Security**: Magic-bytes binary header inspection for MIME verification
 
-The platform orchestrates a multi-role institutional workflow linking prospective applicants, enrolled cadets, Commanding Officers (ANOs), PI Staff, and administrative systems.
+### Testing & Tooling
 
-```mermaid
-flowchart TD
-    subgraph Phase1["Phase 1: Registration & Ingestion"]
-        A1["Prospective Cadet visits /enroll"] --> A2["5-Step Form 1 Wizard Entry (SD / SW)"]
-        A2 --> A3["Client-Side Auto-Save (AES Encrypted Draft, 24h TTL)"]
-        A3 --> A4["Submission: POST /api/v1/enrollments"]
-        A4 --> A5["Zod Validation (+91 Mobile, 12-Digit Aadhaar, Age 15-28)"]
-        A5 --> A6["Generate 18-Digit Application No: 19 + YYYYMMDD + 8 Random"]
-        A6 --> A7["DB Insertion: Status = PENDING_ANO_REVIEW"]
-        A7 --> A8["Multi-Channel Dispatch: Email + WhatsApp + SMS"]
-    end
-
-    subgraph Phase2["Phase 2: ANO Review & Decision Gate"]
-        B1["ANO logs into /admin Command Centre"] --> B2["Review Ingested Applications & Verify Documents"]
-        B2 --> B3{"ANO Decision"}
-        B3 -->|"Request Correction"| B4["Status: CORRECTION_REQUIRED (Cadet notified)"]
-        B3 -->|"Reject"| B5["Status: REJECTED (Reason logged & dispatched)"]
-        B3 -->|"Approve"| B6["Status: APPROVED / ENROLLED"]
-        B6 --> B7["Issue 256-Bit Cryptographic Single-Use Token (24h TTL)"]
-        B7 --> B8["Store sha256(rawToken) in auth_otp_codes"]
-        B8 --> B9["Queue Branded Welcome Email with One-Time Link"]
-    end
-
-    subgraph Phase3["Phase 3: Cadet Activation & Portal Access"]
-        C1["Cadet clicks Activation Link in Email"] --> C2["Navigate to /activate?token=..."]
-        C2 --> C3["Pre-check Token Validity (Unused & Not Expired)"]
-        C3 --> C4["Cadet sets 8+ char password"]
-        C4 --> C5["Atomic Token Consumption & Invalidation (Anti-Replay)"]
-        C5 --> C6["Derive Salted scrypt Hash (N=16384, r=8, p=1)"]
-        C6 --> C7["Upsert app_credentials & Issue HttpOnly Session Cookie"]
-        C7 --> C8["Redirect to /cadet Dashboard"]
-    end
-
-    subgraph Phase4["Phase 4: Battalion Operations & Training"]
-        D1["ANO creates Parade / Camp on /admin"] --> D2["Assign Cadre / Attendees"]
-        D2 --> D3["Prompter Engine computes 4 Triggers: T-24h, T-2h, T-30m, T-0m"]
-        D3 --> D4["Socket.IO Real-Time Dispatch + Transactional Emails"]
-        D4 --> D5["Cadets receive alerts & confirm attendance"]
-        D5 --> D6["Official Nominal Roll Export: RFC 4180 CSV with UTF-8 BOM"]
-    end
-
-    Phase1 --> Phase2
-    Phase2 --> Phase3
-    Phase3 --> Phase4
-```
-
-### 1. Form 1 Ingestion & Public Tracking Flow
-
-1. **Applicant Entry (`/enroll`)**: The candidate enters bio-data across 5 progressive stages (Personal Details, SBU Academic Data, Physical Fitness Metrics, Bank DBT details, and Indemnity/Medical declarations).
-2. **Data Cleansing & Validation**: Incoming requests are validated server-side by `cadetEnrollmentSchema`. Phone numbers with international prefixes (`+91`) and Aadhaar whitespace are sanitized.
-3. **18-Digit ID Generation**: The backend generates a uniform institutional application ID conforming to `19${YYYYMMDD}${8-digit random}`.
-4. **Immediate Multi-Channel Acknowledgment**:
-   - **Email**: Dispatched via Nodemailer SMTP with branded HTML receipt.
-   - **WhatsApp**: Dispatches official welcome template via Cloud API.
-   - **SMS**: Dispatches transactional alert with tracking URL.
-5. **Zero-Leak Public Status Tracking (`/api/v1/enrollments/status/:query`)**: Candidates track application progress using their 18-digit number, SBU Roll No, or registered mobile. All sensitive PII (Aadhaar, bank account numbers, IFSC, residential address) is strictly stripped before transmission.
-
-### 2. Officer Review & Controlled Lifecycle Gate
-
-1. **ANO Dashboard Review (`/admin`)**: Commanding Officers query nominal applications with sorting, fuzzy search, and multi-parameter filtering (by status, gender, course, selection rank).
-2. **Review Action Matrix**:
-   - `APPROVE`: Transitions state to `APPROVED`, registers cadet in the nominal roll, and triggers cryptographic activation issuance.
-   - `REJECT`: Transitions state to `REJECTED`, records formal officer remarks, and sends rejection notice.
-   - `REQUEST_CORRECTION`: Marks application as `CORRECTION_REQUIRED`, enabling applicant to update specific documents without re-registering.
-3. **Single-Use Activation Security**:
-   - Generates 256 bits of cryptographic entropy (`crypto.randomBytes(32)`).
-   - Stores only `sha256(rawToken)` in PostgreSQL.
-   - Sends the raw token exclusively in a time-limited (24-hour) activation email.
-
-### 3. Cadet Activation, Scrypt Authentication & Portal Session
-
-1. **Activation Gateway (`/activate`)**: Validates that the provided token exists, is unexpired, and has not been previously consumed.
-2. **Atomic Token Consumption**: Invalidates the token in a single atomic transaction to prevent concurrent replay attacks.
-3. **Password Security**: Hashes user password with salted `scrypt` (`N=16384, r=8, p=1`) and stores hash in `app_credentials`.
-4. **Session Establishment**: Issues secure `HttpOnly; SameSite=Strict; Secure` session cookies (`ncc_session`), mitigating token theft via XSS.
-5. **Cadet Portal Features (`/cadet`)**:
-   - Personal bio-data card and attendance record.
-   - Digital NCC ID card preview with QR verification.
-   - Parade training schedules, camp circulars, and duty assignments.
-   - Real-time notification tray synchronized over WebSockets (`useSocket.ts`).
-
-### 4. Battalion Event Operations & Automated Prompter Flow
-
-1. **Event Creation**: ANO schedules training parades, firing practice, or Annual Training Camps (ATC) with date, time, location, uniform code, and attendee cadre scope.
-2. **Automated Multi-Stage Prompter Rules**: The prompter scheduler (`backend/services/prompter/`) automatically calculates and registers 4 distinct triggers:
-   - **T-24 Hours**: Comprehensive event briefing email sent to all participating cadets.
-   - **T-2 Hours**: WhatsApp / SMS preparation reminder with uniform and gear checklist.
-   - **T-30 Minutes**: Real-time push notification & Socket.IO broadcast (`cadre:notifications`).
-   - **T-0 Minutes (Event Start)**: Roll-call and digital attendance logging.
-3. **Attendance Logging**: PI staff record muster roll digitally; attendance logs update cadet training profiles in real-time.
-
-### 5. Multi-Tier Cache & High-Throughput Data Flow
-
-1. **Request Ingestion**: Incoming API requests pass through the hybrid sliding-window rate limiter (20 requests/minute for public routes, 120 requests/minute for authenticated routes).
-2. **L1 In-Memory Cache Check**: Checks local in-memory LRU cache (`< 0.05ms` latency). On hit, returns response immediately with header `X-Cache: HIT-L1`.
-3. **L2 Distributed Redis Check**: On L1 miss, queries distributed Redis instance (`ioredis` or Upstash REST, `1.5-3.2ms` latency). On hit, backfills L1 and returns `X-Cache: HIT-L2`.
-4. **Database Query & Cache Population**: On L2 miss, queries PostgreSQL via Supabase / Prisma connection pool, stores result in both L1 and L2 caches, and returns `X-Cache: MISS`.
-5. **Synchronized Dual-Tier Invalidation**: Any write mutation (`POST`, `PUT`, `DELETE`) automatically invalidates all related cache keys and key prefixes across both L1 and L2 simultaneously.
-
-### 6. Intrusion Detection System (IDS) Threat Flow
-
-1. **Event Interception**: Security events (failed logins, rate limit bursts, unauthorized export attempts, magic-byte tampering) are piped to `IDSService.recordSecurityEvent()`.
-2. **Dynamic Risk Scoring**: Evaluates rolling risk scores per IP and user ID (scores: `0-29: LOW`, `30-59: MEDIUM`, `60-84: HIGH`, `85+: CRITICAL`).
-3. **Automated Defensive Actions**:
-   - `SCORE >= 30`: Enforces temporary IP throttling via sliding-window rate limiter.
-   - `SCORE >= 60`: Invalidates active session tokens and requires mandatory re-authentication.
-   - `SCORE >= 85` (or unauthorized nominal export): Triggers immediate `CRITICAL` alert to ANO officers, locks account, and quarantines suspicious assets.
+- **Test Runner**: Node.js Built-in Test Runner (`node --import tsx --test`)
+- **TypeScript**: TypeScript 5.8 in strict mode (`tsc --noEmit`)
+- **Linter & Formatter**: ESLint 9 (`eslint src backend frontend`) & Prettier
 
 ---
 
-## 📋 18-Digit Application Number & Tracking Workflow
-
-The portal issues an official 18-digit Application Number upon cadet registration:
+## Repository Structure
 
 ```text
-Format: 19 + [YYYYMMDD] + [8-Digit Random Number]
-Example: 192026082163982382
+NCC-CRM-V1.0/
+├── .agents/                 # AI agent operating directives and local workflows
+├── .github/
+│   └── workflows/           # GitHub Actions CI/CD workflows (ci, deploy, pr, audit)
+├── backend/
+│   ├── integrations/        # External adapters (MongoDB, Supabase, Redis, S3)
+│   ├── lib/                 # Core server utilities (auth, crypto, rate limiting, IDS)
+│   ├── services/            # Domain services (prompter, notifications, storage, export)
+│   └── tests/               # Automated test suites (206 test cases across 71 suites)
+├── docs/                    # Architecture, database, security, and CI/CD documentation
+│   ├── adr/                 # Architecture Decision Records
+│   ├── architecture/        # Topology, domain models, and architecture baselines
+│   ├── database/            # ERD diagrams and database schema documentation
+│   ├── security/            # Threat models, OTP specs, and security audit reports
+│   └── testing/             # Testing strategy, matrices, and fixture guidelines
+├── frontend/
+│   ├── components/          # Reusable UI components (buttons, badges, inputs, dialogs)
+│   ├── design-system/       # Regimental Glassmorphism CSS variables and theme tokens
+│   ├── features/            # Feature views (HeroSection, Form1, AboutNCC, Tracker)
+│   ├── hooks/               # Custom React hooks (useSocket, useAuth, useTheme)
+│   └── styles.css           # Global stylesheet and Tailwind v4 imports
+├── prisma/
+│   └── schema.prisma        # Prisma relational database schema
+├── public/                  # Static assets, battalion crests, and institutional emblems
+├── scripts/                 # Operational and database initialization scripts
+├── src/
+│   ├── routes/              # TanStack file-based routes and API handlers
+│   ├── router.tsx           # Application router configuration
+│   └── server.ts            # Nitro SSR entrypoint and server lifecycle hooks
+├── supabase/
+│   └── migrations/          # Version-controlled idempotent SQL migrations and RLS
+├── docker-compose.yml       # Multi-container orchestration (Nginx, Redis, App replicas)
+├── Dockerfile               # Multi-stage production container build
+├── package.json             # Project dependencies, metadata, and lifecycle scripts
+└── README.md                # Developer onboarding and project documentation
 ```
 
-1. **Submission**: Cadet completes Form 1 on [`/enroll`](https://19th-jh-ncc-crm-v1-0.vercel.app/enroll).
-2. **Validation**: `cadetEnrollmentSchema` sanitizes mobile, Aadhaar, DOB (15–28 years), physical metrics, and academic profile.
-3. **Dispatch**: Instant multi-channel notifications sent with tracking link (Email, WhatsApp, SMS).
-4. **Public Tracking**: Status queries on `/api/v1/enrollments/status/:query` return masked PII records for security.
-5. **ANO Verification**: Commanding officers review, verify documents, and issue single-use activation tokens.
-
 ---
 
-## 🔒 Security Hardening & Authentication Architecture
-
-### 1. Multi-Stage Cadet Provisioning Pipeline
-
-```text
-Cadet Registration ──> PENDING_ANO_REVIEW ──> Officer Approval ──> Single-Use Token
-                                                                        │
-                                                                        ▼
-Active Cadet Session <── Scrypt Set Password <── Email Activation Link ─┘
-```
-
-- **Officer Access Gate**: Privileged endpoints strictly enforce `requireOfficer(request)` server-side.
-- **Single-Use Cryptographic Tokens**: 256-bit entropy raw tokens (`crypto.randomBytes(32)`) sent via email; only `sha256(rawToken)` is stored in `account_activation_tokens`.
-- **Anti-Replay Protection**: Single-use flag (`used_at`) and 24-hour expiration (`expires_at`).
-
-### 2. Password & Identity Standards
-
-- **Salted Scrypt Hashing**: Password hashes derived with `scrypt` using unique per-user cryptographic salts.
-- **OWASP Password Standard**: Minimum 8 characters with upper, lower, numeric, and symbol enforcement.
-- **Timing-Safe Responses**: Uniform messages on recovery and OTP endpoints to eliminate user enumeration vectors.
-
-### 3. Session Security
-
-- **Zero Client Token Storage**: Session tokens are not stored in `localStorage` or `sessionStorage` to mitigate XSS attacks.
-- **HttpOnly Cookie Handling**: Auth middleware extracts tokens from `HttpOnly; SameSite=Strict; Secure` cookies.
-
-### 4. Multi-Purpose OTP & Dual-Tier Failover Engine
-
-The authentication engine features a multi-purpose OTP subsystem with dual-tier failover and cryptographic brute-force protection:
-
-- **Purpose Segregation**: Strictly isolates tokens by intent (`password_reset`, `onboarding`, `account_activation`, `verification`), preventing token cross-use across different security workflows.
-- **Dual-Tier High-Availability Storage**:
-  - **Primary**: Supabase PostgreSQL `auth_otp_codes` table storing `sha256(raw_otp)`.
-  - **Failover**: In-memory self-pruning store (`memoryOtps`) automatically engages if the database is temporarily unreachable, maintaining uninterrupted authentication and verification.
-- **Brute-Force & Flood Controls**:
-  - **45-Second Resend Cooldown**: Per-identifier sliding window prevents SMS/Email flooding.
-  - **5-Attempt Lockout**: Maximum 5 failed verification attempts before the OTP is permanently invalidated.
-  - **Single-Use Auto-Destruction**: Automatically consumed upon successful verification (`used_at = NOW()`).
-- **Timing-Safe Responses**: Constant-time verification comparisons eliminate side-channel timing attacks.
-
-### 5. Cadet Onboarding Progression & Auto-Activation Workflow
-
-Upon enrollment approval, cadets complete a 5-pillar onboarding lifecycle before full operational authorization:
-
-```text
-Step 1: Profile Initialization    [profile_completed]
-Step 2: Contact & OTP Verification [contact_verified]  ── (Auto-linked to Cadet Record)
-Step 3: Document Audit & Clearance [documents_verified]
-Step 4: Cadet Oath & Declaration  [declaration_accepted]
-Step 5: Unit Orientation Briefing [orientation_completed]
-                         │
-                         ▼
-        All 5 Steps Complete (100%)
-                         │
-                         ├── Auto-transition: cadet_users.account_status = 'ACTIVE'
-                         ├── Queue Transactional Welcome Email via QueueWorker
-                         └── Log Structured Security Audit Event (onboarding_completed)
-```
-
-- **Interactive Cadet Card**: Real-time progress tracker (`<CadetOnboardingCard />`) in the Cadet Dashboard with inline OTP dispatch and verification.
-- **Atomic Batch & Step APIs**: REST endpoints supporting both granular step toggles (`PATCH /api/v1/onboarding/:step`) and atomic multi-step batch updates (`PATCH /api/v1/onboarding`).
-- **Audit Provenance**: Every step modification is immutably logged with actor IP, timestamp, and metadata.
-
----
-
-## 🚀 CI/CD Pipeline & Continuous Delivery
-
-The repository operates an enterprise, zero-trust Continuous Integration and Continuous Delivery pipeline implemented via GitHub Actions. For complete specifications and operational diagrams, see [`docs/CI_CD.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/CI_CD.md).
-
-### 1. Parallel CI Quality Matrix ([`.github/workflows/ci.yml`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/.github/workflows/ci.yml))
-
-Every push and pull request targeting `main` triggers 7 parallel and sequenced validation gates:
-
-- **`lint`**: ESLint 9 static analysis across all frontend, backend, and integration scripts.
-- **`typecheck`**: Strict TypeScript compiler verification (`tsc --noEmit`).
-- **`test`**: Execution of the complete 92-test automated test matrix across 16 test suites.
-- **`prisma-validate`**: Prisma schema integrity validation and client code generation.
-- **`security-check`**: Dependency vulnerability audit (`npm audit --audit-level=critical`) and Git commit history secret pattern inspection.
-- **`build`**: Production compilation of client assets and Nitro SSR server bundle into `.output/`.
-- **`docker-validate`**: Multi-stage Docker container build verification with caching.
-
-### 2. Continuous Delivery & Rollback Automation ([`.github/workflows/deploy.yml`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/.github/workflows/deploy.yml))
-
-- **Immutable Artifacts**: Compiles production bundles and builds Docker containers tagged with git commit SHA (`ncc-crm:${{ github.sha }}`).
-- **Automated Health Probes**: Executes multi-probe liveness (`/api/v1/health?type=liveness`) and readiness checks with exponential backoff retries.
-- **Smoke Testing**: Verifies SSR root page HTML serving and public enrollment status tracking API endpoints.
-- **Automated Failure Handling**: Triggers automated rollback notifications on health or probe failure.
-
-### 3. PR Quality Gate & Scheduled Security Audit
-
-- **PR Title Hygiene** ([`.github/workflows/pr-validation.yml`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/.github/workflows/pr-validation.yml)): Enforces Conventional Commits naming conventions and flags oversized pull requests exceeding 2,500 lines.
-- **Weekly Security Scans** ([`.github/workflows/security-audit.yml`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/.github/workflows/security-audit.yml)): Runs every Sunday at midnight UTC to audit dependency advisories and deep Git patch history for exposed tokens or RSA keys.
-
-### 4. GitHub Repository Governance & Lovable Synchronization
-
-- **Upstream Repository**: [`Hellthefox808/NCC-CRM-V1.0`](https://github.com/Hellthefox808/NCC-CRM-V1.0)
-- **Lovable Synchronization**: Connected to [Lovable.dev](https://lovable.dev). To preserve project history, rewriting published git history (force-pushing, rebasing published commits, amending pushed history) is strictly prohibited. Every commit pushed to `main` must maintain clean, compilable, regression-free state.
-- **Branch Protection & Conventional PRs**: Direct changes to production enforce pull request validation gates, PR size ceilings (max 2,500 lines), semantic commit title enforcement (`feat:`, `fix:`, `chore:`, `refactor:`), and zero-secret commit scanning.
-- **Engineering Execution Mode**: Mandatory 22-step synchronized engineering workflow for all phases and feature additions (repository state inspection, code graph triage, security review, typecheck, tests, and production build).
-
----
-
-## 📁 Repository Documentation Matrix
-
-Detailed architecture and operations guides are located in the [`docs/`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/) directory:
-
-| Document                                                                                                              | Description                                                                                           |
-| :-------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------- |
-| **[`docs/CI_CD.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/CI_CD.md)**                               | Production CI/CD pipeline architecture, quality gates, and automated deployment guide.                |
-| **[`docs/ARCHITECTURE.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/ARCHITECTURE.md)**                 | Technical topology, Nitro SSR server architecture, and security boundaries.                           |
-| **[`docs/DATABASE.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/DATABASE.md)**                         | Complete database schema, 14 tables, ERD, SQL migrations, and RLS policies.                           |
-| **[`docs/PROJECT-CONTEXT.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/PROJECT-CONTEXT.md)**           | System architecture, component stacks, test metrics, and operational state.                           |
-| **[`docs/TEST-MATRIX.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/TEST-MATRIX.md)**                   | Comprehensive test matrix of all 92 automated unit, integration, and security tests across 16 suites. |
-| **[`docs/REDIS-MODEL.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/REDIS-MODEL.md)**                   | Multi-tier caching architecture and hybrid rate limiting specification.                               |
-| **[`docs/PRODUCTION-READINESS.md`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/PRODUCTION-READINESS.md)** | Production deployment attestation and environment checklist.                                          |
-
----
-
-## 🚀 Quick Start Guide
+## Getting Started
 
 ### Prerequisites
 
-- **Node.js**: `>= 22.0.0` (LTS)
+- **Node.js**: `>= 22.0.0` (LTS recommended)
 - **npm**: `>= 10.0.0`
-- **Docker & Docker Compose** _(Optional, for containerized run)_
+- **Docker & Docker Compose**: Optional, for local containerized execution
 
-### 1. Local Setup
+### Step 1: Clone & Install Dependencies
 
 ```bash
-# Clone the repository
 git clone https://github.com/Hellthefox808/NCC-CRM-V1.0.git
 cd NCC-CRM-V1.0
-
-# Install dependencies
-npm install
-
-# Copy environment template
-cp .env.example .env
-
-# Configure Supabase credentials in .env
+npm ci
 ```
 
-### 2. Start Development Server
+### Step 2: Configure Environment Variables
+
+Copy the provided environment template to `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your development credentials. For minimal local development, configured Supabase test credentials, a 32-character `JWT_SECRET`, and a `SESSION_SECRET` are required.
+
+> [!WARNING]
+> **Client-Side Environment Notice**: Variables prefixed with `VITE_` (e.g. `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) are bundled into client-side JavaScript sent to the browser. **Never** assign service-role keys, database passwords, session secrets, or private tokens to `VITE_` variables.
+
+### Step 3: Generate Prisma Client
+
+```bash
+npm run prisma:generate
+```
+
+### Step 4: Start Development Server
 
 ```bash
 npm run dev
 ```
 
-Application will be accessible at `http://localhost:3000`.
-
-### 3. Run Automated Tests
-
-```bash
-# Execute full test suite (92 tests across 16 suites, 100% pass)
-npm test
-
-# Run strict TypeScript type verification (0 errors)
-npm run typecheck
-
-# Validate Prisma schema and generate ORM client
-npm run prisma:validate
-npm run prisma:generate
-```
-
-### 4. Build Production Bundle
-
-```bash
-npm run build
-```
+The portal will be accessible locally at `http://localhost:3000`.
 
 ---
 
-## ⚙️ Environment Variables Reference
+## Environment Configuration
 
-| Variable Name               | Required | Default / Example                          | Purpose                                               |
-| :-------------------------- | :------: | :----------------------------------------- | :---------------------------------------------------- |
-| `NODE_ENV`                  |   Yes    | `development` / `production`               | Application execution environment                     |
-| `PORT`                      |    No    | `3000`                                     | HTTP server listening port                            |
-| `VITE_SUPABASE_URL`         |   Yes    | `https://qsrmzajadmmgqhfbxdwu.supabase.co` | Public Supabase API Endpoint                          |
-| `VITE_SUPABASE_ANON_KEY`    |   Yes    | `eyJhbGciOi...`                            | Supabase Anonymous Client Key                         |
-| `SUPABASE_SERVICE_ROLE_KEY` |   Yes    | `eyJhbGciOi...`                            | Supabase Service Role Key (Backend Server Only)       |
-| `REDIS_URL`                 | Optional | `redis://localhost:6379`                   | Connection URL for Local / Docker TCP Redis           |
-| `UPSTASH_REDIS_REST_URL`    | Optional | `https://...upstash.io`                    | Upstash Redis REST URL for Serverless Edge            |
-| `UPSTASH_REDIS_REST_TOKEN`  | Optional | `AXXX...`                                  | Upstash Redis REST API Authorization Token            |
-| `JWT_SECRET`                |   Yes    | `min-32-character-secret`                  | 256-bit secret for signing user auth tokens           |
-| `SESSION_SECRET`            |   Yes    | `session-encryption-secret`                | Encryption key for cookie-based session state         |
-| `SMTP_HOST`                 | Optional | `smtp.gmail.com`                           | Host for email notification server                    |
-| `SMTP_PORT`                 | Optional | `587`                                      | Port for SMTP mailer connection                       |
-| `SMTP_USER`                 | Optional | `user@sbu.ac.in`                           | SMTP authentication user                              |
-| `SMTP_PASS`                 | Optional | `app-password`                             | SMTP authentication password                          |
-| `MONGODB_URI`               | Optional | `mongodb://cluster.mongodb.net`            | MongoDB Atlas Replica Set URI for secondary analytics |
+The repository uses environment variables documented in [`.env.example`](.env.example). Grouped by subsystem:
+
+| Group | Variable Name | Required | Description |
+| :--- | :--- | :---: | :--- |
+| **Server** | `NODE_ENV` | Yes | `development`, `test`, or `production`. |
+| **Server** | `PORT` | No | HTTP listening port (default: `3000`). |
+| **Client** | `VITE_SUPABASE_URL` | Yes | Public Supabase project URL (browser-safe). |
+| **Client** | `VITE_SUPABASE_ANON_KEY` | Yes | Supabase public anonymous API key (browser-safe). |
+| **Client** | `VITE_WS_HOST` | No | Real-time WebSocket server address (default: `http://localhost:3000`). |
+| **Database** | `SUPABASE_SERVICE_ROLE_KEY` | Yes | **Server-only** Supabase administrative service role key. |
+| **Database** | `DATABASE_URL` | Yes | PostgreSQL connection string for pooled connections (PgBouncer). |
+| **Database** | `DIRECT_URL` | Yes | Direct PostgreSQL connection string for migrations. |
+| **Security** | `JWT_SECRET` | Yes | Minimum 32-character cryptographic secret for signing user tokens. |
+| **Security** | `SESSION_SECRET` | Yes | Minimum 32-byte secret for cookie session encryption. |
+| **Security** | `DRAFT_ENCRYPTION_KEY` | No | 32-byte hex key for client-side Form 1 draft encryption. |
+| **Cache** | `REDIS_URL` | Optional | Connection string for TCP Redis (e.g. `redis://localhost:6379`). |
+| **Cache** | `UPSTASH_REDIS_REST_URL` | Optional | Upstash REST URL for serverless edge Redis. |
+| **Cache** | `UPSTASH_REDIS_REST_TOKEN` | Optional | Upstash REST authorization token. |
+| **Mail** | `SMTP_HOST`, `SMTP_PORT` | Optional | SMTP mail server host and port (default: 587). |
+| **Mail** | `SMTP_USER`, `SMTP_PASS` | Optional | Credentials for outbound email notifications. |
+| **Analytics** | `MONGODB_URI` | Optional | MongoDB Atlas URI for secondary logging and analytics. |
 
 ---
 
-## 🐳 Docker & Containerization
+## Testing & Quality Assurance
 
-The repository includes a production multi-container setup with `ncc-app` and `redis`:
+The repository enforces a comprehensive automated testing matrix executed via the native Node.js test runner and TypeScript compiler.
+
+### Available Quality Scripts
+
+| Script | Command | Purpose |
+| :--- | :--- | :--- |
+| **Test Suite** | `npm test` | Runs 206 automated tests across 71 suites (`backend/tests/*.test.ts`). |
+| **Typecheck** | `npm run typecheck` | Strict TypeScript compiler validation (`tsc --noEmit`). |
+| **Linter** | `npm run lint` | ESLint 9 static analysis across `src`, `backend`, and `frontend`. |
+| **Prisma Validate** | `npm run prisma:validate` | Validates Prisma schema syntax and relationship integrity. |
+| **Prisma Generate** | `npm run prisma:generate` | Generates the strongly typed `@prisma/client`. |
+| **Security Audit** | `npm audit --audit-level=critical` | Scans dependency tree for critical vulnerability advisories. |
+| **Production Build** | `npm run build` | Compiles client assets and Nitro SSR server bundle into `.output/`. |
+
+For complete test case breakdowns, suite categories, and execution logs, consult [`docs/TEST-MATRIX.md`](docs/TEST-MATRIX.md).
+
+---
+
+## CI/CD & Delivery Pipelines
+
+Continuous Integration and Continuous Delivery are automated via GitHub Actions across 4 dedicated workflows:
+
+1. **CI Quality Pipeline** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)):
+   Triggers on pushes and PRs to `main`. Executes 7 parallel and sequenced validation gates: `lint`, `typecheck`, `test`, `prisma-validate`, `security-check`, `build`, and `docker-validate`.
+2. **Production Deployment** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)):
+   Triggers upon successful CI completion on `main`. Handles immutable container tagging, health probe validation, and automated rollback signaling.
+3. **PR Validation Gate** ([`.github/workflows/pr-validation.yml`](.github/workflows/pr-validation.yml)):
+   Enforces Conventional Commits title hygiene and flags pull requests exceeding 2,500 lines.
+4. **Scheduled Security Audit** ([`.github/workflows/security-audit.yml`](.github/workflows/security-audit.yml)):
+   Runs weekly on Sundays at midnight UTC to audit dependency advisories and inspect Git commit history for secret patterns.
+
+Contributors should consult live [GitHub Actions Run History](https://github.com/Hellthefox808/NCC-CRM-V1.0/actions) for current build and verification status.
+
+---
+
+## Docker & Container Deployment
+
+A multi-container setup is defined in [`docker-compose.yml`](docker-compose.yml):
+
+- **`nginx`**: Alpine-based reverse proxy and load balancer exposing port `80`.
+- **`redis`**: Redis 7 Alpine cache bound to `127.0.0.1:6379` with persistent volume `redis_data`.
+- **`ncc-app-1` & `ncc-app-2`**: Dual Nitro SSR application nodes running on port `3000` with active liveness health checks (`/api/v1/health?type=liveness`).
+
+### Running via Docker Compose
 
 ```bash
-# Build and run containers in detached mode
+# Build and launch all services in detached mode
 docker-compose up -d --build
 
-# Check container status
+# Verify container health status
 docker-compose ps
 
-# View real-time logs
+# View service logs
 docker-compose logs -f
 ```
 
----
-
-## 📋 Key API Endpoints Matrix
-
-| Category          | Endpoint                                          | Method     | Access           | Description                                          |
-| :---------------- | :------------------------------------------------ | :--------- | :--------------- | :--------------------------------------------------- |
-| **System**        | `/api/v1/health`                                  | GET        | Public           | System health check & memory/redis metrics           |
-| **Auth**          | `/api/v1/auth/login`                              | POST       | Public           | User authentication with rate limiting               |
-| **Auth**          | `/api/v1/auth/me`                                 | GET        | Session          | Retrieve active user session profile                 |
-| **Auth**          | `/api/v1/auth/activate`                           | POST       | Public           | Validate single-use activation token                 |
-| **Auth**          | `/api/v1/auth/set-password`                       | POST       | Public           | Set password & activate cadet account                |
-| **Auth**          | `/api/v1/auth/otp/request`                        | POST       | Public           | Request OTP (purpose: reset, onboarding, activation) |
-| **Auth**          | `/api/v1/auth/otp/verify`                         | POST       | Public           | Verify OTP with purpose & auto-link cadet record     |
-| **Auth**          | `/api/v1/auth/forgot-password`                    | POST       | Public           | Request password reset link                          |
-| **Onboarding**    | `/api/v1/onboarding`                              | GET        | Cadet / Officer  | Fetch 5-step checklist, progress %, & nextStep guide |
-| **Onboarding**    | `/api/v1/onboarding`                              | PATCH      | Cadet / Officer  | Batch update onboarding steps atomically             |
-| **Onboarding**    | `/api/v1/onboarding/$step`                        | PATCH      | Cadet / Officer  | Update single step & auto-activate on 100% complete  |
-| **Enrollment**    | `/api/v1/enrollments`                             | POST / GET | Public / Officer | Submit Form 1 application / list enrollments         |
-| **Enrollment**    | `/api/v1/enrollments/status/$query`               | GET        | Public           | Track application status (PII masked)                |
-| **ANO Review**    | `/api/v1/ano/applications/$id/approve`            | POST       | Officer          | Approve application & issue activation token         |
-| **ANO Review**    | `/api/v1/ano/applications/$id/reject`             | POST       | Officer          | Reject application with reason                       |
-| **ANO Review**    | `/api/v1/ano/applications/$id/request-correction` | POST       | Officer          | Request correction from applicant                    |
-| **Cadets**        | `/api/v1/cadets`                                  | GET        | Officer          | Query unit nominal rolls & roster                    |
-| **Export**        | `/api/v1/export-excel`                            | GET        | Officer          | Export official nominal roll CSV/Excel               |
-| **Operations**    | `/api/v1/activities`                              | GET / POST | Public / Officer | Manage battalion activities                          |
-| **Operations**    | `/api/v1/calendar`                                | GET / POST | Public / Officer | Manage parade & event calendar                       |
-| **Operations**    | `/api/v1/calendar/$id/publish`                    | POST       | Officer          | Publish calendar event to cadets                     |
-| **Operations**    | `/api/v1/calendar/$id/cancel`                     | POST       | Officer          | Cancel calendar event                                |
-| **Operations**    | `/api/v1/calendar/$id/reminders`                  | POST       | Officer          | Schedule automated reminders                         |
-| **Notifications** | `/api/v1/notifications`                           | GET / POST | Cadet / Officer  | Notification feed and broadcast                      |
-| **Notifications** | `/api/v1/notifications/$id/read`                  | POST       | Cadet            | Mark notification as read                            |
-| **Storage**       | `/api/v1/storage/intent`                          | POST       | Authenticated    | Create pre-signed upload intent                      |
-| **Storage**       | `/api/v1/storage/token`                           | POST       | Authenticated    | Generate download token with magic byte verification |
+> [!CAUTION]
+> **Container Security Notice**: In [`docker-compose.yml`](docker-compose.yml), the Redis service and application nodes specify a fallback parameter `${REDIS_PASSWORD:-...}` for local development convenience. **Production environments must explicitly define a strong, unique `REDIS_PASSWORD` in the deployment environment** or secret manager rather than relying on repository fallback values.
 
 ---
 
-## 🧪 Testing & Quality Assurance
+## Documentation Index
 
-```bash
-# Execute unit & integration test matrix (92/92 passing across 16 suites, 100%)
-npm test
+All technical, architectural, and operational documentation is maintained in the [`docs/`](docs/) directory using verified repository paths:
 
-# Run ESLint static code analysis (0 errors)
-npm run lint
+### Core Architecture & System Context
 
-# Run strict TypeScript compiler type verification (0 errors)
-npm run typecheck
+- [Architecture Blueprint](docs/ARCHITECTURE.md) — Nitro SSR server architecture, runtime topology, and security perimeters.
+- [Project Context Baseline](docs/PROJECT-CONTEXT.md) — Comprehensive technical state, subsystem directory map, and dependencies.
+- [Authentication & Identity Model](docs/AUTH-MODEL.md) — Scrypt password derivation, 256-bit single-use tokens, and session lifecycles.
+- [Database Schema & Data Model](docs/DATABASE.md) — Relational tables, Supabase migrations, Prisma models, and RLS policies.
+- [Database ERD Diagram](docs/database/DATABASE_SCHEMA_ERD.md) — Visual Entity-Relationship Diagram for all 14 tables.
+- [Caching & Rate Limiting Model](docs/REDIS-MODEL.md) — L1 in-memory + L2 Redis dual-tier caching and sliding-window rate limits.
 
-# Validate Prisma schema definitions
-npm run prisma:validate
+### Testing, Quality & CI/CD
 
-# Audit dependencies for critical security advisories (0 critical)
-npm audit --audit-level=critical
+- [Automated Test Matrix](docs/TEST-MATRIX.md) — Detailed catalog of 206 automated tests across 71 suites with execution evidence.
+- [Testing Strategy & Fixtures](docs/testing/testing_strategy_and_fixtures.md) — Guidelines for unit, integration, and mock fixtures.
+- [CI/CD Pipeline Specification](docs/CI_CD.md) — GitHub Actions quality gates, deployment stages, and rollback probes.
+- [Production Readiness Evaluation](docs/PRODUCTION-READINESS.md) — Evidence-based production readiness scorecard and deployment checklist.
 
-# Compile production bundle (Vite 8.2 + Nitro 3.0 SSR)
-npm run build
+### Security & Governance
 
-# Format codebase with Prettier
-npm run format
-```
+- [Security Baseline Specification](docs/security/SECURITY_BASELINE.md) — OWASP ASVS 5.0 L2 security standards and enforcement mechanisms.
+- [OTP & Authentication Architecture](docs/security/NCC_CRM_Elite_OTP_Authentication_Architecture.md) — Multi-purpose OTP failover design and rate-limiting.
+- [Intrusion Detection System (IDS)](docs/security/IDS_SPECIFICATION.md) — Threat scoring engine and automated defensive rules.
+- [API Security Matrix](docs/security/API_SECURITY_MATRIX.md) — Role-based access control (RBAC) per API route.
+- [Repository Security Policy](SECURITY.md) — Vulnerability reporting guidelines and supported releases.
+- [Architecture Decision Records (ADRs)](docs/adr/INDEX.md) — Index of accepted architectural decision records.
 
 ---
 
-## 📜 License & Compliance
+## Contribution & Governance
 
-Maintained for the **19 Jharkhand Battalion NCC (Sarala Birla University Sub-Unit)**.  
-Engineered in accordance with institutional security protocols, OWASP ASVS 5.0 Level 2, and Supabase RLS standards.
+We welcome contributions to the 19 Jharkhand Battalion NCC Command Portal. Please adhere to the following workflow:
+
+### Branching & Commit Workflow
+
+1. Create a focused branch from `main`:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+2. Make atomic, focused changes adhering to existing architectural patterns.
+3. Validate your changes locally:
+   ```bash
+   npm run lint
+   npm run typecheck
+   npm test
+   npm run build
+   ```
+4. Commit using Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`).
+5. Open a Pull Request targeting `main` with a detailed description of changes, testing evidence, and affected components.
+
+> [!IMPORTANT]
+> **Lovable Synchronization Rule**: This project is connected to [Lovable.dev](https://lovable.dev). To preserve project history, **never force-push, rebase, or amend already published Git history**. Commits pushed to connected branches sync back to Lovable. Ensure every commit on `main` is in a clean, fully working state.
+
+---
+
+## Privacy & Data Protection
+
+Because this portal processes sensitive cadet data—including personal identification details, Indian mobile numbers, Aadhaar numbers, residential addresses, academic transcripts, bank account numbers for Direct Benefit Transfer (DBT), and medical fitness declarations—all contributors and system administrators must observe the following data protection principles:
+
+1. **Zero Public PII**: Public lookup endpoints (such as `/api/v1/enrollments/status/:query`) must strictly mask or strip all sensitive fields (Aadhaar, bank account numbers, IFSC, residential address, parentage) before transmission.
+2. **Safe Logging & Sanitization**: Never log passwords, raw OTPs, session cookies, unmasked Aadhaar numbers, or bank account details to standard output, server log files, or external APM tools.
+3. **Synthetic Test Fixtures**: All automated tests, mock fixtures, and seed data must use synthetic names, fake test Aadhaar numbers (e.g. `123456789012`), and dummy bank credentials. Never commit real cadet records to Git.
+4. **Principle of Least Privilege**: Access to full cadet dossiers and nominal roll exports is strictly restricted to authenticated Associate NCC Officers (`requireOfficer` middleware).
+5. **Session Isolation**: Session tokens are transmitted via `HttpOnly; SameSite=Strict; Secure` cookies, preventing client-side script access and mitigating cross-site scripting (XSS) extraction risks.
+
+---
+
+## License & Attribution
+
+Maintained for the **19 Jharkhand Battalion NCC, Sarala Birla University Sub-Unit, Ranchi**.
+All rights reserved. Developed in accordance with university governance, NCC Directorate standards, and OWASP security recommendations.

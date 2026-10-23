@@ -113,4 +113,4 @@ Cadets progress through a 5-step checklist (`/api/v1/onboarding` and `/api/v1/on
 
 For the comprehensive 58-section enterprise OTP, MFA, passkey, and authentication architecture, refer to:
 
-- [NCC CRM — Elite Production OTP & Authentication Architecture](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/docs/security/NCC_CRM_Elite_OTP_Authentication_Architecture.md)
+- [NCC CRM — Elite Production OTP & Authentication Architecture](security/NCC_CRM_Elite_OTP_Authentication_Architecture.md)

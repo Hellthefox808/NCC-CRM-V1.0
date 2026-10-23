@@ -4,7 +4,7 @@
 **Corpus Name**: Hellthefox808/NCC-CRM-V1.0  
 **Branch**: `main`  
 **Last Updated**: 2026-10-18  
-**Status**: 100% Verified E2E, 109/109 Tests Passing across 18 Test Suites, UIDAI Verhoeff Aadhaar Checksum, Single-Flight Cache Deduplication & Telemetry, Regimental Glassmorphism & Enterprise Data Platform, Dynamic Backend Sync, Hardened Security & Infrastructure
+**Status**: Verified E2E, 206 Automated Tests Passing (100%) across 71 Suites, UIDAI Verhoeff Aadhaar Checksum, Single-Flight Cache Deduplication & Telemetry, Regimental Glassmorphism & Enterprise Data Platform, Dynamic Backend Sync, Hardened Security & Infrastructure
 
 ---
 
@@ -93,7 +93,7 @@ The NCC Portal operates as an integrated, OWASP-compliant identity and managemen
 
 ## 4. Test Suite & Verification Metrics
 
-- **Backend & Service Unit Tests**: **131 / 131 Pass (100%)** across 24 test suites (including Suite 20: Internationalization & Localization Engine tests; Suite 19: Real-time Communication Hub, Interactive Polls, Pinned Messages, Group Administration, and Message-to-Task Conversion tests; Suite 18: UIDAI Verhoeff Aadhaar Checksum, Single-Flight Cache Deduplication, Cache Telemetry, LRU/IDS Memory Bounds; Enterprise Data Platform & MongoDB Client, Onboarding Batch, Security Hardening, Multi-Tier Cache, Prompter Scheduler, Storage Capability, and Multi-Channel Dispatch tests).
+- **Backend & Service Unit Tests**: **206 / 206 Pass (100%)** across 71 test suites (see [`docs/TEST-MATRIX.md`](TEST-MATRIX.md) for full breakdown across Data Mapping, IDS, Cadet Lifecycle, Mailer, Onboarding, Prompter, Storage, Batch Queueing, Multi-Tier Cache, Rate Limiting, and Real-Time Sockets).
 - **ESLint Static Code Analysis**: **0 Errors (100% clean type-safety & Prettier compliance)**.
 - **TypeScript Static Verification**: **`npm run typecheck` (`tsc --noEmit`) 100% clean**.
 - **Frontend UI/UX & A11y Modernization**: Regimental Glassmorphism design system deployed across public landing page, Admin Command Portal, Cadet Portal, and Cadre Communication Hub with WCAG 2.2 AA compliance, keyboard navigation, non-blocking toast alerts, and dark ambient adaptation.

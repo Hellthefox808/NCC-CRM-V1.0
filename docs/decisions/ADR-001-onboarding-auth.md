@@ -32,7 +32,7 @@ Account onboarding, password initialization, and recovery flows must satisfy str
 
 ## Decision Outcome
 
-Option 3 was chosen and implemented across [auth-otp.server.ts](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/backend/lib/auth-otp.server.ts), [PasswordSetupPortal.tsx](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/frontend/features/PasswordSetupPortal.tsx), and `/api/v1/auth/*` routes.
+Option 3 was chosen and implemented across [`backend/lib/auth-otp.server.ts`](../../backend/lib/auth-otp.server.ts), [`frontend/features/PasswordSetupPortal.tsx`](../../frontend/features/PasswordSetupPortal.tsx), and `/api/v1/auth/*` routes.
 
 ### Consequences
 
