@@ -90,4 +90,4 @@
 
 ## 3. Migration Reproducibility
 
-All SQL migrations under [`supabase/migrations/`](file:///c:/Users/ravir/Desktop/PROJECT/Project/NCC/supabase/migrations/) are strictly idempotent (`CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`) and execute sequentially from zero to production schema without manual SQL interventions.
+All SQL migrations under [`supabase/migrations/`](../../supabase/migrations/) are strictly idempotent (`CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`) and execute sequentially from zero to production schema without manual SQL interventions.
